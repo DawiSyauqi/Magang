@@ -678,16 +678,36 @@ def extract_cell(cfg: OllamaConfig, image, block_idx, cell_idx, block_x_bounds, 
     kode = result.get("kode")
     return kode, ink_ratio, "dipanggil ke model"
 
+# PATCH v6: pemetaan shift -> baris grid yang perlu diproses.
+# Shift 1 = jam 07.00-15.00, Shift 2 = jam 15.00-23.00, Shift 3 = jam 23.00-07.00
+# (asumsi 1 shift = 8 jam, sesuai pola baris di kertas). Sesuaikan mapping ini
+# kalau ternyata penomoran shift di pabrik Anda berbeda.
+SHIFT_TO_ROW_KEY = {
+    "1": "jam_07_15",
+    "2": "jam_15_23",
+    "3": "jam_23_07",
+}
 
-def extract_split_by_cell(cfg: OllamaConfig, image, header_bounds=(0.000, 0.125)):
+def normalize_shift(raw_shift):
+    """Ambil digit 1/2/3 pertama dari teks shift mentah. Return None kalau
+    tidak ada digit valid yang cocok -- JANGAN menebak, biar caller fallback
+    ke proses semua baris."""
+    if raw_shift is None:
+        return None
+    match = re.search(r"[123]", str(raw_shift))
+    return match.group(0) if match else None
+
+def detect_header(cfg: OllamaConfig, image, header_bounds=(0.000, 0.125)):
     h, w = image.shape[:2]
     margin = 0.015
-
     hy0, hy1 = header_bounds
     header_crop = image[0:int((hy1 + margin) * h), :]
     print("Memanggil model untuk section header...")
-    header_result = _call_ollama(cfg, header_crop, HEADER_ONLY_PROMPT)
+    return _call_ollama(cfg, header_crop, HEADER_ONLY_PROMPT)
 
+def extract_split_by_cell(cfg: OllamaConfig, image, header_result, target_row_key):
+    """target_row_key SUDAH pasti (hasil normalize_shift atau shift_override
+    dari run_pipeline) -- fungsi ini tidak lagi menebak/fallback sendiri."""
     row_bounds, lost_time_precomputed, row_sumber = get_calibrated_row_bounds(image)
     print(f"ROW_BOUNDS terkalibrasi via: {row_sumber}")
     if row_sumber == "fallback":
@@ -697,10 +717,19 @@ def extract_split_by_cell(cfg: OllamaConfig, image, header_bounds=(0.000, 0.125)
     print(f"block_x_bounds terkalibrasi via: {col_sumber}")
     block_x_bounds = get_block_x_bounds_validated(block_x_bounds_raw, col_sumber, "whole_table")
 
+    all_row_keys = ["jam_07_15", "jam_15_23", "jam_23_07"]
+    print(f"HANYA proses baris '{target_row_key}' (48 kotak, bukan 144).")
+
     n_calls = 0
     all_grid = []
-    for row_key in ["jam_07_15", "jam_15_23", "jam_23_07"]:
+    for row_key in all_row_keys:
         labels = ROW_BLOCK_LABELS[row_key]
+
+        if row_key != target_row_key:
+            for label in labels:
+                all_grid.append({"jam_mulai": label, "blok": [None] * 6})
+            continue
+
         lost_time_bounds = lost_time_precomputed[row_key]
         print(f"\n{row_key} | Lost-time bounds: {lost_time_bounds}")
         for block_idx in range(8):
@@ -715,7 +744,7 @@ def extract_split_by_cell(cfg: OllamaConfig, image, header_bounds=(0.000, 0.125)
                 blok.append(kode)
             all_grid.append({"jam_mulai": labels[block_idx], "blok": blok})
 
-    print(f"\nTotal panggilan model untuk 144 kotak: {n_calls} (sisanya di-skip karena kosong)")
+    print(f"\nTotal panggilan model untuk grid: {n_calls}")
     merged = {**header_result, "grid_waktu": all_grid}
     meta = {
         "row_bounds_source": row_sumber,
@@ -723,6 +752,42 @@ def extract_split_by_cell(cfg: OllamaConfig, image, header_bounds=(0.000, 0.125)
         "total_cell_model_calls": n_calls,
     }
     return MFDowntimeExtraction(**merged), meta
+
+def run_pipeline(cfg: OllamaConfig, image, shift_override=None):
+    """Orkestrasi utama: header dulu (murah), lalu putuskan shift, BARU
+    proses grid (mahal) -- atau berhenti lebih awal minta konfirmasi kalau
+    shift ambigu, supaya tidak buang 48-144 panggilan model sia-sia."""
+    header_result = detect_header(cfg, image)
+
+    if shift_override:
+        resolved_shift = shift_override
+        shift_source = "user_confirmed"
+        print(f"Shift dari user (override): '{resolved_shift}'")
+    else:
+        resolved_shift = normalize_shift(header_result.get("shift"))
+        shift_source = "auto_detected" if resolved_shift else None
+        if resolved_shift:
+            print(f"Shift terbaca otomatis: '{resolved_shift}'")
+
+    if resolved_shift is None:
+        print(f"Shift TIDAK terbaca jelas (raw={header_result.get('shift')!r}) -> "
+              f"berhenti di sini, minta konfirmasi user (grid BELUM diproses).")
+        return {
+            "status": "needs_confirmation",
+            "reason": "shift_ambiguous",
+            "data": {**header_result, "grid_waktu": []},
+            "meta": {"shift_raw": header_result.get("shift")},
+        }
+
+    target_row_key = SHIFT_TO_ROW_KEY[resolved_shift]
+    result, meta = extract_split_by_cell(cfg, image, header_result, target_row_key)
+    result_data = result.model_dump()
+    result_data["shift"] = resolved_shift  # pastikan field final konsisten dgn baris yg diproses
+    meta["shift_source"] = shift_source
+    meta["rows_processed"] = [target_row_key]
+
+    return {"status": "success", "data": result_data, "meta": meta}
+
 
 
 # ============================================================
@@ -737,6 +802,8 @@ def main():
     parser.add_argument("--num-ctx", type=int, default=16384)
     parser.add_argument("--keep-temp", action="store_true",
                          help="Jangan hapus file foto_bersih_*.jpg hasil preprocessing setelah selesai.")
+    parser.add_argument("--shift-override", choices=["1", "2", "3"], default=None,
+                         help="Shift yang SUDAH dikonfirmasi user (skip deteksi otomatis, langsung pakai ini).")
     args = parser.parse_args()
 
     t0 = time.time()
@@ -756,19 +823,18 @@ def main():
         cfg = OllamaConfig(base_url=args.ollama_url, model=args.model,
                             timeout=args.timeout, num_ctx=args.num_ctx)
 
-        result, meta = extract_split_by_cell(cfg, image)
+        envelope = run_pipeline(cfg, image, shift_override=args.shift_override)
         elapsed = time.time() - t0
-        meta["elapsed_seconds"] = round(elapsed, 1)
-        print(f"\nSelesai dalam {elapsed:.1f}s")
+        envelope.setdefault("meta", {})["elapsed_seconds"] = round(elapsed, 1)
+        print(f"\nSelesai dalam {elapsed:.1f}s (status: {envelope['status']})")
 
-        envelope = {"success": True, "data": result.model_dump(), "meta": meta}
         _stdout_print(json.dumps(envelope, ensure_ascii=False))
-        return 0
+        return 0 if envelope["status"] != "error" else 1
 
     except Exception as e:  # noqa: BLE001 - sengaja tangkap semua, ini boundary proses CLI
         print("ERROR:", traceback.format_exc())
         envelope = {
-            "success": False,
+            "status": "error",
             "error": str(e),
             "error_type": type(e).__name__,
         }
@@ -781,7 +847,6 @@ def main():
                 Path(clean_path).unlink(missing_ok=True)
             except Exception:
                 pass
-
 
 if __name__ == "__main__":
     sys.exit(main())

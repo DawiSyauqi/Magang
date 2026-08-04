@@ -88,7 +88,7 @@ class PaperReaderService
      *         timeout, output bukan JSON valid, atau skrip melaporkan
      *         success=false lewat envelope-nya sendiri.
      */
-    public function extract(string $imagePath): array
+    public function extract(string $imagePath, ?string $confirmedShift = null): array
     {
         if (! is_file($imagePath)) {
             throw new PaperReaderException(
@@ -106,6 +106,11 @@ class PaperReaderService
             '--timeout', (string) $this->ollamaCallTimeout,
             '--num-ctx', (string) $this->ollamaNumCtx,
         ];
+
+        if ($confirmedShift !== null) {
+            $command[] = '--shift-override';
+            $command[] = $confirmedShift;
+        }
 
         try {
             $result = Process::timeout($this->processTimeout)->run($command);
@@ -125,13 +130,9 @@ class PaperReaderService
 
         $stdout = trim($result->output());
         $stderr = $result->errorOutput();
-
         $envelope = $this->decodeEnvelope($stdout);
 
         if ($envelope === null) {
-            // Skrip Python gagal mencetak envelope JSON sama sekali --
-            // biasanya proses crash sebelum sempat print (mis. import
-            // gagal, venv salah, permission error pada script).
             Log::error('PaperReaderService: output Python bukan JSON valid', [
                 'image_path' => $imagePath,
                 'exit_code' => $result->exitCode(),
@@ -142,16 +143,11 @@ class PaperReaderService
             throw new PaperReaderException(
                 'Proses pembacaan kertas gagal dijalankan (bukan masalah kualitas foto). '.
                 'Tim IT perlu cek log server.',
-                [
-                    'image_path' => $imagePath,
-                    'exit_code' => $result->exitCode(),
-                    'stdout' => $stdout,
-                    'stderr' => $stderr,
-                ]
+                ['image_path' => $imagePath, 'exit_code' => $result->exitCode(), 'stdout' => $stdout, 'stderr' => $stderr]
             );
         }
 
-        if ($envelope['success'] !== true) {
+        if ($envelope['status'] === 'error') {
             $errorType = $envelope['error_type'] ?? 'UnknownError';
             $errorMessage = $envelope['error'] ?? 'Error tidak diketahui.';
 
@@ -164,54 +160,45 @@ class PaperReaderService
 
             throw new PaperReaderException(
                 $this->friendlyMessageFor($errorType, $errorMessage),
-                [
-                    'image_path' => $imagePath,
-                    'error_type' => $errorType,
-                    'raw_error' => $errorMessage,
-                    'stderr' => $stderr,
-                ]
+                ['image_path' => $imagePath, 'error_type' => $errorType, 'raw_error' => $errorMessage, 'stderr' => $stderr]
             );
         }
 
+        // status: 'success' ATAU 'needs_confirmation' -- dua-duanya BUKAN
+        // exception, keduanya hasil normal yang perlu ditangani caller
+        // (Tahap 5/6/7): kalau needs_confirmation, tampilkan prompt "shift
+        // berapa?" ke user, lalu panggil extract() lagi dengan $confirmedShift.
         $data = $envelope['data'] ?? [];
+        $data['_status'] = $envelope['status'];
         $data['_meta'] = $envelope['meta'] ?? [];
 
-        Log::info('PaperReaderService: ekstraksi berhasil', [
+        Log::info('PaperReaderService: pipeline selesai', [
             'image_path' => $imagePath,
+            'status' => $envelope['status'],
             'meta' => $envelope['meta'] ?? [],
         ]);
 
         return $data;
     }
-
-    /**
-     * @return array{success: bool, data?: array, meta?: array, error?: string, error_type?: string}|null
-     */
     protected function decodeEnvelope(string $stdout): ?array
     {
         if ($stdout === '') {
             return null;
         }
 
-        // Jaga-jaga kalau ada baris log yang tidak sengaja ikut ke stdout
-        // (harusnya tidak terjadi karena skrip Python sudah didisiplinkan
-        // print ke stderr -- tapi ambil baris TERAKHIR yang valid JSON
-        // sebagai pertahanan kedua, bukan andalan utama).
         $lines = array_values(array_filter(explode("\n", $stdout), fn ($l) => trim($l) !== ''));
         $lastLine = end($lines);
-
         if ($lastLine === false) {
             return null;
         }
 
         $decoded = json_decode($lastLine, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE || ! is_array($decoded) || ! array_key_exists('success', $decoded)) {
+        if (json_last_error() !== JSON_ERROR_NONE || ! is_array($decoded) || ! array_key_exists('status', $decoded)) {
             return null;
         }
 
         return $decoded;
-    }
+    }    
 
     /**
      * Pesan yang aman ditampilkan ke pengguna (Tahap 6/7) -- detail teknis
