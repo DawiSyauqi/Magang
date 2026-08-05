@@ -163,14 +163,14 @@ def enhance(image):
     return cv2.cvtColor(merged, cv2.COLOR_LAB2BGR)
 
 
-def preprocess_image(input_path: str, output_path: str) -> str:
+def preprocess_image(input_path: str, output_path: str):
     image = cv2.imread(input_path)
     if image is None:
         raise FileNotFoundError(f"Tidak bisa baca gambar: {input_path}")
 
     cropped, crop_success, method = auto_crop_document(image)
     if not crop_success:
-        print("PERINGATAN: auto-crop gagal mendeteksi tepi kertas -- foto asli dipakai apa adanya.")
+        print("Auto-crop GAGAL mendeteksi 4 sudut kertas.")
     else:
         print(f"Auto-crop berhasil (metode: {method})")
 
@@ -178,7 +178,7 @@ def preprocess_image(input_path: str, output_path: str) -> str:
     final = enhance(upscaled)
     cv2.imwrite(output_path, final)
     print(f"Preprocessing selesai -> {output_path} ({final.shape[1]}x{final.shape[0]})")
-    return output_path
+    return output_path, crop_success, method   # <-- sekarang return 3 nilai, bukan 1
 
 
 # ============================================================
@@ -614,6 +614,18 @@ def get_block_x_bounds_validated(block_x_bounds, sumber, row_key):
         )
     return block_x_bounds
 
+def validate_row_bounds_source(row_sumber):
+    """Sesuai prinsip Bab 5 Rencana AI: gagal KERAS, bukan diam-diam pakai
+    fallback yang berisiko salah. Simetris dengan get_block_x_bounds_validated()
+    utk kolom -- sebelumnya row bounds TIDAK punya pengaman ini, cuma print
+    peringatan lalu tetap lanjut pakai fallback statis (sumber bug besar
+    "grid naik ke atas" yang pernah kita alami)."""
+    if row_sumber == "fallback":
+        raise RuntimeError(
+            "Auto-deteksi ROW_BOUNDS GAGAL, jatuh ke fallback statis -- "
+            "BERISIKO SALAH karena fallback dikalibrasi dari foto LAIN."
+        )
+
 
 # ============================================================
 # 7. MODE E — crop per-kotak-kecil (dari Cell 47/49)
@@ -710,8 +722,7 @@ def extract_split_by_cell(cfg: OllamaConfig, image, header_result, target_row_ke
     dari run_pipeline) -- fungsi ini tidak lagi menebak/fallback sendiri."""
     row_bounds, lost_time_precomputed, row_sumber = get_calibrated_row_bounds(image)
     print(f"ROW_BOUNDS terkalibrasi via: {row_sumber}")
-    if row_sumber == "fallback":
-        print("PERINGATAN: ROW_BOUNDS jatuh ke fallback statis -- hasil berisiko salah.")
+    validate_row_bounds_source(row_sumber)
 
     block_x_bounds_raw, col_sumber = detect_block_x_bounds_whole_table(image, row_bounds)
     print(f"block_x_bounds terkalibrasi via: {col_sumber}")
@@ -814,7 +825,20 @@ def main():
             raise FileNotFoundError(f"File tidak ditemukan: {image_path}")
 
         clean_path = str(image_path.parent / f"foto_bersih_{image_path.stem}.jpg")
-        preprocess_image(str(image_path), clean_path)
+        clean_path, crop_success, crop_method = preprocess_image(str(image_path), clean_path)
+
+        if not crop_success:
+            # PATCH Tahap 5: sesuai Rencana AI Bab 3 poin 1 -- berhenti DI SINI,
+            # JANGAN lanjut ke Ollama sama sekali kalau sudut kertas gagal
+            # terdeteksi (bukan cuma "warning lalu lanjut" seperti sebelumnya).
+            print("Berhenti sebelum ekstraksi AI -- minta foto ulang.")
+            envelope = {
+                "status": "needs_retake",
+                "reason": "corner_detection_failed",
+                "meta": {"elapsed_seconds": round(time.time() - t0, 1)},
+            }
+            _stdout_print(json.dumps(envelope, ensure_ascii=False))
+            return 0  # status NORMAL, bukan error proses -- exit 0
 
         image = cv2.imread(clean_path)
         if image is None:
@@ -826,6 +850,8 @@ def main():
         envelope = run_pipeline(cfg, image, shift_override=args.shift_override)
         elapsed = time.time() - t0
         envelope.setdefault("meta", {})["elapsed_seconds"] = round(elapsed, 1)
+        envelope.setdefault("meta", {})["elapsed_seconds"] = round(elapsed, 1)
+        envelope["meta"]["crop_method"] = crop_method
         print(f"\nSelesai dalam {elapsed:.1f}s (status: {envelope['status']})")
 
         _stdout_print(json.dumps(envelope, ensure_ascii=False))

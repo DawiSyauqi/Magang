@@ -33,6 +33,14 @@ return [
 
     /*
     |--------------------------------------------------------------------
+    | Tahap 4b — resolusi kode Mesin (teks-only, panggil Ollama LANGSUNG
+    | dari PHP, TIDAK lewat script Python -- tidak ada gambar di sini).
+    |--------------------------------------------------------------------
+    */
+    'mesin_resolver_timeout' => (int) env('PAPER_READER_MESIN_RESOLVER_TIMEOUT', 60),
+
+    /*
+    |--------------------------------------------------------------------
     | Ollama
     |--------------------------------------------------------------------
     | Ganti 'model' sesuai keputusan Tahap 1 kalau ternyata model lain yang
