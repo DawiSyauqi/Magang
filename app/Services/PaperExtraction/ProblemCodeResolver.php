@@ -31,11 +31,12 @@ class ProblemCodeResolver
      */
     public static function makeProduction(): self
     {
+        $secondaryDB = config('database.secondary_database');
+
         return new self(
             new ProblemCodeConverter(),
             function (string $problemCode, string $problemCodeD): ?string {
-                return \DB::connection('ACPIRM')
-                    ->table('MFPROBLEMD')
+                return \DB::table("{$secondaryDB}.dbo.MFPROBLEMD")
                     ->where('ProblemCode', $problemCode)
                     ->where('ProblemCodeD', $problemCodeD)
                     ->value('ProblemDescD');

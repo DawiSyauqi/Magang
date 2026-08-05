@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PaperScanController;
 use App\Http\Controllers\ReferensiController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,4 +39,9 @@ Route::middleware(['auth', 'menu.access'])->group(function () {
         Route::get('/problem-detail', [ReferensiController::class, 'problemDetail'])->name('problem-detail');
         Route::get('/item', [ReferensiController::class, 'item'])->name('item');
     });
+
+    // Paper scan (Ollama & Python OCR Orchestration)
+    Route::post('/paper-scan/analyze', [PaperScanController::class, 'analyze'])->name('paper-scan.analyze');
+    Route::post('/paper-scan/analyze/confirm-shift', [PaperScanController::class, 'confirmShift'])->name('paper-scan.confirm-shift');
+    Route::post('/paper-scan/confirm-mesin', [PaperScanController::class, 'confirmMesin'])->name('paper-scan.confirm-mesin');
 });

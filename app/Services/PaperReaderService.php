@@ -170,7 +170,7 @@ class PaperReaderService
         // berapa?" ke user, lalu panggil extract() lagi dengan $confirmedShift.
         $data = $envelope['data'] ?? [];
         $data['_status'] = $envelope['status'];
-        $data['_reason'] = $envelope['readon'] ?? null;
+        $data['_reason'] = $envelope['reason'] ?? null;
         $data['_meta'] = $envelope['meta'] ?? [];
 
         Log::info('PaperReaderService: pipeline selesai', [

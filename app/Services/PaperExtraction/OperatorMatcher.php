@@ -38,8 +38,8 @@ class OperatorMatcher
      */
     public static function makeProduction(): self
     {
-        $operators = \DB::connection('ACPIRM')
-            ->table('TMMESINOP')
+        $secondaryDB = config('database.secondary_database');
+        $operators = \DB::table("{$secondaryDB}.dbo.TMMESINOP")
             ->select('NIK', 'FullName')
             ->get()
             ->map(fn ($row) => [
