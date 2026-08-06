@@ -355,7 +355,7 @@
             <div class="dt-brand-sub">Industrial Systems</div>
         </div>
 
-        <nav class="dt-nav">
+        <nav class="dt-nav d-flex flex-column gap-1">
             <a href="{{ route('dashboard') }}" class="dt-nav-item active">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
@@ -364,6 +364,10 @@
                     <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
                 </svg>
                 Dashboard
+            </a>
+            <a href="{{ route('paper-scan.index') }}" class="dt-nav-item">
+                <i class="bi bi-camera" style="font-size: 1.1rem; line-height: 1;"></i>
+                Ambil Foto
             </a>
         </nav>
 
@@ -393,9 +397,14 @@
     <main class="dt-main">
         <div class="dt-header">
             <h1>Dashboard Input Performa Mesin</h1>
-            <button type="button" class="btn btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#modalTambahData">
-                <span class="fw-bold">+</span> Tambah Data
-            </button>
+            <div class="d-flex gap-2">
+                <a href="{{ route('paper-scan.index') }}" class="btn btn-primary fw-semibold d-flex align-items-center gap-2">
+                    <i class="bi bi-camera"></i> Ambil Foto
+                </a>
+                <button type="button" class="btn btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#modalTambahData">
+                    <span class="fw-bold">+</span> Tambah Data
+                </button>
+            </div>
         </div>
 
         <div class="dt-content">
@@ -507,25 +516,29 @@
 
     {{-- ===================== VERSI MOBILE (< lg) ===================== --}}
     <div class="d-lg-none dt-mobile-shell">
-
         <div class="dt-mobile-topbar">
             <div class="dt-mobile-topbar-title">Dashboard</div>
-
-            <div class="dropdown">
-                <button type="button" class="dt-mobile-avatar-btn" data-bs-toggle="dropdown" aria-expanded="false">
-                    {{ strtoupper(substr(auth()->user()->UserAlias ?? auth()->user()->UserName ?? 'U', 0, 1)) }}
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><span class="dropdown-item-text small text-muted">{{ auth()->user()->UserAlias ?? auth()->user()->UserName }}</span></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{{ route('password.edit') }}">Atur Password</a></li>
-                    <li>
-                        <form method="POST" action="{{ url('/logout') }}">
-                            @csrf
-                            <button type="submit" class="dropdown-item text-danger">Keluar</button>
-                        </form>
-                    </li>
-                </ul>
+ 
+            <div class="d-flex align-items-center gap-3">
+                <a href="{{ route('paper-scan.index') }}" class="text-white d-flex align-items-center" title="Ambil Foto" style="text-decoration: none;">
+                    <i class="bi bi-camera fs-4"></i>
+                </a>
+                <div class="dropdown">
+                    <button type="button" class="dt-mobile-avatar-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                        {{ strtoupper(substr(auth()->user()->UserAlias ?? auth()->user()->UserName ?? 'U', 0, 1)) }}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><span class="dropdown-item-text small text-muted">{{ auth()->user()->UserAlias ?? auth()->user()->UserName }}</span></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ route('password.edit') }}">Atur Password</a></li>
+                        <li>
+                            <form method="POST" action="{{ url('/logout') }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item text-danger">Keluar</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 

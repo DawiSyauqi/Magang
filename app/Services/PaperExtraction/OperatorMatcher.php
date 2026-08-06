@@ -124,6 +124,12 @@ class OperatorMatcher
         ]);
     }
 
+    /** @return array<int, array{nik: string, full_name: string}> */
+    public function candidates(): array
+    {
+        return $this->operators;
+    }
+
     protected function normalize(string $name): string
     {
         $name = strtolower(trim($name));

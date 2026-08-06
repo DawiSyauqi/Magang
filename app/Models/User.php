@@ -6,7 +6,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    protected $table = 'ACPIRM.dbo.TMUSER';
+    // protected $table = 'ACPIRM.dbo.TMUSER';
+    public function __construct(array $attributes = [])
+    {
+        $this->table = config('database.primary_database').'.dbo.TMUSER';
+        parent::__construct($attributes);
+    }
 
     protected $primaryKey = 'UserName';
     public $incrementing = false;

@@ -16,7 +16,12 @@ use Illuminate\Support\Facades\DB;
  */
 class PerformaMesin extends Model
 {
-    protected $table = 'ACPIRM.dbo.MFDOWNTIME';
+    // PerformaMesin.php
+    public function __construct(array $attributes = [])
+    {
+        $this->table = config('database.secondary_database').'.dbo.MFDOWNTIME';
+        parent::__construct($attributes);
+    }
 
     protected $primaryKey = 'No_Trs';
     public $incrementing = false;
