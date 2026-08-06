@@ -17,7 +17,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'), 'secondary_database' => env('DB_DATABASE_SECONDARY'),
+    'default' => env('DB_CONNECTION', 'sqlite'), 'primary_database' => env('DB_DATABASE'), 'secondary_database' => env('DB_DATABASE_SECONDARY'),
 
     /*
     |--------------------------------------------------------------------------

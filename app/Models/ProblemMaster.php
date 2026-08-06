@@ -10,8 +10,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ProblemMaster extends Model
 {
-    // GANTI ***** dengan nama database asli
-    protected $table = 'ACPIRM.dbo.MFPROBLEM';
+    public function __construct(array $attributes = [])
+    {
+        $this->table = config('database.secondary_database', 'ACPIRM').'.dbo.MFPROBLEM';
+        parent::__construct($attributes);
+    }
 
     protected $primaryKey = 'ProblemCode';
     public $incrementing = false;

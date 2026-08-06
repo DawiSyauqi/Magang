@@ -35,7 +35,7 @@ class ProblemCodeResolver
 
         return new self(
             new ProblemCodeConverter(),
-            function (string $problemCode, string $problemCodeD): ?string {
+            function (string $problemCode, string $problemCodeD) use ($secondaryDB): ?string {
                 return \DB::table("{$secondaryDB}.dbo.MFPROBLEMD")
                     ->where('ProblemCode', $problemCode)
                     ->where('ProblemCodeD', $problemCodeD)

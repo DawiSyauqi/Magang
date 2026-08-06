@@ -9,7 +9,7 @@ class User extends Authenticatable
     // protected $table = 'ACPIRM.dbo.TMUSER';
     public function __construct(array $attributes = [])
     {
-        $this->table = config('database.primary_database').'.dbo.TMUSER';
+        $this->table = config('database.secondary_database').'.dbo.TMUSER';
         parent::__construct($attributes);
     }
 

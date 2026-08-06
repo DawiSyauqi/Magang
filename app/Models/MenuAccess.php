@@ -13,7 +13,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class MenuAccess extends Model
 {
-    protected $table = 'ACPIRM.dbo.TMUSERMENU';
+    public function __construct(array $attributes = [])
+    {
+        $this->table = config('database.secondary_database', 'ACPIRM').'.dbo.TMUSERMENU';
+        parent::__construct($attributes);
+    }
     public $timestamps = false;
 
     protected $guarded = [];

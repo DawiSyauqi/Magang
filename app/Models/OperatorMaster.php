@@ -11,8 +11,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class OperatorMaster extends Model
 {
-    // GANTI ***** dengan nama database asli (sama seperti yang dipakai di User.php / MenuAccess.php)
-    protected $table = 'ACPIRM.dbo.TMMESINOP';
+    public function __construct(array $attributes = [])
+    {
+        $this->table = config('database.secondary_database', 'ACPIRM').'.dbo.TMMESINOP';
+        parent::__construct($attributes);
+    }
 
     protected $primaryKey = 'NIK';
     public $incrementing = false;
