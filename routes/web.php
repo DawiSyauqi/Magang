@@ -44,4 +44,5 @@ Route::middleware(['auth', 'menu.access'])->group(function () {
     Route::post('/paper-scan/analyze', [PaperScanController::class, 'analyze'])->name('paper-scan.analyze');
     Route::post('/paper-scan/analyze/confirm-shift', [PaperScanController::class, 'confirmShift'])->name('paper-scan.confirm-shift');
     Route::post('/paper-scan/confirm-mesin', [PaperScanController::class, 'confirmMesin'])->name('paper-scan.confirm-mesin');
+    Route::get('/paper-scan/test-upload', fn () => view('paper-scan-test'));
 });
