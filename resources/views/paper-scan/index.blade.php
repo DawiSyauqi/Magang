@@ -359,53 +359,6 @@
         el('saveAllBtn').textContent = 'Simpan Semua';
         el('saveAllBtn').disabled = false;
     });
-
-    function renderRows(rows) {
-        el('rowCount').textContent = rows.length;
-        el('rowsTableBody').innerHTML = rows.map((row, idx) => {
-            const perluReview = row._review.perlu_review;
-            const alasanTitle = (row._review.alasan || []).join(' | ');
-            const jamMulai = row.Time_Start ? row.Time_Start.substring(11, 16) : '-';
-            const jamSelesai = row.Time_End ? row.Time_End.substring(11, 16) : '-';
-            return `
-                <tr class="${perluReview ? 'table-danger' : ''}" data-idx="${idx}" title="${alasanTitle}">
-                    <td>${jamMulai}</td>
-                    <td>${jamSelesai}</td>
-                    <td>${row.Time_Total ?? '-'}</td>
-                    <td><code>${row._raw_code}</code></td>
-                    <td>${row.Problem_Desc ?? '<em>belum teridentifikasi</em>'}</td>
-                    <td>${perluReview ? '<span class="badge bg-danger">Perlu Review</span>' : '<span class="badge bg-success">OK</span>'}</td>
-                    <td><button class="btn btn-sm btn-outline-danger delete-row-btn" data-idx="${idx}">✕</button></td>
-                </tr>`;
-        }).join('');
-
-        document.querySelectorAll('.delete-row-btn').forEach((btn) => {
-            btn.addEventListener('click', () => {
-                const idx = parseInt(btn.dataset.idx, 10);
-                currentData.rows.splice(idx, 1);
-                renderRows(currentData.rows);
-            });
-        });
-    }
-
-    el('confirmMesinBtn').addEventListener('click', async () => {
-        const resrceno = el('mesinSelect').value;
-        if (!resrceno) { alert('Pilih mesin dulu.'); return; }
-
-        await apiPost('/paper-scan/confirm-mesin', {
-            raw_text: currentData.header.mesin_raw,
-            resrceno_terpilih: resrceno,
-        });
-
-        el('mesinStatus').textContent = '✓ Tersimpan. Baris di bawah akan pakai MesinCode ini saat disimpan (Tahap 8).';
-        el('mesinStatus').className = 'small mt-2 text-success';
-    });
-
-    // Tahap 8 (endpoint simpan massal) belum ada -- tombol ini sengaja
-    // masih placeholder, JANGAN dikira bug.
-    el('saveAllBtn').addEventListener('click', () => {
-        alert('Endpoint "Simpan Semua" (Tahap 8) belum dibangun. Ini baru sampai Tahap 7.');
-    });
 })();
 </script>
 @endsection
