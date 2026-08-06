@@ -116,7 +116,7 @@
 </div>
 @endsection
 
-@section('scripts')
+@push('scripts')
 <script>
 (function () {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
@@ -361,4 +361,4 @@
     });
 })();
 </script>
-@endsection
+@endpush
