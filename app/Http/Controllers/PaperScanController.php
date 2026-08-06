@@ -169,20 +169,7 @@ class PaperScanController extends Controller
         ], 502); // 502 -- kegagalan bergantung ke layanan lain (Ollama/proses Python)
     }
 
-    /**
-     * GET /paper-scan/mesin-options -- dipakai dropdown "pilih mesin manual"
-     * kalau tebakan AI ditolak petugas.
-     */
 
-
-    /**
-     * GET /paper-scan/operator-options
-     */
-
-    protected function operatorMatcher(): \App\Services\PaperExtraction\OperatorMatcher
-    {
-        return app(\App\Services\PaperExtraction\OperatorMatcher::class);
-    }
     /**
      * POST /paper-scan/store
      * Validasi tiap baris pakai ATURAN YANG SAMA PERSIS dgn

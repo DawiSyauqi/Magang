@@ -113,7 +113,23 @@ class PaperReaderService
         }
 
         try {
-            $result = Process::timeout($this->processTimeout)->run($command);
+            $env = getenv();
+            if (! is_array($env)) {
+                $env = [];
+            }
+
+            $env['SystemRoot'] = $env['SystemRoot'] ?? getenv('SystemRoot') ?: 'C:\\Windows';
+            $env['SystemDrive'] = $env['SystemDrive'] ?? getenv('SystemDrive') ?: 'C:';
+            $env['windir'] = $env['windir'] ?? getenv('windir') ?: 'C:\\Windows';
+            $env['PATH'] = $env['PATH'] ?? getenv('PATH') ?: '';
+
+            $userSite = 'C:\\Users\\User\\AppData\\Roaming\\Python\\Python314\\site-packages';
+            if (is_dir($userSite)) {
+                $existingPath = $env['PYTHONPATH'] ?? '';
+                $env['PYTHONPATH'] = $existingPath ? $userSite.PATH_SEPARATOR.$existingPath : $userSite;
+            }
+
+            $result = Process::timeout($this->processTimeout)->env($env)->run($command);
         } catch (ProcessTimedOutException $e) {
             Log::error('PaperReaderService: proses Python timeout', [
                 'image_path' => $imagePath,
