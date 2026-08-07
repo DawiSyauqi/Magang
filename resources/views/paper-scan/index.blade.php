@@ -333,6 +333,7 @@
                     </td>
                     <td>${perluReview ? '<span class="badge bg-danger">Perlu Review</span>' : '<span class="badge bg-success">OK</span>'}</td>
                     <td><button class="btn btn-sm btn-outline-danger delete-row-btn" data-idx="${idx}">✕</button></td>
+                    <td><button class="btn btn-sm btn-outline-secondary btn-preview-img" type="button">🖼</button></td>
                 </tr>`;
         }).join('');
 
@@ -342,9 +343,6 @@
         }
 
         bindRowEvents(rows);
-        <td>
-            <button class="btn btn-sm btn-outline-secondary btn-preview-img" type="button">🖼</button>
-        </td>
     }
 
     el('rowsTableBody').addEventListener('click', (e) => {
