@@ -351,7 +351,7 @@
             alert('Foto tidak tersedia untuk ditinjau.');
             return;
         }
-        window.open(`/paper-scan/preview-image/${currentData.preview_token}`, '_blank');
+        window.open(`/paper-scan/preview/${currentData.preview_token}`, '_blank');
     });
 
     async function loadRowDetailOptions(idx, kategoriKode, selectedDesc = null) {
