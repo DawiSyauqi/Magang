@@ -100,7 +100,7 @@
                 <thead>
                     <tr>
                         <th>Jam Mulai</th><th>Jam Selesai</th><th>Menit</th>
-                        <th>Kode</th><th>Keterangan</th><th>Status</th><th></th>
+                        <th>Kategori</th><th>Detail Masalah</th><th>Status</th><th></th>
                     </tr>
                 </thead>
                 <tbody id="rowsTableBody"></tbody>
@@ -295,36 +295,114 @@
     el('operatorSelect').addEventListener('change', updateSaveButtonState);
 
     function updateSaveButtonState() {
-        const ready = currentData.rows.length > 0
-            && el('mesinSelect').value
-            && el('itemSelect').value
-            && el('tanggalInput').value
-            && el('operatorSelect').value;
+        const rowsReady = currentData.rows.every(r => r.ProblemCode && r.Problem_Desc);
+        const ready = currentData.rows.length > 0 && rowsReady
+            && el('mesinSelect').value && el('itemSelect').value
+            && el('tanggalInput').value && el('operatorSelect').value;
         el('saveAllBtn').disabled = !ready;
     }
+    let kategoriOptionsCache = null;
 
-    function renderRows(rows) {
+    async function renderRows(rows) {
         el('rowCount').textContent = rows.length;
+        if (!kategoriOptionsCache) kategoriOptionsCache = await apiGet('/referensi/problem-kategori');
+
         el('rowsTableBody').innerHTML = rows.map((row, idx) => {
             const perluReview = row._review.perlu_review;
             const alasanTitle = (row._review.alasan || []).join(' | ');
-            const jamMulai = row.Time_Start ? row.Time_Start.substring(11, 16) : '-';
-            const jamSelesai = row.Time_End ? row.Time_End.substring(11, 16) : '-';
+            const jamMulai = row.Time_Start ? row.Time_Start.substring(11, 16) : '';
+            const jamSelesai = row.Time_End ? row.Time_End.substring(11, 16) : '';
+            const kategoriOpts = '<option value="">-- pilih --</option>' +
+                kategoriOptionsCache.map(k =>
+                    `<option value="${k.kode}" ${row.ProblemCode === k.kode ? 'selected' : ''}>${k.kode} — ${k.nama}</option>`
+                ).join('');
+
             return `
                 <tr class="${perluReview ? 'table-danger' : ''}" data-idx="${idx}" title="${alasanTitle}">
-                    <td>${jamMulai}</td><td>${jamSelesai}</td><td>${row.Time_Total ?? '-'}</td>
-                    <td><code>${row._raw_code}</code></td>
-                    <td>${row.Problem_Desc ?? '<em>belum teridentifikasi</em>'}</td>
+                    <td><input type="time" class="form-control form-control-sm js-time-start" data-idx="${idx}" value="${jamMulai}"></td>
+                    <td><input type="time" class="form-control form-control-sm js-time-end" data-idx="${idx}" value="${jamSelesai}"></td>
+                    <td>${row.Time_Total ?? '-'}</td>
+                    <td>
+                        <select class="form-select form-select-sm js-row-kategori" data-idx="${idx}">${kategoriOpts}</select>
+                        <small class="text-muted"><code>${row._raw_code}</code></small>
+                    </td>
+                    <td>
+                        <select class="form-select form-select-sm js-row-detail" data-idx="${idx}" ${row.ProblemCode ? '' : 'disabled'}>
+                            <option value="">-- pilih kategori dulu --</option>
+                        </select>
+                    </td>
                     <td>${perluReview ? '<span class="badge bg-danger">Perlu Review</span>' : '<span class="badge bg-success">OK</span>'}</td>
                     <td><button class="btn btn-sm btn-outline-danger delete-row-btn" data-idx="${idx}">✕</button></td>
                 </tr>`;
         }).join('');
 
+        // preload detail utk baris yg sudah punya ProblemCode dari AI
+        for (const row of rows) {
+            if (row.ProblemCode) await loadRowDetailOptions(rows.indexOf(row), row.ProblemCode, row.Problem_Desc);
+        }
+
+        bindRowEvents(rows);
+        <td>
+            <button class="btn btn-sm btn-outline-secondary btn-preview-img" type="button">🖼</button>
+        </td>
+    }
+
+    el('rowsTableBody').addEventListener('click', (e) => {
+        if (!e.target.classList.contains('btn-preview-img')) return;
+        if (!currentData.preview_token) {
+            alert('Foto tidak tersedia untuk ditinjau.');
+            return;
+        }
+        window.open(`/paper-scan/preview-image/${currentData.preview_token}`, '_blank');
+    });
+
+    async function loadRowDetailOptions(idx, kategoriKode, selectedDesc = null) {
+        const detailSelect = document.querySelector(`.js-row-detail[data-idx="${idx}"]`);
+        if (!kategoriKode) {
+            detailSelect.innerHTML = '<option value="">-- pilih kategori dulu --</option>';
+            detailSelect.disabled = true;
+            return;
+        }
+        const details = await apiGet(`/referensi/problem-detail?kategori=${encodeURIComponent(kategoriKode)}`);
+        detailSelect.innerHTML = '<option value="">-- pilih detail --</option>' +
+            details.map(d => `<option value="${d.kode}" data-desc="${d.nama}" ${d.nama === selectedDesc ? 'selected' : ''}>${d.nama}</option>`).join('');
+        detailSelect.disabled = false;
+    }
+
+    function bindRowEvents(rows) {
+        document.querySelectorAll('.js-time-start, .js-time-end').forEach(inp => {
+            inp.addEventListener('change', () => {
+                const idx = parseInt(inp.dataset.idx, 10);
+                const field = inp.classList.contains('js-time-start') ? 'Time_Start' : 'Time_End';
+                const tgl = currentData.rows[idx][field]?.substring(0, 10) || currentData.header.tanggal_parsed;
+                currentData.rows[idx][field] = `${tgl} ${inp.value}:00`;
+                updateSaveButtonState();
+            });
+        });
+
+        document.querySelectorAll('.js-row-kategori').forEach(sel => {
+            sel.addEventListener('change', async () => {
+                const idx = parseInt(sel.dataset.idx, 10);
+                currentData.rows[idx].ProblemCode = sel.value || null;
+                currentData.rows[idx].Problem_Desc = null; // reset, wajib pilih detail lagi
+                await loadRowDetailOptions(idx, sel.value);
+                updateSaveButtonState();
+            });
+        });
+
+        document.querySelectorAll('.js-row-detail').forEach(sel => {
+            sel.addEventListener('change', () => {
+                const idx = parseInt(sel.dataset.idx, 10);
+                const opt = sel.options[sel.selectedIndex];
+                currentData.rows[idx].Problem_Desc = opt ? (opt.dataset.desc || null) : null;
+                updateSaveButtonState();
+            });
+        });
+
         document.querySelectorAll('.delete-row-btn').forEach((btn) => {
             btn.addEventListener('click', () => {
                 currentData.rows.splice(parseInt(btn.dataset.idx, 10), 1);
                 renderRows(currentData.rows);
-                updateSaveButtonState();
             });
         });
     }

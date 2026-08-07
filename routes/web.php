@@ -44,6 +44,7 @@ Route::middleware(['auth', 'menu.access'])->group(function () {
     Route::get('/paper-scan', fn () => view('paper-scan.index'))->name('paper-scan.index');
     Route::post('/paper-scan/analyze', [PaperScanController::class, 'analyze'])->name('paper-scan.analyze');
     Route::post('/paper-scan/store', [PaperScanController::class, 'store'])->name('paper-scan.store');
+    Route::get('/paper-scan/preview/{token}', [PaperScanController::class, 'previewImage'])->name('paper-scan.preview-image');
     Route::post('/paper-scan/analyze/confirm-shift', [PaperScanController::class, 'confirmShift'])->name('paper-scan.confirm-shift');
     Route::post('/paper-scan/confirm-mesin', [PaperScanController::class, 'confirmMesin'])->name('paper-scan.confirm-mesin');
     Route::get('/paper-scan/test-upload', fn () => view('paper-scan-test'));

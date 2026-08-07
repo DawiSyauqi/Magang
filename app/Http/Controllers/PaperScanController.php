@@ -76,16 +76,34 @@ class PaperScanController extends Controller
         }
 
         // needs_retake atau success -- foto tidak perlu ditahan lagi.
-        Storage::disk('local')->delete($relativePath);
 
         if ($raw['_status'] === 'needs_retake') {
+            Storage::disk('local')->delete($relativePath);
             return response()->json([
                 'status' => 'needs_retake',
-                'message' => 'Sudut kertas tidak terdeteksi jelas di foto. Silakan foto ulang dengan pencahayaan lebih baik dan pastikan ke-4 sisi kertas masuk frame.',
+                'message' => '...',
             ]);
         }
+        $response = $this->buildSuccessResponse($raw);
+        $response['preview_token'] = $token;
 
-        return response()->json($this->buildSuccessResponse($raw));
+        return response()->json($response);
+    }
+
+    public function previewImage(string $token): \Symfony\Component\HttpFoundation\Response
+    {
+        // validasi token = UUID valid, cegah path traversal
+        if (! Str::isUuid($token)) {
+            abort(404);
+        }
+
+        $relativePath = self::TMP_DISK_DIR."/{$token}.jpg";
+
+        if (! Storage::disk('local')->exists($relativePath)) {
+            abort(404, 'Foto sudah tidak tersedia (mungkin sudah melewati batas waktu 30 menit).');
+        }
+
+        return response()->file(Storage::disk('local')->path($relativePath));
     }
 
     /**
