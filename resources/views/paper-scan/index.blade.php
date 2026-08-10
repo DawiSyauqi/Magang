@@ -1,6 +1,13 @@
 @extends('layouts.app') {{-- sesuaikan nama layout Blade utama Anda --}}
 
 @section('content')
+<div class="d-flex align-items-center justify-content-between px-3 px-md-4 py-2" style="background-color: var(--dt-charcoal);">
+    <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-2 text-white text-decoration-none">
+        <i class="bi bi-arrow-left"></i>
+        <span class="fw-semibold small">Kembali ke Dashboard</span>
+    </a>
+    <span class="text-white-50 small d-none d-md-inline">Ambil Foto Kertas</span>
+</div>
 <div class="container py-3" style="max-width: 900px;">
     <h4 class="mb-3">Ambil Foto Kertas — Laporan Proses Drawing Harian</h4>
 
@@ -10,6 +17,9 @@
             <div class="card-body text-center py-5">
                 <input type="file" id="photoInput" accept="image/*" capture="environment" class="form-control mb-3">
                 <button id="analyzeBtn" class="btn btn-primary btn-lg" disabled>Analisa Foto</button>
+                <div class="mt-3">
+                    <a href="{{ route('dashboard') }}" class="btn btn-link text-muted">Batal, kembali ke Dashboard</a>
+                </div>
             </div>
         </div>
     </section>
@@ -25,6 +35,7 @@
         <div class="alert alert-warning">
             <p id="retakeMessage"></p>
             <button id="retakeBtn" class="btn btn-warning">Foto Ulang</button>
+            <a href="{{ route('dashboard') }}" class="btn btn-link text-muted">Batal, kembali ke Dashboard</a>
         </div>
     </section>
 
@@ -38,6 +49,7 @@
                 <option value="3">Shift 3</option>
             </select>
             <button id="confirmShiftBtn" class="btn btn-primary">Lanjutkan</button>
+            <a href="{{ route('dashboard') }}" class="btn btn-link text-muted">Batal, kembali ke Dashboard</a>
         </div>
     </section>
 
@@ -46,6 +58,7 @@
         <div class="alert alert-danger">
             <p id="errorMessage"></p>
             <button id="retryBtn" class="btn btn-secondary">Coba Lagi</button>
+            <a href="{{ route('dashboard') }}" class="btn btn-link text-muted">Batal, kembali ke Dashboard</a>
         </div>
     </section>
 
@@ -114,6 +127,9 @@
     </div>
 
     <div id="saveResultBox" class="alert d-none mb-3"></div>
+    <div id="backToDashboardBox" class="d-none mb-3">
+        <a href="{{ route('dashboard') }}" class="btn btn-primary">Kembali ke Dashboard</a>
+    </div>
 
     <button id="saveAllBtn" class="btn btn-success btn-lg" disabled>Simpan Semua</button>
 </section>
@@ -497,17 +513,34 @@
 
         const box = el('saveResultBox');
         box.classList.remove('d-none', 'alert-success', 'alert-warning');
+
         if (result.gagal === 0) {
             box.classList.add('alert-success');
             box.textContent = `✓ Semua ${result.berhasil} baris berhasil disimpan.`;
-        } else {
-            box.classList.add('alert-warning');
-            box.textContent = `${result.berhasil} baris tersimpan, ${result.gagal} baris GAGAL (lihat console untuk detail).`;
-            console.log('Detail baris gagal:', result.failed);
+
+            el('saveAllBtn').classList.add('d-none');
+            el('backToDashboardBox').classList.remove('d-none');
+            return;
         }
+
+        // PATCH: sebagian gagal -- buang baris yg SUKSES dari currentData.rows
+        // SEBELUM tombol Simpan diaktifkan lagi, supaya retry TIDAK mengirim
+        // ulang baris yg sudah tersimpan (mencegah duplikat No_Trs). Index di
+        // result.failed[].index merujuk ke posisi SEBELUM array ini diubah,
+        // jadi filter dilakukan pakai index asli, bukan setelah splice.
+        const failedIndexes = new Set(result.failed.map(f => f.index));
+        currentData.rows = currentData.rows.filter((_, idx) => failedIndexes.has(idx));
+
+        box.classList.add('alert-warning');
+        box.textContent = `${result.berhasil} baris tersimpan, ${result.gagal} baris GAGAL. `
+            + `Baris yang sudah sukses telah dihapus dari daftar -- perbaiki sisa baris di bawah lalu Simpan lagi.`;
+        console.log('Detail baris gagal:', result.failed);
+
+        renderRows(currentData.rows); // re-render, sekarang cuma tampilkan baris gagal
 
         el('saveAllBtn').textContent = 'Simpan Semua';
         el('saveAllBtn').disabled = false;
+        updateSaveButtonState();
     });
 })();
 </script>
