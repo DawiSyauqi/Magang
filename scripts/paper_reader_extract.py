@@ -34,6 +34,7 @@ import re
 import sys
 import time
 import traceback
+import pytesseract
 from pathlib import Path
 from typing import List, Optional
 
@@ -448,6 +449,55 @@ SPEED_ROW_SEARCH_MARGIN = 0.10   # cari maksimal 10% tinggi gambar ke atas dari 
 SPEED_EXPECTED_ROW_TOLERANCE = 0.5  # toleransi variasi tinggi baris (longgar karena cuma 2 baris)
 
 
+def detect_speed_label_bounds(image, y_search=(0.28, 0.50), x_search=(0.0, 0.25)):
+    """Cari posisi teks CETAK 'Speed' di kolom label kiri tabel Proses
+    Kontrol, pakai OCR -- bukan geometri garis. Label ini dicetak (bukan
+    tulisan tangan), jadi jauh lebih stabil dideteksi dibanding menghitung
+    posisi dari garis horizontal/vertikal yang ternyata rapuh (garis
+    internal antar baris grid ikut lolos validasi, garis atas grid kadang
+    gagal terdeteksi sama sekali).
+    """
+    h, w = image.shape[:2]
+    y0f, y1f = y_search
+    x0f, x1f = x_search
+    y0, y1 = int(y0f * h), int(y1f * h)
+    x0, x1 = int(x0f * w), int(x1f * w)
+    region = image[y0:y1, x0:x1]
+    gray = cv2.cvtColor(region, cv2.COLOR_BGR2GRAY) if region.ndim == 3 else region
+
+    data = pytesseract.image_to_data(gray, output_type=pytesseract.Output.DICT)
+
+    candidates = []
+    for i, text in enumerate(data["text"]):
+        clean = text.strip().lower()
+        if clean == "speed":
+            candidates.append({
+                "text": text,
+                "left": data["left"][i], "top": data["top"][i],
+                "width": data["width"][i], "height": data["height"][i],
+                "conf": int(data["conf"][i]) if data["conf"][i] != "-1" else 0,
+            })
+
+    print(f"  [diag speed-ocr] {len(candidates)} kandidat teks 'Speed' ditemukan: {candidates}")
+
+    if not candidates:
+        raise RuntimeError(
+            "detect_speed_label_bounds: OCR tidak menemukan teks 'Speed' di area "
+            f"pencarian y=({y0f:.3f}-{y1f:.3f}), x=({x0f:.3f}-{x1f:.3f}) -- "
+            "foto mungkin buram/miring, atau area pencarian perlu diperlebar."
+        )
+
+    best = max(candidates, key=lambda c: c["conf"])
+
+    label_y0_abs = (y0 + best["top"]) / h
+    label_y1_abs = (y0 + best["top"] + best["height"]) / h
+    label_x1_abs = (x0 + best["left"] + best["width"]) / w
+
+    print(f"  [diag speed-ocr] label 'Speed' terpilih: y=({label_y0_abs:.4f}-{label_y1_abs:.4f}), "
+          f"x1={label_x1_abs:.4f}, conf={best['conf']}")
+
+    return label_y0_abs, label_y1_abs, label_x1_abs
+
 def detect_speed_row_bounds(image, lubricant_anchor_frac, x_search=(0.14, 0.775)):
     """Cari batas baris Speed & Dies Pass di atas anchor grid Lubricant.
 
@@ -540,24 +590,21 @@ SPEED_PROMPT = (
 )
 
 
-def extract_speed(cfg: OllamaConfig, image, speed_bounds, x_search=(0.14, 0.775),
-                   margin_y=-0.15):
+def extract_speed(cfg: OllamaConfig, image, label_bounds, x_search_right=0.775,
+                   margin_y=0.5):
+    """Crop AREA DI SEBELAH KANAN label 'Speed' yang sudah ditemukan OCR --
+    itu tempat angka tulisan tangan berada."""
     h, w = image.shape[:2]
-    y0f, y1f = speed_bounds
-    x0f, x1f = x_search
+    y0f, y1f, x0f = label_bounds
     rh = y1f - y0f
-    y0f2, y1f2 = y0f + margin_y * rh, y1f - margin_y * rh
+    y0f2, y1f2 = y0f - margin_y * rh, y1f + margin_y * rh
     y0, y1 = int(y0f2 * h), int(y1f2 * h)
-    x0, x1 = int(x0f * w), int(x1f * w)
+    x0, x1 = int(x0f * w), int(x_search_right * w)
     crop = image[y0:y1, x0:x1]
 
-    # DEBUG: simpan crop biar bisa dilihat langsung apakah teks "3.6" ada di dalamnya
-    cv2.imwrite("debug_speed_crop.jpg", crop)
-    print(f"  [diag speed] crop disimpan -> debug_speed_crop.jpg, shape={crop.shape}, "
-          f"bounds_px=(y:{y0}-{y1}, x:{x0}-{x1})")
+    print(f"  [diag speed] crop area angka: bounds_px=(y:{y0}-{y1}, x:{x0}-{x1}), shape={crop.shape}")
 
     if crop.size == 0:
-        print("  [diag speed] crop KOSONG (size=0)")
         return None
 
     ch = crop.shape[0]
@@ -566,10 +613,8 @@ def extract_speed(cfg: OllamaConfig, image, speed_bounds, x_search=(0.14, 0.775)
         crop = cv2.resize(crop, (int(crop.shape[1] * scale), 150), interpolation=cv2.INTER_CUBIC)
 
     result = _call_ollama(cfg, crop, SPEED_PROMPT)
-    print(f"  [diag speed] raw response dari model: {result!r}")
-    parsed = _parse_measurement(result.get("speed"))
-    print(f"  [diag speed] hasil parse: {parsed!r}")
-    return parsed
+    print(f"  [diag speed] raw response: {result!r}")
+    return _parse_measurement(result.get("speed"))
 
 def detect_lubricant_grid_top(image, y_search=(0.28, 0.50), x_search=(0.14, 0.775)):
     """Deteksi garis batas ATAS grid kotak-kecil 'Jenis Lubricant'.
@@ -1005,8 +1050,8 @@ def detect_header(cfg: OllamaConfig, image):
     print(f"Memanggil model untuk section header (crop 0 - {hy1:.4f})...")
     header_result = _call_ollama(cfg, header_crop, HEADER_ONLY_PROMPT)
 
-    speed_bounds = detect_speed_row_bounds(image, hy1)
-    speed_value = extract_speed(cfg, image, speed_bounds)
+    label_bounds = detect_speed_label_bounds(image)
+    speed_value = extract_speed(cfg, image, label_bounds)
     print(f"  Speed hasil crop terpisah: {speed_value}")
     header_result["speed"] = speed_value
 
