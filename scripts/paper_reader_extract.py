@@ -445,6 +445,58 @@ EXPECTED_SUBROW_HEIGHT_FRAC = 0.0225
 SUBROW_HEIGHT_TOLERANCE = 0.40
 
 
+def detect_lubricant_grid_top(image, y_search=(0.28, 0.46), x_search=(0.14, 0.775)):
+    """Deteksi garis tebal batas ATAS grid kotak-kecil 'Jenis Lubricant'
+    (baris SETELAH Speed & Dies Pass). Garis ini jauh lebih tebal/reliable
+    dibanding garis pemisah baris individual di atasnya, jadi dipakai
+    sebagai JANGKAR untuk menentukan batas crop header secara otomatis
+    per-foto (bukan angka fraksi tetap)."""
+    h, w = image.shape[:2]
+    y0f, y1f = y_search
+    x0f, x1f = x_search
+    y0, y1 = int(y0f * h), int(y1f * h)
+    x0, x1 = int(x0f * w), int(x1f * w)
+    region = image[y0:y1, x0:x1]
+    gray = cv2.cvtColor(region, cv2.COLOR_BGR2GRAY) if region.ndim == 3 else region
+
+    # Adaptive threshold -- lebih tahan pencahayaan tak merata dibanding
+    # OTSU global utk area ini (garis tipis, kontras rendah).
+    th = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                cv2.THRESH_BINARY_INV, 25, 10)
+    close_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 1))
+    closed = cv2.morphologyEx(th, cv2.MORPH_CLOSE, close_kernel, iterations=2)
+    row_sum = closed.sum(axis=1) / 255
+    rw = closed.shape[1]
+
+    peak_idx = int(np.argmax(row_sum))
+    confidence = row_sum[peak_idx] / rw
+
+    return (y0 + peak_idx) / h, confidence
+
+
+HEADER_ANCHOR_MIN_CONFIDENCE = 0.5
+HEADER_ANCHOR_MARGIN_HIGH = 0.075  # naik dari anchor, mencakup Speed+Dies Pass
+HEADER_ANCHOR_MARGIN_LOW = 0.005
+
+
+def get_header_crop_bounds(image):
+    """Return (y0, y1) fraction utk crop header -- y1 ditentukan OTOMATIS
+    per-foto lewat deteksi anchor, BUKAN angka tetap. Gagal keras (bukan
+    diam-diam fallback) kalau confidence rendah, konsisten dgn pola
+    validate_row_bounds_source()/get_block_x_bounds_validated() yg sudah ada."""
+    anchor_frac, confidence = detect_lubricant_grid_top(image)
+    print(f"  [diag header] anchor grid-lubricant terdeteksi di y={anchor_frac:.4f} "
+          f"(confidence={confidence:.3f})")
+
+    if confidence < HEADER_ANCHOR_MIN_CONFIDENCE:
+        raise RuntimeError(
+            f"Gagal deteksi otomatis batas area header/speed (confidence "
+            f"{confidence:.3f} < {HEADER_ANCHOR_MIN_CONFIDENCE}) -- foto mungkin "
+            f"buram/miring/pencahayaan buruk."
+        )
+
+    return 0.000, anchor_frac
+
 def detect_row_bounds_from_structure(image):
     h, w = image.shape[:2]
     y0f, y1f = ROW_Y_SEARCH_RANGE
@@ -671,6 +723,36 @@ def crop_cell(image, block_idx, cell_idx, block_x_bounds, lost_time_bounds,
     target_w, target_h = CELL_UPSCALE_TARGET
     return cv2.resize(crop, (target_w, target_h), interpolation=cv2.INTER_CUBIC)
 
+def build_debug_overlay(image, header_y1, block_x_bounds, lost_time_bounds, target_row_key):
+    """Gambar overlay SEMUA area yang dipakai pipeline di atas foto hasil
+    preprocessing: batas crop header (termasuk Speed), garis blok jam, dan
+    garis kotak 10-menit -- utk verifikasi visual di layar review."""
+    h, w = image.shape[:2]
+    vis = image.copy()
+
+    # 1. Area header (termasuk Speed) -- kotak biru
+    cv2.rectangle(vis, (0, 0), (w, int(header_y1 * h)), (255, 128, 0), 3)
+    cv2.putText(vis, "HEADER + SPEED", (10, int(header_y1 * h) - 10),
+                cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 128, 0), 2)
+
+    # 2. Grid Lost Time -- garis blok jam (vertikal) + kotak 10 menit
+    ry0, ry1 = lost_time_bounds
+    y0px, y1px = int(ry0 * h), int(ry1 * h)
+
+    for block_idx in range(8):
+        bx0, bx1 = block_x_bounds[block_idx], block_x_bounds[block_idx + 1]
+        x0px, x1px = int(bx0 * w), int(bx1 * w)
+        # garis blok jam -- hijau tebal
+        cv2.rectangle(vis, (x0px, y0px), (x1px, y1px), (0, 200, 0), 2)
+        # garis kotak 10 menit di dalam blok -- kuning tipis
+        for cell_idx in range(1, 6):
+            cx = int((bx0 + cell_idx * (bx1 - bx0) / 6) * w)
+            cv2.line(vis, (cx, y0px), (cx, y1px), (0, 200, 255), 1)
+
+    cv2.putText(vis, f"GRID LOST TIME ({target_row_key})", (int(0.14 * w), y0px - 10),
+                cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 200, 0), 2)
+
+    return vis
 
 def _cell_ink_ratio(image, block_idx, cell_idx, block_x_bounds, lost_time_bounds):
     cell = crop_cell(image, block_idx, cell_idx, block_x_bounds, lost_time_bounds,
@@ -709,12 +791,12 @@ def normalize_shift(raw_shift):
     match = re.search(r"[123]", str(raw_shift))
     return match.group(0) if match else None
 
-def detect_header(cfg: OllamaConfig, image, header_bounds=(0.000, 0.125)):
+def detect_header(cfg: OllamaConfig, image):
     h, w = image.shape[:2]
-    margin = 0.015
-    hy0, hy1 = header_bounds
+    margin = 0.005
+    hy0, hy1 = get_header_crop_bounds(image)
     header_crop = image[0:int((hy1 + margin) * h), :]
-    print("Memanggil model untuk section header...")
+    print(f"Memanggil model untuk section header (crop 0 - {hy1:.4f})...")
     return _call_ollama(cfg, header_crop, HEADER_ONLY_PROMPT)
 
 def extract_split_by_cell(cfg: OllamaConfig, image, header_result, target_row_key):
@@ -756,6 +838,9 @@ def extract_split_by_cell(cfg: OllamaConfig, image, header_result, target_row_ke
             all_grid.append({"jam_mulai": labels[block_idx], "blok": blok})
 
     print(f"\nTotal panggilan model untuk grid: {n_calls}")
+    _, header_y1 = get_header_crop_bounds(image)
+    lost_time_bounds = lost_time_precomputed[target_row_key]
+    overlay_img = build_debug_overlay(image, header_y1, block_x_bounds, lost_time_bounds, target_row_key)
     merged = {**header_result, "grid_waktu": all_grid}
     meta = {
         "row_bounds_source": row_sumber,
@@ -765,9 +850,6 @@ def extract_split_by_cell(cfg: OllamaConfig, image, header_result, target_row_ke
     return MFDowntimeExtraction(**merged), meta
 
 def run_pipeline(cfg: OllamaConfig, image, shift_override=None):
-    """Orkestrasi utama: header dulu (murah), lalu putuskan shift, BARU
-    proses grid (mahal) -- atau berhenti lebih awal minta konfirmasi kalau
-    shift ambigu, supaya tidak buang 48-144 panggilan model sia-sia."""
     header_result = detect_header(cfg, image)
 
     if shift_override:
@@ -791,13 +873,15 @@ def run_pipeline(cfg: OllamaConfig, image, shift_override=None):
         }
 
     target_row_key = SHIFT_TO_ROW_KEY[resolved_shift]
-    result, meta = extract_split_by_cell(cfg, image, header_result, target_row_key)
+    result, meta, overlay_img = extract_split_by_cell(cfg, image, header_result, target_row_key)
     result_data = result.model_dump()
-    result_data["shift"] = resolved_shift  # pastikan field final konsisten dgn baris yg diproses
+    result_data["shift"] = resolved_shift
     meta["shift_source"] = shift_source
     meta["rows_processed"] = [target_row_key]
 
-    return {"status": "success", "data": result_data, "meta": meta}
+    envelope = {"status": "success", "data": result_data, "meta": meta}
+    envelope["_overlay_img"] = overlay_img  # numpy array -- HARUS dicabut sebelum json.dumps, lihat main()
+    return envelope
 
 
 
@@ -816,6 +900,7 @@ def main():
     parser.add_argument("--shift-override", choices=["1", "2", "3"], default=None,
                          help="Shift yang SUDAH dikonfirmasi user (skip deteksi otomatis, langsung pakai ini).")
     args = parser.parse_args()
+    # (TIDAK ADA kode overlay di sini -- sudah dihapus, pindah ke bawah)
 
     t0 = time.time()
     clean_path = None
@@ -828,9 +913,6 @@ def main():
         clean_path, crop_success, crop_method = preprocess_image(str(image_path), clean_path)
 
         if not crop_success:
-            # PATCH Tahap 5: sesuai Rencana AI Bab 3 poin 1 -- berhenti DI SINI,
-            # JANGAN lanjut ke Ollama sama sekali kalau sudut kertas gagal
-            # terdeteksi (bukan cuma "warning lalu lanjut" seperti sebelumnya).
             print("Berhenti sebelum ekstraksi AI -- minta foto ulang.")
             envelope = {
                 "status": "needs_retake",
@@ -838,7 +920,7 @@ def main():
                 "meta": {"elapsed_seconds": round(time.time() - t0, 1)},
             }
             _stdout_print(json.dumps(envelope, ensure_ascii=False))
-            return 0  # status NORMAL, bukan error proses -- exit 0
+            return 0
 
         image = cv2.imread(clean_path)
         if image is None:
@@ -848,8 +930,18 @@ def main():
                             timeout=args.timeout, num_ctx=args.num_ctx)
 
         envelope = run_pipeline(cfg, image, shift_override=args.shift_override)
+
+        # PATCH: kalau ada overlay image (status sukses), simpan ke file
+        # DULU, ganti isi meta jadi PATH STRING, cabut key mentahnya --
+        # numpy array tidak bisa di-json.dumps().
+        overlay_img = envelope.pop("_overlay_img", None)
+        if overlay_img is not None:
+            overlay_path = str(image_path.parent / f"overlay_{image_path.stem}.jpg")
+            cv2.imwrite(overlay_path, overlay_img)
+            envelope.setdefault("meta", {})["overlay_image_path"] = overlay_path
+            print(f"Overlay debug disimpan -> {overlay_path}")
+
         elapsed = time.time() - t0
-        envelope.setdefault("meta", {})["elapsed_seconds"] = round(elapsed, 1)
         envelope.setdefault("meta", {})["elapsed_seconds"] = round(elapsed, 1)
         envelope["meta"]["crop_method"] = crop_method
         print(f"\nSelesai dalam {elapsed:.1f}s (status: {envelope['status']})")
@@ -857,7 +949,7 @@ def main():
         _stdout_print(json.dumps(envelope, ensure_ascii=False))
         return 0 if envelope["status"] != "error" else 1
 
-    except Exception as e:  # noqa: BLE001 - sengaja tangkap semua, ini boundary proses CLI
+    except Exception as e:
         print("ERROR:", traceback.format_exc())
         envelope = {
             "status": "error",

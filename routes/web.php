@@ -48,4 +48,9 @@ Route::middleware(['auth', 'menu.access'])->group(function () {
     Route::post('/paper-scan/analyze/confirm-shift', [PaperScanController::class, 'confirmShift'])->name('paper-scan.confirm-shift');
     Route::post('/paper-scan/confirm-mesin', [PaperScanController::class, 'confirmMesin'])->name('paper-scan.confirm-mesin');
     Route::get('/paper-scan/test-upload', fn () => view('paper-scan-test'));
+
+    Route::prefix('admin/mesin-aliases')->name('admin.mesin-aliases.')->group(function () {
+        Route::get('/', [MesinAliasAdminController::class, 'index'])->name('index');
+        Route::put('/{rawKey}', [MesinAliasAdminController::class, 'update'])->name('update');
+    });
 });

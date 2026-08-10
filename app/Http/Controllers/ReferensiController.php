@@ -80,16 +80,6 @@ class ReferensiController extends Controller
         ]));
     }
 
-    /**
-     * Daftar Kode Masalah level DETAIL (MFPROBLEMD), difilter berdasarkan
-     * kategori yang dipilih — dropdown "Detail Masalah" (cascading).
-     *
-     * FIX: sama, dibungkus RTRIM(). PENTING: filter where('ProblemCode', $kategori)
-     * dibiarkan pakai kolom asli (bukan hasil RTRIM di WHERE), karena $kategori
-     * yang dikirim dari JS sudah bersih (hasil dari endpoint mesin() yang sudah
-     * di-RTRIM) — SQL Server tetap bisa mencocokkan char pendek vs panjang
-     * pada perbandingan '=' (auto right-pad), jadi ini aman.
-     */
     public function problemDetail(Request $request)
     {
         $kategori = $request->query('kategori');

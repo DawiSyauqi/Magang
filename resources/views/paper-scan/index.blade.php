@@ -77,18 +77,20 @@
             </div>
             <div class="col-md-2">
                 <label class="form-label">Speed (m/mnt)</label>
-                <input type="number" step="0.1" id="speedInput" class="form-control">
+                <input type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="speedInput" class="form-control" placeholder="mis. 3.6">
             </div>
             <div class="col-md-2">
                 <label class="form-label">Operator</label>
-                <select id="operatorSelect" class="form-select"></select>
+                <input type="text" id="operatorSearch" class="form-control" list="operatorList" placeholder="Cari NIK/nama...">
+                <datalist id="operatorList"></datalist>
+                <input type="hidden" id="operatorSelect">
                 <p id="operatorStatus" class="small mt-1"></p>
             </div>
             <div class="col-md-3">
                 <label class="form-label">Nomor Item / Produk</label>
-                <select id="itemSelect" class="form-select" disabled>
-                    <option value="">-- konfirmasi Mesin dulu --</option>
-                </select>
+                <input type="text" id="itemSearch" class="form-control" list="itemList" placeholder="-- konfirmasi Mesin dulu --" disabled>
+                <datalist id="itemList"></datalist>
+                <input type="hidden" id="itemSelect">
             </div>
         </div>
     </div>
@@ -99,8 +101,8 @@
             <table class="table table-sm mb-0">
                 <thead>
                     <tr>
-                        <th>Jam Mulai</th><th>Jam Selesai</th><th>Menit</th>
-                        <th>Kategori</th><th>Detail Masalah</th><th>Status</th><th></th>
+                        <th>No</th><th>Jam Mulai</th><th>Jam Selesai</th><th>Menit</th>
+                        <th>Kategori</th><th>Detail Masalah</th><th>Status</th><th></th><th></th>
                     </tr>
                 </thead>
                 <tbody id="rowsTableBody"></tbody>
@@ -230,15 +232,19 @@
         el('shiftDisplay').value = 'Shift ' + (h.shift ?? '-');
         el('speedInput').value = h.speed ?? '';
 
+        // GANTI bagian operator di renderReview():
         if (!operatorOptionsCache) operatorOptionsCache = await apiGet('/referensi/operator');
-        const operatorSelect = el('operatorSelect');
-        operatorSelect.innerHTML = '<option value="">-- pilih operator --</option>' +
-            operatorOptionsCache.map((o) => `<option value="${o.nik}">${o.nama} (${o.nik})</option>`).join('');
-        if (h.operator_match.nik) operatorSelect.value = h.operator_match.nik;
-        el('operatorStatus').textContent = h.operator_match.perlu_review
-            ? `⚠ ${h.operator_match.alasan ?? 'Perlu diperiksa manual.'}`
-            : `✓ Cocok "${h.operator_match.full_name}" (skor ${h.operator_match.score ?? '-'})`;
-        el('operatorStatus').className = 'small mt-1 ' + (h.operator_match.perlu_review ? 'text-warning' : 'text-success');
+        const operatorList = el('operatorList');
+        operatorList.innerHTML = operatorOptionsCache.map((o) =>
+            `<option data-nik="${o.nik}" value="${o.nama} (${o.nik})"></option>`
+        ).join('');
+        if (h.operator_match.nik) {
+            const matched = operatorOptionsCache.find(o => o.nik === h.operator_match.nik);
+            if (matched) {
+                el('operatorSearch').value = `${matched.nama} (${matched.nik})`;
+                el('operatorSelect').value = matched.nik;
+            }
+        }
 
         renderRows(data.rows);
         updateSaveButtonState();
@@ -258,17 +264,23 @@
         currentData.rows.forEach((r) => { r.ITEMNO = itemno; });
     }
 
+    // GANTI loadItemOptions():
     async function loadItemOptions(mesinCode) {
-        const itemSelect = el('itemSelect');
+        const itemSearch = el('itemSearch');
+        const itemList = el('itemList');
         if (!mesinCode) {
-            itemSelect.innerHTML = '<option value="">-- konfirmasi Mesin dulu --</option>';
-            itemSelect.disabled = true;
+            itemSearch.placeholder = '-- konfirmasi Mesin dulu --';
+            itemSearch.disabled = true;
+            itemSearch.value = '';
+            el('itemSelect').value = '';
             return;
         }
         const items = await apiGet(`/referensi/item?mesin=${encodeURIComponent(mesinCode)}`);
-        itemSelect.innerHTML = '<option value="">-- pilih item --</option>' +
-            items.map((i) => `<option value="${i.kode}">${i.kode} — ${i.nama}</option>`).join('');
-        itemSelect.disabled = false;
+        itemList.innerHTML = items.map((i) =>
+            `<option data-kode="${i.kode}" value="${i.kode} — ${i.nama}"></option>`
+        ).join('');
+        itemSearch.disabled = false;
+        itemSearch.placeholder = 'Cari kode/nama item...';
     }
 
     el('confirmMesinBtn').addEventListener('click', async () => {
@@ -286,13 +298,26 @@
         updateSaveButtonState();
     });
 
-    el('itemSelect').addEventListener('change', () => {
-        applyItemToAllRows(el('itemSelect').value);
-        updateSaveButtonState();
-    });
+    
     el('tanggalInput').addEventListener('change', updateSaveButtonState);
     el('speedInput').addEventListener('change', updateSaveButtonState);
-    el('operatorSelect').addEventListener('change', updateSaveButtonState);
+    el('operatorSearch').addEventListener('input', () => {
+        const match = operatorOptionsCache?.find(o => `${o.nama} (${o.nik})` === el('operatorSearch').value);
+        el('operatorSelect').value = match ? match.nik : '';
+        updateSaveButtonState();
+    });
+
+    el('itemSearch').addEventListener('input', async () => {
+        const opts = el('itemList').querySelectorAll('option');
+        const match = Array.from(opts).find(o => o.value === el('itemSearch').value);
+        const kode = match ? match.dataset.kode : '';
+        el('itemSelect').value = kode;
+        if (kode) {
+            applyItemToAllRows(kode);
+        }
+        updateSaveButtonState();
+    });
+
 
     function updateSaveButtonState() {
         const rowsReady = currentData.rows.every(r => r.ProblemCode && r.Problem_Desc);
@@ -319,6 +344,7 @@
 
             return `
                 <tr class="${perluReview ? 'table-danger' : ''}" data-idx="${idx}" title="${alasanTitle}">
+                    <td>${idx + 1}</td>
                     <td><input type="time" class="form-control form-control-sm js-time-start" data-idx="${idx}" value="${jamMulai}"></td>
                     <td><input type="time" class="form-control form-control-sm js-time-end" data-idx="${idx}" value="${jamSelesai}"></td>
                     <td>${row.Time_Total ?? '-'}</td>

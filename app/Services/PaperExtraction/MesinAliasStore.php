@@ -99,6 +99,11 @@ class MesinAliasStore
     /**
      * @return array<string, array{resrceno: string, confirmed_at: string}>
      */
+    public function getAll(): array
+    {
+        return $this->readAll();
+    }
+
     protected function readAll(): array
     {
         if (! file_exists($this->filePath)) {
