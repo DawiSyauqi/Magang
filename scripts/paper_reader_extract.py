@@ -449,10 +449,15 @@ SPEED_EXPECTED_ROW_TOLERANCE = 0.5  # toleransi variasi tinggi baris (longgar ka
 
 
 def detect_speed_row_bounds(image, lubricant_anchor_frac, x_search=(0.14, 0.775)):
-    """Cari 2 garis horizontal TEPAT di atas anchor grid Lubricant --
-    itu batas baris Dies Pass (bawah) dan Speed (atas-bawah Dies Pass),
-    supaya baris Speed bisa di-crop TERPISAH, sesempit mungkin (mirip
-    filosofi 1 kotak Lost Time -- bukan digabung ke header)."""
+    """Cari batas baris Speed & Dies Pass di atas anchor grid Lubricant.
+
+    STRATEGI: garis batas Dies-Pass/Lubricant SELALU = anchor (sudah pasti
+    benar). Garis batas Speed/Dies-Pass dicari lewat deteksi (biasanya
+    kontras cukup jelas). TAPI garis batas ATAS baris Speed sering kontras
+    rendah/gagal terdeteksi -- jadi TIDAK dicari langsung, melainkan
+    DIHITUNG memakai tinggi baris Dies Pass (yang sudah tervalidasi) sebagai
+    acuan, karena baris-baris di section ini seragam tingginya.
+    """
     h, w = image.shape[:2]
     y_search_0 = max(lubricant_anchor_frac - SPEED_ROW_SEARCH_MARGIN, 0.0)
     y_search_1 = lubricant_anchor_frac
@@ -486,34 +491,38 @@ def detect_speed_row_bounds(image, lubricant_anchor_frac, x_search=(0.14, 0.775)
     print(f"  [diag speed] {len(lines_frac)} kandidat garis di atas anchor lubricant "
           f"({y_search_0:.4f}-{y_search_1:.4f}): {[f'{f:.4f}' for f in lines_frac]}")
 
-    # Garis terdekat DI BAWAH anchor kita sendiri = batas bawah Dies Pass = anchor itu sendiri.
-    # Butuh 2 garis lagi ke atas: batas Speed/Dies Pass, dan batas atas Speed.
-    all_lines = lines_frac + [lubricant_anchor_frac]
-    all_lines = sorted(set(all_lines))
+    if len(lines_frac) == 0:
+        raise RuntimeError("detect_speed_row_bounds: tidak ada garis batas Speed/DiesPass ditemukan.")
 
-    if len(all_lines) < 3:
+    # Garis Dies-Pass/Speed = kandidat PALING DEKAT ke anchor (dari bawah)
+    y_mid = max(lines_frac)  # paling dekat ke anchor
+    y_anchor = lubricant_anchor_frac
+
+    row_height = y_anchor - y_mid
+    if row_height <= 0:
         raise RuntimeError(
-            f"detect_speed_row_bounds: cuma {len(all_lines)} garis ditemukan "
-            f"(butuh >= 3: atas-Speed, Speed/DiesPass, DiesPass/Lubricant)."
+            f"detect_speed_row_bounds: garis Dies-Pass/Speed ({y_mid:.4f}) tidak "
+            f"lebih kecil dari anchor ({y_anchor:.4f}) -- urutan tidak masuk akal."
         )
 
-    # Ambil 3 garis PALING BAWAH (paling dekat ke anchor) -- itu yang relevan
-    relevant = all_lines[-3:]
-    y_top_speed, y_mid, y_anchor = relevant
-
-    # Validasi: 2 jarak (Speed dan DiesPass) harus mirip (baris seragam)
-    h1 = y_mid - y_top_speed
-    h2 = y_anchor - y_mid
-    if h1 <= 0 or h2 <= 0:
-        raise RuntimeError("detect_speed_row_bounds: urutan garis tidak masuk akal (tinggi baris <= 0).")
-    ratio = max(h1, h2) / min(h1, h2)
-    if ratio > (1 + SPEED_EXPECTED_ROW_TOLERANCE):
+    # Sanity check: tinggi baris Dies Pass harus wajar (bukan hasil salah
+    # tangkap garis section lain yang jauh) -- pakai rentang longgar
+    # relatif terhadap SPEED_ROW_SEARCH_MARGIN sebagai batas atas wajar.
+    if row_height > SPEED_ROW_SEARCH_MARGIN * 0.8:
         raise RuntimeError(
-            f"detect_speed_row_bounds: tinggi baris Speed ({h1:.4f}) vs Dies Pass "
-            f"({h2:.4f}) beda jauh (ratio={ratio:.2f}) -- kemungkinan salah tangkap garis."
+            f"detect_speed_row_bounds: tinggi baris Dies Pass ({row_height:.4f}) "
+            f"tidak wajar (terlalu besar) -- kemungkinan salah tangkap garis."
         )
 
-    print(f"  [diag speed] baris Speed: y=({y_top_speed:.4f}, {y_mid:.4f})")
+    # Batas ATAS baris Speed DIHITUNG, bukan dideteksi -- baris section ini
+    # seragam tinggi, garis atas Speed sering kontras rendah dan tidak
+    # reliable dideteksi langsung (lihat catatan di docstring).
+    y_top_speed = y_mid - row_height
+
+    print(f"  [diag speed] garis Dies-Pass/Speed terdeteksi: y={y_mid:.4f} "
+          f"(tinggi baris acuan={row_height:.4f})")
+    print(f"  [diag speed] baris Speed (dihitung dari tinggi baris acuan): "
+          f"y=({y_top_speed:.4f}, {y_mid:.4f})")
     return y_top_speed, y_mid
 
 SPEED_PROMPT = (
