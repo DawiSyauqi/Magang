@@ -96,7 +96,10 @@
     </div>
 
     <div class="card mb-3">
-        <div class="card-header">3. Daftar Downtime Terbaca (<span id="rowCount">0</span> baris)</div>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>3. Daftar Downtime Terbaca (<span id="rowCount">0</span> baris)</span>
+            <button id="addRowBtn" class="btn btn-sm btn-outline-primary" type="button">+ Tambah Baris</button>
+        </div>
         <div class="card-body p-0">
             <table class="table table-sm mb-0">
                 <thead>
@@ -161,6 +164,34 @@
             showState('review');
         }
     }
+
+    el('addRowBtn').addEventListener('click', () => {
+        const tanggal = currentData.header.tanggal_parsed || el('tanggalInput').value || null;
+        const shift = currentData.header.shift || null;
+
+        currentData.rows.push({
+            Tgl_Trs: tanggal,
+            ShiftCode: shift,
+            Time_Start: null,
+            Time_End: null,
+            Time_Total: null,
+            MesinCode: currentData.header.mesin_code_resolved || null,
+            NIK: el('operatorSelect').value || null,
+            Speed_Mesin: el('speedInput').value || null,
+            ProblemCode: null,
+            Problem_Desc: null,
+            ITEMNO: el('itemSelect').value || null,
+            _raw_code: '(manual)',
+            _review: {
+                perlu_review: true,
+                alasan: ['Baris ditambahkan manual oleh petugas -- belum diisi.'],
+                problem_code_debug: null,
+            },
+        });
+
+        renderRows(currentData.rows);
+        updateSaveButtonState();
+    });
 
     // ---------- STATE 1: upload ----------
     el('photoInput').addEventListener('change', () => {
@@ -320,7 +351,9 @@
 
 
     function updateSaveButtonState() {
-        const rowsReady = currentData.rows.every(r => r.ProblemCode && r.Problem_Desc);
+        const rowsReady = currentData.rows.every(r =>
+            r.ProblemCode && r.Problem_Desc && r.Time_Start && r.Time_End
+        );
         const ready = currentData.rows.length > 0 && rowsReady
             && el('mesinSelect').value && el('itemSelect').value
             && el('tanggalInput').value && el('operatorSelect').value;
@@ -398,8 +431,23 @@
             inp.addEventListener('change', () => {
                 const idx = parseInt(inp.dataset.idx, 10);
                 const field = inp.classList.contains('js-time-start') ? 'Time_Start' : 'Time_End';
-                const tgl = currentData.rows[idx][field]?.substring(0, 10) || currentData.header.tanggal_parsed;
+                const existing = currentData.rows[idx][field];
+                const tgl = (existing ? existing.substring(0, 10) : null)
+                    || currentData.header.tanggal_parsed
+                    || el('tanggalInput').value;
                 currentData.rows[idx][field] = `${tgl} ${inp.value}:00`;
+
+                // Hitung ulang Time_Total kalau kedua jam sudah terisi (mis. baris manual)
+                const row = currentData.rows[idx];
+                if (row.Time_Start && row.Time_End) {
+                    const start = new Date(row.Time_Start.replace(' ', 'T'));
+                    const end = new Date(row.Time_End.replace(' ', 'T'));
+                    const diffMinutes = Math.round((end - start) / 60000);
+                    row.Time_Total = diffMinutes > 0 ? diffMinutes : null;
+                    renderRows(currentData.rows); // re-render supaya kolom Menit ter-update
+                    return; // renderRows sudah re-bind event, hindari double update
+                }
+
                 updateSaveButtonState();
             });
         });
