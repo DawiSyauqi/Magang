@@ -303,6 +303,8 @@ HINT DISAMBIGUASI karakter tulisan tangan yang mirip (i/l/1, G/6, O/0)
 -- pakai konteks format tiap field untuk memilih yang masuk akal:
 - "shift" HARUS 1 digit angka wajar (1, 2, atau 3) -- huruf "l"/"I" di
   posisi ini hampir pasti angka "1".
+- "speed" HARUS angka desimal murni -- huruf "G" di posisi angka
+  hampir pasti digit "6", huruf "O" hampir pasti digit "0".
 - "tanggal" HARUS membentuk tanggal valid (hari 1-31, bulan 1-12) --
   pilih pembacaan yang menghasilkan tanggal valid kalau ambigu.
 - Untuk "mesin_code"/"operator_nama": JANGAN disambiguasi sendiri,
@@ -310,22 +312,6 @@ HINT DISAMBIGUASI karakter tulisan tangan yang mirip (i/l/1, G/6, O/0)
 
 - Nilai tidak terbaca -> null. JANGAN mengarang. Ragu -> null.
 - Output JSON valid saja, tanpa teks lain.
-'''
-
-SPEED_ONLY_PROMPT = '''
-Kamu melihat SATU POTONGAN KECIL dari form kertas industri -- HANYA berisi
-baris "Speed (m/mnt)" (kadang ikut sedikit baris "Size" di atasnya, dan
-baris "Dies Pass" di bawahnya yang biasanya KOSONG -- abaikan keduanya).
-
-Kembalikan HANYA JSON (tanpa teks lain):
-{"speed": number atau null}
-
-- Baca angka di baris berlabel "Speed (m/mnt)" SAJA. JANGAN baca baris
-  "Size" (biasanya format "NN.NN MM", BUKAN speed).
-- Jadikan angka desimal (contoh "9-6" -> 9.6, "3.6" -> 3.6).
-- Huruf "G" di posisi angka hampir pasti "6"; huruf "O" hampir pasti "0".
-- Baris kosong / tidak terbaca -> null. JANGAN mengarang.
-- Output JSON valid saja, PERSIS 1 field "speed".
 '''
 
 CELL_PROMPT = (
@@ -459,49 +445,12 @@ EXPECTED_SUBROW_HEIGHT_FRAC = 0.0225
 SUBROW_HEIGHT_TOLERANCE = 0.40
 
 
-
-
-SPEED_ANCHOR_VALIDATION_STRIP = 0.015
-SPEED_ANCHOR_MIN_VERTICAL_LINES = 5
-SPEED_ANCHOR_LINE_MIN_CONFIDENCE = 0.15  # ambang minimal biar bukan noise acak
-
-
-def _count_vertical_lines_below(image, y_frac, x_search=(0.14, 0.775), strip_height=SPEED_ANCHOR_VALIDATION_STRIP):
-    h, w = image.shape[:2]
-    y0 = int(y_frac * h)
-    y1 = int(min(1.0, y_frac + strip_height) * h)
-    x0, x1 = int(x_search[0] * w), int(x_search[1] * w)
-    strip = image[y0:y1, x0:x1]
-    if strip.size == 0:
-        return 0
-    gray = cv2.cvtColor(strip, cv2.COLOR_BGR2GRAY) if strip.ndim == 3 else strip
-    _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-    th = thresh.shape[0]
-    vert_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, max(int(th * 0.6), 3)))
-    vertical_lines = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, vert_kernel, iterations=1)
-    col_sum = vertical_lines.sum(axis=0) / 255
-    if col_sum.max() == 0:
-        return 0
-    candidates = np.where(col_sum > col_sum.max() * 0.5)[0]
-    if len(candidates) == 0:
-        return 0
-    lines = 1
-    prev = candidates[0]
-    for x in candidates[1:]:
-        if x - prev > 8:
-            lines += 1
-        prev = x
-    return lines
-
-
-def detect_lubricant_grid_top(image, y_search=(0.28, 0.50), x_search=(0.14, 0.775)):
-    """Deteksi garis batas ATAS grid kotak-kecil 'Jenis Lubricant'.
-    PATCH v2: pindai kandidat garis dari ATAS KE BAWAH (bukan pilih yang
-    row_sum PALING KUAT di seluruh rentang -- itu bug sebelumnya, karena
-    garis DI DALAM grid sendiri juga lolos validasi "banyak garis vertikal
-    di bawahnya", jadi bisa nyasar ke tengah/bawah grid). Kembalikan
-    kandidat PERTAMA (paling atas) yang lolos validasi -- itu baru benar
-    representasi "batas atas" grid."""
+def detect_lubricant_grid_top(image, y_search=(0.28, 0.46), x_search=(0.14, 0.775)):
+    """Deteksi garis tebal batas ATAS grid kotak-kecil 'Jenis Lubricant'
+    (baris SETELAH Speed & Dies Pass). Garis ini jauh lebih tebal/reliable
+    dibanding garis pemisah baris individual di atasnya, jadi dipakai
+    sebagai JANGKAR untuk menentukan batas crop header secara otomatis
+    per-foto (bukan angka fraksi tetap)."""
     h, w = image.shape[:2]
     y0f, y1f = y_search
     x0f, x1f = x_search
@@ -510,6 +459,8 @@ def detect_lubricant_grid_top(image, y_search=(0.28, 0.50), x_search=(0.14, 0.77
     region = image[y0:y1, x0:x1]
     gray = cv2.cvtColor(region, cv2.COLOR_BGR2GRAY) if region.ndim == 3 else region
 
+    # Adaptive threshold -- lebih tahan pencahayaan tak merata dibanding
+    # OTSU global utk area ini (garis tipis, kontras rendah).
     th = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                 cv2.THRESH_BINARY_INV, 25, 10)
     close_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 1))
@@ -517,74 +468,33 @@ def detect_lubricant_grid_top(image, y_search=(0.28, 0.50), x_search=(0.14, 0.77
     row_sum = closed.sum(axis=1) / 255
     rw = closed.shape[1]
 
-    # Kumpulkan SEMUA kandidat garis (bukan cuma top-N terkuat), cluster
-    # jadi garis individual, urutkan dari ATAS ke BAWAH (y kecil ke besar).
-    thr = rw * SPEED_ANCHOR_LINE_MIN_CONFIDENCE
-    candidates_px = np.where(row_sum > thr)[0]
-    if len(candidates_px) == 0:
-        print("  [diag speed anchor] tidak ada kandidat garis sama sekali")
-        return None, 0.0
+    peak_idx = int(np.argmax(row_sum))
+    confidence = row_sum[peak_idx] / rw
 
-    line_positions = []
-    start = candidates_px[0]
-    prev = candidates_px[0]
-    for y in candidates_px[1:]:
-        if y - prev > 6:
-            line_positions.append((start + prev) // 2)
-            start = y
-        prev = y
-    line_positions.append((start + prev) // 2)
-    line_positions.sort()  # ATAS ke BAWAH
+    return (y0 + peak_idx) / h, confidence
 
-    for local_y in line_positions:
-        y_frac = (y0 + local_y) / h
-        confidence = row_sum[local_y] / rw
-        vert_lines = _count_vertical_lines_below(image, y_frac)
-        print(f"  [diag speed anchor] kandidat y={y_frac:.4f} confidence={confidence:.3f} "
-              f"garis_vertikal_di_bawah={vert_lines}")
-
-        if vert_lines >= SPEED_ANCHOR_MIN_VERTICAL_LINES:
-            print(f"  [diag speed anchor] TERPILIH (PALING ATAS yang valid) y={y_frac:.4f}")
-            return y_frac, confidence
-
-    print("  [diag speed anchor] TIDAK ADA kandidat yang tervalidasi py grid di bawahnya")
-    return None, 0.0
 
 HEADER_ANCHOR_MIN_CONFIDENCE = 0.5
-SPEED_CROP_MARGIN_HIGH = 0.075  # naik dari anchor, mencakup Speed+Dies Pass
-SPEED_CROP_MARGIN_LOW = 0.005
-
-def extract_speed(cfg: OllamaConfig, image) -> Optional[float]:
-    anchor_frac, confidence = detect_lubricant_grid_top(image)
-
-    if anchor_frac is None or confidence < HEADER_ANCHOR_MIN_CONFIDENCE:
-        print(f"  [diag speed] anchor gagal tervalidasi -> field speed di-skip (null).")
-        return None
-
-    y0 = max(0.0, anchor_frac - SPEED_CROP_MARGIN_HIGH)
-    y1 = min(1.0, anchor_frac - SPEED_CROP_MARGIN_LOW)
-    h, w = image.shape[:2]
-    speed_crop = image[int(y0 * h):int(y1 * h), int(0.14 * w):int(0.775 * w)]
-
-    result = _call_ollama(cfg, speed_crop, SPEED_ONLY_PROMPT)
-    return _parse_measurement(result.get("speed"))
-
-
+HEADER_ANCHOR_MARGIN_HIGH = 0.075  # naik dari anchor, mencakup Speed+Dies Pass
+HEADER_ANCHOR_MARGIN_LOW = 0.005
 
 
 def get_header_crop_bounds(image):
-    """HANYA dipakai utk overlay visual (build_debug_overlay) -- BUKAN lagi
-    dipakai detect_header() (itu sudah kembali pakai crop tetap 0.125).
-    Kalau anchor gagal, kembalikan fallback 0.125 biar overlay tetap bisa
-    dibuat (bukan proses kritikal, cuma bantuan visual)."""
+    """Return (y0, y1) fraction utk crop header -- y1 ditentukan OTOMATIS
+    per-foto lewat deteksi anchor, BUKAN angka tetap. Gagal keras (bukan
+    diam-diam fallback) kalau confidence rendah, konsisten dgn pola
+    validate_row_bounds_source()/get_block_x_bounds_validated() yg sudah ada."""
     anchor_frac, confidence = detect_lubricant_grid_top(image)
-
-    if anchor_frac is None or confidence < HEADER_ANCHOR_MIN_CONFIDENCE:
-        print(f"  [diag header] anchor gagal tervalidasi -> overlay pakai fallback 0.125")
-        return 0.000, 0.125
-
     print(f"  [diag header] anchor grid-lubricant terdeteksi di y={anchor_frac:.4f} "
           f"(confidence={confidence:.3f})")
+
+    if confidence < HEADER_ANCHOR_MIN_CONFIDENCE:
+        raise RuntimeError(
+            f"Gagal deteksi otomatis batas area header/speed (confidence "
+            f"{confidence:.3f} < {HEADER_ANCHOR_MIN_CONFIDENCE}) -- foto mungkin "
+            f"buram/miring/pencahayaan buruk."
+        )
+
     return 0.000, anchor_frac
 
 def detect_row_bounds_from_structure(image):
@@ -813,39 +723,28 @@ def crop_cell(image, block_idx, cell_idx, block_x_bounds, lost_time_bounds,
     target_w, target_h = CELL_UPSCALE_TARGET
     return cv2.resize(crop, (target_w, target_h), interpolation=cv2.INTER_CUBIC)
 
-def build_debug_overlay(image, header_bounds, speed_bounds, block_x_bounds, lost_time_bounds, target_row_key):
-    """Gambar overlay SEMUA area yang dipakai pipeline -- SEKARANG header
-    dan speed digambar sebagai 2 KOTAK TERPISAH sesuai crop ASLI yang
-    benar-benar dikirim ke model (sebelumnya 1 kotak gabungan yang
-    menyesatkan, tidak merepresentasikan crop speed yang sebenarnya sempit)."""
+def build_debug_overlay(image, header_y1, block_x_bounds, lost_time_bounds, target_row_key):
+    """Gambar overlay SEMUA area yang dipakai pipeline di atas foto hasil
+    preprocessing: batas crop header (termasuk Speed), garis blok jam, dan
+    garis kotak 10-menit -- utk verifikasi visual di layar review."""
     h, w = image.shape[:2]
     vis = image.copy()
 
-    # 1. Area HEADER asli (fixed 0.000 - 0.125) -- kotak biru
-    hy0, hy1 = header_bounds
-    cv2.rectangle(vis, (0, int(hy0 * h)), (w, int(hy1 * h)), (255, 128, 0), 3)
-    cv2.putText(vis, "HEADER", (10, int(hy1 * h) - 10),
+    # 1. Area header (termasuk Speed) -- kotak biru
+    cv2.rectangle(vis, (0, 0), (w, int(header_y1 * h)), (255, 128, 0), 3)
+    cv2.putText(vis, "HEADER + SPEED", (10, int(header_y1 * h) - 10),
                 cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 128, 0), 2)
 
-    # 2. Area SPEED asli (pita sempit sekitar anchor) -- kotak kuning,
-    #    HANYA digambar kalau anchor berhasil terdeteksi.
-    if speed_bounds is not None:
-        sy0, sy1 = speed_bounds
-        cv2.rectangle(vis, (int(0.14 * w), int(sy0 * h)), (int(0.775 * w), int(sy1 * h)), (0, 220, 255), 3)
-        cv2.putText(vis, "SPEED", (int(0.15 * w), int(sy0 * h) - 10),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 220, 255), 2)
-    else:
-        cv2.putText(vis, "SPEED: GAGAL DETEKSI", (int(0.15 * w), int(0.30 * h)),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
-
-    # 3. Grid Lost Time -- garis blok jam (vertikal) + kotak 10 menit
+    # 2. Grid Lost Time -- garis blok jam (vertikal) + kotak 10 menit
     ry0, ry1 = lost_time_bounds
     y0px, y1px = int(ry0 * h), int(ry1 * h)
 
     for block_idx in range(8):
         bx0, bx1 = block_x_bounds[block_idx], block_x_bounds[block_idx + 1]
         x0px, x1px = int(bx0 * w), int(bx1 * w)
+        # garis blok jam -- hijau tebal
         cv2.rectangle(vis, (x0px, y0px), (x1px, y1px), (0, 200, 0), 2)
+        # garis kotak 10 menit di dalam blok -- kuning tipis
         for cell_idx in range(1, 6):
             cx = int((bx0 + cell_idx * (bx1 - bx0) / 6) * w)
             cv2.line(vis, (cx, y0px), (cx, y1px), (0, 200, 255), 1)
@@ -892,12 +791,12 @@ def normalize_shift(raw_shift):
     match = re.search(r"[123]", str(raw_shift))
     return match.group(0) if match else None
 
-def detect_header(cfg: OllamaConfig, image, header_bounds=(0.000, 0.125)):
+def detect_header(cfg: OllamaConfig, image):
     h, w = image.shape[:2]
-    margin = 0.015
-    hy0, hy1 = header_bounds
+    margin = 0.005
+    hy0, hy1 = get_header_crop_bounds(image)
     header_crop = image[0:int((hy1 + margin) * h), :]
-    print("Memanggil model untuk section header...")
+    print(f"Memanggil model untuk section header (crop 0 - {hy1:.4f})...")
     return _call_ollama(cfg, header_crop, HEADER_ONLY_PROMPT)
 
 def extract_split_by_cell(cfg: OllamaConfig, image, header_result, target_row_key):
@@ -939,37 +838,20 @@ def extract_split_by_cell(cfg: OllamaConfig, image, header_result, target_row_ke
             all_grid.append({"jam_mulai": labels[block_idx], "blok": blok})
 
     print(f"\nTotal panggilan model untuk grid: {n_calls}")
-
-    # Hitung ulang bounds ASLI (murah, bukan panggilan model) utk overlay
-    # jujur -- header FIXED 0.125, speed PITA SEMPIT sekitar anchor (kalau
-    # terdeteksi), BUKAN 1 kotak gabungan seperti sebelumnya.
-    header_bounds_for_overlay = (0.000, 0.125)
-    anchor_frac, anchor_conf = detect_lubricant_grid_top(image)
-    if anchor_frac is not None and anchor_conf >= HEADER_ANCHOR_MIN_CONFIDENCE:
-        speed_bounds_for_overlay = (
-            max(0.0, anchor_frac - SPEED_CROP_MARGIN_HIGH),
-            min(1.0, anchor_frac - SPEED_CROP_MARGIN_LOW),
-        )
-    else:
-        speed_bounds_for_overlay = None
-
+    _, header_y1 = get_header_crop_bounds(image)
     lost_time_bounds = lost_time_precomputed[target_row_key]
-    overlay_img = build_debug_overlay(
-        image, header_bounds_for_overlay, speed_bounds_for_overlay,
-        block_x_bounds, lost_time_bounds, target_row_key
-    )
+    overlay_img = build_debug_overlay(image, header_y1, block_x_bounds, lost_time_bounds, target_row_key)
     merged = {**header_result, "grid_waktu": all_grid}
     meta = {
         "row_bounds_source": row_sumber,
         "column_bounds_source": col_sumber,
         "total_cell_model_calls": n_calls,
     }
-    return MFDowntimeExtraction(**merged), meta, overlay_img
+    return MFDowntimeExtraction(**merged), meta
 
 def run_pipeline(cfg: OllamaConfig, image, shift_override=None):
     header_result = detect_header(cfg, image)
-    speed_value = extract_speed(cfg, image)
-    header_result["speed"] = speed_value
+
     if shift_override:
         resolved_shift = shift_override
         shift_source = "user_confirmed"
