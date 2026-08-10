@@ -808,28 +808,39 @@ def crop_cell(image, block_idx, cell_idx, block_x_bounds, lost_time_bounds,
     target_w, target_h = CELL_UPSCALE_TARGET
     return cv2.resize(crop, (target_w, target_h), interpolation=cv2.INTER_CUBIC)
 
-def build_debug_overlay(image, header_y1, block_x_bounds, lost_time_bounds, target_row_key):
-    """Gambar overlay SEMUA area yang dipakai pipeline di atas foto hasil
-    preprocessing: batas crop header (termasuk Speed), garis blok jam, dan
-    garis kotak 10-menit -- utk verifikasi visual di layar review."""
+def build_debug_overlay(image, header_bounds, speed_bounds, block_x_bounds, lost_time_bounds, target_row_key):
+    """Gambar overlay SEMUA area yang dipakai pipeline -- SEKARANG header
+    dan speed digambar sebagai 2 KOTAK TERPISAH sesuai crop ASLI yang
+    benar-benar dikirim ke model (sebelumnya 1 kotak gabungan yang
+    menyesatkan, tidak merepresentasikan crop speed yang sebenarnya sempit)."""
     h, w = image.shape[:2]
     vis = image.copy()
 
-    # 1. Area header (termasuk Speed) -- kotak biru
-    cv2.rectangle(vis, (0, 0), (w, int(header_y1 * h)), (255, 128, 0), 3)
-    cv2.putText(vis, "HEADER + SPEED", (10, int(header_y1 * h) - 10),
+    # 1. Area HEADER asli (fixed 0.000 - 0.125) -- kotak biru
+    hy0, hy1 = header_bounds
+    cv2.rectangle(vis, (0, int(hy0 * h)), (w, int(hy1 * h)), (255, 128, 0), 3)
+    cv2.putText(vis, "HEADER", (10, int(hy1 * h) - 10),
                 cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 128, 0), 2)
 
-    # 2. Grid Lost Time -- garis blok jam (vertikal) + kotak 10 menit
+    # 2. Area SPEED asli (pita sempit sekitar anchor) -- kotak kuning,
+    #    HANYA digambar kalau anchor berhasil terdeteksi.
+    if speed_bounds is not None:
+        sy0, sy1 = speed_bounds
+        cv2.rectangle(vis, (int(0.14 * w), int(sy0 * h)), (int(0.775 * w), int(sy1 * h)), (0, 220, 255), 3)
+        cv2.putText(vis, "SPEED", (int(0.15 * w), int(sy0 * h) - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 220, 255), 2)
+    else:
+        cv2.putText(vis, "SPEED: GAGAL DETEKSI", (int(0.15 * w), int(0.30 * h)),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
+
+    # 3. Grid Lost Time -- garis blok jam (vertikal) + kotak 10 menit
     ry0, ry1 = lost_time_bounds
     y0px, y1px = int(ry0 * h), int(ry1 * h)
 
     for block_idx in range(8):
         bx0, bx1 = block_x_bounds[block_idx], block_x_bounds[block_idx + 1]
         x0px, x1px = int(bx0 * w), int(bx1 * w)
-        # garis blok jam -- hijau tebal
         cv2.rectangle(vis, (x0px, y0px), (x1px, y1px), (0, 200, 0), 2)
-        # garis kotak 10 menit di dalam blok -- kuning tipis
         for cell_idx in range(1, 6):
             cx = int((bx0 + cell_idx * (bx1 - bx0) / 6) * w)
             cv2.line(vis, (cx, y0px), (cx, y1px), (0, 200, 255), 1)
@@ -923,9 +934,25 @@ def extract_split_by_cell(cfg: OllamaConfig, image, header_result, target_row_ke
             all_grid.append({"jam_mulai": labels[block_idx], "blok": blok})
 
     print(f"\nTotal panggilan model untuk grid: {n_calls}")
-    _, header_y1 = get_header_crop_bounds(image)
+
+    # Hitung ulang bounds ASLI (murah, bukan panggilan model) utk overlay
+    # jujur -- header FIXED 0.125, speed PITA SEMPIT sekitar anchor (kalau
+    # terdeteksi), BUKAN 1 kotak gabungan seperti sebelumnya.
+    header_bounds_for_overlay = (0.000, 0.125)
+    anchor_frac, anchor_conf = detect_lubricant_grid_top(image)
+    if anchor_frac is not None and anchor_conf >= HEADER_ANCHOR_MIN_CONFIDENCE:
+        speed_bounds_for_overlay = (
+            max(0.0, anchor_frac - SPEED_CROP_MARGIN_HIGH),
+            min(1.0, anchor_frac - SPEED_CROP_MARGIN_LOW),
+        )
+    else:
+        speed_bounds_for_overlay = None
+
     lost_time_bounds = lost_time_precomputed[target_row_key]
-    overlay_img = build_debug_overlay(image, header_y1, block_x_bounds, lost_time_bounds, target_row_key)
+    overlay_img = build_debug_overlay(
+        image, header_bounds_for_overlay, speed_bounds_for_overlay,
+        block_x_bounds, lost_time_bounds, target_row_key
+    )
     merged = {**header_result, "grid_waktu": all_grid}
     meta = {
         "row_bounds_source": row_sumber,
