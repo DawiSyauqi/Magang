@@ -287,7 +287,7 @@ HARIAN". Kembalikan HANYA JSON (tanpa teks lain) dengan struktur PERSIS:
 
 {
   "tanggal": string atau null, "mesin_code": string atau null,
-  "shift": string atau null, "speed": number atau null,
+  "shift": string atau null,
   "operator_nama": string atau null,
   "low_confidence_fields": [string, ...] atau null
 }
@@ -296,15 +296,13 @@ HARIAN". Kembalikan HANYA JSON (tanpa teks lain) dengan struktur PERSIS:
 - "mesin_code": label "Mesin" -- TRANSKRIP APA ADANYA, jangan menilai
   valid/tidak atau mengoreksi ke kode lain (akan dikoreksi lewat
   pencocokan Tahap 4b, bukan tugasmu di sini).
-- "shift": label "Shift". "speed": label "Speed (m/mnt)", jadi angka (contoh "9-6" -> 9.6).
+- "shift": label "Shift".
 - "operator_nama": nama di kolom "Operator" (kanan atas form).
 
 HINT DISAMBIGUASI karakter tulisan tangan yang mirip (i/l/1, G/6, O/0)
 -- pakai konteks format tiap field untuk memilih yang masuk akal:
 - "shift" HARUS 1 digit angka wajar (1, 2, atau 3) -- huruf "l"/"I" di
   posisi ini hampir pasti angka "1".
-- "speed" HARUS angka desimal murni -- huruf "G" di posisi angka
-  hampir pasti digit "6", huruf "O" hampir pasti digit "0".
 - "tanggal" HARUS membentuk tanggal valid (hari 1-31, bulan 1-12) --
   pilih pembacaan yang menghasilkan tanggal valid kalau ambigu.
 - Untuk "mesin_code"/"operator_nama": JANGAN disambiguasi sendiri,
@@ -445,12 +443,126 @@ EXPECTED_SUBROW_HEIGHT_FRAC = 0.0225
 SUBROW_HEIGHT_TOLERANCE = 0.40
 
 
-def detect_lubricant_grid_top(image, y_search=(0.28, 0.46), x_search=(0.14, 0.775)):
-    """Deteksi garis tebal batas ATAS grid kotak-kecil 'Jenis Lubricant'
-    (baris SETELAH Speed & Dies Pass). Garis ini jauh lebih tebal/reliable
-    dibanding garis pemisah baris individual di atasnya, jadi dipakai
-    sebagai JANGKAR untuk menentukan batas crop header secara otomatis
-    per-foto (bukan angka fraksi tetap)."""
+
+SPEED_ROW_SEARCH_MARGIN = 0.10   # cari maksimal 10% tinggi gambar ke atas dari anchor lubricant
+SPEED_EXPECTED_ROW_TOLERANCE = 0.5  # toleransi variasi tinggi baris (longgar karena cuma 2 baris)
+
+
+def detect_speed_row_bounds(image, lubricant_anchor_frac, x_search=(0.14, 0.775)):
+    """Cari 2 garis horizontal TEPAT di atas anchor grid Lubricant --
+    itu batas baris Dies Pass (bawah) dan Speed (atas-bawah Dies Pass),
+    supaya baris Speed bisa di-crop TERPISAH, sesempit mungkin (mirip
+    filosofi 1 kotak Lost Time -- bukan digabung ke header)."""
+    h, w = image.shape[:2]
+    y_search_0 = max(lubricant_anchor_frac - SPEED_ROW_SEARCH_MARGIN, 0.0)
+    y_search_1 = lubricant_anchor_frac
+    x0f, x1f = x_search
+    y0, y1 = int(y_search_0 * h), int(y_search_1 * h)
+    x0, x1 = int(x0f * w), int(x1f * w)
+    region = image[y0:y1, x0:x1]
+    gray = cv2.cvtColor(region, cv2.COLOR_BGR2GRAY) if region.ndim == 3 else region
+
+    th = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                cv2.THRESH_BINARY_INV, 25, 10)
+    close_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 1))
+    horiz = cv2.morphologyEx(th, cv2.MORPH_CLOSE, close_kernel, iterations=2)
+    row_sum = horiz.sum(axis=1) / 255
+
+    thr = max(row_sum.max() * 0.5, 5)
+    candidates = np.where(row_sum > thr)[0]
+    if len(candidates) == 0:
+        raise RuntimeError("detect_speed_row_bounds: tidak ada kandidat garis horizontal di atas anchor lubricant.")
+
+    lines = []
+    start = candidates[0]; prev = candidates[0]
+    for y in candidates[1:]:
+        if y - prev > 6:
+            lines.append((start + prev) // 2)
+            start = y
+        prev = y
+    lines.append((start + prev) // 2)
+
+    lines_frac = sorted((y0 + ly) / h for ly in lines)
+    print(f"  [diag speed] {len(lines_frac)} kandidat garis di atas anchor lubricant "
+          f"({y_search_0:.4f}-{y_search_1:.4f}): {[f'{f:.4f}' for f in lines_frac]}")
+
+    # Garis terdekat DI BAWAH anchor kita sendiri = batas bawah Dies Pass = anchor itu sendiri.
+    # Butuh 2 garis lagi ke atas: batas Speed/Dies Pass, dan batas atas Speed.
+    all_lines = lines_frac + [lubricant_anchor_frac]
+    all_lines = sorted(set(all_lines))
+
+    if len(all_lines) < 3:
+        raise RuntimeError(
+            f"detect_speed_row_bounds: cuma {len(all_lines)} garis ditemukan "
+            f"(butuh >= 3: atas-Speed, Speed/DiesPass, DiesPass/Lubricant)."
+        )
+
+    # Ambil 3 garis PALING BAWAH (paling dekat ke anchor) -- itu yang relevan
+    relevant = all_lines[-3:]
+    y_top_speed, y_mid, y_anchor = relevant
+
+    # Validasi: 2 jarak (Speed dan DiesPass) harus mirip (baris seragam)
+    h1 = y_mid - y_top_speed
+    h2 = y_anchor - y_mid
+    if h1 <= 0 or h2 <= 0:
+        raise RuntimeError("detect_speed_row_bounds: urutan garis tidak masuk akal (tinggi baris <= 0).")
+    ratio = max(h1, h2) / min(h1, h2)
+    if ratio > (1 + SPEED_EXPECTED_ROW_TOLERANCE):
+        raise RuntimeError(
+            f"detect_speed_row_bounds: tinggi baris Speed ({h1:.4f}) vs Dies Pass "
+            f"({h2:.4f}) beda jauh (ratio={ratio:.2f}) -- kemungkinan salah tangkap garis."
+        )
+
+    print(f"  [diag speed] baris Speed: y=({y_top_speed:.4f}, {y_mid:.4f})")
+    return y_top_speed, y_mid
+
+SPEED_PROMPT = (
+    "Kamu melihat SATU BARIS SEMPIT dari form kertas industri -- baris ini "
+    "berlabel \"Speed (m/mnt)\" dan HANYA berisi satu nilai angka desimal "
+    "tulisan tangan (contoh: \"3.6\", \"9-6\" berarti 9.6, dst).\n\n"
+    "Kembalikan HANYA JSON (tanpa teks lain, tanpa markdown code fence):\n"
+    "{\"speed\": 3.6}   <- kalau ada angka\n"
+    "{\"speed\": null}  <- kalau baris ini KOSONG (tidak ada tulisan)\n\n"
+    "ATURAN:\n"
+    "1. \"speed\" HARUS angka desimal murni. Huruf \"G\" di posisi angka "
+    "hampir pasti digit \"6\", huruf \"O\" hampir pasti digit \"0\".\n"
+    "2. JANGAN mengarang. Ragu atau kelihatan kosong -> null.\n"
+    "3. Output HARUS JSON valid saja, PERSIS 1 field \"speed\".\n"
+)
+
+
+def extract_speed(cfg: OllamaConfig, image, speed_bounds, x_search=(0.14, 0.775),
+                   margin_y=0.10):
+    h, w = image.shape[:2]
+    y0f, y1f = speed_bounds
+    x0f, x1f = x_search
+    rh = y1f - y0f
+    y0f2, y1f2 = y0f + margin_y * rh, y1f - margin_y * rh
+    y0, y1 = int(y0f2 * h), int(y1f2 * h)
+    x0, x1 = int(x0f * w), int(x1f * w)
+    crop = image[y0:y1, x0:x1]
+    if crop.size == 0:
+        return None
+
+    ch = crop.shape[0]
+    if ch < 150:
+        scale = 150 / ch
+        crop = cv2.resize(crop, (int(crop.shape[1] * scale), 150), interpolation=cv2.INTER_CUBIC)
+
+    result = _call_ollama(cfg, crop, SPEED_PROMPT)
+    return _parse_measurement(result.get("speed"))
+
+def detect_lubricant_grid_top(image, y_search=(0.28, 0.50), x_search=(0.14, 0.775)):
+    """Deteksi garis batas ATAS grid kotak-kecil 'Jenis Lubricant'.
+
+    BEDA dari versi lama: tidak lagi ambil argmax 1 garis horizontal
+    terkuat (gampang salah tangkap ke garis section lain yang kebetulan
+    lebih tebal). Sekarang tiap KANDIDAT garis horizontal divalidasi
+    dengan ciri khas struktural: tepat DI BAWAH garis batas grid yang
+    benar harus muncul banyak garis VERTIKAL rapat (kolom-kolom kotak
+    kecil Lubricant) -- baris label biasa (Speed, Dies Pass, dst) tidak
+    punya pola ini di bawahnya.
+    """
     h, w = image.shape[:2]
     y0f, y1f = y_search
     x0f, x1f = x_search
@@ -459,19 +571,82 @@ def detect_lubricant_grid_top(image, y_search=(0.28, 0.46), x_search=(0.14, 0.77
     region = image[y0:y1, x0:x1]
     gray = cv2.cvtColor(region, cv2.COLOR_BGR2GRAY) if region.ndim == 3 else region
 
-    # Adaptive threshold -- lebih tahan pencahayaan tak merata dibanding
-    # OTSU global utk area ini (garis tipis, kontras rendah).
     th = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                 cv2.THRESH_BINARY_INV, 25, 10)
+
+    # --- Kandidat garis HORIZONTAL (sama seperti sebelumnya) ---
     close_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 1))
-    closed = cv2.morphologyEx(th, cv2.MORPH_CLOSE, close_kernel, iterations=2)
-    row_sum = closed.sum(axis=1) / 255
-    rw = closed.shape[1]
+    horiz = cv2.morphologyEx(th, cv2.MORPH_CLOSE, close_kernel, iterations=2)
+    row_sum = horiz.sum(axis=1) / 255
+    rw = horiz.shape[1]
 
-    peak_idx = int(np.argmax(row_sum))
-    confidence = row_sum[peak_idx] / rw
+    thr = max(row_sum.max() * 0.5, 5)
+    candidates = np.where(row_sum > thr)[0]
+    if len(candidates) == 0:
+        raise RuntimeError("detect_lubricant_grid_top: tidak ada kandidat garis horizontal sama sekali.")
 
-    return (y0 + peak_idx) / h, confidence
+    # Kelompokkan candidate berdekatan jadi 1 garis (ambil titik tengah)
+    lines = []
+    start = candidates[0]; prev = candidates[0]
+    for y in candidates[1:]:
+        if y - prev > 6:
+            lines.append((start + prev) // 2)
+            start = y
+        prev = y
+    lines.append((start + prev) // 2)
+
+    print(f"  [diag header] {len(lines)} kandidat garis horizontal di region "
+          f"y=({y0f:.3f}-{y1f:.3f}): {[f'{(y0+ly)/h:.4f}' for ly in lines]}")
+
+    # --- Validasi tiap kandidat: cek kepadatan garis VERTIKAL di bawahnya ---
+    VERT_CHECK_HEIGHT_PX = max(int(0.02 * h), 15)   # tinggi jendela cek di bawah garis
+    VERT_MIN_LINE_COUNT = 8                          # minimal berapa garis vertikal terdeteksi
+
+    best = None
+    for ly in lines:
+        y_below0 = ly
+        y_below1 = min(ly + VERT_CHECK_HEIGHT_PX, th.shape[0])
+        if y_below1 - y_below0 < 5:
+            continue
+        strip = th[y_below0:y_below1, :]
+
+        vert_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, max(int(strip.shape[0] * 0.6), 3)))
+        vert_lines = cv2.morphologyEx(strip, cv2.MORPH_OPEN, vert_kernel, iterations=1)
+        col_sum = vert_lines.sum(axis=0) / 255
+        col_thr = max(col_sum.max() * 0.4, 3)
+        vert_candidates = np.where(col_sum > col_thr)[0]
+
+        # Hitung jumlah garis vertikal terpisah (gabungkan yang berdekatan)
+        n_vert = 0
+        if len(vert_candidates) > 0:
+            n_vert = 1
+            prevx = vert_candidates[0]
+            for x in vert_candidates[1:]:
+                if x - prevx > 5:
+                    n_vert += 1
+                prevx = x
+
+        frac_y = (y0 + ly) / h
+        print(f"    kandidat y={frac_y:.4f}: {n_vert} garis vertikal terdeteksi di bawahnya")
+
+        if n_vert >= VERT_MIN_LINE_COUNT:
+            # Ambil kandidat PALING ATAS yang lolos validasi grid
+            # (garis batas grid yang benar = garis pertama dari atas yang
+            # diikuti pola grid, bukan garis paling bawah yang kebetulan lolos)
+            if best is None:
+                best = (ly, n_vert)
+
+    if best is None:
+        raise RuntimeError(
+            f"detect_lubricant_grid_top: tidak ada kandidat garis yang diikuti "
+            f"pola grid vertikal (min {VERT_MIN_LINE_COUNT} garis) -- foto mungkin "
+            f"buram/miring, atau region pencarian perlu diperlebar."
+        )
+
+    ly, n_vert = best
+    anchor_frac = (y0 + ly) / h
+    confidence = min(n_vert / (VERT_MIN_LINE_COUNT * 2), 1.0)  # confidence relatif, bukan piksel
+    return anchor_frac, confidence
 
 
 HEADER_ANCHOR_MIN_CONFIDENCE = 0.5
@@ -797,7 +972,14 @@ def detect_header(cfg: OllamaConfig, image):
     hy0, hy1 = get_header_crop_bounds(image)
     header_crop = image[0:int((hy1 + margin) * h), :]
     print(f"Memanggil model untuk section header (crop 0 - {hy1:.4f})...")
-    return _call_ollama(cfg, header_crop, HEADER_ONLY_PROMPT)
+    header_result = _call_ollama(cfg, header_crop, HEADER_ONLY_PROMPT)
+
+    speed_bounds = detect_speed_row_bounds(image, hy1)
+    speed_value = extract_speed(cfg, image, speed_bounds)
+    print(f"  Speed hasil crop terpisah: {speed_value}")
+    header_result["speed"] = speed_value
+
+    return header_result
 
 def extract_split_by_cell(cfg: OllamaConfig, image, header_result, target_row_key):
     """target_row_key SUDAH pasti (hasil normalize_shift atau shift_override
