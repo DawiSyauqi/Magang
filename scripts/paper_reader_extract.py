@@ -461,14 +461,12 @@ SUBROW_HEIGHT_TOLERANCE = 0.40
 
 
 
-SPEED_ANCHOR_VALIDATION_STRIP = 0.015  # tinggi strip di bawah kandidat, utk cek grid vertikal
-SPEED_ANCHOR_MIN_VERTICAL_LINES = 5    # grid Jenis Lubricant py BANYAK kolom -- min 5 garis vertikal
+SPEED_ANCHOR_VALIDATION_STRIP = 0.015
+SPEED_ANCHOR_MIN_VERTICAL_LINES = 5
+SPEED_ANCHOR_LINE_MIN_CONFIDENCE = 0.15  # ambang minimal biar bukan noise acak
 
 
 def _count_vertical_lines_below(image, y_frac, x_search=(0.14, 0.775), strip_height=SPEED_ANCHOR_VALIDATION_STRIP):
-    """Hitung berapa garis vertikal rapat ada TEPAT DI BAWAH y_frac -- ciri
-    khas grid kotak-kecil (Jenis Lubricant/Kondisi/dst), BUKAN baris teks
-    biasa yang cuma py 1-2 garis vertikal (tepi tabel kiri-kanan saja)."""
     h, w = image.shape[:2]
     y0 = int(y_frac * h)
     y1 = int(min(1.0, y_frac + strip_height) * h)
@@ -487,7 +485,6 @@ def _count_vertical_lines_below(image, y_frac, x_search=(0.14, 0.775), strip_hei
     candidates = np.where(col_sum > col_sum.max() * 0.5)[0]
     if len(candidates) == 0:
         return 0
-    # cluster jadi garis individual (mirip pola clustering yg sudah ada)
     lines = 1
     prev = candidates[0]
     for x in candidates[1:]:
@@ -499,10 +496,12 @@ def _count_vertical_lines_below(image, y_frac, x_search=(0.14, 0.775), strip_hei
 
 def detect_lubricant_grid_top(image, y_search=(0.28, 0.50), x_search=(0.14, 0.775)):
     """Deteksi garis batas ATAS grid kotak-kecil 'Jenis Lubricant'.
-    PATCH: sekarang divalidasi -- cek beberapa kandidat garis terkuat,
-    pilih yang BENAR py banyak garis vertikal rapat di bawahnya (ciri
-    grid), bukan cuma percaya puncak sinyal horizontal tertinggi saja
-    (itu sebelumnya bisa salah tangkap garis lain, mis. noise kompresi)."""
+    PATCH v2: pindai kandidat garis dari ATAS KE BAWAH (bukan pilih yang
+    row_sum PALING KUAT di seluruh rentang -- itu bug sebelumnya, karena
+    garis DI DALAM grid sendiri juga lolos validasi "banyak garis vertikal
+    di bawahnya", jadi bisa nyasar ke tengah/bawah grid). Kembalikan
+    kandidat PERTAMA (paling atas) yang lolos validasi -- itu baru benar
+    representasi "batas atas" grid."""
     h, w = image.shape[:2]
     y0f, y1f = y_search
     x0f, x1f = x_search
@@ -518,29 +517,35 @@ def detect_lubricant_grid_top(image, y_search=(0.28, 0.50), x_search=(0.14, 0.77
     row_sum = closed.sum(axis=1) / 255
     rw = closed.shape[1]
 
-    # Ambil TOP 5 kandidat garis terkuat (bukan cuma 1), urut dari nilai
-    # tertinggi -- lalu cek satu-satu mana yang beneran py grid di bawahnya.
-    top_candidates_idx = np.argsort(row_sum)[::-1][:15]  # ambil lebih banyak dulu, nanti di-dedupe
-    seen_y = []
-    checked = 0
-    for idx in top_candidates_idx:
-        y_frac = (y0 + idx) / h
-        if any(abs(y_frac - s) < 0.01 for s in seen_y):  # skip duplikat berdekatan
-            continue
-        seen_y.append(y_frac)
-        checked += 1
+    # Kumpulkan SEMUA kandidat garis (bukan cuma top-N terkuat), cluster
+    # jadi garis individual, urutkan dari ATAS ke BAWAH (y kecil ke besar).
+    thr = rw * SPEED_ANCHOR_LINE_MIN_CONFIDENCE
+    candidates_px = np.where(row_sum > thr)[0]
+    if len(candidates_px) == 0:
+        print("  [diag speed anchor] tidak ada kandidat garis sama sekali")
+        return None, 0.0
 
-        confidence = row_sum[idx] / rw
+    line_positions = []
+    start = candidates_px[0]
+    prev = candidates_px[0]
+    for y in candidates_px[1:]:
+        if y - prev > 6:
+            line_positions.append((start + prev) // 2)
+            start = y
+        prev = y
+    line_positions.append((start + prev) // 2)
+    line_positions.sort()  # ATAS ke BAWAH
+
+    for local_y in line_positions:
+        y_frac = (y0 + local_y) / h
+        confidence = row_sum[local_y] / rw
         vert_lines = _count_vertical_lines_below(image, y_frac)
         print(f"  [diag speed anchor] kandidat y={y_frac:.4f} confidence={confidence:.3f} "
               f"garis_vertikal_di_bawah={vert_lines}")
 
         if vert_lines >= SPEED_ANCHOR_MIN_VERTICAL_LINES:
-            print(f"  [diag speed anchor] TERPILIH y={y_frac:.4f} (tervalidasi py grid di bawahnya)")
+            print(f"  [diag speed anchor] TERPILIH (PALING ATAS yang valid) y={y_frac:.4f}")
             return y_frac, confidence
-
-        if checked >= 8:  # batasi jumlah kandidat dicek, jangan terlalu lama
-            break
 
     print("  [diag speed anchor] TIDAK ADA kandidat yang tervalidasi py grid di bawahnya")
     return None, 0.0
