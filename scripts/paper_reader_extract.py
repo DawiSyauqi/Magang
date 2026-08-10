@@ -431,6 +431,7 @@ def _call_ollama(cfg: OllamaConfig, image, prompt: str) -> dict:
         "stream": False,
         "options": {"temperature": 0.1, "num_ctx": cfg.num_ctx},
     }
+    
     try:
         resp = requests.post(f"{cfg.base_url}/api/chat", json=payload, timeout=cfg.timeout)
     except requests.exceptions.ConnectionError as e:
