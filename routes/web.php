@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PaperScanController;
 use App\Http\Controllers\ReferensiController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MesinAliasAdminController;
 
 Route::get('/', function () {
     return redirect()->route(auth()->check() ? 'dashboard' : 'login');

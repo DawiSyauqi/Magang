@@ -21,6 +21,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+
 /**
  * Tahap 5 — endpoint upload & orkestrasi. TIDAK menulis apa pun ke
  * MFDOWNTIME di sini (itu Tahap 8) -- murni menghasilkan draft baris utk
@@ -84,6 +85,8 @@ class PaperScanController extends Controller
                 'message' => '...',
             ]);
         }
+        $this->moveOverlayIfPresent($raw, $token);
+
         $response = $this->buildSuccessResponse($raw);
         $response['preview_token'] = $token;
 
@@ -92,12 +95,14 @@ class PaperScanController extends Controller
 
     public function previewImage(string $token): \Symfony\Component\HttpFoundation\Response
     {
-        // validasi token = UUID valid, cegah path traversal
         if (! Str::isUuid($token)) {
             abort(404);
         }
 
-        $relativePath = self::TMP_DISK_DIR."/{$token}.jpg";
+        $overlayPath = self::TMP_DISK_DIR."/{$token}_overlay.jpg";
+        $originalPath = self::TMP_DISK_DIR."/{$token}.jpg";
+
+        $relativePath = Storage::disk('local')->exists($overlayPath) ? $overlayPath : $originalPath;
 
         if (! Storage::disk('local')->exists($relativePath)) {
             abort(404, 'Foto sudah tidak tersedia (mungkin sudah melewati batas waktu 30 menit).');
@@ -143,7 +148,19 @@ class PaperScanController extends Controller
             ]);
         }
 
-        return response()->json($this->buildSuccessResponse($raw));
+        if ($raw['_status'] === 'needs_retake') {
+            return response()->json([
+                'status' => 'needs_retake',
+                'message' => 'Sudut kertas tidak terdeteksi jelas. Silakan foto ulang.',
+            ]);
+        }
+
+        $this->moveOverlayIfPresent($raw, $token);
+
+        $response = $this->buildSuccessResponse($raw);
+        $response['preview_token'] = $token;
+
+        return response()->json($response);
     }
 
     /**
@@ -309,5 +326,29 @@ class PaperScanController extends Controller
             'problem_desc' => $row['Problem_Desc'] ?? null,
             'itemno' => $row['ITEMNO'] ?? null,
         ];
+    }
+    /**
+     * Pindahkan file overlay (hasil build_debug_overlay() di Python, path
+     * mentahnya ada di $raw['_meta']['overlay_image_path']) ke folder tmp
+     * Laravel dgn nama predictable {token}_overlay.jpg, supaya previewImage()
+     * bisa menemukannya lewat token saja. Aman dipanggil meski overlay tidak
+     * ada (mis. status needs_confirmation, grid belum diproses) -- diam saja.
+     */
+    protected function moveOverlayIfPresent(array $raw, string $token): void
+    {
+        $overlaySourcePath = $raw['_meta']['overlay_image_path'] ?? null;
+
+        if (! $overlaySourcePath || ! is_file($overlaySourcePath)) {
+            return;
+        }
+
+        $overlayRelative = self::TMP_DISK_DIR."/{$token}_overlay.jpg";
+        $overlayDestAbsolute = Storage::disk('local')->path($overlayRelative);
+
+        if (! @rename($overlaySourcePath, $overlayDestAbsolute)) {
+            Log::warning('PaperScanController: gagal pindahkan file overlay', [
+                'source' => $overlaySourcePath, 'dest' => $overlayDestAbsolute,
+            ]);
+        }
     }
 }
