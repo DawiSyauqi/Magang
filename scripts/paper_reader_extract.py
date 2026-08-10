@@ -541,7 +541,7 @@ SPEED_PROMPT = (
 
 
 def extract_speed(cfg: OllamaConfig, image, speed_bounds, x_search=(0.14, 0.775),
-                   margin_y=0.10):
+                   margin_y=-0.15):
     h, w = image.shape[:2]
     y0f, y1f = speed_bounds
     x0f, x1f = x_search
@@ -917,17 +917,31 @@ def crop_cell(image, block_idx, cell_idx, block_x_bounds, lost_time_bounds,
     target_w, target_h = CELL_UPSCALE_TARGET
     return cv2.resize(crop, (target_w, target_h), interpolation=cv2.INTER_CUBIC)
 
-def build_debug_overlay(image, header_y1, block_x_bounds, lost_time_bounds, target_row_key):
+def build_debug_overlay(image, header_y1, block_x_bounds, lost_time_bounds, target_row_key,
+                         speed_bounds=None, speed_margin_y=-0.15):
     """Gambar overlay SEMUA area yang dipakai pipeline di atas foto hasil
-    preprocessing: batas crop header (termasuk Speed), garis blok jam, dan
-    garis kotak 10-menit -- utk verifikasi visual di layar review."""
+    preprocessing: batas crop header, crop Speed terpisah, garis blok jam,
+    dan garis kotak 10-menit -- utk verifikasi visual di layar review."""
     h, w = image.shape[:2]
     vis = image.copy()
 
-    # 1. Area header (termasuk Speed) -- kotak biru
+    # 1. Area header -- kotak biru
     cv2.rectangle(vis, (0, 0), (w, int(header_y1 * h)), (255, 128, 0), 3)
-    cv2.putText(vis, "HEADER + SPEED", (10, int(header_y1 * h) - 10),
+    cv2.putText(vis, "HEADER", (10, int(header_y1 * h) - 10),
                 cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 128, 0), 2)
+
+    # 1b. Area crop Speed TERPISAH -- kotak merah, ini yang BENAR-BENAR
+    # dikirim ke model extract_speed(), termasuk margin_y yang dipakai.
+    if speed_bounds is not None:
+        y0f, y1f = speed_bounds
+        rh = y1f - y0f
+        y0f2, y1f2 = y0f + speed_margin_y * rh, y1f - speed_margin_y * rh
+        x0f, x1f = 0.14, 0.775
+        y0px, y1px = int(y0f2 * h), int(y1f2 * h)
+        x0px, x1px = int(x0f * w), int(x1f * w)
+        cv2.rectangle(vis, (x0px, y0px), (x1px, y1px), (0, 0, 255), 3)
+        cv2.putText(vis, "SPEED CROP", (x0px, y0px - 8),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
 
     # 2. Grid Lost Time -- garis blok jam (vertikal) + kotak 10 menit
     ry0, ry1 = lost_time_bounds
@@ -936,9 +950,7 @@ def build_debug_overlay(image, header_y1, block_x_bounds, lost_time_bounds, targ
     for block_idx in range(8):
         bx0, bx1 = block_x_bounds[block_idx], block_x_bounds[block_idx + 1]
         x0px, x1px = int(bx0 * w), int(bx1 * w)
-        # garis blok jam -- hijau tebal
         cv2.rectangle(vis, (x0px, y0px), (x1px, y1px), (0, 200, 0), 2)
-        # garis kotak 10 menit di dalam blok -- kuning tipis
         for cell_idx in range(1, 6):
             cx = int((bx0 + cell_idx * (bx1 - bx0) / 6) * w)
             cv2.line(vis, (cx, y0px), (cx, y1px), (0, 200, 255), 1)
@@ -1041,14 +1053,15 @@ def extract_split_by_cell(cfg: OllamaConfig, image, header_result, target_row_ke
     print(f"\nTotal panggilan model untuk grid: {n_calls}")
     _, header_y1 = get_header_crop_bounds(image)
     lost_time_bounds = lost_time_precomputed[target_row_key]
-    overlay_img = build_debug_overlay(image, header_y1, block_x_bounds, lost_time_bounds, target_row_key)
+    speed_bounds = detect_speed_row_bounds(image, header_y1)
+    overlay_img = build_debug_overlay(image, header_y1, block_x_bounds, lost_time_bounds, target_row_key, speed_bounds=speed_bounds)
     merged = {**header_result, "grid_waktu": all_grid}
     meta = {
         "row_bounds_source": row_sumber,
         "column_bounds_source": col_sumber,
         "total_cell_model_calls": n_calls,
     }
-    return MFDowntimeExtraction(**merged), meta
+    return MFDowntimeExtraction(**merged), meta, overlay_img
 
 def run_pipeline(cfg: OllamaConfig, image, shift_override=None):
     header_result = detect_header(cfg, image)
