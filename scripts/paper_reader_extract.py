@@ -550,7 +550,14 @@ def extract_speed(cfg: OllamaConfig, image, speed_bounds, x_search=(0.14, 0.775)
     y0, y1 = int(y0f2 * h), int(y1f2 * h)
     x0, x1 = int(x0f * w), int(x1f * w)
     crop = image[y0:y1, x0:x1]
+
+    # DEBUG: simpan crop biar bisa dilihat langsung apakah teks "3.6" ada di dalamnya
+    cv2.imwrite("debug_speed_crop.jpg", crop)
+    print(f"  [diag speed] crop disimpan -> debug_speed_crop.jpg, shape={crop.shape}, "
+          f"bounds_px=(y:{y0}-{y1}, x:{x0}-{x1})")
+
     if crop.size == 0:
+        print("  [diag speed] crop KOSONG (size=0)")
         return None
 
     ch = crop.shape[0]
@@ -559,7 +566,10 @@ def extract_speed(cfg: OllamaConfig, image, speed_bounds, x_search=(0.14, 0.775)
         crop = cv2.resize(crop, (int(crop.shape[1] * scale), 150), interpolation=cv2.INTER_CUBIC)
 
     result = _call_ollama(cfg, crop, SPEED_PROMPT)
-    return _parse_measurement(result.get("speed"))
+    print(f"  [diag speed] raw response dari model: {result!r}")
+    parsed = _parse_measurement(result.get("speed"))
+    print(f"  [diag speed] hasil parse: {parsed!r}")
+    return parsed
 
 def detect_lubricant_grid_top(image, y_search=(0.28, 0.50), x_search=(0.14, 0.775)):
     """Deteksi garis batas ATAS grid kotak-kecil 'Jenis Lubricant'.
