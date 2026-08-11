@@ -282,13 +282,10 @@
             const file = new File([blob], `capture_${Date.now()}.jpg`, { type: 'image/jpeg' });
             closeCameraOverlay();
 
-            // KUNCI INTEGRASI: inject file hasil capture ke input yang SUDAH ADA
-            // (photoInput), lalu trigger alur analisa existing SECARA LANGSUNG --
-            // tidak perlu duplikasi logic upload, cukup pakai ulang analyzeBtn
-            // click handler yang sudah ada.
             const dt = new DataTransfer();
             dt.items.add(file);
             el('photoInput').files = dt.files;
+            el('analyzeBtn').disabled = false; // WAJIB -- inject file via DataTransfer tidak memicu event 'change', jadi enable manual di sini
             el('analyzeBtn').click();
         }, 'image/jpeg', 0.92);
     });
