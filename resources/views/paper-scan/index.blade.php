@@ -104,6 +104,7 @@
                 <input type="text" id="itemSearch" class="form-control" list="itemList" placeholder="-- konfirmasi Mesin dulu --" disabled>
                 <datalist id="itemList"></datalist>
                 <input type="hidden" id="itemSelect">
+                <p id="itemStatus" class="small mt-1"></p>
             </div>
         </div>
     </div>
@@ -311,6 +312,33 @@
         currentData.rows.forEach((r) => { r.ITEMNO = itemno; });
     }
 
+    /**
+     * Cocokkan size_raw ("00.80 MM") ke daftar item (yg ITEMDESC-nya mengandung
+     * teks ukuran, mis. "...DIA.00.80 MM") -- MURNI SARAN, tetap wajib
+     * dikonfirmasi user (tidak auto-submit), sesuai pola Mesin.
+     */
+    function findItemCandidatesBySize(items, sizeRaw) {
+        if (!sizeRaw) return [];
+
+        const m = sizeRaw.match(/([0-9]+[.,][0-9]+)/);
+        if (!m) return [];
+
+        const num = parseFloat(m[1].replace(',', '.'));
+        if (isNaN(num)) return [];
+
+        // Bentuk beberapa varian teks yg mungkin muncul di ITEMDESC (leading
+        // zero beda-beda: "0.80", "00.80", ".80" semua mengacu angka yg sama).
+        const variants = [
+            num.toFixed(2),                          // "0.80"
+            '0' + num.toFixed(2),                    // "00.80"
+            num.toFixed(2).replace(/^0/, ''),         // ".80"
+        ];
+
+        return items.filter((i) =>
+            variants.some((v) => i.nama && i.nama.includes(v))
+        );
+    }
+
     // GANTI loadItemOptions():
     async function loadItemOptions(mesinCode) {
         const itemSearch = el('itemSearch');
@@ -320,6 +348,7 @@
             itemSearch.disabled = true;
             itemSearch.value = '';
             el('itemSelect').value = '';
+            el('itemStatus').textContent = '';
             return;
         }
         const items = await apiGet(`/referensi/item?mesin=${encodeURIComponent(mesinCode)}`);
@@ -328,8 +357,30 @@
         ).join('');
         itemSearch.disabled = false;
         itemSearch.placeholder = 'Cari kode/nama item...';
-    }
 
+        // PATCH: saran Item berdasarkan Size yang terbaca dari kertas.
+        const sizeRaw = currentData.header.size_raw;
+        const candidates = findItemCandidatesBySize(items, sizeRaw);
+
+        if (candidates.length === 1) {
+            const match = candidates[0];
+            itemSearch.value = `${match.kode} — ${match.nama}`;
+            el('itemSelect').value = match.kode;
+            applyItemToAllRows(match.kode);
+            el('itemStatus').textContent = `⚠ Saran otomatis dari Size kertas ("${sizeRaw}") -- wajib diperiksa.`;
+            el('itemStatus').className = 'small mt-1 text-warning';
+        } else if (candidates.length > 1) {
+            el('itemStatus').textContent = `⚠ ${candidates.length} item cocok dengan Size "${sizeRaw}" -- pilih manual dari daftar.`;
+            el('itemStatus').className = 'small mt-1 text-warning';
+        } else if (sizeRaw) {
+            el('itemStatus').textContent = `Tidak ada item yang cocok dengan Size "${sizeRaw}" -- pilih manual.`;
+            el('itemStatus').className = 'small mt-1 text-muted';
+        } else {
+            el('itemStatus').textContent = '';
+        }
+
+        updateSaveButtonState();
+    }
     el('confirmMesinBtn').addEventListener('click', async () => {
         const resrceno = el('mesinSelect').value;
         if (!resrceno) { alert('Pilih mesin dulu.'); return; }

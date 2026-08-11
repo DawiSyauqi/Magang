@@ -35,6 +35,7 @@ class PaperExtractionProcessor
         $speed = $extraction['speed'] ?? null;
         $operatorRaw = $extraction['operator_nama'] ?? null;
         $lowConfidence = $extraction['low_confidence_fields'] ?? [];
+        $sizeRaw = $extraction['size_raw'] ?? null;
 
         $operatorMatch = $this->operatorMatcher->match($operatorRaw);
         $mergedEntries = $this->merger->merge($extraction['grid_waktu'] ?? []);
@@ -98,6 +99,7 @@ class PaperExtractionProcessor
                 'mesin_code_resolved' => $resolvedMesinCode,
                 'speed' => $speed,
                 'operator_match' => $operatorMatch,
+                'size_raw' => $sizeRaw,
             ],
         ];
     }
