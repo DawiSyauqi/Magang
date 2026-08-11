@@ -3,22 +3,33 @@
 namespace App\Services\PaperExtraction;
 
 /**
- * Gabungkan grid_waktu (hasil ekstraksi Mode E: 24 blok jam x 6 kotak
- * 10-menit) jadi entri Down Time, sesuai algoritma
- * Rencana_Fitur_AI_Baca_Kertas.docx Bab 4.2:
+ * Gabungkan grid_waktu jadi entri Down Time. Mendukung DUA protokol
+ * sekaligus (Fase G — start-end marker):
  *
- *   - Kotak kode '0'/'8'/kosong -> dilewati, TIDAK memulai/melanjutkan entri.
- *   - Kotak kode sama dgn entri berjalan -> perpanjang (+10 menit).
- *   - Kotak kode beda (atau belum ada entri berjalan) -> tutup entri lama
- *     (kalau ada), mulai entri baru.
- *   - Berlaku LINTAS BATAS JAM (dan lintas tengah malam utk baris jam_23_07).
- *   - Di akhir grid, entri yang masih berjalan otomatis ditutup.
+ *   PROTOKOL LAMA: kode sama diulang di tiap kotak 10-menit sepanjang
+ *   durasi masalah. Kotak kosong/'0'/'8' menutup entri berjalan.
  *
- * MURNI logika, tidak menyentuh database/Ollama -- sepenuhnya testable
- * dengan data JSON dummy.
+ *   PROTOKOL BARU (opsional, utk masalah >10 menit): kode ditulis SEKALI
+ *   di kotak pertama, kotak-kotak tengah DIBIARKAN KOSONG, kotak TERAKHIR
+ *   diberi penanda 'x' -- entri ditutup di titik 'x' tsb, durasi mencakup
+ *   seluruh rentang termasuk kotak kosong di tengah.
+ *
+ *   Kedua protokol dibedakan lewat "tunda keputusan": kotak kosong TIDAK
+ *   langsung menutup entri berjalan (beda dari sebelumnya) -- entri baru
+ *   ditutup saat ketemu 'x' (tutup di situ, mencakup kotak kosong) ATAU
+ *   ketemu kode BEDA (tutup di titik SEBELUM kotak kosong dimulai, sama
+ *   persis perilaku lama, kotak kosong dianggap genuinely kosong).
+ *
+ *   'x' TANPA entri berjalan (orphan) -- kemungkinan masalah dimulai dari
+ *   kertas/shift SEBELUMNYA (lintas hari). Tetap dibuat 1 entri dgn
+ *   raw_code='x' -- ProblemCodeResolver akan menandainya TIDAK DIKENALI
+ *   (bukan format kode valid) sehingga otomatis muncul sbg 'perlu_review'
+ *   di layar review, petugas isi manual (mis. pakai tombol Tambah Baris).
  */
 class GridTimeMerger
 {
+    protected const END_MARKER = 'x';
+
     public function __construct(protected ProblemCodeConverter $converter)
     {
     }
@@ -41,17 +52,40 @@ class GridTimeMerger
 
         foreach ($slots as $slot) {
             $rawCode = $slot['raw_code'];
-            $isSkip = $this->isSkipSlot($rawCode);
 
-            if ($isSkip) {
-                if ($running !== null) {
-                    $entries[] = $this->closeEntry($running);
-                    $running = null;
-                }
+            if ($this->isSkipSlot($rawCode)) {
+                // PATCH Fase G: kotak kosong TIDAK langsung menutup entri
+                // berjalan -- ditunda, tunggu 'x' (perpanjang sampai situ)
+                // atau kode beda (tutup di titik sebelum kekosongan ini,
+                // sama persis perilaku lama). Kalau tidak ada running,
+                // memang tidak ada apa-apa yang perlu dilakukan.
                 continue;
             }
 
             $normalized = $this->converter->normalize($rawCode);
+
+            if ($normalized === self::END_MARKER) {
+                if ($running !== null) {
+                    // Tutup entri berjalan DI TITIK INI -- mencakup semua
+                    // kotak kosong di antaranya (kalau ada).
+                    $running['end'] = $slot['end'];
+                    $entries[] = $this->closeEntry($running);
+                    $running = null;
+                } else {
+                    // Orphan 'x' -- tidak ada entri berjalan utk ditutup.
+                    // Kemungkinan masalah berlanjut dari kertas SEBELUMNYA
+                    // (lintas shift/hari). Buat 1 entri APA ADANYA dgn
+                    // raw_code='x' -- akan otomatis gagal dikenali
+                    // ProblemCodeResolver (bukan format kode valid),
+                    // muncul sbg 'perlu_review' di layar review.
+                    $entries[] = $this->closeEntry([
+                        'raw_code' => $rawCode,
+                        'start' => $slot['start'],
+                        'end' => $slot['end'],
+                    ]);
+                }
+                continue;
+            }
 
             if ($running !== null && $this->converter->normalize($running['raw_code']) === $normalized) {
                 // Kode sama dgn entri berjalan -> perpanjang.
@@ -59,7 +93,10 @@ class GridTimeMerger
                 continue;
             }
 
-            // Kode beda (atau belum ada entri berjalan) -> tutup yg lama, mulai baru.
+            // Kode beda (atau belum ada entri berjalan) -> tutup yg lama
+            // (DI TITIK TERAKHIR YANG TERCATAT -- bukan sampai kotak
+            // kosong sebelum kode baru ini, sesuai protokol lama), mulai
+            // entri baru.
             if ($running !== null) {
                 $entries[] = $this->closeEntry($running);
             }
@@ -71,6 +108,9 @@ class GridTimeMerger
         }
 
         if ($running !== null) {
+            // Sampai akhir grid tanpa ketemu 'x' -- tutup di titik
+            // terakhir yang tercatat (sama seperti sebelumnya, kotak
+            // kosong trailing dianggap genuinely kosong).
             $entries[] = $this->closeEntry($running);
         }
 
@@ -81,6 +121,13 @@ class GridTimeMerger
     {
         if ($rawCode === null || trim($rawCode) === '') {
             return true;
+        }
+
+        $normalized = $this->converter->normalize($rawCode);
+        if ($normalized === self::END_MARKER) {
+            // 'x' BUKAN skip -- ditangani khusus di merge(), harus
+            // sampai ke sana, bukan dilewati diam-diam di sini.
+            return false;
         }
 
         $parsed = $this->converter->parse($rawCode);
@@ -112,20 +159,6 @@ class GridTimeMerger
         ];
     }
 
-    /**
-     * Ratakan 24 blok x 6 kotak jadi list slot kronologis, tiap slot bawa
-     * waktu mulai & selesai (jam, menit, day_offset relatif Tgl_Trs).
-     *
-     * PENTING soal day_offset: TIDAK dihitung dari teks label per-blok
-     * secara independen (mis. "01.00 - 02.00" -> hour token "01" TIDAK
-     * bisa dibedakan dari jam 01:00 di hari yang sama vs jam 01:00
-     * setelah tengah malam hanya dari teksnya sendiri). Sebagai gantinya,
-     * day_offset dihitung BERURUTAN: setiap kali jam-mulai suatu blok
-     * LEBIH KECIL dari jam-mulai blok sebelumnya (artinya jam "berputar"
-     * balik ke kecil, mis. 23 -> 0), day_offset bertambah 1. Ini otomatis
-     * benar untuk seluruh blok jam_23_07 (23,0,1,2,3,4,5,6) tanpa perlu
-     * tahu blok mana yang "row jam_23_07" secara eksplisit.
-     */
     protected function flattenToSlots(array $gridWaktu): array
     {
         $slots = [];
@@ -134,7 +167,7 @@ class GridTimeMerger
 
         foreach ($gridWaktu as $block) {
             $startToken = trim(explode('-', $block['jam_mulai'])[0]);
-            $hourToken = (int) explode('.', $startToken)[0]; // "24.00" -> 24, "01.00" -> 1
+            $hourToken = (int) explode('.', $startToken)[0];
             $startHour = $hourToken % 24;
 
             if ($prevHour !== null && $startHour < $prevHour) {
