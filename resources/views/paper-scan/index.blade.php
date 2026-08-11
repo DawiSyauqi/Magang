@@ -12,17 +12,42 @@
     <h4 class="mb-3">Ambil Foto Kertas — Laporan Proses Drawing Harian</h4>
 
     {{-- ===================== STATE 1: IDLE (form upload) ===================== --}}
+    
     <section id="state-idle">
         <div class="card">
             <div class="card-body text-center py-5">
-                <input type="file" id="photoInput" accept="image/*" capture="environment" class="form-control mb-3">
-                <button id="analyzeBtn" class="btn btn-primary btn-lg" disabled>Analisa Foto</button>
+                <button type="button" id="btn-open-camera" class="btn btn-primary btn-lg mb-3">
+                    📷 Ambil Foto
+                </button>
+                <div class="mb-3">
+                    <input type="file" id="photoInput" accept="image/*" capture="environment" class="form-control" style="display:none;">
+                    <button id="analyzeBtn" class="btn btn-primary btn-lg d-none" disabled>Analisa Foto</button>
+                </div>
                 <div class="mt-3">
                     <a href="{{ route('dashboard') }}" class="btn btn-link text-muted">Batal, kembali ke Dashboard</a>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Overlay kamera custom -- taruh di luar <section>, sejajar dengan section lain -->
+    <div id="camera-overlay" style="display:none; position:fixed; inset:0; z-index:9999; background:#000;">
+        <div id="rotate-prompt" style="display:none; position:absolute; inset:0; flex-direction:column;
+            align-items:center; justify-content:center; color:white; text-align:center;">
+            <div style="font-size:64px;">🔄</div>
+            <p style="font-size:20px; margin-top:16px;">Putar HP Anda ke posisi mendatar<br>untuk memotret kertas dengan hasil terbaik</p>
+        </div>
+        <div id="camera-active-area" style="display:none; position:relative; width:100%; height:100%;">
+            <video id="camera-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
+            <canvas id="viewfinder-overlay" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></canvas>
+            <button type="button" id="btn-capture" style="position:absolute; bottom:24px; left:50%;
+                    transform:translateX(-50%); width:70px; height:70px; border-radius:50%;
+                    background:white; border:4px solid #ccc;"></button>
+            <button type="button" id="btn-cancel-camera" style="position:absolute; top:16px; right:16px;
+                    color:white; background:none; border:none; font-size:28px;">✕</button>
+        </div>
+        <canvas id="capture-canvas" style="display:none;"></canvas>
+    </div>
 
     {{-- ===================== STATE 2: LOADING ===================== --}}
     <section id="state-loading" class="d-none text-center py-5">
@@ -153,6 +178,131 @@
     const states = ['idle', 'loading', 'retake', 'shift', 'error', 'review'];
     function showState(name) {
         states.forEach((s) => el(`state-${s}`).classList.toggle('d-none', s !== name));
+    }
+
+    // ---------- KAMERA CUSTOM (Fase P) ----------
+    let cameraStream = null;
+
+    el('btn-open-camera').addEventListener('click', async () => {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            console.warn('getUserMedia tidak didukung, fallback ke input file biasa.');
+            el('photoInput').click();
+            return;
+        }
+        el('camera-overlay').style.display = 'block';
+        checkOrientationAndProceed();
+    });
+
+    function checkOrientationAndProceed() {
+        const isLandscape = screen.orientation
+            ? screen.orientation.type.startsWith('landscape')
+            : window.innerWidth > window.innerHeight;
+
+        if (!isLandscape) {
+            el('rotate-prompt').style.display = 'flex';
+            el('camera-active-area').style.display = 'none';
+            window.addEventListener('orientationchange', onOrientationChange);
+            window.addEventListener('resize', onOrientationChange);
+        } else {
+            startCameraStream();
+        }
+    }
+
+    function onOrientationChange() {
+        const isLandscape = screen.orientation
+            ? screen.orientation.type.startsWith('landscape')
+            : window.innerWidth > window.innerHeight;
+        if (isLandscape) {
+            el('rotate-prompt').style.display = 'none';
+            window.removeEventListener('orientationchange', onOrientationChange);
+            window.removeEventListener('resize', onOrientationChange);
+            startCameraStream();
+        }
+    }
+
+    async function startCameraStream() {
+        try {
+            cameraStream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } }
+            });
+            const video = el('camera-video');
+            video.srcObject = cameraStream;
+            el('camera-active-area').style.display = 'block';
+            drawViewfinderGuide();
+        } catch (err) {
+            console.error('Gagal akses kamera:', err);
+            closeCameraOverlay();
+            el('photoInput').click();
+        }
+    }
+
+    function drawViewfinderGuide() {
+        const canvas = el('viewfinder-overlay');
+        const video = el('camera-video');
+
+        function resize() {
+            canvas.width = video.clientWidth;
+            canvas.height = video.clientHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const targetRatio = 1.4;
+            let boxW = canvas.width * 0.9;
+            let boxH = boxW / targetRatio;
+            if (boxH > canvas.height * 0.85) {
+                boxH = canvas.height * 0.85;
+                boxW = boxH * targetRatio;
+            }
+            const boxX = (canvas.width - boxW) / 2;
+            const boxY = (canvas.height - boxH) / 2;
+
+            ctx.strokeStyle = 'rgba(0, 255, 100, 0.9)';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([12, 8]);
+            ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+            ctx.setLineDash([]);
+            ctx.fillStyle = 'rgba(0, 255, 100, 0.9)';
+            ctx.font = '16px sans-serif';
+            ctx.fillText('Posisikan kertas di dalam kotak', boxX, boxY - 10);
+        }
+
+        resize();
+        window.addEventListener('resize', resize);
+    }
+
+    el('btn-capture').addEventListener('click', () => {
+        const video = el('camera-video');
+        const canvas = el('capture-canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+
+        canvas.toBlob((blob) => {
+            const file = new File([blob], `capture_${Date.now()}.jpg`, { type: 'image/jpeg' });
+            closeCameraOverlay();
+
+            // KUNCI INTEGRASI: inject file hasil capture ke input yang SUDAH ADA
+            // (photoInput), lalu trigger alur analisa existing SECARA LANGSUNG --
+            // tidak perlu duplikasi logic upload, cukup pakai ulang analyzeBtn
+            // click handler yang sudah ada.
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            el('photoInput').files = dt.files;
+            el('analyzeBtn').click();
+        }, 'image/jpeg', 0.92);
+    });
+
+    el('btn-cancel-camera').addEventListener('click', closeCameraOverlay);
+
+    function closeCameraOverlay() {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+            cameraStream = null;
+        }
+        el('camera-overlay').style.display = 'none';
+        el('rotate-prompt').style.display = 'none';
+        el('camera-active-area').style.display = 'none';
     }
 
     async function apiPost(url, body, isJson = true) {
