@@ -320,20 +320,23 @@ Kamu melihat POTONGAN TABEL dari form kertas industri -- berisi beberapa
 baris berlabel di sisi kiri (seperti "Supplier/Pemasok", "Grade", "Size",
 "Speed (m/mnt)", "Dies Pass", dst), dengan area kosong/isian di sisi kanan.
 
-TUGASMU: cari baris yang labelnya PERSIS "Speed (m/mnt)", lalu baca angka
-yang tertulis tangan di sisi kanan baris itu.
+TUGASMU: cari 2 baris berikut, baca isian tulisan tangan di sisi kanan
+masing-masing:
+1. Baris berlabel PERSIS "Size" (di section "Data Pemesanan").
+2. Baris berlabel PERSIS "Speed (m/mnt)" (di section "Proses Kontrol",
+   TEPAT DI BAWAH baris Size).
 
 Kembalikan HANYA JSON (tanpa teks lain):
-{"speed": number atau null}
+{"size": string atau null, "speed": number atau null}
 
-- Baca angka HANYA dari baris berlabel "Speed (m/mnt)". JANGAN tertukar
-  dengan baris lain (terutama "Size" yang formatnya "NN.NN MM", BUKAN
-  speed).
-- Jadikan angka desimal (contoh "9-6" -> 9.6, "3.6" -> 3.6).
+- "size": transkrip APA ADANYA seperti tertulis (contoh: "00.80 MM",
+  "1.20 MM"). JANGAN diubah jadi angka desimal, JANGAN buang satuan "MM".
+- "speed": dari baris "Speed (m/mnt)" SAJA, JANGAN tertukar dengan baris
+  Size. Jadikan angka desimal (contoh "9-6" -> 9.6, "3.6" -> 3.6).
 - Huruf "G" di posisi angka hampir pasti "6"; huruf "O" hampir pasti "0".
-- Kalau baris "Speed (m/mnt)" tidak ditemukan sama sekali di gambar, atau
-  isiannya kosong/tidak terbaca -> null. JANGAN mengarang.
-- Output JSON valid saja, PERSIS 1 field "speed".
+- Baris tidak ditemukan / kosong / tidak terbaca -> null utk field itu.
+  JANGAN mengarang.
+- Output JSON valid saja, PERSIS 2 field "size" dan "speed".
 '''
 
 
@@ -454,11 +457,11 @@ def _call_ollama(cfg: OllamaConfig, image, prompt: str) -> dict:
 
     return _normalize_blok_values(parsed)
 
-def extract_speed(cfg: OllamaConfig, image) -> Optional[float]:
-    """Crop GENERUS (bukan presisi pixel) mencakup seluruh area tabel atas
-    -- model VISION sendiri yang mencari baris berlabel 'Speed (m/mnt)'
-    lewat teks, bukan kita hitung posisi garis. Kegagalan field ini TIDAK
-    menggagalkan pipeline -- speed cukup jadi null."""
+def extract_speed_and_size(cfg: OllamaConfig, image):
+    """Crop GENERUS yang sama dipakai utk baca 2 field sekaligus (Size +
+    Speed) dalam SATU pemanggilan Ollama -- tidak nambah waktu proses
+    dibanding sebelumnya (dulu cuma baca Speed, sekarang sekalian Size,
+    keduanya sama-sama ada di crop yang sama)."""
     h, w = image.shape[:2]
     y0f, y1f = DATA_TABLE_CROP_Y
     x0f, x1f = DATA_TABLE_CROP_X
@@ -468,7 +471,12 @@ def extract_speed(cfg: OllamaConfig, image) -> Optional[float]:
 
     result = _call_ollama(cfg, crop, SPEED_ONLY_PROMPT)
     print(f"  [diag speed] raw response: {result!r}")
-    return _parse_measurement(result.get("speed"))
+
+    speed_value = _parse_measurement(result.get("speed"))
+    size_value = result.get("size")
+    size_value = size_value.strip() if isinstance(size_value, str) and size_value.strip() else None
+
+    return speed_value, size_value
 
 # ============================================================
 # 5. PATCH v4/v5 — ROW_BOUNDS dari struktur asli (dari Cell 21)
@@ -842,7 +850,7 @@ def extract_split_by_cell(cfg: OllamaConfig, image, header_result, target_row_ke
 
 def run_pipeline(cfg: OllamaConfig, image, shift_override=None):
     header_result = detect_header(cfg, image)
-    speed_value = extract_speed(cfg, image)
+    speed_value, size_value = extract_speed_and_size(cfg, image)
     header_result["speed"] = speed_value
 
     if shift_override:
@@ -861,7 +869,7 @@ def run_pipeline(cfg: OllamaConfig, image, shift_override=None):
         return {
             "status": "needs_confirmation",
             "reason": "shift_ambiguous",
-            "data": {**header_result, "grid_waktu": []},
+            "data": {**header_result, "grid_waktu": [], "size_raw": size_value},
             "meta": {"shift_raw": header_result.get("shift")},
         }
 
@@ -869,11 +877,12 @@ def run_pipeline(cfg: OllamaConfig, image, shift_override=None):
     result, meta, overlay_img = extract_split_by_cell(cfg, image, header_result, target_row_key)
     result_data = result.model_dump()
     result_data["shift"] = resolved_shift
+    result_data["size_raw"] = size_value  # PATCH: field baru, MFDowntimeExtraction tidak punya field ini (extra diabaikan pydantic saat merge di extract_split_by_cell), jadi disisipkan manual di sini setelah model_dump()
     meta["shift_source"] = shift_source
     meta["rows_processed"] = [target_row_key]
 
     envelope = {"status": "success", "data": result_data, "meta": meta}
-    envelope["_overlay_img"] = overlay_img  # numpy array -- HARUS dicabut sebelum json.dumps, lihat main()
+    envelope["_overlay_img"] = overlay_img
     return envelope
 
 
