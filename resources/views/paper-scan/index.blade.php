@@ -70,7 +70,9 @@
             <p class="mb-1">Teks di kertas: <strong id="mesinRawText"></strong></p>
             <p class="text-muted small" id="mesinAlasan"></p>
             <div class="input-group">
-                <select id="mesinSelect" class="form-select"></select>
+                <input type="text" id="mesinSearch" class="form-control" list="mesinList" placeholder="Cari kode/nama mesin...">
+                <datalist id="mesinList"></datalist>
+                <input type="hidden" id="mesinSelect">
                 <button id="confirmMesinBtn" class="btn btn-success">Setuju / Simpan Pilihan</button>
             </div>
             <p id="mesinStatus" class="small mt-2"></p>
@@ -260,11 +262,17 @@
         el('mesinAlasan').textContent = h.mesin_resolution.alasan ?? '';
 
         if (!mesinOptionsCache) mesinOptionsCache = await apiGet('/referensi/mesin');
-        const mesinSelect = el('mesinSelect');
-        mesinSelect.innerHTML = '<option value="">-- pilih mesin --</option>' +
-            mesinOptionsCache.map((m) => `<option value="${m.kode}">${m.kode} — ${m.nama}</option>`).join('');
-        if (h.mesin_resolution.resrceno) mesinSelect.value = h.mesin_resolution.resrceno;
-
+        const mesinList = el('mesinList');
+        mesinList.innerHTML = mesinOptionsCache.map((m) =>
+            `<option data-kode="${m.kode}" value="${m.kode} — ${m.nama}"></option>`
+        ).join('');
+        if (h.mesin_resolution.resrceno) {
+            const matched = mesinOptionsCache.find(m => m.kode === h.mesin_resolution.resrceno);
+            if (matched) {
+                el('mesinSearch').value = `${matched.kode} — ${matched.nama}`;
+                el('mesinSelect').value = matched.kode;
+            }
+        }
         if (h.mesin_resolution.dikonfirmasi) {
             setMesinConfirmedUI('✓ Sudah dikonfirmasi sebelumnya (dari alias).', true);
             applyMesinToAllRows(h.mesin_resolution.resrceno);
@@ -416,6 +424,11 @@
         updateSaveButtonState();
     });
 
+    el('mesinSearch').addEventListener('input', () => {
+        const opts = el('mesinList').querySelectorAll('option');
+        const match = Array.from(opts).find(o => o.value === el('mesinSearch').value);
+        el('mesinSelect').value = match ? match.dataset.kode : '';
+    });
 
     function updateSaveButtonState() {
         const rowsReady = currentData.rows.every(r =>

@@ -65,7 +65,7 @@ class PaperScanController extends Controller
         }
 
         // needs_shift_confirmation -- SIMPAN foto (Opsi A), balas token.
-        if ($raw['_status'] === 'needs_shift_confirmation') {
+        if ($raw['_status'] === 'needs_confirmation' && ($raw['_reason'] ?? null) === 'shift_ambiguous') {
             return response()->json([
                 'status' => 'needs_shift_confirmation',
                 'token' => $token,
