@@ -87,23 +87,55 @@ def _validate_contour(contour, image_shape) -> bool:
 
 
 def _find_quad_from_edges(gray):
+    """Diperkuat: coba beberapa kombinasi threshold Canny (bukan cuma 1),
+    tambah morphological closing (menyambung tepi kertas yang terputus
+    akibat noise/bayangan), dan convexHull SEBELUM approxPolyDP -- supaya
+    cekungan kecil akibat bayangan/celah tidak ikut "termakan" ke dalam
+    kontur (akar masalah yang ditemukan: kontur melebar ke background
+    gelap di sudut kertas yang berbayang)."""
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
     median_val = float(np.median(blurred))
-    lower = int(max(0, 0.66 * median_val))
-    upper = int(min(255, 1.33 * median_val))
-    edged = cv2.Canny(blurred, lower, upper)
-    edged = cv2.dilate(edged, None, iterations=2)
 
-    contours, _ = cv2.findContours(edged, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    if not contours:
-        return None
-    for contour in sorted(contours, key=cv2.contourArea, reverse=True)[:5]:
-        peri = cv2.arcLength(contour, True)
-        approx = cv2.approxPolyDP(contour, 0.02 * peri, True)
-        if len(approx) == 4 and _validate_contour(approx, gray.shape):
-            return approx.reshape(4, 2).astype("float32")
+    # Multi-percobaan: bukan cuma 1 kombinasi threshold, coba beberapa
+    # multiplier di sekitar median -- longgar & ketat, biar salah satu
+    # kemungkinan besar menangkap tepi kertas dengan bersih.
+    threshold_multipliers = [
+        (0.66, 1.33),  # default lama
+        (0.50, 1.50),  # lebih longgar (tangkap tepi lemah)
+        (0.80, 1.20),  # lebih ketat (buang noise kecil)
+    ]
+
+    close_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (7, 7))
+
+    for lower_mult, upper_mult in threshold_multipliers:
+        lower = int(max(0, lower_mult * median_val))
+        upper = int(min(255, upper_mult * median_val))
+        edged = cv2.Canny(blurred, lower, upper)
+
+        # Closing: sambung celah tepi kertas yang terputus akibat
+        # bayangan/noise -- sebelum cuma dilate, sekarang closing dulu
+        # (dilate+erode) supaya tidak melebarkan noise di area lain.
+        edged = cv2.morphologyEx(edged, cv2.MORPH_CLOSE, close_kernel, iterations=2)
+        edged = cv2.dilate(edged, None, iterations=1)
+
+        contours, _ = cv2.findContours(edged, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        if not contours:
+            continue
+
+        for contour in sorted(contours, key=cv2.contourArea, reverse=True)[:5]:
+            # KUNCI: convexHull dulu sebelum approxPolyDP -- menghaluskan
+            # cekungan kecil (concave dents) akibat bayangan/celah kertas
+            # yang menyatu visual dengan background, sehingga tidak ikut
+            # termakan jadi bagian dari kontur 4-sudut.
+            hull = cv2.convexHull(contour)
+            peri = cv2.arcLength(hull, True)
+            approx = cv2.approxPolyDP(hull, 0.02 * peri, True)
+            if len(approx) == 4 and _validate_contour(approx, gray.shape):
+                print(f"  [diag crop] edge_detection berhasil (threshold "
+                      f"{lower_mult}-{upper_mult}, convexHull diterapkan)")
+                return approx.reshape(4, 2).astype("float32")
+
     return None
-
 
 def _find_quad_from_contrast(gray):
     blurred = cv2.GaussianBlur(gray, (7, 7), 0)
@@ -153,6 +185,57 @@ def upscale_if_needed(image, min_dim=MIN_OUTPUT_DIMENSION):
     scale = min_dim / shortest_side
     return cv2.resize(image, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_CUBIC)
 
+DESKEW_MAX_ANGLE = 15.0  # derajat -- batas wajar kemiringan hasil crop
+                          # (kalau lebih dari ini, kemungkinan bukan
+                          # deskew biasa tapi rotasi 90/180/270, lihat
+                          # detect_and_fix_rotation() di bawah)
+
+
+def detect_skew_angle(image):
+    """Deteksi sudut kemiringan dominan garis-garis HORIZONTAL di gambar
+    (garis tabel) pakai Hough Line Transform. Return sudut dalam derajat
+    (0 = sudah lurus), atau None kalau tidak cukup garis terdeteksi utk
+    dipercaya (jangan maksa koreksi kalau tidak yakin -- gagal aman)."""
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) if image.ndim == 3 else image
+    edges = cv2.Canny(gray, 50, 150, apertureSize=3)
+
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 360, threshold=150,
+                             minLineLength=int(image.shape[1] * 0.15), maxLineGap=15)
+    if lines is None or len(lines) == 0:
+        print("  [diag deskew] tidak ada garis terdeteksi utk estimasi sudut -- skip deskew")
+        return None
+
+    angles = []
+    for line in lines:
+        x1, y1, x2, y2 = line[0]
+        dx, dy = x2 - x1, y2 - y1
+        if dx == 0:
+            continue
+        angle = np.degrees(np.arctan2(dy, dx))
+        # Hanya ambil garis yang MENDEKATI horizontal (garis tabel),
+        # buang garis vertikal/diagonal curam (bukan representasi
+        # kemiringan kertas, cuma noise/elemen lain di foto).
+        if abs(angle) <= DESKEW_MAX_ANGLE:
+            angles.append(angle)
+
+    if len(angles) < 5:
+        print(f"  [diag deskew] cuma {len(angles)} garis kandidat horizontal "
+              f"(butuh >= 5) -- skip deskew, tidak cukup yakin")
+        return None
+
+    median_angle = float(np.median(angles))
+    print(f"  [diag deskew] {len(angles)} garis kandidat, sudut median: {median_angle:.2f} derajat")
+    return median_angle
+
+
+def deskew_image(image, angle):
+    """Putar gambar sebesar `angle` derajat utk meluruskan garis tabel."""
+    h, w = image.shape[:2]
+    center = (w // 2, h // 2)
+    M = cv2.getRotationMatrix2D(center, angle, 1.0)
+    rotated = cv2.warpAffine(image, M, (w, h), flags=cv2.INTER_CUBIC,
+                              borderMode=cv2.BORDER_REPLICATE)
+    return rotated
 
 def enhance(image):
     lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
@@ -162,11 +245,71 @@ def enhance(image):
     merged = cv2.merge((l2, a, b))
     return cv2.cvtColor(merged, cv2.COLOR_LAB2BGR)
 
+def detect_rotation_90(image):
+    """Deteksi apakah gambar perlu diputar 90/180/270 derajat -- BUKAN
+    deskew halus (itu urusan detect_skew_angle), ini utk kasus foto
+    ke-capture miring 90 derajat penuh (HP dipegang landscape tapi
+    hasil tersimpan portrait, atau sebaliknya).
+
+    Strategi: coba 4 orientasi (0/90/180/270), untuk tiap orientasi
+    hitung skor "keterbacaan" berbasis proyeksi tepi horizontal (garis
+    tabel form ini didominasi garis horizontal panjang) -- orientasi
+    dengan skor proyeksi-horizontal tertinggi dianggap paling benar.
+    """
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) if image.ndim == 3 else image
+    edges = cv2.Canny(gray, 50, 150)
+
+    def horizontal_line_score(img_edges):
+        h, w = img_edges.shape[:2]
+        horiz_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (max(int(w * 0.3), 3), 1))
+        horiz = cv2.morphologyEx(img_edges, cv2.MORPH_OPEN, horiz_kernel, iterations=1)
+        return float(horiz.sum())
+
+    rotations = {
+        0: edges,
+        90: cv2.rotate(edges, cv2.ROTATE_90_CLOCKWISE),
+        180: cv2.rotate(edges, cv2.ROTATE_180),
+        270: cv2.rotate(edges, cv2.ROTATE_90_COUNTERCLOCKWISE),
+    }
+
+    scores = {angle: horizontal_line_score(rot) for angle, rot in rotations.items()}
+    print(f"  [diag rotation] skor garis-horizontal per orientasi: {scores}")
+
+    best_angle = max(scores, key=scores.get)
+
+    # Sanity check: skor terbaik harus SIGNIFIKAN lebih tinggi dari yang
+    # ke-2 terbaik -- kalau cuma beda tipis, jangan maksa koreksi (bisa
+    # jadi memang ambigu/foto sudah benar, salah putar malah merusak).
+    sorted_scores = sorted(scores.values(), reverse=True)
+    if sorted_scores[0] < sorted_scores[1] * 1.3:
+        print(f"  [diag rotation] skor terbaik tidak cukup dominan "
+              f"({sorted_scores[0]:.0f} vs {sorted_scores[1]:.0f}) -- asumsikan sudah benar (0)")
+        return 0
+
+    print(f"  [diag rotation] orientasi terpilih: {best_angle} derajat")
+    return best_angle
+
+
+def apply_rotation_90(image, angle):
+    if angle == 90:
+        return cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE)
+    elif angle == 180:
+        return cv2.rotate(image, cv2.ROTATE_180)
+    elif angle == 270:
+        return cv2.rotate(image, cv2.ROTATE_90_COUNTERCLOCKWISE)
+    return image
 
 def preprocess_image(input_path: str, output_path: str):
     image = cv2.imread(input_path)
     if image is None:
         raise FileNotFoundError(f"Tidak bisa baca gambar: {input_path}")
+
+    # LANGKAH BARU 1: koreksi rotasi kasar (90/180/270) SEBELUM auto-crop,
+    # karena auto-crop asumsikan orientasi kira-kira sudah benar.
+    rotation_angle = detect_rotation_90(image)
+    if rotation_angle != 0:
+        print(f"Rotasi {rotation_angle} derajat terdeteksi, mengoreksi orientasi...")
+        image = apply_rotation_90(image, rotation_angle)
 
     cropped, crop_success, method = auto_crop_document(image)
     if not crop_success:
@@ -174,11 +317,23 @@ def preprocess_image(input_path: str, output_path: str):
     else:
         print(f"Auto-crop berhasil (metode: {method})")
 
+    # LANGKAH BARU 2: deskew halus SETELAH crop -- jaring pengaman kedua,
+    # menangani sisa kemiringan kecil yang lolos dari crop (baik karena
+    # fallback contrast_threshold, atau edge_detection yang masih sedikit
+    # miring meski sudah diperkuat convexHull).
+    if crop_success:
+        skew_angle = detect_skew_angle(cropped)
+        if skew_angle is not None and abs(skew_angle) > 0.5:
+            print(f"Kemiringan {skew_angle:.2f} derajat terdeteksi, meluruskan (deskew)...")
+            cropped = deskew_image(cropped, skew_angle)
+        else:
+            print("Kemiringan diabaikan (sudah cukup lurus atau tidak yakin).")
+
     upscaled = upscale_if_needed(cropped)
     final = enhance(upscaled)
     cv2.imwrite(output_path, final)
     print(f"Preprocessing selesai -> {output_path} ({final.shape[1]}x{final.shape[0]})")
-    return output_path, crop_success, method   # <-- sekarang return 3 nilai, bukan 1
+    return output_path, crop_success, method
 
 
 # ============================================================
