@@ -361,7 +361,11 @@
 
     // ---------- STATE 1: upload ----------
     el('photoInput').addEventListener('change', () => {
-        el('analyzeBtn').disabled = !el('photoInput').files.length;
+        const hasFile = el('photoInput').files.length > 0;
+        el('analyzeBtn').disabled = !hasFile;
+        if (hasFile) {
+            el('analyzeBtn').click(); // auto-trigger juga di jalur fallback, sama seperti jalur capture kamera
+        }
     });
 
     el('analyzeBtn').addEventListener('click', async () => {
