@@ -508,7 +508,7 @@ EXPECTED_SUBROW_HEIGHT_FRAC = 0.0225
 SUBROW_HEIGHT_TOLERANCE = 0.40
 
 
-def detect_row_bounds_from_structure(image, y_search_range=None, x_search_range=None, kernel_frac=0.6, require_size_match=TraceFunction):
+def detect_row_bounds_from_structure(image, y_search_range=None, x_search_range=None, kernel_frac=0.6, require_size_match=True):
     h, w = image.shape[:2]
     y0f, y1f = y_search_range if y_search_range is not None else ROW_Y_SEARCH_RANGE
     y0, y1 = int(y0f * h), int(y1f * h)
