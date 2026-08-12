@@ -26,6 +26,8 @@ Penggunaan:
         [--timeout 600] [--num-ctx 16384] [--keep-temp]
 """
 
+from _typeshed import _type_checker_internals
+from _typeshed import TraceFunction
 import argparse
 import base64
 import builtins
@@ -506,16 +508,17 @@ EXPECTED_SUBROW_HEIGHT_FRAC = 0.0225
 SUBROW_HEIGHT_TOLERANCE = 0.40
 
 
-def detect_row_bounds_from_structure(image, y_search_range=None):
+def detect_row_bounds_from_structure(image, y_search_range=None, x_search_range=None, kernel_frac=0.6, require_size_match=TraceFunction):
     h, w = image.shape[:2]
     y0f, y1f = y_search_range if y_search_range is not None else ROW_Y_SEARCH_RANGE
     y0, y1 = int(y0f * h), int(y1f * h)
-    x0, x1 = int(0.14 * w), int(0.775 * w)
+    x0f, x1f = x_search_range if x_search_range is not None else (0.14, 0.775)
+    x0, x1 = int(x0f * w), int(x1f * w)
     region = image[y0:y1, x0:x1]
     gray = cv2.cvtColor(region, cv2.COLOR_BGR2GRAY) if region.ndim == 3 else region
     _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
     rw = thresh.shape[1]
-    horiz_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (max(int(rw * 0.6), 3), 1))
+    horiz_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (max(int(rw * kernel_frac), 3), 1))
     horiz_lines = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, horiz_kernel, iterations=1)
     row_sum = horiz_lines.sum(axis=1) / 255
     if row_sum.max() == 0:
@@ -548,7 +551,7 @@ def detect_row_bounds_from_structure(image, y_search_range=None):
         med = sorted(diffs)[3]
         spread = max(abs(d - med) for d in diffs)
         uniform_ok = spread <= med * 0.35
-        size_ok = abs(med - expected_px) <= expected_px * SUBROW_HEIGHT_TOLERANCE
+        size_ok = (not require_size_match) or abs(med - expected_px) <= expected_px * SUBROW_HEIGHT_TOLERANCE
         if uniform_ok and size_ok:
             valid_candidates.append((start_i, window, med, spread))
 
@@ -574,8 +577,11 @@ def detect_row_bounds_from_structure(image, y_search_range=None):
     }
     return row_bounds, lost_time_bounds
 
-def get_calibrated_row_bounds(image, y_search_range=None):
-    result = detect_row_bounds_from_structure(image, y_search_range=y_search_range)
+def get_calibrated_row_bounds(image, y_search_range=None, x_search_range=None, kernel_frac=0.6, require_size_match=True):
+    result = detect_row_bounds_from_structure(
+        image, y_search_range=y_search_range, x_search_range=x_search_range,
+        kernel_frac=kernel_frac, require_size_match=require_size_match,
+    )
     if result is None:
         print("  [diag row] auto-deteksi ROW_BOUNDS GAGAL -> fallback statis (BERISIKO)")
         lost_time_fallback = {
@@ -595,7 +601,7 @@ BLOCK_X_BOUNDS_FALLBACK = [0.1320, 0.2126, 0.2937, 0.3748, 0.4554, 0.5349, 0.614
 BLOCK_WIDTH_TOLERANCE = 0.35
 
 
-def detect_block_x_bounds_whole_table(image, row_bounds, expected_blocks=8, x_search_range=None):
+def detect_block_x_bounds_whole_table(image, row_bounds, expected_blocks=8, x_search_range=None, kernel_frac=0.5):
     h, w = image.shape[:2]
     y0f = min(v[0] for v in row_bounds.values())
     y1f = max(v[1] for v in row_bounds.values())
@@ -943,11 +949,12 @@ def run_section_closeup_pipeline(cfg: OllamaConfig, image, section: str, shift_o
         target_row_key = SHIFT_TO_ROW_KEY[shift_override]
         try:
             row_bounds, lost_time_precomputed, row_sumber = get_calibrated_row_bounds(
-                image, y_search_range=(0.0, 1.0)
+                image, y_search_range=(0.0, 1.0), x_search_range=(0.0, 1.0),
+                kernel_frac=0.15, require_size_match=False,
             )
             validate_row_bounds_source(row_sumber)
             block_x_bounds_raw, col_sumber = detect_block_x_bounds_whole_table(
-                image, row_bounds, x_search_range=(0.0, 1.0)
+                image, row_bounds, x_search_range=(0.0, 1.0), kernel_frac=0.2
             )
             block_x_bounds = get_block_x_bounds_validated(block_x_bounds_raw, col_sumber, target_row_key)
         except SectionDetectionError:
