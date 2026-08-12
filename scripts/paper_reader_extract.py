@@ -40,6 +40,7 @@ from typing import List, Optional
 import cv2
 import numpy as np
 import requests
+from PIL import Image, ImageOps
 from pydantic import BaseModel, Field, field_validator
 
 # ============================================================
@@ -140,6 +141,19 @@ def _warp(image, pts):
     M = cv2.getPerspectiveTransform(rect, dst)
     return cv2.warpPerspective(image, M, (maxWidth, maxHeight))
 
+def imread_exif_safe(path: str):
+    """Baca gambar dengan koreksi EXIF orientation dipaksa eksplisit --
+    TIDAK bergantung pada perilaku implisit cv2.imread() yg bisa beda
+    antar versi OpenCV/platform. WAJIB dipakai utk foto dari kamera HP,
+    karena JS (browser) SELALU auto-rotate sesuai EXIF saat menggambar ke
+    canvas -- kalau Python tidak konsisten melakukan hal sama, koordinat
+    titik dari JS (mode close-up grid, 4-titik manual) jadi salah acu."""
+    pil_img = Image.open(path)
+    pil_img = ImageOps.exif_transpose(pil_img)  # putar piksel sesuai EXIF, lalu buang tag EXIF-nya
+    pil_img = pil_img.convert("RGB")
+    arr = np.array(pil_img)
+    return cv2.cvtColor(arr, cv2.COLOR_RGB2BGR)
+
 def warp_from_manual_corners(image, corners_normalized):
     """corners_normalized: list 4 dict {"x":0-1,"y":0-1}, urutan BEBAS (akan
     diurutkan otomatis lewat order_points() -- sama seperti _warp() utk
@@ -183,7 +197,7 @@ def enhance(image):
 
 
 def preprocess_image(input_path: str, output_path: str):
-    image = cv2.imread(input_path)
+    image = imread_exif_safe(input_path)
     if image is None:
         raise FileNotFoundError(f"Tidak bisa baca gambar: {input_path}")
 
@@ -1032,7 +1046,7 @@ def main():
             # KECUALI kalau user menandai 4 sudut manual (khusus grid) --
             # itu di-warp DULU sebelum upscale, supaya deteksi baris/kolom
             # bekerja di atas gambar yg sudah lurus (bukan miring/perspektif).
-            raw_image = cv2.imread(str(image_path))
+            raw_image = imread_exif_safe(str(image_path))
             if raw_image is None:
                 raise FileNotFoundError(f"Tidak bisa baca gambar: {image_path}")
 
