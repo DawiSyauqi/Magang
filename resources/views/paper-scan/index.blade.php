@@ -262,7 +262,7 @@
             const guideText = cameraCaptureTarget === 'section'
                 ? 'Pegang HP TEGAK LURUS di atas kertas — foto HANYA kotak grid jam, jangan sertakan kolom keterangan di kanan'
                 : 'Posisikan kertas di dalam kotak';
-            lew boxW = canvas.width * 0.9;
+            let boxW = canvas.width * 0.9;
             let boxW = canvas.width * 0.9;
             let boxH = boxW / targetRatio;
             if (boxH > canvas.height * 0.85) {
