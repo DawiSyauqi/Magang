@@ -26,8 +26,6 @@ Penggunaan:
         [--timeout 600] [--num-ctx 16384] [--keep-temp]
 """
 
-from _typeshed import _type_checker_internals
-from _typeshed import TraceFunction
 import argparse
 import base64
 import builtins
