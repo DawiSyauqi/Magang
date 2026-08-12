@@ -85,6 +85,7 @@
             <button type="button" id="btn-open-camera-section" class="btn btn-warning">📷 Foto Bagian Ini</button>
             <button type="button" id="fallbackManualBtn" class="btn btn-outline-secondary">Lewati, Isi Manual</button>
             <a href="{{ route('dashboard') }}" class="btn btn-link text-muted">Batal, kembali ke Dashboard</a>
+            <input type="file" id="sectionPhotoInput" accept="image/*" capture="environment" class="form-control d-none">
         </div>
     </section>
     {{-- ===================== STATE 5: ERROR ===================== --}}
@@ -306,6 +307,14 @@
         }, 'image/jpeg', 0.92);
     });
 
+    el('sectionPhotoInput').addEventListener('change', () => {
+        const file = el('sectionPhotoInput').files[0];
+        if (file) {
+            submitSectionPhoto(file);
+            el('sectionPhotoInput').value = '';
+        }
+    });
+
     async function submitSectionPhoto(file) {
         const fd = new FormData();
         fd.append('photo', file);
@@ -327,8 +336,8 @@
     el('btn-open-camera-section').addEventListener('click', () => {
         cameraCaptureTarget = 'section';
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            console.warn('getUserMedia tidak didukung.');
-            alert('Kamera tidak didukung di perangkat ini.');
+            console.warn('getUserMedia tidak didukung, fallback ke input file biasa.');
+            el('sectionPhotoInput').click();
             return;
         }
         el('camera-overlay').style.display = 'block';
