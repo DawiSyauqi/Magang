@@ -258,11 +258,7 @@
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const targetRatio = cameraCaptureTarget === 'section' && currentFailingSection === 'grid' ? 4.0 : 1.4;
-            const guideText = cameraCaptureTarget === 'section'
-                ? 'Pegang HP TEGAK LURUS di atas kertas — foto HANYA kotak grid jam, jangan sertakan kolom keterangan di kanan'
-                : 'Posisikan kertas di dalam kotak';
-            let boxW = canvas.width * 0.9;
+            const targetRatio = 1.4;
             let boxW = canvas.width * 0.9;
             let boxH = boxW / targetRatio;
             if (boxH > canvas.height * 0.85) {
@@ -280,7 +276,7 @@
             ctx.setLineDash([]);
             ctx.fillStyle = 'rgba(0, 255, 100, 0.9)';
             ctx.font = '16px sans-serif';
-            ctx.fillText(guideText, boxX, boxY - 10);
+            ctx.fillText('Posisikan kertas di dalam kotak', boxX, boxY - 10);
         }
 
         resize();
@@ -295,10 +291,6 @@
         canvas.getContext('2d').drawImage(video, 0, 0);
 
         canvas.toBlob((blob) => {
-            if (!blob) {
-                console.error('Gagal membuat blob dari canvas.');
-                return;
-            }
             const file = new File([blob], `capture_${Date.now()}.jpg`, { type: 'image/jpeg' });
             closeCameraOverlay();
 
@@ -307,7 +299,11 @@
                 return;
             }
 
-            submitFullPhoto(file);
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            el('photoInput').files = dt.files;
+            el('analyzeBtn').disabled = false;
+            el('analyzeBtn').click();
         }, 'image/jpeg', 0.92);
     });
 
@@ -318,19 +314,6 @@
             el('sectionPhotoInput').value = '';
         }
     });
-
-    async function submitFullPhoto(file) {
-        const fd = new FormData();
-        fd.append('photo', file);
-        showState('loading');
-        try {
-            const data = await apiPost('/paper-scan/analyze', fd, false);
-            handlePipelineResult(data);
-        } catch (e) {
-            el('errorMessage').textContent = 'Tidak bisa menghubungi server. Cek koneksi internet.';
-            showState('error');
-        }
-    }
 
     async function submitSectionPhoto(file) {
         const fd = new FormData();
