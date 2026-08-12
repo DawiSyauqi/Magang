@@ -88,7 +88,7 @@ class PaperReaderService
      *         timeout, output bukan JSON valid, atau skrip melaporkan
      *         success=false lewat envelope-nya sendiri.
      */
-    public function extract(string $imagePath, ?string $confirmedShift = null): array
+    public function extract(string $imagePath, ?string $confirmedShift = null, ?string $sectionRetake = null): array
     {
         if (! is_file($imagePath)) {
             throw new PaperReaderException(
@@ -110,6 +110,10 @@ class PaperReaderService
         if ($confirmedShift !== null) {
             $command[] = '--shift-override';
             $command[] = $confirmedShift;
+        }
+        if ($sectionRetake !== null) {
+            $command[] = '--section';
+            $command[] = $sectionRetake;
         }
 
         try {
@@ -188,6 +192,7 @@ class PaperReaderService
         $data['_status'] = $envelope['status'];
         $data['_reason'] = $envelope['reason'] ?? null;
         $data['_meta'] = $envelope['meta'] ?? [];
+        $data['_section'] = $envelope['section'] ?? null;
 
         Log::info('PaperReaderService: pipeline selesai', [
             'image_path' => $imagePath,

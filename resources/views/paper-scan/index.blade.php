@@ -78,6 +78,15 @@
         </div>
     </section>
 
+    {{-- ===================== STATE 4b: FOTO CLOSE-UP SECTION ===================== --}}
+    <section id="state-section-photo" class="d-none">
+        <div class="alert alert-warning">
+            <p id="sectionPhotoMessage"></p>
+            <button type="button" id="btn-open-camera-section" class="btn btn-warning">📷 Foto Bagian Ini</button>
+            <button type="button" id="fallbackManualBtn" class="btn btn-outline-secondary">Lewati, Isi Manual</button>
+            <a href="{{ route('dashboard') }}" class="btn btn-link text-muted">Batal, kembali ke Dashboard</a>
+        </div>
+    </section>
     {{-- ===================== STATE 5: ERROR ===================== --}}
     <section id="state-error" class="d-none">
         <div class="alert alert-danger">
@@ -171,11 +180,12 @@
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
     let currentToken = null;
     let currentData = null; // {header, rows} hasil analyze sukses
+    let currentFailingSection = null; // 'header'|'speed_size'|'grid' -- section yg sedang ditunggu close-up-nya
     let mesinOptionsCache = null;
     let operatorOptionsCache = null;
 
     const el = (id) => document.getElementById(id);
-    const states = ['idle', 'loading', 'retake', 'shift', 'error', 'review'];
+    const states = ['idle', 'loading', 'retake', 'shift', 'section-photo', 'error', 'review'];
     function showState(name) {
         states.forEach((s) => el(`state-${s}`).classList.toggle('d-none', s !== name));
     }
@@ -184,6 +194,7 @@
     let cameraStream = null;
 
     el('btn-open-camera').addEventListener('click', async () => {
+        cameraCaptureTarget = 'full';
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             console.warn('getUserMedia tidak didukung, fallback ke input file biasa.');
             el('photoInput').click();
@@ -282,16 +293,62 @@
             const file = new File([blob], `capture_${Date.now()}.jpg`, { type: 'image/jpeg' });
             closeCameraOverlay();
 
+            if (cameraCaptureTarget === 'section') {
+                submitSectionPhoto(file);
+                return;
+            }
+
             const dt = new DataTransfer();
             dt.items.add(file);
             el('photoInput').files = dt.files;
-            el('analyzeBtn').disabled = false; // WAJIB -- inject file via DataTransfer tidak memicu event 'change', jadi enable manual di sini
+            el('analyzeBtn').disabled = false;
             el('analyzeBtn').click();
         }, 'image/jpeg', 0.92);
     });
 
-    el('btn-cancel-camera').addEventListener('click', closeCameraOverlay);
+    async function submitSectionPhoto(file) {
+        const fd = new FormData();
+        fd.append('photo', file);
+        fd.append('token', currentToken);
+        showState('loading');
+        try {
+            const data = await apiPost('/paper-scan/analyze/section-photo', fd, false);
+            handlePipelineResult(data);
+        } catch (e) {
+            el('errorMessage').textContent = 'Tidak bisa menghubungi server. Cek koneksi internet.';
+            showState('error');
+        }
+    }
 
+    el('btn-cancel-camera').addEventListener('click', closeCameraOverlay);
+    // ---------- STATE 4b: foto close-up section ----------
+    let cameraCaptureTarget = 'full'; // 'full' | 'section' -- menentukan endpoint tujuan saat capture
+
+    el('btn-open-camera-section').addEventListener('click', () => {
+        cameraCaptureTarget = 'section';
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            console.warn('getUserMedia tidak didukung.');
+            alert('Kamera tidak didukung di perangkat ini.');
+            return;
+        }
+        el('camera-overlay').style.display = 'block';
+        checkOrientationAndProceed();
+    });
+
+    el('fallbackManualBtn').addEventListener('click', () => {
+        // Lanjut ke review dgn section itu dikosongkan + ditandai perlu_review.
+        // currentData BELUM ada di titik ini kalau ini kegagalan pertama kali
+        // (sebelum sempat sukses sama sekali) -- perlu diminta dari server.
+        submitSectionFallbackManual();
+    });
+
+    async function submitSectionFallbackManual() {
+        showState('loading');
+        const data = await apiPost('/paper-scan/analyze/section-photo/fallback', {
+            token: currentToken, section: currentFailingSection,
+        });
+        handlePipelineResult(data);
+    }
     function closeCameraOverlay() {
         if (cameraStream) {
             cameraStream.getTracks().forEach(track => track.stop());
@@ -321,6 +378,14 @@
         } else if (data.status === 'needs_shift_confirmation') {
             currentToken = data.token;
             showState('shift');
+        } else if (data.status === 'needs_section_photo') {
+            currentToken = data.token;
+            currentFailingSection = data.section;
+            const retryNote = data.retry ? ' Masih belum terbaca, coba lagi lebih dekat & jelas.' : '';
+            el('sectionPhotoMessage').textContent =
+                `Bagian "${data.section_label}" tidak terbaca jelas.${retryNote} `
+                + `Foto ulang HANYA bagian ini saja (lebih dekat & jelas).`;
+            showState('section-photo');
         } else if (data.status === 'error') {
             el('errorMessage').textContent = data.message;
             showState('error');

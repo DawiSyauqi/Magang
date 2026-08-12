@@ -64,6 +64,17 @@ class PaperScanController extends Controller
             return $this->errorResponse($e);
         }
 
+        if ($raw['_status'] === 'needs_section_photo') {
+            $this->savePartialState($token, $raw);
+
+            return response()->json([
+                'status' => 'needs_section_photo',
+                'token' => $token,
+                'section' => $raw['_section'],
+                'section_label' => $this->sectionLabel($raw['_section']),
+            ]);
+        }
+
         // needs_shift_confirmation -- SIMPAN foto (Opsi A), balas token.
         if ($raw['_status'] === 'needs_confirmation' && ($raw['_reason'] ?? null) === 'shift_ambiguous') {
             return response()->json([
@@ -148,10 +159,14 @@ class PaperScanController extends Controller
             ]);
         }
 
-        if ($raw['_status'] === 'needs_retake') {
+        if ($raw['_status'] === 'needs_section_photo') {
+            $this->savePartialState($token, $raw);
+
             return response()->json([
-                'status' => 'needs_retake',
-                'message' => 'Sudut kertas tidak terdeteksi jelas. Silakan foto ulang.',
+                'status' => 'needs_section_photo',
+                'token' => $token,
+                'section' => $raw['_section'],
+                'section_label' => $this->sectionLabel($raw['_section']),
             ]);
         }
 
@@ -161,6 +176,208 @@ class PaperScanController extends Controller
         $response['preview_token'] = $token;
 
         return response()->json($response);
+    }
+
+    /**
+     * POST /paper-scan/analyze/section-photo
+     * Foto close-up 1 section saja (grid/header/speed_size) -- lihat
+     * kesepakatan Fase O-lanjutan. TIDAK lewat auto_crop_document().
+     */
+    public function analyzeSectionPhoto(Request $request): JsonResponse
+    {
+        $token = $request->input('token');
+        $partialRelative = self::TMP_DISK_DIR."/{$token}_partial.json";
+
+        if (! $token || ! Storage::disk('local')->exists($partialRelative)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Sesi foto sudah kedaluwarsa atau tidak ditemukan. Silakan foto ulang dari awal.',
+            ], 410);
+        }
+
+        $partialState = json_decode(Storage::disk('local')->get($partialRelative), true);
+        $section = $partialState['pending_section']; // SUMBER KEBENARAN dari server, bukan dari request client
+        $partialData = $partialState['data'];
+
+        $relativePath = self::TMP_DISK_DIR."/{$token}_{$section}.jpg";
+        Storage::disk('local')->putFileAs(
+            self::TMP_DISK_DIR,
+            $request->file('photo'),
+            "{$token}_{$section}.jpg"
+        );
+        $absolutePath = Storage::disk('local')->path($relativePath);
+
+        $shift = $section === 'grid' ? ($partialData['shift'] ?? null) : null;
+
+        try {
+            $raw = $this->paperReader->extract($absolutePath, confirmedShift: $shift, sectionRetake: $section);
+        } catch (PaperReaderException $e) {
+            Storage::disk('local')->delete($relativePath);
+
+            return $this->errorResponse($e);
+        }
+        Storage::disk('local')->delete($relativePath);
+
+        // Section INI masih gagal lagi -- tanpa batas retry (kesepakatan),
+        // tapi state partial TETAP section yang sama, biar UI bisa
+        // tawarkan "coba lagi" atau "lanjut manual".
+        if ($raw['_status'] === 'needs_section_photo') {
+            return response()->json([
+                'status' => 'needs_section_photo',
+                'token' => $token,
+                'section' => $section,
+                'section_label' => $this->sectionLabel($section),
+                'retry' => true,
+            ]);
+        }
+
+        // Gabungkan hasil section baru ke data partial yang sudah ada.
+        $merged = $this->mergeSectionResult($partialData, $section, $raw);
+
+        // Cek section LAIN yang mungkin masih gagal (urutan grid->header->speed_size
+        // sudah otomatis terjaga krn Python selalu cek urutan itu tiap kali
+        // dipanggil ulang lewat run_pipeline() -- TAPI mode close-up di sini
+        // TIDAK memanggil run_pipeline() penuh, jadi cek manual di PHP):
+        $stillFailing = $this->findNextFailingSection($merged, $section);
+
+        if ($stillFailing !== null) {
+            Storage::disk('local')->put($partialRelative, json_encode([
+                'pending_section' => $stillFailing,
+                'data' => $merged,
+            ], JSON_UNESCAPED_UNICODE));
+
+            return response()->json([
+                'status' => 'needs_section_photo',
+                'token' => $token,
+                'section' => $stillFailing,
+                'section_label' => $this->sectionLabel($stillFailing),
+            ]);
+        }
+
+        Storage::disk('local')->delete($partialRelative);
+
+        $response = $this->buildSuccessResponse($merged);
+        $response['preview_token'] = $token;
+
+        return response()->json($response);
+    }
+
+    /**
+     * POST /paper-scan/analyze/section-photo/fallback
+     * Operator menyerah foto ulang section ini -- lanjutkan ke review
+     * dengan section itu dikosongkan (perlu_review otomatis lewat null).
+     */
+    public function sectionPhotoFallback(Request $request): JsonResponse
+    {
+        $token = $request->input('token');
+        $section = $request->input('section');
+        $partialRelative = self::TMP_DISK_DIR."/{$token}_partial.json";
+
+        if (! Storage::disk('local')->exists($partialRelative)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Sesi foto sudah kedaluwarsa. Silakan foto ulang dari awal.',
+            ], 410);
+        }
+
+        $partialState = json_decode(Storage::disk('local')->get($partialRelative), true);
+        $merged = $partialState['data'];
+
+        $stillFailing = $this->findNextFailingSection($merged, $section);
+
+        if ($stillFailing !== null) {
+            Storage::disk('local')->put($partialRelative, json_encode([
+                'pending_section' => $stillFailing,
+                'data' => $merged,
+            ], JSON_UNESCAPED_UNICODE));
+
+            return response()->json([
+                'status' => 'needs_section_photo',
+                'token' => $token,
+                'section' => $stillFailing,
+                'section_label' => $this->sectionLabel($stillFailing),
+            ]);
+        }
+
+        Storage::disk('local')->delete($partialRelative);
+
+        $response = $this->buildSuccessResponse($merged);
+        $response['preview_token'] = $token;
+
+        return response()->json($response);
+    }
+
+    /**
+     * Gabung hasil 1 section close-up ke data partial yang sudah ada.
+     * Untuk grid: cuma isi 8 blok row_key yang relevan, baris lain di
+     * grid_waktu TETAP dari partial lama (biasanya semua null krn grid
+     * memang gagal duluan sebelum header/speed_size sempat diproses --
+     * TAPI kalau nanti urutan berubah, ini tetap aman krn merge per-index).
+     */
+    protected function mergeSectionResult(array $partialData, string $section, array $raw): array
+    {
+        $merged = $partialData;
+
+        if ($section === 'header') {
+            foreach (['tanggal', 'mesin_code', 'shift', 'operator_nama'] as $field) {
+                $merged[$field] = $raw[$field] ?? null;
+            }
+        } elseif ($section === 'speed_size') {
+            $merged['speed'] = $raw['speed'] ?? null;
+            $merged['size_raw'] = $raw['size_raw'] ?? null;
+        } elseif ($section === 'grid') {
+            $rowKey = $raw['row_key'] ?? null;
+            $gridPartial = $raw['grid_waktu_partial'] ?? [];
+            if ($rowKey !== null && ! empty($gridPartial)) {
+                $existingGrid = $merged['grid_waktu'] ?? [];
+                $byLabel = [];
+                foreach ($existingGrid as $row) {
+                    $byLabel[$row['jam_mulai']] = $row;
+                }
+                foreach ($gridPartial as $row) {
+                    $byLabel[$row['jam_mulai']] = $row; // timpa dgn hasil baru
+                }
+                $merged['grid_waktu'] = array_values($byLabel);
+            }
+        }
+
+        return $merged;
+    }
+
+    /**
+     * Urutan cek: grid -> header -> speed_size (kesepakatan Fase O).
+     * Return null kalau semua sudah lengkap.
+     */
+    /**
+     * Urutan cek: grid -> header -> speed_size (kesepakatan Fase O).
+     * $justProcessedSection: section yang BARU SAJA berhasil diproses close-up
+     * -- kalau itu 'grid', section grid TIDAK dicek ulang di sini (grid yang
+     * berhasil diproses = selesai, terlepas isinya kosong atau tidak; deteksi
+     * gagal grid HANYA lewat SectionDetectionError di Python, bukan dari isi
+     * data). Return null kalau semua sudah lengkap.
+     */
+    protected function findNextFailingSection(array $data, string $justProcessedSection): ?string
+    {
+        if ($justProcessedSection !== 'grid') {
+            // Grid belum pernah diproses ulang di sesi close-up ini -- tapi
+            // kalau sampai di titik ini, artinya grid TIDAK ada di
+            // pending_section awal (yang berarti grid sudah sukses dari
+            // run_pipeline() awal). Jadi aman untuk tidak dicek lagi di sini.
+        }
+
+        $headerAllNull = ($data['tanggal'] ?? null) === null
+            && ($data['mesin_code'] ?? null) === null
+            && ($data['shift'] ?? null) === null;
+        if ($headerAllNull) {
+            return 'header';
+        }
+
+        $speedSizeAllNull = ($data['speed'] ?? null) === null && ($data['size_raw'] ?? null) === null;
+        if ($speedSizeAllNull) {
+            return 'speed_size';
+        }
+
+        return null;
     }
 
     /**
@@ -202,6 +419,15 @@ class PaperScanController extends Controller
             'status' => 'error',
             'message' => $e->getMessage(),
         ], 502); // 502 -- kegagalan bergantung ke layanan lain (Ollama/proses Python)
+    }
+    protected function sectionLabel(string $section): string
+    {
+        return match ($section) {
+            'header' => 'Bagian Header (tanggal/mesin/shift/operator)',
+            'speed_size' => 'Bagian Size & Speed',
+            'grid' => 'Bagian Grid/Lost Time',
+            default => $section,
+        };
     }
 
 
@@ -334,6 +560,26 @@ class PaperScanController extends Controller
      * bisa menemukannya lewat token saja. Aman dipanggil meski overlay tidak
      * ada (mis. status needs_confirmation, grid belum diproses) -- diam saja.
      */
+/**
+     * Simpan data yang SUDAH berhasil (header/speed-size/grid partial)
+     * + section mana yang masih ditunggu, supaya endpoint
+     * analyzeSectionPhoto() tahu section apa yang valid diterima --
+     * TIDAK bergantung pada state JS client (lihat kesepakatan Fase O).
+     */
+    protected function savePartialState(string $token, array $raw): void
+    {
+        $partial = $raw;
+        unset($partial['_status'], $partial['_reason'], $partial['_meta'], $partial['_section']);
+
+        Storage::disk('local')->put(
+            self::TMP_DISK_DIR."/{$token}_partial.json",
+            json_encode([
+                'pending_section' => $raw['_section'],
+                'data' => $partial,
+            ], JSON_UNESCAPED_UNICODE)
+        );
+    }
+
     protected function moveOverlayIfPresent(array $raw, string $token): void
     {
         $overlaySourcePath = $raw['_meta']['overlay_image_path'] ?? null;

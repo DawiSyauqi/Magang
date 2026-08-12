@@ -54,6 +54,13 @@ def print(*args, **kwargs):  # noqa: A001 - sengaja menimpa print bawaan modul i
     kwargs.setdefault("flush", True)
     _stdout_print(*args, **kwargs)
 
+class SectionDetectionError(Exception):
+    """Dilempar saat deteksi 1 section (grid/header/speed_size) gagal-keras.
+    Beda dari Exception umum -- ditangkap terpisah di run_pipeline() supaya
+    hasil section LAIN yang sudah berhasil tidak ikut hilang."""
+    def __init__(self, section: str, message: str):
+        self.section = section
+        super().__init__(message)
 
 # ============================================================
 # 1. PREPROCESSING — auto-crop, upscale, enhance (dari Cell 4)
@@ -462,14 +469,14 @@ def _call_ollama(cfg: OllamaConfig, image, prompt: str) -> dict:
 
     return _normalize_blok_values(parsed)
 
-def extract_speed_and_size(cfg: OllamaConfig, image):
+def extract_speed_and_size(cfg: OllamaConfig, image, crop_y=None, crop_x=None):
     """Crop GENERUS yang sama dipakai utk baca 2 field sekaligus (Size +
     Speed) dalam SATU pemanggilan Ollama -- tidak nambah waktu proses
     dibanding sebelumnya (dulu cuma baca Speed, sekarang sekalian Size,
     keduanya sama-sama ada di crop yang sama)."""
     h, w = image.shape[:2]
-    y0f, y1f = DATA_TABLE_CROP_Y
-    x0f, x1f = DATA_TABLE_CROP_X
+    y0f, y1f = crop_y if crop_y is not None else DATA_TABLE_CROP_Y
+    x0f, x1f = crop_x if crop_x is not None else DATA_TABLE_CROP_X
     crop = image[int(y0f * h):int(y1f * h), int(x0f * w):int(x1f * w)]
 
     print(f"  [diag speed] crop area: y=({y0f}-{y1f}), x=({x0f}-{x1f}), shape={crop.shape}")
@@ -499,9 +506,9 @@ EXPECTED_SUBROW_HEIGHT_FRAC = 0.0225
 SUBROW_HEIGHT_TOLERANCE = 0.40
 
 
-def detect_row_bounds_from_structure(image):
+def detect_row_bounds_from_structure(image, y_search_range=None):
     h, w = image.shape[:2]
-    y0f, y1f = ROW_Y_SEARCH_RANGE
+    y0f, y1f = y_search_range if y_search_range is not None else ROW_Y_SEARCH_RANGE
     y0, y1 = int(y0f * h), int(y1f * h)
     x0, x1 = int(0.14 * w), int(0.775 * w)
     region = image[y0:y1, x0:x1]
@@ -567,9 +574,8 @@ def detect_row_bounds_from_structure(image):
     }
     return row_bounds, lost_time_bounds
 
-
-def get_calibrated_row_bounds(image):
-    result = detect_row_bounds_from_structure(image)
+def get_calibrated_row_bounds(image, y_search_range=None):
+    result = detect_row_bounds_from_structure(image, y_search_range=y_search_range)
     if result is None:
         print("  [diag row] auto-deteksi ROW_BOUNDS GAGAL -> fallback statis (BERISIKO)")
         lost_time_fallback = {
@@ -589,13 +595,14 @@ BLOCK_X_BOUNDS_FALLBACK = [0.1320, 0.2126, 0.2937, 0.3748, 0.4554, 0.5349, 0.614
 BLOCK_WIDTH_TOLERANCE = 0.35
 
 
-def detect_block_x_bounds_whole_table(image, row_bounds, expected_blocks=8):
+def detect_block_x_bounds_whole_table(image, row_bounds, expected_blocks=8, x_search_range=None):
     h, w = image.shape[:2]
     y0f = min(v[0] for v in row_bounds.values())
     y1f = max(v[1] for v in row_bounds.values())
     y0, y1 = int(y0f * h), int(y1f * h)
 
-    x_search_0, x_search_1 = int(0.08 * w), int(0.82 * w)
+    x0f, x1f = x_search_range if x_search_range is not None else (0.08, 0.82)
+    x_search_0, x_search_1 = int(x0f * w), int(x1f * w)
     table = image[y0:y1, x_search_0:x_search_1]
 
     gray = cv2.cvtColor(table, cv2.COLOR_BGR2GRAY) if table.ndim == 3 else table
@@ -662,7 +669,8 @@ def detect_block_x_bounds_whole_table(image, row_bounds, expected_blocks=8):
 
 def get_block_x_bounds_validated(block_x_bounds, sumber, row_key):
     if sumber == "fallback":
-        raise RuntimeError(
+        raise SectionDetectionError(
+            "grid",
             f"[{row_key}] Auto-deteksi kolom GAGAL, jatuh ke fallback statis -- "
             f"BERISIKO SALAH karena fallback dikalibrasi dari foto LAIN."
         )
@@ -675,7 +683,8 @@ def validate_row_bounds_source(row_sumber):
     peringatan lalu tetap lanjut pakai fallback statis (sumber bug besar
     "grid naik ke atas" yang pernah kita alami)."""
     if row_sumber == "fallback":
-        raise RuntimeError(
+        raise SectionDetectionError(
+            "grid",
             "Auto-deteksi ROW_BOUNDS GAGAL, jatuh ke fallback statis -- "
             "BERISIKO SALAH karena fallback dikalibrasi dari foto LAIN."
         )
@@ -795,7 +804,7 @@ def detect_header(cfg: OllamaConfig, image, header_bounds=(0.000, 0.125)):
     h, w = image.shape[:2]
     margin = 0.015
     hy0, hy1 = header_bounds
-    header_crop = image[0:int((hy1 + margin) * h), :]
+    header_crop = image[0:min(int((hy1 + margin) * h), h), :]
     print("Memanggil model untuk section header...")
     return _call_ollama(cfg, header_crop, HEADER_ONLY_PROMPT)
 
@@ -879,18 +888,95 @@ def run_pipeline(cfg: OllamaConfig, image, shift_override=None):
         }
 
     target_row_key = SHIFT_TO_ROW_KEY[resolved_shift]
-    result, meta, overlay_img = extract_split_by_cell(cfg, image, header_result, target_row_key)
+    try:
+        result, meta, overlay_img = extract_split_by_cell(cfg, image, header_result, target_row_key)
+    except SectionDetectionError as e:
+        print(f"Grid gagal-keras ({e}) -> minta foto close-up section 'grid'.")
+        return {
+            "status": "needs_section_photo",
+            "section": "grid",
+            "data": {**header_result, "grid_waktu": [], "size_raw": size_value},
+            "meta": {"shift_resolved": resolved_shift},
+        }
     result_data = result.model_dump()
     result_data["shift"] = resolved_shift
     result_data["size_raw"] = size_value  # PATCH: field baru, MFDowntimeExtraction tidak punya field ini (extra diabaikan pydantic saat merge di extract_split_by_cell), jadi disisipkan manual di sini setelah model_dump()
     meta["shift_source"] = shift_source
     meta["rows_processed"] = [target_row_key]
 
+    if all(result_data.get(f) is None for f in ("tanggal", "mesin_code", "shift")):
+        print("Header semua null -> minta foto close-up section 'header'.")
+        return {
+            "status": "needs_section_photo", "section": "header",
+            "data": result_data, "meta": meta,
+        }
+    if result_data.get("speed") is None and result_data.get("size_raw") is None:
+        print("Speed & Size null -> minta foto close-up section 'speed_size'.")
+        return {
+            "status": "needs_section_photo", "section": "speed_size",
+            "data": result_data, "meta": meta,
+        }
+
     envelope = {"status": "success", "data": result_data, "meta": meta}
     envelope["_overlay_img"] = overlay_img
     return envelope
 
+def run_section_closeup_pipeline(cfg: OllamaConfig, image, section: str, shift_override=None):
+    """Proses foto close-up SATU section saja. image di sini SUDAH lolos
+    upscale+enhance TAPI TIDAK lewat auto_crop_document() -- lihat main()."""
+    if section == "header":
+        data = _call_ollama(cfg, image, HEADER_ONLY_PROMPT)
+        return {"status": "success", "section": section, "data": data, "meta": {}}
 
+    if section == "speed_size":
+        speed_value, size_value = extract_speed_and_size(
+            cfg, image, crop_y=(0.0, 1.0), crop_x=(0.0, 1.0)
+        )
+        return {
+            "status": "success", "section": section,
+            "data": {"speed": speed_value, "size_raw": size_value}, "meta": {},
+        }
+
+    if section == "grid":
+        if not shift_override:
+            raise ValueError("section='grid' WAJIB disertai shift_override.")
+        target_row_key = SHIFT_TO_ROW_KEY[shift_override]
+        try:
+            row_bounds, lost_time_precomputed, row_sumber = get_calibrated_row_bounds(
+                image, y_search_range=(0.0, 1.0)
+            )
+            validate_row_bounds_source(row_sumber)
+            block_x_bounds_raw, col_sumber = detect_block_x_bounds_whole_table(
+                image, row_bounds, x_search_range=(0.0, 1.0)
+            )
+            block_x_bounds = get_block_x_bounds_validated(block_x_bounds_raw, col_sumber, target_row_key)
+        except SectionDetectionError:
+            # Gagal LAGI di foto close-up kedua -- caller (PHP) yang
+            # menawarkan opsi lanjut fallback manual, bukan Python.
+            raise
+
+        lost_time_bounds = lost_time_precomputed[target_row_key]
+        labels = ROW_BLOCK_LABELS[target_row_key]
+        blok_list = []
+        n_calls = 0
+        for block_idx in range(8):
+            blok = []
+            for cell_idx in range(6):
+                kode, ink_ratio, status = extract_cell(
+                    cfg, image, block_idx, cell_idx, block_x_bounds, lost_time_bounds)
+                if status == "dipanggil ke model":
+                    n_calls += 1
+                blok.append(kode)
+            blok_list.append({"jam_mulai": labels[block_idx], "blok": blok})
+
+        return {
+            "status": "success", "section": section,
+            "data": {"grid_waktu_partial": blok_list, "row_key": target_row_key},
+            "meta": {"row_bounds_source": row_sumber, "column_bounds_source": col_sumber,
+                     "total_cell_model_calls": n_calls},
+        }
+
+    raise ValueError(f"section tidak dikenal: {section!r}")
 
 # ============================================================
 # 8. MAIN — orkestrasi + JSON envelope ke stdout
@@ -906,6 +992,8 @@ def main():
                          help="Jangan hapus file foto_bersih_*.jpg hasil preprocessing setelah selesai.")
     parser.add_argument("--shift-override", choices=["1", "2", "3"], default=None,
                          help="Shift yang SUDAH dikonfirmasi user (skip deteksi otomatis, langsung pakai ini).")
+    parser.add_argument("--section", choices=["header", "speed_size", "grid"], default=None,
+                         help="Kalau diisi: foto INI adalah close-up 1 section saja -- skip auto_crop_document().")
     args = parser.parse_args()
     # (TIDAK ADA kode overlay di sini -- sudah dihapus, pindah ke bawah)
 
@@ -916,27 +1004,49 @@ def main():
         if not image_path.exists():
             raise FileNotFoundError(f"File tidak ditemukan: {image_path}")
 
-        clean_path = str(image_path.parent / f"foto_bersih_{image_path.stem}.jpg")
-        clean_path, crop_success, crop_method = preprocess_image(str(image_path), clean_path)
-
-        if not crop_success:
-            print("Berhenti sebelum ekstraksi AI -- minta foto ulang.")
-            envelope = {
-                "status": "needs_retake",
-                "reason": "corner_detection_failed",
-                "meta": {"elapsed_seconds": round(time.time() - t0, 1)},
-            }
-            _stdout_print(json.dumps(envelope, ensure_ascii=False))
-            return 0
-
-        image = cv2.imread(clean_path)
-        if image is None:
-            raise RuntimeError(f"Gagal baca hasil preprocessing: {clean_path}")
-
         cfg = OllamaConfig(base_url=args.ollama_url, model=args.model,
                             timeout=args.timeout, num_ctx=args.num_ctx)
 
-        envelope = run_pipeline(cfg, image, shift_override=args.shift_override)
+        if args.section:
+            # Mode close-up: TIDAK lewat auto_crop_document() sama sekali
+            # (lihat kesepakatan Fase O-lanjutan) -- cukup upscale+enhance.
+            raw_image = cv2.imread(str(image_path))
+            if raw_image is None:
+                raise FileNotFoundError(f"Tidak bisa baca gambar: {image_path}")
+            image = enhance(upscale_if_needed(raw_image))
+            clean_path = None  # tidak ada file sementara utk dihapus di finally
+            crop_method = "skipped_closeup"
+
+            try:
+                envelope = run_section_closeup_pipeline(
+                    cfg, image, args.section, shift_override=args.shift_override
+                )
+            except SectionDetectionError as e:
+                envelope = {
+                    "status": "needs_section_photo",
+                    "section": e.section,
+                    "reason": str(e),
+                    "meta": {},
+                }
+        else:
+            clean_path = str(image_path.parent / f"foto_bersih_{image_path.stem}.jpg")
+            clean_path, crop_success, crop_method = preprocess_image(str(image_path), clean_path)
+
+            if not crop_success:
+                print("Berhenti sebelum ekstraksi AI -- minta foto ulang.")
+                envelope = {
+                    "status": "needs_retake",
+                    "reason": "corner_detection_failed",
+                    "meta": {"elapsed_seconds": round(time.time() - t0, 1)},
+                }
+                _stdout_print(json.dumps(envelope, ensure_ascii=False))
+                return 0
+
+            image = cv2.imread(clean_path)
+            if image is None:
+                raise RuntimeError(f"Gagal baca hasil preprocessing: {clean_path}")
+
+            envelope = run_pipeline(cfg, image, shift_override=args.shift_override)
 
         # PATCH: kalau ada overlay image (status sukses), simpan ke file
         # DULU, ganti isi meta jadi PATH STRING, cabut key mentahnya --
