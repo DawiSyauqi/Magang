@@ -142,6 +142,18 @@ def _warp(image, pts):
     M = cv2.getPerspectiveTransform(rect, dst)
     return cv2.warpPerspective(image, M, (maxWidth, maxHeight))
 
+def warp_from_manual_corners(image, corners_normalized):
+    """corners_normalized: list 4 dict {"x":0-1,"y":0-1}, urutan BEBAS (akan
+    diurutkan otomatis lewat order_points() -- sama seperti _warp() utk
+    full-page). Dipakai KHUSUS mode close-up grid saat user menandai sendiri
+    4 sudut area grid (lihat kesepakatan Fase O-lanjutan: koreksi perspektif
+    manual, karena distorsi kamera dekat tidak selalu bisa dideteksi
+    otomatis)."""
+    h, w = image.shape[:2]
+    pts = np.array(
+        [[c["x"] * w, c["y"] * h] for c in corners_normalized], dtype="float32"
+    )
+    return _warp(image, pts)
 
 def auto_crop_document(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -1001,6 +1013,8 @@ def main():
                          help="Shift yang SUDAH dikonfirmasi user (skip deteksi otomatis, langsung pakai ini).")
     parser.add_argument("--section", choices=["header", "speed_size", "grid"], default=None,
                          help="Kalau diisi: foto INI adalah close-up 1 section saja -- skip auto_crop_document().")
+    parser.add_argument("--corners", default=None,
+                         help="JSON string 4 titik {x,y} (0-1) hasil tandai manual user -- KHUSUS section=grid.")
     args = parser.parse_args()
     # (TIDAK ADA kode overlay di sini -- sudah dihapus, pindah ke bawah)
 
@@ -1016,13 +1030,28 @@ def main():
 
         if args.section:
             # Mode close-up: TIDAK lewat auto_crop_document() sama sekali
-            # (lihat kesepakatan Fase O-lanjutan) -- cukup upscale+enhance.
+            # (lihat kesepakatan Fase O-lanjutan) -- cukup upscale+enhance,
+            # KECUALI kalau user menandai 4 sudut manual (khusus grid) --
+            # itu di-warp DULU sebelum upscale, supaya deteksi baris/kolom
+            # bekerja di atas gambar yg sudah lurus (bukan miring/perspektif).
             raw_image = cv2.imread(str(image_path))
             if raw_image is None:
                 raise FileNotFoundError(f"Tidak bisa baca gambar: {image_path}")
+
+            if args.section == "grid" and args.corners:
+                try:
+                    corners_normalized = json.loads(args.corners)
+                    raw_image = warp_from_manual_corners(raw_image, corners_normalized)
+                    crop_method = "manual_corners_warp"
+                    print("Foto close-up grid di-warp pakai 4 titik manual dari user.")
+                except (json.JSONDecodeError, KeyError, TypeError) as e:
+                    print(f"Gagal parse/pakai --corners ({e}) -- lanjut TANPA warp.")
+                    crop_method = "skipped_closeup"
+            else:
+                crop_method = "skipped_closeup"
+
             image = enhance(upscale_if_needed(raw_image))
             clean_path = None  # tidak ada file sementara utk dihapus di finally
-            crop_method = "skipped_closeup"
 
             try:
                 envelope = run_section_closeup_pipeline(

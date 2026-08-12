@@ -48,7 +48,17 @@
         </div>
         <canvas id="capture-canvas" style="display:none;"></canvas>
     </div>
-
+    <!-- Overlay penyesuaian 4-titik sudut, khusus close-up grid -->
+    <div id="corner-adjust-overlay" style="display:none; position:fixed; inset:0; z-index:10000; background:#000;">
+        <canvas id="corner-adjust-canvas" style="width:100%; height:100%; touch-action:none; display:block;"></canvas>
+        <p style="position:absolute; top:16px; left:0; right:0; text-align:center; color:white; font-size:14px;">
+            Geser 4 titik ke sudut area grid jam yang gagal terbaca
+        </p>
+        <div style="position:absolute; bottom:16px; left:0; right:0; display:flex; justify-content:center; gap:12px;">
+            <button type="button" id="btn-corner-cancel" class="btn btn-outline-light">Batal</button>
+            <button type="button" id="btn-corner-confirm" class="btn btn-success btn-lg">✓ Sudah Pas</button>
+        </div>
+    </div>
     {{-- ===================== STATE 2: LOADING ===================== --}}
     <section id="state-loading" class="d-none text-center py-5">
         <div class="spinner-border text-primary mb-3" role="status"></div>
@@ -300,7 +310,11 @@
             closeCameraOverlay();
 
             if (cameraCaptureTarget === 'section') {
-                submitSectionPhoto(file);
+                if (currentFailingSection === 'grid') {
+                    showCornerAdjustUI(file);
+                } else {
+                    submitSectionPhoto(file);
+                }
                 return;
             }
 
@@ -315,15 +329,142 @@
     el('sectionPhotoInput').addEventListener('change', () => {
         const file = el('sectionPhotoInput').files[0];
         if (file) {
-            submitSectionPhoto(file);
+            if (currentFailingSection === 'grid') {
+                showCornerAdjustUI(file);
+            } else {
+                submitSectionPhoto(file);
+            }
             el('sectionPhotoInput').value = '';
         }
     });
 
-    async function submitSectionPhoto(file) {
+    function showCornerAdjustUI(file) {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = el('corner-adjust-canvas');
+            const dpr = window.devicePixelRatio || 1;
+            const viewW = window.innerWidth;
+            const viewH = window.innerHeight;
+            canvas.width = viewW * dpr;
+            canvas.height = viewH * dpr;
+
+            // Hitung ukuran gambar ter-fit di canvas (contain), simpan offset
+            const scale = Math.min(viewW / img.width, viewH / img.height);
+            const drawW = img.width * scale;
+            const drawH = img.height * scale;
+            const offsetX = (viewW - drawW) / 2;
+            const offsetY = (viewH - drawH) / 2;
+
+            const margin = 0.12; // titik default 12% dari tepi gambar
+            cornerAdjustState = {
+                img, dpr, viewW, viewH, drawW, drawH, offsetX, offsetY, dragIdx: null, pendingFile: file,
+                points: [
+                    { x: offsetX + drawW * margin, y: offsetY + drawH * margin },             // kiri-atas
+                    { x: offsetX + drawW * (1 - margin), y: offsetY + drawH * margin },        // kanan-atas
+                    { x: offsetX + drawW * (1 - margin), y: offsetY + drawH * (1 - margin) },  // kanan-bawah
+                    { x: offsetX + drawW * margin, y: offsetY + drawH * (1 - margin) },        // kiri-bawah
+                ],
+            };
+
+            el('corner-adjust-overlay').style.display = 'block';
+            redrawCornerAdjust();
+        };
+        img.src = URL.createObjectURL(file);
+    }
+
+    function redrawCornerAdjust() {
+        const s = cornerAdjustState;
+        const canvas = el('corner-adjust-canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.setTransform(s.dpr, 0, 0, s.dpr, 0, 0);
+        ctx.clearRect(0, 0, s.viewW, s.viewH);
+        ctx.drawImage(s.img, s.offsetX, s.offsetY, s.drawW, s.drawH);
+
+        ctx.strokeStyle = 'rgba(0, 255, 100, 0.9)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        s.points.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
+        ctx.closePath();
+        ctx.stroke();
+
+        s.points.forEach((p) => {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 16, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(0, 255, 100, 0.9)';
+            ctx.fill();
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        });
+    }
+
+    function cornerAdjustPointerPos(e) {
+        const rect = el('corner-adjust-canvas').getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function initCornerAdjustDragHandlers() {
+        const canvas = el('corner-adjust-canvas');
+
+        function onDown(e) {
+            const pos = cornerAdjustPointerPos(e);
+            const s = cornerAdjustState;
+            let nearestIdx = 0, nearestDist = Infinity;
+            s.points.forEach((p, i) => {
+                const d = Math.hypot(p.x - pos.x, p.y - pos.y);
+                if (d < nearestDist) { nearestDist = d; nearestIdx = i; }
+            });
+            if (nearestDist < 60) s.dragIdx = nearestIdx;
+        }
+
+        function onMove(e) {
+            const s = cornerAdjustState;
+            if (s.dragIdx === null) return;
+            e.preventDefault();
+            const pos = cornerAdjustPointerPos(e);
+            s.points[s.dragIdx] = pos;
+            redrawCornerAdjust();
+        }
+
+        function onUp() {
+            if (cornerAdjustState) cornerAdjustState.dragIdx = null;
+        }
+
+        canvas.addEventListener('mousedown', onDown);
+        canvas.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onUp);
+        canvas.addEventListener('touchstart', onDown, { passive: true });
+        canvas.addEventListener('touchmove', onMove, { passive: false });
+        canvas.addEventListener('touchend', onUp);
+    }
+    initCornerAdjustDragHandlers();
+
+    el('btn-corner-cancel').addEventListener('click', () => {
+        el('corner-adjust-overlay').style.display = 'none';
+        cornerAdjustState = null;
+        showState('section-photo'); // kembali ke tombol foto ulang
+    });
+
+    el('btn-corner-confirm').addEventListener('click', () => {
+        const s = cornerAdjustState;
+        // Konversi posisi canvas (viewport px) -> fraksi 0-1 RELATIF KE GAMBAR ASLI
+        const normalized = s.points.map((p) => ({
+            x: Math.min(Math.max((p.x - s.offsetX) / s.drawW, 0), 1),
+            y: Math.min(Math.max((p.y - s.offsetY) / s.drawH, 0), 1),
+        }));
+        el('corner-adjust-overlay').style.display = 'none';
+        const file = s.pendingFile;
+        cornerAdjustState = null;
+        submitSectionPhoto(file, normalized);
+    });
+
+    async function submitSectionPhoto(file, corners = null) {
         const fd = new FormData();
         fd.append('photo', file);
         fd.append('token', currentToken);
+        if (corners) fd.append('corners', JSON.stringify(corners));
         showState('loading');
         try {
             const data = await apiPost('/paper-scan/analyze/section-photo', fd, false);
@@ -337,7 +478,7 @@
     el('btn-cancel-camera').addEventListener('click', closeCameraOverlay);
     // ---------- STATE 4b: foto close-up section ----------
     let cameraCaptureTarget = 'full'; // 'full' | 'section' -- menentukan endpoint tujuan saat capture
-
+    let cornerAdjustState = null; // {img, points:[{x,y}x4], dragIdx, canvasW, canvasH, pendingFile}
     el('btn-open-camera-section').addEventListener('click', () => {
         cameraCaptureTarget = 'section';
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {

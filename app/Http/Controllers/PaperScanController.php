@@ -209,8 +209,18 @@ class PaperScanController extends Controller
 
         $shift = $section === 'grid' ? ($partialData['shift'] ?? null) : null;
 
+        $corners = null;
+        if ($section === 'grid' && $request->filled('corners')) {
+            $decoded = json_decode($request->input('corners'), true);
+            if (is_array($decoded) && count($decoded) === 4) {
+                $corners = $decoded;
+            }
+        }
+
         try {
-            $raw = $this->paperReader->extract($absolutePath, confirmedShift: $shift, sectionRetake: $section);
+            $raw = $this->paperReader->extract(
+                $absolutePath, confirmedShift: $shift, sectionRetake: $section, corners: $corners
+            );
         } catch (PaperReaderException $e) {
             Storage::disk('local')->delete($relativePath);
 

@@ -88,7 +88,9 @@ class PaperReaderService
      *         timeout, output bukan JSON valid, atau skrip melaporkan
      *         success=false lewat envelope-nya sendiri.
      */
-    public function extract(string $imagePath, ?string $confirmedShift = null, ?string $sectionRetake = null): array
+    public function extract(
+        string $imagePath, ?string $confirmedShift = null, ?string $sectionRetake = null, ?array $corners = null
+    ): array
     {
         if (! is_file($imagePath)) {
             throw new PaperReaderException(
@@ -114,6 +116,10 @@ class PaperReaderService
         if ($sectionRetake !== null) {
             $command[] = '--section';
             $command[] = $sectionRetake;
+        }
+        if ($corners !== null) {
+            $command[] = '--corners';
+            $command[] = json_encode($corners);
         }
 
         try {
