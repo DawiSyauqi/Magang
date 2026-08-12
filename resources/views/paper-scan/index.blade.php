@@ -262,7 +262,7 @@
             const guideText = cameraCaptureTarget === 'section'
                 ? 'Pegang HP TEGAK LURUS di atas kertas — foto HANYA kotak grid jam, jangan sertakan kolom keterangan di kanan'
                 : 'Posisikan kertas di dalam kotak';
-            const targetRatio = 1.4;
+            lew boxW = canvas.width * 0.9;
             let boxW = canvas.width * 0.9;
             let boxH = boxW / targetRatio;
             if (boxH > canvas.height * 0.85) {
@@ -295,6 +295,10 @@
         canvas.getContext('2d').drawImage(video, 0, 0);
 
         canvas.toBlob((blob) => {
+            if (!blob) {
+                console.error('Gagal membuat blob dari canvas.');
+                return;
+            }
             const file = new File([blob], `capture_${Date.now()}.jpg`, { type: 'image/jpeg' });
             closeCameraOverlay();
 
@@ -303,11 +307,7 @@
                 return;
             }
 
-            const dt = new DataTransfer();
-            dt.items.add(file);
-            el('photoInput').files = dt.files;
-            el('analyzeBtn').disabled = false;
-            el('analyzeBtn').click();
+            submitFullPhoto(file);
         }, 'image/jpeg', 0.92);
     });
 
@@ -318,6 +318,19 @@
             el('sectionPhotoInput').value = '';
         }
     });
+
+    async function submitFullPhoto(file) {
+        const fd = new FormData();
+        fd.append('photo', file);
+        showState('loading');
+        try {
+            const data = await apiPost('/paper-scan/analyze', fd, false);
+            handlePipelineResult(data);
+        } catch (e) {
+            el('errorMessage').textContent = 'Tidak bisa menghubungi server. Cek koneksi internet.';
+            showState('error');
+        }
+    }
 
     async function submitSectionPhoto(file) {
         const fd = new FormData();
