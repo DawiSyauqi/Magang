@@ -258,6 +258,10 @@
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+            const targetRatio = cameraCaptureTarget === 'section' && currentFailingSection === 'grid' ? 4.0 : 1.4;
+            const guideText = cameraCaptureTarget === 'section'
+                ? 'Pegang HP TEGAK LURUS di atas kertas — foto HANYA kotak grid jam, jangan sertakan kolom keterangan di kanan'
+                : 'Posisikan kertas di dalam kotak';
             const targetRatio = 1.4;
             let boxW = canvas.width * 0.9;
             let boxH = boxW / targetRatio;
@@ -276,7 +280,7 @@
             ctx.setLineDash([]);
             ctx.fillStyle = 'rgba(0, 255, 100, 0.9)';
             ctx.font = '16px sans-serif';
-            ctx.fillText('Posisikan kertas di dalam kotak', boxX, boxY - 10);
+            ctx.fillText(guideText, boxX, boxY - 10);
         }
 
         resize();
