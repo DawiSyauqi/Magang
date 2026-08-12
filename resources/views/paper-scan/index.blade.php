@@ -258,7 +258,12 @@
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const targetRatio = 1.4;
+            const isGridCloseup = cameraCaptureTarget === 'section' && currentFailingSection === 'grid';
+            const targetRatio = isGridCloseup ? 4.0 : 1.4;
+            const guideText = cameraCaptureTarget === 'section'
+                ? 'Pegang HP tegak lurus, foto HANYA kotak grid jam ini'
+                : 'Posisikan kertas di dalam kotak';
+
             let boxW = canvas.width * 0.9;
             let boxH = boxW / targetRatio;
             if (boxH > canvas.height * 0.85) {
@@ -276,7 +281,7 @@
             ctx.setLineDash([]);
             ctx.fillStyle = 'rgba(0, 255, 100, 0.9)';
             ctx.font = '16px sans-serif';
-            ctx.fillText('Posisikan kertas di dalam kotak', boxX, boxY - 10);
+            ctx.fillText(guideText, boxX, boxY - 10);
         }
 
         resize();
