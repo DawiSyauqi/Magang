@@ -618,16 +618,44 @@ def detect_row_bounds_from_structure(image, y_search_range=None, x_search_range=
 
 def get_calibrated_row_bounds(image, y_search_range=None, x_search_range=None, kernel_frac=0.6, require_size_match=True):
     result = detect_row_bounds_hough(image, y_search_range=y_search_range, x_search_range=x_search_range)
-    if result is None:
-        print("  [diag row] auto-deteksi ROW_BOUNDS GAGAL -> fallback statis (BERISIKO)")
-        lost_time_fallback = {
-            rk: (ROW_BOUNDS_FALLBACK[rk][0] + (ROW_BOUNDS_FALLBACK[rk][1] - ROW_BOUNDS_FALLBACK[rk][0]) * 0.5,
-                 ROW_BOUNDS_FALLBACK[rk][1])
-            for rk in ROW_BOUNDS_FALLBACK
-        }
-        return ROW_BOUNDS_FALLBACK, lost_time_fallback, "fallback"
-    row_bounds, lost_time_bounds = result
-    return row_bounds, lost_time_bounds, "auto_structure"
+    if result is not None:
+        row_bounds, lost_time_bounds = result
+        return row_bounds, lost_time_bounds, "auto_structure_global"
+
+    print("  [diag row] Hough GLOBAL gagal -> coba mode PER-BLOK (per rentang jam)")
+    block_windows = detect_row_bounds_hough_per_block(image, y_search_range=y_search_range, x_search_range=x_search_range)
+    final_windows, meta = _validate_and_interpolate_block_windows(block_windows)
+
+    if final_windows is not None:
+        h, w = image.shape[:2]
+        print(f"  [diag row per-blok] BERHASIL: {meta}")
+
+        row_bounds_perblock = {"jam_07_15": [], "jam_15_23": [], "jam_23_07": []}
+        lost_time_perblock = {"jam_07_15": [], "jam_15_23": [], "jam_23_07": []}
+        for window in final_windows:
+            row_bounds_perblock["jam_07_15"].append((window[0] / h, window[2] / h))
+            row_bounds_perblock["jam_15_23"].append((window[2] / h, window[4] / h))
+            row_bounds_perblock["jam_23_07"].append((window[4] / h, window[6] / h))
+            lost_time_perblock["jam_07_15"].append((window[1] / h, window[2] / h))
+            lost_time_perblock["jam_15_23"].append((window[3] / h, window[4] / h))
+            lost_time_perblock["jam_23_07"].append((window[5] / h, window[6] / h))
+
+        def _median_pair(pairs):
+            los = sorted(p[0] for p in pairs)
+            his = sorted(p[1] for p in pairs)
+            mid = len(los) // 2
+            return los[mid], his[mid]
+
+        row_bounds_repr = {k: _median_pair(v) for k, v in row_bounds_perblock.items()}
+        return row_bounds_repr, lost_time_perblock, "auto_structure_per_block"
+
+    print(f"  [diag row per-blok] GAGAL JUGA ({meta}) -> fallback statis (BERISIKO)")
+    lost_time_fallback = {
+        rk: (ROW_BOUNDS_FALLBACK[rk][0] + (ROW_BOUNDS_FALLBACK[rk][1] - ROW_BOUNDS_FALLBACK[rk][0]) * 0.5,
+             ROW_BOUNDS_FALLBACK[rk][1])
+        for rk in ROW_BOUNDS_FALLBACK
+    }
+    return ROW_BOUNDS_FALLBACK, lost_time_fallback, "fallback"
 
 
 # ============================================================
@@ -871,6 +899,106 @@ def detect_row_bounds_hough(image, y_search_range=None, x_search_range=None):
     }
     return row_bounds, lost_time_bounds
 
+def detect_row_bounds_hough_per_block(image, y_search_range=None, x_search_range=None, n_blocks=8):
+    """Fallback dari detect_row_bounds_hough() KHUSUS saat versi global gagal --
+    cari 7-garis seragam SECARA TERPISAH di tiap 1/8 lebar tabel (per rentang
+    jam), bukan 1x di seluruh lebar. Alasan: foto dgn kemiringan/lengkungan
+    kertas nyata bikin Hough global gagal menyatukan garis panjang jadi 1
+    window seragam (segmen² pendek yg posisinya sedikit beda krn tilt malah
+    dianggap garis terpisah) -- versi per-blok kerja di jendela lebih kecil,
+    minLineLength diperlonggar proporsional, TIDAK butuh 1 garis lurus utuh
+    sepanjang tabel. TERBUKTI via pengujian nyata: foto yg cuma dpt 10 garis
+    kandidat scr global, dpt 5-18 garis kandidat PER BLOK.
+    Return: (list 8 elemen, tiap elemen None ATAU list 7 y absolut px)."""
+    h, w = image.shape[:2]
+    y0f, y1f = y_search_range if y_search_range is not None else ROW_Y_SEARCH_RANGE
+    x0f, x1f = x_search_range if x_search_range is not None else (0.14, 0.775)
+    y0, y1 = int(y0f * h), int(y1f * h)
+    block_w_f = (x1f - x0f) / n_blocks
+    expected_top_frac = ROW_BOUNDS_FALLBACK["jam_07_15"][0]
+
+    block_windows = [None] * n_blocks
+    for b in range(n_blocks):
+        bx0f = x0f + b * block_w_f
+        bx1f = x0f + (b + 1) * block_w_f
+        bx0, bx1 = int(bx0f * w), int(bx1f * w)
+        region = image[y0:y1, bx0:bx1]
+        if region.size == 0:
+            continue
+        gray = cv2.cvtColor(region, cv2.COLOR_BGR2GRAY) if region.ndim == 3 else region
+        edges = cv2.Canny(gray, 50, 150, apertureSize=3)
+        rh, rw = gray.shape[:2]
+        lines = cv2.HoughLinesP(edges, 1, np.pi / 360, threshold=25,
+                                 minLineLength=max(int(rw * 0.5), 10), maxLineGap=8)
+        if lines is None:
+            print(f"  [diag row per-blok] blok {b}: tidak ada garis Hough")
+            continue
+
+        ys = []
+        for l in lines:
+            lx1, ly1, lx2, ly2 = np.ravel(l)
+            angle = np.degrees(np.arctan2(ly2 - ly1, lx2 - lx1))
+            length = np.hypot(lx2 - lx1, ly2 - ly1)
+            if abs(angle) < 20 and length > rw * 0.4:
+                ys.append((ly1 + ly2) / 2)
+
+        if len(ys) < 7:
+            print(f"  [diag row per-blok] blok {b}: cuma {len(ys)} kandidat (butuh >=7)")
+            continue
+
+        clusters = _cluster_positions(ys, merge_gap=max(4, int(rh * 0.01)))
+        window = _find_uniform_window_sequential(
+            clusters, 7, spread_tolerance=0.4,
+            expected_top_frac=expected_top_frac, region_y0=y0, region_h=h,
+        )
+        if window is None:
+            print(f"  [diag row per-blok] blok {b}: {len(clusters)} cluster, tidak ada window 7-seragam")
+            continue
+
+        block_windows[b] = [y0 + wy for wy in window]
+        print(f"  [diag row per-blok] blok {b}: OK, window={[round(v,1) for v in block_windows[b]]}")
+
+    return block_windows
+
+
+def _validate_and_interpolate_block_windows(block_windows, tolerance_px=15, min_valid_blocks=6):
+    """Buang hasil blok yg 'melompat' jauh dari tetangga valid terdekatnya
+    (indikasi salah deteksi, bukan kemiringan wajar -- kemiringan asli
+    seharusnya berubah HALUS antar blok bersebelahan, bukan lompat drastis).
+    Blok yg None/dibuang diisi ulang pakai window tetangga valid TERDEKAT
+    (nearest-neighbor, BUKAN interpolasi linear penuh -- lebih sederhana &
+    aman drpd asumsi tren linear yg belum tentu benar).
+    Return: (list 8 window FINAL, dict meta) ATAU (None, dict meta) kalau
+    blok valid kurang dari min_valid_blocks."""
+    n = len(block_windows)
+    cleaned = list(block_windows)
+
+    valid_idx = [i for i, w in enumerate(cleaned) if w is not None]
+    for i in valid_idx:
+        left = next((j for j in range(i - 1, -1, -1) if cleaned[j] is not None), None)
+        right = next((j for j in range(i + 1, n) if cleaned[j] is not None), None)
+        neighbor = left if left is not None else right
+        if neighbor is None:
+            continue
+        diffs = [abs(cleaned[i][k] - cleaned[neighbor][k]) for k in range(7)]
+        max_allowed = tolerance_px * max(abs(i - neighbor), 1)
+        if max(diffs) > max_allowed:
+            print(f"  [diag row per-blok] blok {i} DIBUANG (melompat {max(diffs):.1f}px dari blok {neighbor}, batas={max_allowed:.1f}px)")
+            cleaned[i] = None
+
+    valid_idx = [i for i, w in enumerate(cleaned) if w is not None]
+    if len(valid_idx) < min_valid_blocks:
+        return None, {"valid_blocks": len(valid_idx), "total_blocks": n}
+
+    final = list(cleaned)
+    for i in range(n):
+        if final[i] is None:
+            nearest = min(valid_idx, key=lambda j: abs(j - i))
+            final[i] = cleaned[nearest]
+            print(f"  [diag row per-blok] blok {i} diinterpolasi dari blok {nearest}")
+
+    return final, {"valid_blocks": len(valid_idx), "total_blocks": n, "interpolated": n - len(valid_idx)}
+
 def detect_block_x_bounds_hough(image, row_bounds, expected_blocks=8, x_search_range=None):
     """Pengganti detect_block_x_bounds_whole_table() -- sama alasannya spt
     versi baris, pakai Hough + pencarian window TIDAK-KONTIGU (krn garis
@@ -977,17 +1105,21 @@ def build_debug_overlay(image, header_bounds, speed_bounds, block_x_bounds, lost
     cv2.putText(vis, "SPEED (area pencarian)", (10, int(sy0 * h) - 10),
                 cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 220, 255), 2)
 
-    ry0, ry1 = lost_time_bounds
-    y0px, y1px = int(ry0 * h), int(ry1 * h)
+    per_block_mode = isinstance(lost_time_bounds, list)
     for block_idx in range(8):
         bx0, bx1 = block_x_bounds[block_idx], block_x_bounds[block_idx + 1]
         x0px, x1px = int(bx0 * w), int(bx1 * w)
+        ry0, ry1 = lost_time_bounds[block_idx] if per_block_mode else lost_time_bounds
+        y0px, y1px = int(ry0 * h), int(ry1 * h)
         cv2.rectangle(vis, (x0px, y0px), (x1px, y1px), (0, 200, 0), 2)
         for cell_idx in range(1, 6):
             cx = int((bx0 + cell_idx * (bx1 - bx0) / 6) * w)
             cv2.line(vis, (cx, y0px), (cx, y1px), (0, 200, 255), 1)
 
-    cv2.putText(vis, f"GRID LOST TIME ({target_row_key})", (int(0.14 * w), y0px - 10),
+    label_ry0 = lost_time_bounds[0][0] if per_block_mode else lost_time_bounds[0]
+    label_y = int(label_ry0 * h)
+    label = f"GRID LOST TIME ({target_row_key})" + (" [PER-BLOK]" if per_block_mode else "")
+    cv2.putText(vis, label, (int(0.14 * w), label_y - 10),
                 cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 200, 0), 2)
 
     return vis
@@ -1061,9 +1193,12 @@ def extract_split_by_cell(cfg: OllamaConfig, image, header_result, target_row_ke
                 all_grid.append({"jam_mulai": label, "blok": [None] * 6})
             continue
 
-        lost_time_bounds = lost_time_precomputed[row_key]
-        print(f"\n{row_key} | Lost-time bounds: {lost_time_bounds}")
+        lost_time_entry = lost_time_precomputed[row_key]
+        per_block_mode = isinstance(lost_time_entry, list)
+        print(f"\n{row_key} | Lost-time bounds: "
+              f"{'PER-BLOK (ikuti kemiringan lokal)' if per_block_mode else lost_time_entry}")
         for block_idx in range(8):
+            lost_time_bounds = lost_time_entry[block_idx] if per_block_mode else lost_time_entry
             blok = []
             for cell_idx in range(6):
                 kode, ink_ratio, status = extract_cell(
