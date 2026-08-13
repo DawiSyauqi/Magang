@@ -748,21 +748,40 @@ def _cluster_positions(positions, merge_gap):
     return clusters
 
 
-def _find_uniform_window_sequential(clusters, n_points, spread_tolerance=0.35):
-    """Cari window KONTIGU (n_points elemen berurutan di list clusters)
-    dgn spasi paling seragam. Cocok utk baris grid (candidate lines relatif
-    sedikit & bersih). Return None kalau tidak ketemu."""
+def _find_uniform_window_sequential(clusters, n_points, spread_tolerance=0.35,
+                                     expected_top_frac=None, region_y0=None, region_h=None):
+    """Cari window KONTIGU (n_points elemen berurutan di list clusters) dgn
+    spasi paling seragam. Kalau ADA lebih dari 1 window yg sama-sama seragam
+    (kasus umum: garis grid lebih banyak dari yg dibutuhkan), window dipilih
+    berdasarkan JARAK TERDEKAT ke posisi yg diharapkan (expected_top_frac),
+    BUKAN asal ambil yg paling bawah -- itu bug lama yg terbukti salah pilih
+    window pd pengujian nyata (garis noise kebetulan seragam scr matematis
+    tapi salah scr fisik). Kalau expected_top_frac/region_y0/region_h tidak
+    diisi, fallback ke window PALING ATAS (bukan paling bawah -- lebih aman
+    drpd default lama)."""
     if len(clusters) < n_points:
         return None
-    best = None
+
+    candidates = []
     for i in range(len(clusters) - n_points + 1):
         window = clusters[i:i + n_points]
         diffs = [window[j + 1] - window[j] for j in range(n_points - 1)]
         med = sorted(diffs)[len(diffs) // 2]
         spread = max(abs(d - med) for d in diffs)
         if spread <= med * spread_tolerance:
-            best = (i, window, med)  # simpan yg paling bawah/kanan (i terbesar)
-    return best[1] if best else None
+            candidates.append(window)
+
+    if not candidates:
+        return None
+
+    if expected_top_frac is None or region_y0 is None or region_h is None:
+        return candidates[0]
+
+    def _dist_to_anchor(window):
+        top_frac = (region_y0 + window[0]) / region_h
+        return abs(top_frac - expected_top_frac)
+
+    return min(candidates, key=_dist_to_anchor)
 
 
 def _find_uniform_window_stepped(clusters, n_points, tolerance_frac=0.15):
@@ -829,7 +848,11 @@ def detect_row_bounds_hough(image, y_search_range=None, x_search_range=None):
         return None
 
     clusters = _cluster_positions(ys, merge_gap=max(6, int(rh * 0.01)))
-    window = _find_uniform_window_sequential(clusters, 7, spread_tolerance=0.35)
+    window = _find_uniform_window_sequential(
+        clusters, 7, spread_tolerance=0.35,
+        expected_top_frac=ROW_BOUNDS_FALLBACK["jam_07_15"][0],
+        region_y0=y0, region_h=h,
+    )
     if window is None:
         print(f"  [diag row-hough] {len(clusters)} garis, tidak ada window 7-seragam -> fallback")
         return None
