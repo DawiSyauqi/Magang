@@ -52,7 +52,7 @@
     <div id="corner-adjust-overlay" style="display:none; position:fixed; inset:0; z-index:10000; background:#000;">
         <canvas id="corner-adjust-canvas" style="width:100%; height:100%; touch-action:none; display:block;"></canvas>
         <p style="position:absolute; top:16px; left:0; right:0; text-align:center; color:white; font-size:14px;">
-            Geser 4 titik ke sudut area grid jam yang gagal terbaca
+            Cubit layar (pinch) untuk perbesar, geser 1 jari untuk geser tampilan,<br>lalu tarik 3 titik ke sudut baris grid yang gagal
         </p>
         <div style="position:absolute; bottom:16px; left:0; right:0; display:flex; justify-content:center; gap:12px;">
             <button type="button" id="btn-corner-cancel" class="btn btn-outline-light">Batal</button>
@@ -348,20 +348,20 @@
             canvas.width = viewW * dpr;
             canvas.height = viewH * dpr;
 
-            // Hitung ukuran gambar ter-fit di canvas (contain), simpan offset
-            const scale = Math.min(viewW / img.width, viewH / img.height);
-            const drawW = img.width * scale;
-            const drawH = img.height * scale;
-            const offsetX = (viewW - drawW) / 2;
-            const offsetY = (viewH - drawH) / 2;
+            const baseScale = Math.min(viewW / img.width, viewH / img.height);
+            const baseOffsetX = (viewW - img.width * baseScale) / 2;
+            const baseOffsetY = (viewH - img.height * baseScale) / 2;
 
-            const margin = 0.12; // titik default 12% dari tepi gambar
             cornerAdjustState = {
-                img, dpr, viewW, viewH, drawW, drawH, offsetX, offsetY, dragIdx: null, pendingFile: file,
+                img, dpr, viewW, viewH, baseScale, baseOffsetX, baseOffsetY,
+                zoom: 1, panX: 0, panY: 0, dragIdx: null, pendingFile: file,
+                pinch: null, // {startDist, startZoom, startPanX, startPanY, focalScreenX, focalScreenY}
+                // titik disimpan sbg fraksi 0-1 RELATIF KE GAMBAR ASLI (u,v) --
+                // bukan koordinat layar -- supaya tahan terhadap zoom/pan.
                 points: [
-                    { x: offsetX + drawW * margin, y: offsetY + drawH * 0.4 },        // kiri-atas
-                    { x: offsetX + drawW * (1 - margin), y: offsetY + drawH * 0.4 },  // kanan-atas
-                    { x: offsetX + drawW * margin, y: offsetY + drawH * 0.6 },
+                    { u: 0.15, v: 0.4 },  // kiri-atas
+                    { u: 0.85, v: 0.4 },  // kanan-atas
+                    { u: 0.15, v: 0.6 },  // kiri-bawah
                 ],
             };
 
@@ -371,27 +371,42 @@
         img.src = URL.createObjectURL(file);
     }
 
+    // ---- transformasi koordinat: (u,v) fraksi gambar <-> posisi layar ----
+    function uvToScreen(u, v) {
+        const s = cornerAdjustState;
+        const baseX = s.baseOffsetX + u * s.img.width * s.baseScale;
+        const baseY = s.baseOffsetY + v * s.img.height * s.baseScale;
+        return { x: baseX * s.zoom + s.panX, y: baseY * s.zoom + s.panY };
+    }
+
+    function screenToUv(x, y) {
+        const s = cornerAdjustState;
+        const baseX = (x - s.panX) / s.zoom;
+        const baseY = (y - s.panY) / s.zoom;
+        return {
+            u: (baseX - s.baseOffsetX) / (s.img.width * s.baseScale),
+            v: (baseY - s.baseOffsetY) / (s.img.height * s.baseScale),
+        };
+    }
+
     function redrawCornerAdjust() {
         const s = cornerAdjustState;
         const canvas = el('corner-adjust-canvas');
         const ctx = canvas.getContext('2d');
         ctx.setTransform(s.dpr, 0, 0, s.dpr, 0, 0);
         ctx.clearRect(0, 0, s.viewW, s.viewH);
-        ctx.drawImage(s.img, s.offsetX, s.offsetY, s.drawW, s.drawH);
 
-        // Titik ke-4 (kanan-bawah) dihitung otomatis dari 3 titik lain,
-        // supaya bentuknya SELALU jajar genjang (D = B + C - A) -- lihat
-        // alasan Fase O-lanjutan: memaksa konsistensi dgn bentuk tabel asli.
-        const [A, B, C] = s.points;
+        const topLeft = uvToScreen(0, 0);
+        ctx.drawImage(
+            s.img, topLeft.x, topLeft.y,
+            s.img.width * s.baseScale * s.zoom, s.img.height * s.baseScale * s.zoom
+        );
+
+        const [A, B, C] = s.points.map((p) => uvToScreen(p.u, p.v));
         const D = { x: B.x + C.x - A.x, y: B.y + C.y - A.y };
-        const quad = [A, B, D, C];
 
-        // Live overlay 8 blok x 6 sub-kotak, dihitung dari INTERPOLASI
-        // bilinear 4 titik (A,B,C,D) -- murni visual preview, perhitungan
-        // final presisi tetap dilakukan di Python via warpAffine.
         function lerp(p1, p2, t) { return { x: p1.x + (p2.x - p1.x) * t, y: p1.y + (p2.y - p1.y) * t }; }
         function pointAt(u, v) {
-            // u: 0-1 horizontal (kiri->kanan), v: 0-1 vertikal (atas->bawah)
             const top = lerp(A, B, u);
             const bottom = lerp(C, D, u);
             return lerp(top, bottom, v);
@@ -414,131 +429,182 @@
             }
         }
 
-        // 3 titik draggable (bukan 4 -- titik ke-4/D hanya visual)
+        // Marker KECIL (ring + titik tengah), bukan lingkaran solid besar --
+        // supaya tidak menutupi pandangan ke garis kertas di bawahnya.
         s.points.forEach((p) => {
+            const scr = uvToScreen(p.u, p.v);
             ctx.beginPath();
-            ctx.arc(p.x, p.y, 16, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(0, 255, 100, 0.9)';
-            ctx.fill();
-            ctx.strokeStyle = 'white';
+            ctx.arc(scr.x, scr.y, 10, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(0, 255, 100, 0.95)';
             ctx.lineWidth = 2;
             ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(scr.x, scr.y, 2.5, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(0, 255, 100, 0.95)';
+            ctx.fill();
         });
     }
 
-    function cornerAdjustPointerPos(e) {
+    function cornerAdjustPointerPos(touch) {
         const rect = el('corner-adjust-canvas').getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        return { x: clientX - rect.left, y: clientY - rect.top };
+        return { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
     }
 
-    /**
-     * Cari garis (tepi kontras kuat) terdekat dari posisi (x,y) di dalam
-     * radius kecil, pakai gradien horizontal/vertikal sederhana (Sobel-lite)
-     * langsung dari piksel canvas. searchRadius dlm px viewport.
-     */
-    function snapToNearestEdge(x, y, searchRadius = 25) {
+    function snapToNearestEdge(screenX, screenY, searchRadius = 22) {
         const s = cornerAdjustState;
         const canvas = el('corner-adjust-canvas');
         const ctx = canvas.getContext('2d');
 
         const r = searchRadius;
-        const sx = Math.max(0, Math.round((x - r) * s.dpr));
-        const sy = Math.max(0, Math.round((y - r) * s.dpr));
+        const sx = Math.max(0, Math.round((screenX - r) * s.dpr));
+        const sy = Math.max(0, Math.round((screenY - r) * s.dpr));
         const sw = Math.min(canvas.width - sx, Math.round(r * 2 * s.dpr));
         const sh = Math.min(canvas.height - sy, Math.round(r * 2 * s.dpr));
-        if (sw <= 2 || sh <= 2) return { x, y };
+        if (sw <= 2 || sh <= 2) return { u: screenToUv(screenX, screenY).u, v: screenToUv(screenX, screenY).v };
 
         let imgData;
-        try {
-            imgData = ctx.getImageData(sx, sy, sw, sh);
-        } catch (e) {
-            return { x, y }; // canvas tainted atau error lain -- lewati snap
-        }
+        try { imgData = ctx.getImageData(sx, sy, sw, sh); }
+        catch (e) { const uv = screenToUv(screenX, screenY); return uv; }
+
         const data = imgData.data;
         const gray = new Float32Array(sw * sh);
         for (let i = 0; i < sw * sh; i++) {
             gray[i] = 0.299 * data[i * 4] + 0.587 * data[i * 4 + 1] + 0.114 * data[i * 4 + 2];
         }
 
-        // Cari kolom (garis vertikal) & baris (garis horizontal) dgn
-        // gradien rata2 terkuat -- kandidat garis kertas.
         let bestCol = -1, bestColScore = 0;
         for (let cx = 1; cx < sw - 1; cx++) {
             let score = 0;
-            for (let cy = 0; cy < sh; cy++) {
-                score += Math.abs(gray[cy * sw + cx + 1] - gray[cy * sw + cx - 1]);
-            }
+            for (let cy = 0; cy < sh; cy++) score += Math.abs(gray[cy * sw + cx + 1] - gray[cy * sw + cx - 1]);
             if (score > bestColScore) { bestColScore = score; bestCol = cx; }
         }
         let bestRow = -1, bestRowScore = 0;
         for (let cy = 1; cy < sh - 1; cy++) {
             let score = 0;
-            for (let cx = 0; cx < sw; cx++) {
-                score += Math.abs(gray[(cy + 1) * sw + cx] - gray[(cy - 1) * sw + cx]);
-            }
+            for (let cx = 0; cx < sw; cx++) score += Math.abs(gray[(cy + 1) * sw + cx] - gray[(cy - 1) * sw + cx]);
             if (score > bestRowScore) { bestRowScore = score; bestRow = cy; }
         }
 
-        const threshold = sw * 12; // ambang minimal supaya tidak snap ke noise datar
-        const snappedX = bestColScore > threshold ? (sx / s.dpr + bestCol / s.dpr) : x;
-        const snappedY = bestRowScore > threshold ? (sy / s.dpr + bestRow / s.dpr) : y;
-        return { x: snappedX, y: snappedY };
+        const threshold = sw * 12;
+        const snappedScreenX = bestColScore > threshold ? (sx / s.dpr + bestCol / s.dpr) : screenX;
+        const snappedScreenY = bestRowScore > threshold ? (sy / s.dpr + bestRow / s.dpr) : screenY;
+        return screenToUv(snappedScreenX, snappedScreenY);
     }
 
     function initCornerAdjustDragHandlers() {
         const canvas = el('corner-adjust-canvas');
 
-        function onDown(e) {
-            const pos = cornerAdjustPointerPos(e);
+        function findNearestPointIdx(screenX, screenY) {
             const s = cornerAdjustState;
-            let nearestIdx = 0, nearestDist = Infinity;
+            let nearestIdx = -1, nearestDist = Infinity;
             s.points.forEach((p, i) => {
-                const d = Math.hypot(p.x - pos.x, p.y - pos.y);
+                const scr = uvToScreen(p.u, p.v);
+                const d = Math.hypot(scr.x - screenX, scr.y - screenY);
                 if (d < nearestDist) { nearestDist = d; nearestIdx = i; }
             });
-            if (nearestDist < 60) s.dragIdx = nearestIdx;
+            return nearestDist < 40 ? nearestIdx : -1; // target sentuh 40px, lebih besar drpd marker visual (10px)
         }
 
-        function onMove(e) {
+        function pinchDistance(t0, t1) {
+            return Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+        }
+        function pinchMidpoint(t0, t1) {
+            const rect = canvas.getBoundingClientRect();
+            return { x: (t0.clientX + t1.clientX) / 2 - rect.left, y: (t0.clientY + t1.clientY) / 2 - rect.top };
+        }
+
+        function onTouchStart(e) {
             const s = cornerAdjustState;
-            if (s.dragIdx === null) return;
+            if (e.touches.length === 2) {
+                s.dragIdx = null;
+                const dist = pinchDistance(e.touches[0], e.touches[1]);
+                const mid = pinchMidpoint(e.touches[0], e.touches[1]);
+                s.pinch = { startDist: dist, startZoom: s.zoom, startPanX: s.panX, startPanY: s.panY, focal: mid };
+            } else if (e.touches.length === 1) {
+                const pos = cornerAdjustPointerPos(e.touches[0]);
+                const idx = findNearestPointIdx(pos.x, pos.y);
+                if (idx >= 0) {
+                    s.dragIdx = idx;
+                } else {
+                    s.dragIdx = null;
+                    s.pan = { startX: pos.x, startY: pos.y, startPanX: s.panX, startPanY: s.panY };
+                }
+            }
+        }
+
+        function onTouchMove(e) {
+            const s = cornerAdjustState;
             e.preventDefault();
-            const pos = cornerAdjustPointerPos(e);
-            s.points[s.dragIdx] = snapToNearestEdge(pos.x, pos.y);
+
+            if (e.touches.length === 2 && s.pinch) {
+                const dist = pinchDistance(e.touches[0], e.touches[1]);
+                const newZoom = Math.min(Math.max(s.pinch.startZoom * (dist / s.pinch.startDist), 1), 8);
+                const f = s.pinch.focal;
+                const baseX = (f.x - s.pinch.startPanX) / s.pinch.startZoom;
+                const baseY = (f.y - s.pinch.startPanY) / s.pinch.startZoom;
+                s.zoom = newZoom;
+                s.panX = f.x - baseX * newZoom;
+                s.panY = f.y - baseY * newZoom;
+                redrawCornerAdjust();
+                return;
+            }
+
+            if (e.touches.length === 1) {
+                const pos = cornerAdjustPointerPos(e.touches[0]);
+                if (s.dragIdx !== null) {
+                    const uv = snapToNearestEdge(pos.x, pos.y);
+                    s.points[s.dragIdx] = uv;
+                    redrawCornerAdjust();
+                } else if (s.pan) {
+                    s.panX = s.pan.startPanX + (pos.x - s.pan.startX);
+                    s.panY = s.pan.startPanY + (pos.y - s.pan.startY);
+                    redrawCornerAdjust();
+                }
+            }
+        }
+
+        function onTouchEnd(e) {
+            const s = cornerAdjustState;
+            if (e.touches.length < 2) s.pinch = null;
+            if (e.touches.length === 0) { s.dragIdx = null; s.pan = null; }
+        }
+
+        canvas.addEventListener('touchstart', onTouchStart, { passive: true });
+        canvas.addEventListener('touchmove', onTouchMove, { passive: false });
+        canvas.addEventListener('touchend', onTouchEnd);
+
+        // Fallback mouse (desktop testing) -- drag titik saja, tanpa pinch/pan.
+        let mouseDragIdx = null;
+        canvas.addEventListener('mousedown', (e) => {
+            const pos = { x: e.clientX - canvas.getBoundingClientRect().left, y: e.clientY - canvas.getBoundingClientRect().top };
+            mouseDragIdx = findNearestPointIdx(pos.x, pos.y);
+        });
+        canvas.addEventListener('mousemove', (e) => {
+            if (mouseDragIdx === null || mouseDragIdx < 0) return;
+            const pos = { x: e.clientX - canvas.getBoundingClientRect().left, y: e.clientY - canvas.getBoundingClientRect().top };
+            cornerAdjustState.points[mouseDragIdx] = snapToNearestEdge(pos.x, pos.y);
             redrawCornerAdjust();
-        }
-
-        function onUp() {
-            if (cornerAdjustState) cornerAdjustState.dragIdx = null;
-        }
-
-        canvas.addEventListener('mousedown', onDown);
-        canvas.addEventListener('mousemove', onMove);
-        window.addEventListener('mouseup', onUp);
-        canvas.addEventListener('touchstart', onDown, { passive: true });
-        canvas.addEventListener('touchmove', onMove, { passive: false });
-        canvas.addEventListener('touchend', onUp);
+        });
+        window.addEventListener('mouseup', () => { mouseDragIdx = null; });
     }
     initCornerAdjustDragHandlers();
 
     el('btn-corner-cancel').addEventListener('click', () => {
         el('corner-adjust-overlay').style.display = 'none';
         cornerAdjustState = null;
-        showState('section-photo'); // kembali ke tombol foto ulang
+        showState('section-photo');
     });
 
     el('btn-corner-confirm').addEventListener('click', () => {
         const s = cornerAdjustState;
         const normalized = s.points.map((p) => ({
-            x: Math.min(Math.max((p.x - s.offsetX) / s.drawW, 0), 1),
-            y: Math.min(Math.max((p.y - s.offsetY) / s.drawH, 0), 1),
+            x: Math.min(Math.max(p.u, 0), 1),
+            y: Math.min(Math.max(p.v, 0), 1),
         }));
         el('corner-adjust-overlay').style.display = 'none';
         const file = s.pendingFile;
         cornerAdjustState = null;
-        submitSectionPhoto(file, normalized); // dikirim sbg 3 titik, field FormData tetap 'corners' -> lihat catatan PHP
+        submitSectionPhoto(file, normalized);
     });
 
     async function submitSectionPhoto(file, points = null) {
