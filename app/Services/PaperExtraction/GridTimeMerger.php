@@ -87,6 +87,13 @@ class GridTimeMerger
                 continue;
             }
 
+            if ($running !== null && $running['end'] !== $slot['start']) {
+                // Ada celah (skip slots/kosong) tanpa diakhiri 'x' ->
+                // tutup entri berjalan pada batas waktu terakhirnya.
+                $entries[] = $this->closeEntry($running);
+                $running = null;
+            }
+
             if ($running !== null && $this->converter->normalize($running['raw_code']) === $normalized) {
                 // Kode sama dgn entri berjalan -> perpanjang.
                 $running['end'] = $slot['end'];
