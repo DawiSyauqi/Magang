@@ -1,12 +1,41 @@
 @extends('layouts.app') {{-- sesuaikan nama layout Blade utama Anda --}}
 
 @section('content')
+@push('styles')
+<style>
+    :root {
+        --ir-accent: #0FD9C4;
+        --ir-accent-hover: #0BC1AE;
+        --ir-accent-light: rgba(15, 217, 196, .12);
+        --ir-cyan: #22E1FF;
+        --ir-green: #00E68A;
+        --ir-amber: #FFB020;
+        --ir-coral: #FF4D6A;
+    }
+    .ir-card { border: none; border-radius: 14px; box-shadow: 0 2px 10px rgba(28,30,33,.06); }
+    .ir-btn-primary {
+        background-color: var(--ir-accent); border-color: var(--ir-accent);
+        border-radius: 999px; color: #fff; font-weight: 600;
+    }
+    .ir-btn-primary:hover { background-color: var(--ir-accent-hover); border-color: var(--ir-accent-hover); }
+    .ir-badge { border-radius: 999px; padding: .3rem .7rem; font-size: .75rem; font-weight: 600; }
+    .ir-badge-review { background-color: rgba(255,176,32,.15); color: #B5780B; }
+    .ir-badge-ok { background-color: rgba(0,230,138,.15); color: #0A9A5C; }
+    .ir-icon-circle {
+        width: 48px; height: 48px; border-radius: 50%;
+        background-color: var(--ir-accent-light); color: var(--ir-accent);
+        display: inline-flex; align-items: center; justify-content: center; font-size: 1.4rem;
+    }
+</style>
+@endpush
 <div class="d-flex align-items-center justify-content-between px-3 px-md-4 py-2" style="background-color: var(--dt-charcoal);">
     <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-2 text-white text-decoration-none">
         <i class="bi bi-arrow-left"></i>
         <span class="fw-semibold small">Kembali ke Dashboard</span>
     </a>
-    <span class="text-white-50 small d-none d-md-inline">Ambil Foto Kertas</span>
+    <span class="text-white-50 small d-none d-md-inline">
+        <i class="bi bi-stars" style="color: var(--ir-accent);"></i> AI Baca Kertas
+    </span>
 </div>
 <div class="container py-3" style="max-width: 900px;">
     <h4 class="mb-3">Ambil Foto Kertas — Laporan Proses Drawing Harian</h4>
@@ -14,14 +43,15 @@
     {{-- ===================== STATE 1: IDLE (form upload) ===================== --}}
     
     <section id="state-idle">
-        <div class="card">
+        <div class="card ir-card">
             <div class="card-body text-center py-5">
-                <button type="button" id="btn-open-camera" class="btn btn-primary btn-lg mb-3">
-                    📷 Ambil Foto
+                <div class="ir-icon-circle mb-3"><i class="bi bi-camera"></i></div>
+                <button type="button" id="btn-open-camera" class="btn ir-btn-primary btn-lg mb-3 px-4">
+                    Ambil Foto
                 </button>
                 <div class="mb-3">
                     <input type="file" id="photoInput" accept="image/*" capture="environment" class="form-control" style="display:none;">
-                    <button id="analyzeBtn" class="btn btn-primary btn-lg d-none" disabled>Analisa Foto</button>
+                    <button id="analyzeBtn" class="btn ir-btn-primary btn-lg d-none px-4" disabled>Analisa Foto</button>
                 </div>
                 <div class="mt-3">
                     <a href="{{ route('dashboard') }}" class="btn btn-link text-muted">Batal, kembali ke Dashboard</a>
@@ -61,7 +91,7 @@
     </div>
     {{-- ===================== STATE 2: LOADING ===================== --}}
     <section id="state-loading" class="d-none text-center py-5">
-        <div class="spinner-border text-primary mb-3" role="status"></div>
+        <div class="spinner-border mb-3" style="color: var(--ir-accent);" role="status"></div>
         <p>Sedang membaca kertas... (bisa sampai beberapa menit, mohon tunggu)</p>
     </section>
 
@@ -179,7 +209,7 @@
         <a href="{{ route('dashboard') }}" class="btn btn-primary">Kembali ke Dashboard</a>
     </div>
 
-    <button id="saveAllBtn" class="btn btn-success btn-lg" disabled>Simpan Semua</button>
+    <button id="saveAllBtn" class="btn ir-btn-primary btn-lg" disabled>Simpan Semua</button>
 </section>
 
 </div>
@@ -988,7 +1018,7 @@
                             <option value="">-- pilih kategori dulu --</option>
                         </select>
                     </td>
-                    <td>${perluReview ? '<span class="badge bg-danger">Perlu Review</span>' : '<span class="badge bg-success">OK</span>'}</td>
+                    <td>${perluReview ? '<span class="ir-badge ir-badge-review">Perlu Review</span>' : '<span class="ir-badge ir-badge-ok">OK</span>'}</td>
                     <td><button class="btn btn-sm btn-outline-danger delete-row-btn" data-idx="${idx}">✕</button></td>
                     <td><button class="btn btn-sm btn-outline-secondary btn-preview-img" type="button">🖼</button></td>
                 </tr>`;
