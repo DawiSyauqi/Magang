@@ -154,6 +154,26 @@
         </div>
     </div>
 
+    <!-- Modal Preview Gambar -->
+    <div class="modal fade" id="previewImageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
+            <div class="modal-content ir-card" style="overflow: hidden;">
+                <div class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom">
+                    <span class="fw-semibold small">Preview Foto</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="d-flex align-items-center justify-content-center bg-light" style="min-height: 300px; max-height: 75vh; overflow: auto;">
+                    <img id="previewImageEl" src="" alt="Preview foto kertas" style="max-width: 100%; max-height: 75vh; object-fit: contain; cursor: zoom-in;">
+                </div>
+                <div class="d-flex justify-content-end gap-2 px-3 py-2 border-top">
+                    <a id="previewImageOpenNewTab" href="#" target="_blank" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-box-arrow-up-right"></i> Buka di tab baru
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card mb-3">
         <div class="card-header">2. Info Umum</div>
         <div class="card-body row g-3">
@@ -990,47 +1010,63 @@
     let kategoriOptionsCache = null;
 
     async function renderRows(rows) {
-        el('rowCount').textContent = rows.length;
-        if (!kategoriOptionsCache) kategoriOptionsCache = await apiGet('/referensi/problem-kategori');
+    el('rowCount').textContent = rows.length;
 
-        el('rowsTableBody').innerHTML = rows.map((row, idx) => {
-            const perluReview = row._review.perlu_review;
-            const alasanTitle = (row._review.alasan || []).join(' | ');
-            const jamMulai = row.Time_Start ? row.Time_Start.substring(11, 16) : '';
-            const jamSelesai = row.Time_End ? row.Time_End.substring(11, 16) : '';
-            const kategoriOpts = '<option value="">-- pilih --</option>' +
-                kategoriOptionsCache.map(k =>
-                    `<option value="${k.kode}" ${row.ProblemCode === k.kode ? 'selected' : ''}>${k.kode} — ${k.nama}</option>`
-                ).join('');
-
-            return `
-                <tr class="${perluReview ? 'table-danger' : ''}" data-idx="${idx}" title="${alasanTitle}">
-                    <td>${idx + 1}</td>
-                    <td><input type="time" class="form-control form-control-sm js-time-start" data-idx="${idx}" value="${jamMulai}"></td>
-                    <td><input type="time" class="form-control form-control-sm js-time-end" data-idx="${idx}" value="${jamSelesai}"></td>
-                    <td>${row.Time_Total ?? '-'}</td>
-                    <td>
-                        <select class="form-select form-select-sm js-row-kategori" data-idx="${idx}">${kategoriOpts}</select>
-                        <small class="text-muted"><code>${row._raw_code}</code></small>
-                    </td>
-                    <td>
-                        <select class="form-select form-select-sm js-row-detail" data-idx="${idx}" ${row.ProblemCode ? '' : 'disabled'}>
-                            <option value="">-- pilih kategori dulu --</option>
-                        </select>
-                    </td>
-                    <td>${perluReview ? '<span class="ir-badge ir-badge-review">Perlu Review</span>' : '<span class="ir-badge ir-badge-ok">OK</span>'}</td>
-                    <td><button class="btn btn-sm btn-outline-danger delete-row-btn" data-idx="${idx}">✕</button></td>
-                    <td><button class="btn btn-sm btn-outline-secondary btn-preview-img" type="button">🖼</button></td>
-                </tr>`;
-        }).join('');
-
-        // preload detail utk baris yg sudah punya ProblemCode dari AI
-        for (const row of rows) {
-            if (row.ProblemCode) await loadRowDetailOptions(rows.indexOf(row), row.ProblemCode, row.Problem_Desc);
-        }
-
-        bindRowEvents(rows);
+    // [BARU] State kosong — tidak ada baris downtime terdeteksi
+    if (!rows || rows.length === 0) {
+        el('rowsTableBody').innerHTML = `
+            <tr><td colspan="9" class="text-center py-5 border-0">
+                <i class="bi bi-file-earmark-x" style="font-size: 2rem; color: var(--ir-accent);"></i>
+                <p class="text-muted small mt-2 mb-0">Belum ada data downtime terdeteksi dari foto ini.</p>
+            </td></tr>`;
+        return;
     }
+
+    if (!kategoriOptionsCache) kategoriOptionsCache = await apiGet('/referensi/problem-kategori');
+
+    el('rowsTableBody').innerHTML = rows.map((row, idx) => {
+        const perluReview = row._review.perlu_review;
+        const alasanTitle = (row._review.alasan || []).join(' | ');
+        const jamMulai = row.Time_Start ? row.Time_Start.substring(11, 16) : '';
+        const jamSelesai = row.Time_End ? row.Time_End.substring(11, 16) : '';
+        const kategoriOpts = '<option value="">-- pilih --</option>' +
+            kategoriOptionsCache.map(k =>
+                `<option value="${k.kode}" ${row.ProblemCode === k.kode ? 'selected' : ''}>${k.kode} — ${k.nama}</option>`
+            ).join('');
+
+        return `
+            <tr class="${perluReview ? 'table-danger' : ''}" data-idx="${idx}" title="${alasanTitle}">
+                <td>${idx + 1}</td>
+                <td><input type="time" class="form-control form-control-sm js-time-start" data-idx="${idx}" value="${jamMulai}"></td>
+                <td><input type="time" class="form-control form-control-sm js-time-end" data-idx="${idx}" value="${jamSelesai}"></td>
+                <td>${row.Time_Total ?? '-'}</td>
+                <td>
+                    <select class="form-select form-select-sm js-row-kategori" data-idx="${idx}">${kategoriOpts}</select>
+                    <small class="text-muted"><code>${row._raw_code}</code></small>
+                </td>
+                <td>
+                    <select class="form-select form-select-sm js-row-detail" data-idx="${idx}" ${row.ProblemCode ? '' : 'disabled'}>
+                        <option value="">-- pilih kategori dulu --</option>
+                    </select>
+                </td>
+                <td>${perluReview ? '<span class="ir-badge ir-badge-review">Perlu Review</span>' : '<span class="ir-badge ir-badge-ok">OK</span>'}</td>
+                <td><button class="btn btn-sm btn-outline-danger delete-row-btn" data-idx="${idx}">✕</button></td>
+                <td><button class="btn btn-sm btn-outline-secondary btn-preview-img" type="button"><i class="bi bi-image"></i></button></td>
+            </tr>`;
+    }).join('');
+
+    // preload detail utk baris yg sudah punya ProblemCode dari AI
+    for (const row of rows) {
+        if (row.ProblemCode) await loadRowDetailOptions(rows.indexOf(row), row.ProblemCode, row.Problem_Desc);
+    }
+
+    bindRowEvents(rows);
+}
+
+    el('previewImageEl').addEventListener('click', function () {
+        this.style.maxWidth = this.style.maxWidth === 'none' ? '100%' : 'none';
+        this.style.cursor = this.style.cursor === 'zoom-out' ? 'zoom-in' : 'zoom-out';
+    });
 
     el('rowsTableBody').addEventListener('click', (e) => {
         if (!e.target.classList.contains('btn-preview-img')) return;
@@ -1038,7 +1074,11 @@
             alert('Foto tidak tersedia untuk ditinjau.');
             return;
         }
-        window.open(`/paper-scan/preview/${currentData.preview_token}`, '_blank');
+        const url = `/paper-scan/preview/${currentData.preview_token}`;
+        el('previewImageEl').src = url;
+        el('previewImageOpenNewTab').href = url;
+        const modal = bootstrap.Modal.getOrCreateInstance(el('previewImageModal'));
+        modal.show();
     });
 
     async function loadRowDetailOptions(idx, kategoriKode, selectedDesc = null) {

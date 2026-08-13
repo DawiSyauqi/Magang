@@ -617,10 +617,7 @@ def detect_row_bounds_from_structure(image, y_search_range=None, x_search_range=
     return row_bounds, lost_time_bounds
 
 def get_calibrated_row_bounds(image, y_search_range=None, x_search_range=None, kernel_frac=0.6, require_size_match=True):
-    result = detect_row_bounds_from_structure(
-        image, y_search_range=y_search_range, x_search_range=x_search_range,
-        kernel_frac=kernel_frac, require_size_match=require_size_match,
-    )
+    result = detect_row_bounds_hough(image, y_search_range=y_search_range, x_search_range=x_search_range)
     if result is None:
         print("  [diag row] auto-deteksi ROW_BOUNDS GAGAL -> fallback statis (BERISIKO)")
         lost_time_fallback = {
@@ -734,7 +731,171 @@ def validate_row_bounds_source(row_sumber):
             "BERISIKO SALAH karena fallback dikalibrasi dari foto LAIN."
         )
 
+def _cluster_positions(positions, merge_gap):
+    """Gabung posisi (y atau x) yg berdekatan (<merge_gap) jadi 1 titik
+    (rata-rata). Dipakai stlh Hough Transform, dimana 1 garis fisik sering
+    terdeteksi sbg beberapa segmen kecil berdekatan."""
+    positions = sorted(positions)
+    clusters = []
+    cur = [positions[0]]
+    for p in positions[1:]:
+        if p - cur[-1] > merge_gap:
+            clusters.append(sum(cur) / len(cur))
+            cur = [p]
+        else:
+            cur.append(p)
+    clusters.append(sum(cur) / len(cur))
+    return clusters
 
+
+def _find_uniform_window_sequential(clusters, n_points, spread_tolerance=0.35):
+    """Cari window KONTIGU (n_points elemen berurutan di list clusters)
+    dgn spasi paling seragam. Cocok utk baris grid (candidate lines relatif
+    sedikit & bersih). Return None kalau tidak ketemu."""
+    if len(clusters) < n_points:
+        return None
+    best = None
+    for i in range(len(clusters) - n_points + 1):
+        window = clusters[i:i + n_points]
+        diffs = [window[j + 1] - window[j] for j in range(n_points - 1)]
+        med = sorted(diffs)[len(diffs) // 2]
+        spread = max(abs(d - med) for d in diffs)
+        if spread <= med * spread_tolerance:
+            best = (i, window, med)  # simpan yg paling bawah/kanan (i terbesar)
+    return best[1] if best else None
+
+
+def _find_uniform_window_stepped(clusters, n_points, tolerance_frac=0.15):
+    """Cari window TIDAK HARUS kontigu (skip beberapa cluster antar titik) --
+    cocok utk kolom blok jam, dimana candidate lines JAUH lebih padat
+    (tercampur dgn garis sub-kotak 10 menit). Preferensi: spasi PALING
+    BESAR di antara semua window valid yg ditemukan (blok jam pasti lebih
+    lebar drpd sub-kotak)."""
+    best = None
+    for i in range(len(clusters)):
+        for j in range(i + 1, len(clusters)):
+            spacing = clusters[j] - clusters[i]
+            if spacing <= 0:
+                continue
+            window = [clusters[i], clusters[j]]
+            ok = True
+            for k in range(2, n_points):
+                target = clusters[i] + k * spacing
+                nearest = min(clusters, key=lambda c: abs(c - target))
+                if abs(nearest - target) > spacing * tolerance_frac:
+                    ok = False
+                    break
+                window.append(nearest)
+            if ok and len(window) == n_points:
+                if best is None or spacing > best[1]:
+                    best = (window, spacing)
+    return best[0] if best else None
+
+def detect_row_bounds_hough(image, y_search_range=None, x_search_range=None):
+    """Pengganti detect_row_bounds_from_structure() yg TOLERAN kemiringan --
+    pakai Hough Transform (deteksi garis pd sudut berapa pun), bukan
+    morphological kernel horizontal murni (yg cuma tangkap garis 0° persis).
+    Terbukti via pengujian: berhasil menemukan 7-garis seragam bahkan dari
+    foto dgn distorsi perspektif berat, TANPA perlu warp/deskew dulu."""
+    h, w = image.shape[:2]
+    y0f, y1f = y_search_range if y_search_range is not None else ROW_Y_SEARCH_RANGE
+    x0f, x1f = x_search_range if x_search_range is not None else (0.14, 0.775)
+    y0, y1 = int(y0f * h), int(y1f * h)
+    x0, x1 = int(x0f * w), int(x1f * w)
+    region = image[y0:y1, x0:x1]
+    if region.size == 0:
+        return None
+
+    gray = cv2.cvtColor(region, cv2.COLOR_BGR2GRAY) if region.ndim == 3 else region
+    edges = cv2.Canny(gray, 50, 150, apertureSize=3)
+    rh, rw = gray.shape[:2]
+
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 360, threshold=40,
+                             minLineLength=int(rw * 0.15), maxLineGap=10)
+    if lines is None:
+        print("  [diag row-hough] tidak ada garis terdeteksi Hough -> fallback")
+        return None
+
+    ys = []
+    for l in lines:
+        lx1, ly1, lx2, ly2 = l[0]
+        angle = np.degrees(np.arctan2(ly2 - ly1, lx2 - lx1))
+        length = np.hypot(lx2 - lx1, ly2 - ly1)
+        if abs(angle) < 15 and length > rw * 0.1:  # toleransi miring +-15 derajat
+            ys.append((ly1 + ly2) / 2)
+
+    if len(ys) < 7:
+        print(f"  [diag row-hough] hanya {len(ys)} kandidat garis horizontal -> fallback")
+        return None
+
+    clusters = _cluster_positions(ys, merge_gap=max(6, int(rh * 0.01)))
+    window = _find_uniform_window_sequential(clusters, 7, spread_tolerance=0.35)
+    if window is None:
+        print(f"  [diag row-hough] {len(clusters)} garis, tidak ada window 7-seragam -> fallback")
+        return None
+
+    print(f"  [diag row-hough] window 7-garis ditemukan via Hough: {[round(x) for x in window]}")
+    y_abs = [y0 + ly for ly in window]
+    row_bounds = {
+        "jam_07_15": (y_abs[0] / h, y_abs[2] / h),
+        "jam_15_23": (y_abs[2] / h, y_abs[4] / h),
+        "jam_23_07": (y_abs[4] / h, y_abs[6] / h),
+    }
+    lost_time_bounds = {
+        "jam_07_15": (y_abs[1] / h, y_abs[2] / h),
+        "jam_15_23": (y_abs[3] / h, y_abs[4] / h),
+        "jam_23_07": (y_abs[5] / h, y_abs[6] / h),
+    }
+    return row_bounds, lost_time_bounds
+
+def detect_block_x_bounds_hough(image, row_bounds, expected_blocks=8, x_search_range=None):
+    """Pengganti detect_block_x_bounds_whole_table() -- sama alasannya spt
+    versi baris, pakai Hough + pencarian window TIDAK-KONTIGU (krn garis
+    sub-kotak 10 menit jauh lebih padat drpd garis blok jam)."""
+    h, w = image.shape[:2]
+    y0f = min(v[0] for v in row_bounds.values())
+    y1f = max(v[1] for v in row_bounds.values())
+    y0, y1 = int(y0f * h), int(y1f * h)
+    x0f, x1f = x_search_range if x_search_range is not None else (0.08, 0.82)
+    x0, x1 = int(x0f * w), int(x1f * w)
+
+    table = image[y0:y1, x0:x1]
+    if table.size == 0:
+        return BLOCK_X_BOUNDS_FALLBACK, "fallback"
+
+    gray = cv2.cvtColor(table, cv2.COLOR_BGR2GRAY) if table.ndim == 3 else table
+    edges = cv2.Canny(gray, 50, 150, apertureSize=3)
+    th, tw = gray.shape[:2]
+
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 360, threshold=40,
+                             minLineLength=20, maxLineGap=6)
+    if lines is None:
+        print("  [diag col-hough] tidak ada garis terdeteksi -> fallback")
+        return BLOCK_X_BOUNDS_FALLBACK, "fallback"
+
+    xs = []
+    for l in lines:
+        lx1, ly1, lx2, ly2 = l[0]
+        angle = np.degrees(np.arctan2(ly2 - ly1, lx2 - lx1))
+        ymin, ymax = min(ly1, ly2), max(ly1, ly2)
+        overlap = min(ymax, th) - max(ymin, 0)
+        ang_from_vert = abs(abs(angle) - 90)
+        if ang_from_vert < 25 and overlap > 15:  # toleransi miring +-25 derajat dari vertikal
+            xs.append((lx1 + lx2) / 2)
+
+    if len(xs) < expected_blocks + 1:
+        print(f"  [diag col-hough] hanya {len(xs)} kandidat garis vertikal -> fallback")
+        return BLOCK_X_BOUNDS_FALLBACK, "fallback"
+
+    clusters = _cluster_positions(xs, merge_gap=max(8, int(tw * 0.005)))
+    window = _find_uniform_window_stepped(clusters, expected_blocks + 1, tolerance_frac=0.15)
+    if window is None:
+        print(f"  [diag col-hough] {len(clusters)} garis, tidak ada window {expected_blocks+1}-seragam -> fallback")
+        return BLOCK_X_BOUNDS_FALLBACK, "fallback"
+
+    print(f"  [diag col-hough] window {expected_blocks+1}-garis ditemukan via Hough: {[round(x) for x in window]}")
+    cols = [(x0 + lx) / w for lx in window]
+    return cols, "auto_hough"
 # ============================================================
 # 7. MODE E — crop per-kotak-kecil (dari Cell 47/49)
 # ============================================================
@@ -860,7 +1021,7 @@ def extract_split_by_cell(cfg: OllamaConfig, image, header_result, target_row_ke
     print(f"ROW_BOUNDS terkalibrasi via: {row_sumber}")
     validate_row_bounds_source(row_sumber)
 
-    block_x_bounds_raw, col_sumber = detect_block_x_bounds_whole_table(image, row_bounds)
+    block_x_bounds_raw, col_sumber = detect_block_x_bounds_hough(image, row_bounds)
     print(f"block_x_bounds terkalibrasi via: {col_sumber}")
     block_x_bounds = get_block_x_bounds_validated(block_x_bounds_raw, col_sumber, "whole_table")
 
