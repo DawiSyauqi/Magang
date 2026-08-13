@@ -818,7 +818,7 @@ def detect_row_bounds_hough(image, y_search_range=None, x_search_range=None):
 
     ys = []
     for l in lines:
-        lx1, ly1, lx2, ly2 = l[0]
+        lx1, ly1, lx2, ly2 = np.ravel(l)
         angle = np.degrees(np.arctan2(ly2 - ly1, lx2 - lx1))
         length = np.hypot(lx2 - lx1, ly2 - ly1)
         if abs(angle) < 15 and length > rw * 0.1:  # toleransi miring +-15 derajat
@@ -875,7 +875,7 @@ def detect_block_x_bounds_hough(image, row_bounds, expected_blocks=8, x_search_r
 
     xs = []
     for l in lines:
-        lx1, ly1, lx2, ly2 = l[0]
+        lx1, ly1, lx2, ly2 = np.ravel(l)
         angle = np.degrees(np.arctan2(ly2 - ly1, lx2 - lx1))
         ymin, ymax = min(ly1, ly2), max(ly1, ly2)
         overlap = min(ymax, th) - max(ymin, 0)
