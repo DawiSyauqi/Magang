@@ -89,7 +89,7 @@ class PaperReaderService
      *         success=false lewat envelope-nya sendiri.
      */
     public function extract(
-        string $imagePath, ?string $confirmedShift = null, ?string $sectionRetake = null, ?array $corners = null
+        string $imagePath, ?string $confirmedShift = null, ?string $sectionRetake = null, ?array $points = null
     ): array
     {
         if (! is_file($imagePath)) {
@@ -117,9 +117,9 @@ class PaperReaderService
             $command[] = '--section';
             $command[] = $sectionRetake;
         }
-        if ($corners !== null) {
-            $command[] = '--corners';
-            $command[] = json_encode($corners);
+        if ($points !== null) {
+            $command[] = '--points';
+            $command[] = json_encode($points);
         }
 
         try {

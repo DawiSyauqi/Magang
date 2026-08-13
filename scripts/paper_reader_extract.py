@@ -154,18 +154,33 @@ def imread_exif_safe(path: str):
     arr = np.array(pil_img)
     return cv2.cvtColor(arr, cv2.COLOR_RGB2BGR)
 
-def warp_from_manual_corners(image, corners_normalized):
-    """corners_normalized: list 4 dict {"x":0-1,"y":0-1}, urutan BEBAS (akan
-    diurutkan otomatis lewat order_points() -- sama seperti _warp() utk
-    full-page). Dipakai KHUSUS mode close-up grid saat user menandai sendiri
-    4 sudut area grid (lihat kesepakatan Fase O-lanjutan: koreksi perspektif
-    manual, karena distorsi kamera dekat tidak selalu bisa dideteksi
-    otomatis)."""
+def warp_from_3_points(image, points_normalized):
+    """points_normalized: 3 titik {x,y} (0-1) urutan [kiri-atas, kanan-atas,
+    kiri-bawah]. HANYA affine (rotasi+skala), BUKAN perspektif penuh --
+    cukup utk kemiringan kecil hasil foto tangan. Dipakai KHUSUS mode
+    close-up grid: operator menandai PERSIS baris 'Lost time' yang gagal
+    saja, hasil warp = 1 baris grid siap dibagi rata (lihat
+    compute_uniform_block_x_bounds), TANPA deteksi garis apa pun."""
     h, w = image.shape[:2]
-    pts = np.array(
-        [[c["x"] * w, c["y"] * h] for c in corners_normalized], dtype="float32"
-    )
-    return _warp(image, pts)
+    src = np.array([
+        [points_normalized[0]["x"] * w, points_normalized[0]["y"] * h],
+        [points_normalized[1]["x"] * w, points_normalized[1]["y"] * h],
+        [points_normalized[2]["x"] * w, points_normalized[2]["y"] * h],
+    ], dtype="float32")
+
+    width = max(int(np.linalg.norm(src[1] - src[0])), 10)
+    height = max(int(np.linalg.norm(src[2] - src[0])), 10)
+
+    dst = np.array([[0, 0], [width - 1, 0], [0, height - 1]], dtype="float32")
+    M = cv2.getAffineTransform(src, dst)
+    return cv2.warpAffine(image, M, (width, height))
+
+
+def compute_uniform_block_x_bounds(n_blocks=8):
+    """Bagi lebar frame (0-1) jadi n_blocks blok SAMA RATA -- TIDAK ada
+    deteksi garis sama sekali. Valid krn tabel kertas printed presisi rata,
+    ASALKAN batas luar (hasil warp_from_3_points) sudah benar."""
+    return [i / n_blocks for i in range(n_blocks + 1)]
 
 def auto_crop_document(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -951,7 +966,7 @@ def run_pipeline(cfg: OllamaConfig, image, shift_override=None):
     envelope["_overlay_img"] = overlay_img
     return envelope
 
-def run_section_closeup_pipeline(cfg: OllamaConfig, image, section: str, shift_override=None):
+def run_section_closeup_pipeline(cfg: OllamaConfig, image, section: str, shift_override=None, three_points=None):
     """Proses foto close-up SATU section saja. image di sini SUDAH lolos
     upscale+enhance TAPI TIDAK lewat auto_crop_document() -- lihat main()."""
     if section == "header":
@@ -970,23 +985,14 @@ def run_section_closeup_pipeline(cfg: OllamaConfig, image, section: str, shift_o
     if section == "grid":
         if not shift_override:
             raise ValueError("section='grid' WAJIB disertai shift_override.")
-        target_row_key = SHIFT_TO_ROW_KEY[shift_override]
-        try:
-            row_bounds, lost_time_precomputed, row_sumber = get_calibrated_row_bounds(
-                image, y_search_range=(0.0, 1.0), x_search_range=(0.0, 1.0),
-                kernel_frac=0.15, require_size_match=False,
-            )
-            validate_row_bounds_source(row_sumber)
-            block_x_bounds_raw, col_sumber = detect_block_x_bounds_whole_table(
-                image, row_bounds, x_search_range=(0.0, 1.0), kernel_frac=0.2
-            )
-            block_x_bounds = get_block_x_bounds_validated(block_x_bounds_raw, col_sumber, target_row_key)
-        except SectionDetectionError:
-            # Gagal LAGI di foto close-up kedua -- caller (PHP) yang
-            # menawarkan opsi lanjut fallback manual, bukan Python.
-            raise
+        if not three_points or len(three_points) != 3:
+            raise ValueError("section='grid' WAJIB disertai 3 titik (kiri-atas, kanan-atas, kiri-bawah).")
 
-        lost_time_bounds = lost_time_precomputed[target_row_key]
+        target_row_key = SHIFT_TO_ROW_KEY[shift_override]
+        warped = warp_from_3_points(image, three_points)
+        block_x_bounds = compute_uniform_block_x_bounds(n_blocks=8)
+        lost_time_bounds = (0.0, 1.0)  # seluruh tinggi hasil warp = baris value itu sendiri
+
         labels = ROW_BLOCK_LABELS[target_row_key]
         blok_list = []
         n_calls = 0
@@ -994,7 +1000,7 @@ def run_section_closeup_pipeline(cfg: OllamaConfig, image, section: str, shift_o
             blok = []
             for cell_idx in range(6):
                 kode, ink_ratio, status = extract_cell(
-                    cfg, image, block_idx, cell_idx, block_x_bounds, lost_time_bounds)
+                    cfg, warped, block_idx, cell_idx, block_x_bounds, lost_time_bounds)
                 if status == "dipanggil ke model":
                     n_calls += 1
                 blok.append(kode)
@@ -1003,8 +1009,7 @@ def run_section_closeup_pipeline(cfg: OllamaConfig, image, section: str, shift_o
         return {
             "status": "success", "section": section,
             "data": {"grid_waktu_partial": blok_list, "row_key": target_row_key},
-            "meta": {"row_bounds_source": row_sumber, "column_bounds_source": col_sumber,
-                     "total_cell_model_calls": n_calls},
+            "meta": {"method": "manual_3point_proportional", "total_cell_model_calls": n_calls},
         }
 
     raise ValueError(f"section tidak dikenal: {section!r}")
@@ -1025,8 +1030,8 @@ def main():
                          help="Shift yang SUDAH dikonfirmasi user (skip deteksi otomatis, langsung pakai ini).")
     parser.add_argument("--section", choices=["header", "speed_size", "grid"], default=None,
                          help="Kalau diisi: foto INI adalah close-up 1 section saja -- skip auto_crop_document().")
-    parser.add_argument("--corners", default=None,
-                         help="JSON string 4 titik {x,y} (0-1) hasil tandai manual user -- KHUSUS section=grid.")
+    parser.add_argument("--points", default=None,
+                         help="JSON string 3 titik {x,y} (0-1) [kiri-atas,kanan-atas,kiri-bawah] -- KHUSUS section=grid, wajib ada.")
     args = parser.parse_args()
     # (TIDAK ADA kode overlay di sini -- sudah dihapus, pindah ke bawah)
 
@@ -1050,24 +1055,24 @@ def main():
             if raw_image is None:
                 raise FileNotFoundError(f"Tidak bisa baca gambar: {image_path}")
 
-            if args.section == "grid" and args.corners:
-                try:
-                    corners_normalized = json.loads(args.corners)
-                    raw_image = warp_from_manual_corners(raw_image, corners_normalized)
-                    crop_method = "manual_corners_warp"
-                    print("Foto close-up grid di-warp pakai 4 titik manual dari user.")
-                except (json.JSONDecodeError, KeyError, TypeError) as e:
-                    print(f"Gagal parse/pakai --corners ({e}) -- lanjut TANPA warp.")
-                    crop_method = "skipped_closeup"
+            crop_method = "skipped_closeup"
+            image = raw_image  # TIDAK di-upscale/enhance di sini utk grid --
+                                # warp_from_3_points butuh koordinat relatif ke
+                                # gambar ASLI (sama seperti dihitung JS dari file asli)
+            three_points = None
+            if args.section == "grid":
+                if not args.points:
+                    raise ValueError("section='grid' wajib disertai --points (3 titik).")
+                three_points = json.loads(args.points)
+                crop_method = "manual_3point_affine"
             else:
-                crop_method = "skipped_closeup"
+                image = enhance(upscale_if_needed(raw_image))
 
-            image = enhance(upscale_if_needed(raw_image))
             clean_path = None  # tidak ada file sementara utk dihapus di finally
 
             try:
                 envelope = run_section_closeup_pipeline(
-                    cfg, image, args.section, shift_override=args.shift_override
+                    cfg, image, args.section, shift_override=args.shift_override, three_points=three_points
                 )
             except SectionDetectionError as e:
                 envelope = {

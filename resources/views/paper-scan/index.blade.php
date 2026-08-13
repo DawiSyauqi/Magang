@@ -359,10 +359,9 @@
             cornerAdjustState = {
                 img, dpr, viewW, viewH, drawW, drawH, offsetX, offsetY, dragIdx: null, pendingFile: file,
                 points: [
-                    { x: offsetX + drawW * margin, y: offsetY + drawH * margin },             // kiri-atas
-                    { x: offsetX + drawW * (1 - margin), y: offsetY + drawH * margin },        // kanan-atas
-                    { x: offsetX + drawW * (1 - margin), y: offsetY + drawH * (1 - margin) },  // kanan-bawah
-                    { x: offsetX + drawW * margin, y: offsetY + drawH * (1 - margin) },        // kiri-bawah
+                    { x: offsetX + drawW * margin, y: offsetY + drawH * 0.4 },        // kiri-atas
+                    { x: offsetX + drawW * (1 - margin), y: offsetY + drawH * 0.4 },  // kanan-atas
+                    { x: offsetX + drawW * margin, y: offsetY + drawH * 0.6 },
                 ],
             };
 
@@ -380,13 +379,42 @@
         ctx.clearRect(0, 0, s.viewW, s.viewH);
         ctx.drawImage(s.img, s.offsetX, s.offsetY, s.drawW, s.drawH);
 
-        ctx.strokeStyle = 'rgba(0, 255, 100, 0.9)';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        s.points.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
-        ctx.closePath();
-        ctx.stroke();
+        // Titik ke-4 (kanan-bawah) dihitung otomatis dari 3 titik lain,
+        // supaya bentuknya SELALU jajar genjang (D = B + C - A) -- lihat
+        // alasan Fase O-lanjutan: memaksa konsistensi dgn bentuk tabel asli.
+        const [A, B, C] = s.points;
+        const D = { x: B.x + C.x - A.x, y: B.y + C.y - A.y };
+        const quad = [A, B, D, C];
 
+        // Live overlay 8 blok x 6 sub-kotak, dihitung dari INTERPOLASI
+        // bilinear 4 titik (A,B,C,D) -- murni visual preview, perhitungan
+        // final presisi tetap dilakukan di Python via warpAffine.
+        function lerp(p1, p2, t) { return { x: p1.x + (p2.x - p1.x) * t, y: p1.y + (p2.y - p1.y) * t }; }
+        function pointAt(u, v) {
+            // u: 0-1 horizontal (kiri->kanan), v: 0-1 vertikal (atas->bawah)
+            const top = lerp(A, B, u);
+            const bottom = lerp(C, D, u);
+            return lerp(top, bottom, v);
+        }
+
+        ctx.strokeStyle = 'rgba(255, 60, 60, 0.85)';
+        ctx.lineWidth = 2;
+        for (let b = 0; b <= 8; b++) {
+            const u = b / 8;
+            const p1 = pointAt(u, 0), p2 = pointAt(u, 1);
+            ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+        }
+        ctx.strokeStyle = 'rgba(255, 220, 60, 0.7)';
+        ctx.lineWidth = 1;
+        for (let b = 0; b < 8; b++) {
+            for (let c = 1; c < 6; c++) {
+                const u = (b + c / 6) / 8;
+                const p1 = pointAt(u, 0), p2 = pointAt(u, 1);
+                ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+            }
+        }
+
+        // 3 titik draggable (bukan 4 -- titik ke-4/D hanya visual)
         s.points.forEach((p) => {
             ctx.beginPath();
             ctx.arc(p.x, p.y, 16, 0, Math.PI * 2);
@@ -403,6 +431,60 @@
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
         const clientY = e.touches ? e.touches[0].clientY : e.clientY;
         return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    /**
+     * Cari garis (tepi kontras kuat) terdekat dari posisi (x,y) di dalam
+     * radius kecil, pakai gradien horizontal/vertikal sederhana (Sobel-lite)
+     * langsung dari piksel canvas. searchRadius dlm px viewport.
+     */
+    function snapToNearestEdge(x, y, searchRadius = 25) {
+        const s = cornerAdjustState;
+        const canvas = el('corner-adjust-canvas');
+        const ctx = canvas.getContext('2d');
+
+        const r = searchRadius;
+        const sx = Math.max(0, Math.round((x - r) * s.dpr));
+        const sy = Math.max(0, Math.round((y - r) * s.dpr));
+        const sw = Math.min(canvas.width - sx, Math.round(r * 2 * s.dpr));
+        const sh = Math.min(canvas.height - sy, Math.round(r * 2 * s.dpr));
+        if (sw <= 2 || sh <= 2) return { x, y };
+
+        let imgData;
+        try {
+            imgData = ctx.getImageData(sx, sy, sw, sh);
+        } catch (e) {
+            return { x, y }; // canvas tainted atau error lain -- lewati snap
+        }
+        const data = imgData.data;
+        const gray = new Float32Array(sw * sh);
+        for (let i = 0; i < sw * sh; i++) {
+            gray[i] = 0.299 * data[i * 4] + 0.587 * data[i * 4 + 1] + 0.114 * data[i * 4 + 2];
+        }
+
+        // Cari kolom (garis vertikal) & baris (garis horizontal) dgn
+        // gradien rata2 terkuat -- kandidat garis kertas.
+        let bestCol = -1, bestColScore = 0;
+        for (let cx = 1; cx < sw - 1; cx++) {
+            let score = 0;
+            for (let cy = 0; cy < sh; cy++) {
+                score += Math.abs(gray[cy * sw + cx + 1] - gray[cy * sw + cx - 1]);
+            }
+            if (score > bestColScore) { bestColScore = score; bestCol = cx; }
+        }
+        let bestRow = -1, bestRowScore = 0;
+        for (let cy = 1; cy < sh - 1; cy++) {
+            let score = 0;
+            for (let cx = 0; cx < sw; cx++) {
+                score += Math.abs(gray[(cy + 1) * sw + cx] - gray[(cy - 1) * sw + cx]);
+            }
+            if (score > bestRowScore) { bestRowScore = score; bestRow = cy; }
+        }
+
+        const threshold = sw * 12; // ambang minimal supaya tidak snap ke noise datar
+        const snappedX = bestColScore > threshold ? (sx / s.dpr + bestCol / s.dpr) : x;
+        const snappedY = bestRowScore > threshold ? (sy / s.dpr + bestRow / s.dpr) : y;
+        return { x: snappedX, y: snappedY };
     }
 
     function initCornerAdjustDragHandlers() {
@@ -424,7 +506,7 @@
             if (s.dragIdx === null) return;
             e.preventDefault();
             const pos = cornerAdjustPointerPos(e);
-            s.points[s.dragIdx] = pos;
+            s.points[s.dragIdx] = snapToNearestEdge(pos.x, pos.y);
             redrawCornerAdjust();
         }
 
@@ -449,7 +531,6 @@
 
     el('btn-corner-confirm').addEventListener('click', () => {
         const s = cornerAdjustState;
-        // Konversi posisi canvas (viewport px) -> fraksi 0-1 RELATIF KE GAMBAR ASLI
         const normalized = s.points.map((p) => ({
             x: Math.min(Math.max((p.x - s.offsetX) / s.drawW, 0), 1),
             y: Math.min(Math.max((p.y - s.offsetY) / s.drawH, 0), 1),
@@ -457,14 +538,14 @@
         el('corner-adjust-overlay').style.display = 'none';
         const file = s.pendingFile;
         cornerAdjustState = null;
-        submitSectionPhoto(file, normalized);
+        submitSectionPhoto(file, normalized); // dikirim sbg 3 titik, field FormData tetap 'corners' -> lihat catatan PHP
     });
 
-    async function submitSectionPhoto(file, corners = null) {
+    async function submitSectionPhoto(file, points = null) {
         const fd = new FormData();
         fd.append('photo', file);
         fd.append('token', currentToken);
-        if (corners) fd.append('corners', JSON.stringify(corners));
+        if (points) fd.append('points', JSON.stringify(points));
         showState('loading');
         try {
             const data = await apiPost('/paper-scan/analyze/section-photo', fd, false);
