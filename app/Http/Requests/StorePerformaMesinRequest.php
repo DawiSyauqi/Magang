@@ -23,7 +23,27 @@ class StorePerformaMesinRequest extends FormRequest
             // AMAN: MFRESMAS & ICITEM ada di database DEFAULT (nama tabel
             // tanpa titik), jadi Rule::exists() masih boleh dipakai di sini.
             'mesin_code' => ['required', Rule::exists('MFRESMAS', 'RESRCENO')],
-            'itemno' => ['required', Rule::exists('ICITEM', 'FMTITEMNO')],
+            'itemno' => [
+                function ($attribute, $value, $fail) {
+                    $mesinCode = $this->input('mesin_code');
+                    $hasAnyItem = $mesinCode
+                        ? \App\Models\ICItem::where('MESINNO', $mesinCode)->exists() // GANTI nama kolom relasi mesin<->item sesuai skema Anda -- lihat catatan di bawah
+                        : false;
+
+                    if (! $hasAnyItem) {
+                        return; // mesin ini memang tidak punya daftar item -- itemno BOLEH kosong
+                    }
+
+                    if (blank($value)) {
+                        $fail('Nomor Item / Produk wajib diisi untuk mesin ini.');
+                        return;
+                    }
+
+                    if (! \DB::table('ICITEM')->where('FMTITEMNO', $value)->exists()) {
+                        $fail('Nomor Item yang dipilih tidak valid.');
+                    }
+                },
+            ],
 
             // TIDAK AMAN kalau pakai Rule::exists(): OperatorMaster & ProblemMaster
             // tabelnya di database LAIN, ditulis format 'db.dbo.Tabel' (ada titik).

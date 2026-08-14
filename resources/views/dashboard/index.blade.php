@@ -35,13 +35,6 @@
                 </svg>
                 Dashboard
             </a>
-            <a href="{{ route('paper-scan.index') }}" class="dt-nav-item">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                    <circle cx="12" cy="13" r="4"></circle>
-                </svg>
-                Ambil Foto
-            </a>
         </nav>
 
         <div class="dt-sidebar-footer">
@@ -73,20 +66,13 @@
             <div class="d-flex gap-2 align-items-center">
                 @include('layouts.partials._theme-toggle')
 
-                <a href="{{ route('paper-scan.index') }}" class="btn btn-secondary fw-semibold d-flex align-items-center gap-2">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                        <circle cx="12" cy="13" r="4"></circle>
-                    </svg>
-                    Ambil Foto
-                </a>
-                <button type="button" class="btn btn-primary fw-semibold d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalTambahData">
+                <a href="{{ route('paper-scan.index') }}" class="btn btn-primary fw-semibold d-flex align-items-center gap-2">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                     </svg>
                     Tambah Data
-                </button>
+                </a>
             </div>
         </div>
 
@@ -204,13 +190,6 @@
             <div class="d-flex align-items-center gap-2">
                 @include('layouts.partials._theme-toggle')
 
-                <a href="{{ route('paper-scan.index') }}" class="d-flex align-items-center justify-content-center" title="Ambil Foto"
-                   style="width:34px;height:34px;border-radius:50%;color:var(--text);text-decoration:none;border:1px solid var(--border);">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                        <circle cx="12" cy="13" r="4"></circle>
-                    </svg>
-                </a>
                 <div class="dropdown">
                     <button type="button" class="dt-mobile-avatar-btn" data-bs-toggle="dropdown" aria-expanded="false">
                         {{ strtoupper(substr(auth()->user()->UserAlias ?? auth()->user()->UserName ?? 'U', 0, 1)) }}
@@ -301,12 +280,12 @@
             </div>
         @endforelse
 
-        <button type="button" class="dt-mobile-fab" title="Tambah Data" data-bs-toggle="modal" data-bs-target="#modalTambahData" aria-label="Tambah Data">
+        <a href="{{ route('paper-scan.index') }}" class="dt-mobile-fab" title="Tambah Data" aria-label="Tambah Data">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19"></line>
                 <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
-        </button>
+        </a>
     </div>{{-- /d-lg-none (mobile) --}}
 
     {{-- Modal Tambah Data (field kosong) --}}

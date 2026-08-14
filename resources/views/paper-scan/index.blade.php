@@ -326,6 +326,7 @@
 (function () {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
     let mesinConfirmedResrceno = null; // kode mesin yg SUDAH terdaftar alias -- auto-apply tanpa tombol
+    let itemAvailableForMesin = true; // false kalau mesin terpilih TIDAK punya daftar item sama sekali
     let section1Data = null; // hasil sukses section 1 (atau null kalau manual semua)
     let section2GridWaktu = null; // hasil sukses section 2
     let currentRows = []; // hasil finalize() -- baris siap review
@@ -1041,6 +1042,7 @@
         const itemSearch = el('itemSearch');
         const itemList = el('itemList');
         if (!mesinCode) {
+            itemAvailableForMesin = true; // TAMBAHAN — reset default
             itemSearch.placeholder = '-- konfirmasi Mesin dulu --';
             itemSearch.disabled = true;
             itemSearch.value = '';
@@ -1049,9 +1051,22 @@
             return;
         }
         const items = await apiGet(`/referensi/item?mesin=${encodeURIComponent(mesinCode)}`);
+        itemAvailableForMesin = items.length > 0;
+
         itemList.innerHTML = items.map((i) =>
             `<option data-kode="${i.kode}" value="${i.kode} — ${i.nama}"></option>`
         ).join('');
+
+        if (!itemAvailableForMesin) {
+            itemSearch.disabled = true;
+            itemSearch.placeholder = 'Mesin ini tidak punya daftar item -- boleh dikosongkan';
+            el('itemSelect').value = '';
+            el('itemStatus').textContent = 'Mesin ini tidak memiliki daftar Nomor Item/Produk -- baris akan disimpan tanpa ITEMNO.';
+            el('itemStatus').className = 'small mt-1 text-muted';
+            updateSaveButtonState();
+            return; // skip logika saran-by-size di bawah, tidak relevan kalau tidak ada item
+        }
+
         itemSearch.disabled = false;
         itemSearch.placeholder = 'Cari kode/nama item...';
 
@@ -1285,8 +1300,9 @@
 
     function updateSaveButtonState() {
         const rowsReady = currentRows.every(r => r.ProblemCode && r.Problem_Desc && r.Time_Start && r.Time_End);
+        const itemReady = !itemAvailableForMesin || el('itemSelect').value; // wajib HANYA kalau memang ada pilihan
         const ready = currentRows.length > 0 && rowsReady
-            && el('mesinSelect').value && el('itemSelect').value
+            && el('mesinSelect').value && itemReady
             && el('tanggalInput').value && el('operatorSelect').value;
         el('saveAllBtn').disabled = !ready;
     }

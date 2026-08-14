@@ -151,6 +151,18 @@ h6,
     @include outline-status('info');
 }
 
+.btn-outline-primary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+
+    &:hover {
+        background: var(--surface-alt);
+        color: var(--text);
+        border-color: var(--text);
+    }
+}
+
 // -----------------------------------------------------------------------------
 // FORMS
 // -----------------------------------------------------------------------------
@@ -206,6 +218,11 @@ h6,
     background-position: right .75rem center;
     background-size: 14px 14px;
     padding-right: 2rem;
+
+    option {
+        background: var(--surface);
+        color: var(--text);
+    }
 }
 
 // Input group: bikin ikon menyatu, hilangkan bg putih paksa

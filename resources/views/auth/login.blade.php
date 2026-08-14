@@ -95,7 +95,7 @@
             </div>
 
             <p class="text-center text-muted small mt-4">
-                {{ config('app.name') }} — Fase 1
+       
             </p>
         </div>
     </div>
