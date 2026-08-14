@@ -1285,6 +1285,47 @@ def run_pipeline(cfg: OllamaConfig, image, shift_override=None):
     envelope["_overlay_img"] = overlay_img
     return envelope
 
+def run_full_page_header_speed_size(cfg: OllamaConfig, image):
+    """Section 1 baru (skema split): foto FULL-PAGE, tapi HANYA proses
+    Header + Speed/Size -- SAMA SEKALI tidak sentuh grid (skip
+    get_calibrated_row_bounds, detect_block_x_bounds_hough, dst). Ini
+    architecturally beda dari run_pipeline() (yg selalu proses grid) DAN
+    dari run_section_closeup_pipeline(section='header'/'speed_size') (yg
+    itu utk foto CLOSE-UP, bukan full-page -- lihat argumen imread_exif_safe
+    vs preprocess_image di main()). Alasan: full-page TERBUKTI sangat
+    akurat utk Header/Speed-Size, TAPI sering gagal/lambat utk grid --
+    memisahkan section ini bikin proses lebih cepat & lebih jarang gagal
+    (tidak ada lagi percobaan Hough grid yg costly utk foto yg memang
+    tidak akan dipakai baca grid)."""
+    header_result = detect_header(cfg, image)
+    speed_value, size_value = extract_speed_and_size(cfg, image)
+    header_result["speed"] = speed_value
+    header_result["size_raw"] = size_value
+
+    header_all_null = all(header_result.get(f) is None for f in ("tanggal", "mesin_code", "shift"))
+    speed_size_all_null = speed_value is None and size_value is None
+
+    if header_all_null and speed_size_all_null:
+        # Kedua sub-bagian gagal total -- minta foto ulang section ini lagi
+        # (bukan pecah ke 2 sub-section terpisah, krn ini 1 section utuh
+        # dari sisi UI baru).
+        return {
+            "status": "needs_section_photo",
+            "section": "header_speed_size",
+            "data": header_result,
+            "meta": {},
+        }
+
+    return {
+        "status": "success",
+        "section": "header_speed_size",
+        "data": header_result,
+        "meta": {
+            "header_partial_failure": header_all_null,
+            "speed_size_partial_failure": speed_size_all_null,
+        },
+    }
+
 def run_section_closeup_pipeline(cfg: OllamaConfig, image, section: str, shift_override=None, three_points=None):
     """Proses foto close-up SATU section saja. image di sini SUDAH lolos
     upscale+enhance TAPI TIDAK lewat auto_crop_document() -- lihat main()."""
@@ -1347,8 +1388,9 @@ def main():
                          help="Jangan hapus file foto_bersih_*.jpg hasil preprocessing setelah selesai.")
     parser.add_argument("--shift-override", choices=["1", "2", "3"], default=None,
                          help="Shift yang SUDAH dikonfirmasi user (skip deteksi otomatis, langsung pakai ini).")
-    parser.add_argument("--section", choices=["header", "speed_size", "grid"], default=None,
-                         help="Kalau diisi: foto INI adalah close-up 1 section saja -- skip auto_crop_document().")
+    parser.add_argument("--section", choices=["header", "speed_size", "grid", "header_speed_size"], default=None,
+                         help="Kalau diisi: foto INI adalah close-up 1 section saja -- skip auto_crop_document(). "
+                              "'header_speed_size' KHUSUS beda -- itu FULL-PAGE (bukan close-up), lihat run_full_page_header_speed_size().")
     parser.add_argument("--points", default=None,
                          help="JSON string 3 titik {x,y} (0-1) [kiri-atas,kanan-atas,kiri-bawah] -- KHUSUS section=grid, wajib ada.")
     args = parser.parse_args()
@@ -1384,15 +1426,34 @@ def main():
                     raise ValueError("section='grid' wajib disertai --points (3 titik).")
                 three_points = json.loads(args.points)
                 crop_method = "manual_3point_affine"
+            elif args.section == "header_speed_size":
+                # BEDA dari header/speed_size close-up biasa -- section ini
+                # FULL-PAGE, jadi WAJIB lewat auto_crop_document() dulu,
+                # bukan langsung dipakai mentah spt close-up lain.
+                cropped, crop_success, crop_method = auto_crop_document(raw_image)
+                if not crop_success:
+                    envelope = {
+                        "status": "needs_retake",
+                        "reason": "corner_detection_failed",
+                        "meta": {},
+                    }
+                    envelope.setdefault("meta", {})["elapsed_seconds"] = round(time.time() - t0, 1)
+                    envelope["meta"]["crop_method"] = crop_method
+                    _stdout_print(json.dumps(envelope, ensure_ascii=False))
+                    return 0
+                image = enhance(upscale_if_needed(cropped))
             else:
                 image = enhance(upscale_if_needed(raw_image))
 
             clean_path = None  # tidak ada file sementara utk dihapus di finally
 
             try:
-                envelope = run_section_closeup_pipeline(
-                    cfg, image, args.section, shift_override=args.shift_override, three_points=three_points
-                )
+                if args.section == "header_speed_size":
+                    envelope = run_full_page_header_speed_size(cfg, image)
+                else:
+                    envelope = run_section_closeup_pipeline(
+                        cfg, image, args.section, shift_override=args.shift_override, three_points=three_points
+                    )
             except SectionDetectionError as e:
                 envelope = {
                     "status": "needs_section_photo",
