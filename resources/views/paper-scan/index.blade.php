@@ -423,6 +423,39 @@
             startCameraStream();
         }
     }
+
+    /**
+     * KHUSUS overlay wrapping (corner-adjust/3-titik) -- dipaksa landscape
+     * (poin Anda: wrapping tetap landscape). TIDAK dipakai di rect-crop
+     * (itu tetap portrait, supaya gambar tidak melar/distorsi tampilan).
+     */
+    function ensureLandscapeThenRun(callback) {
+        const isLandscape = screen.orientation
+            ? screen.orientation.type.startsWith('landscape')
+            : window.innerWidth > window.innerHeight;
+        if (isLandscape) { callback(); return; }
+
+        const promptEl = document.createElement('div');
+        promptEl.id = 'landscape-prompt-generic';
+        promptEl.style.cssText = 'position:fixed; inset:0; z-index:10001; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; text-align:center;';
+        promptEl.innerHTML = '<div style="font-size:64px;">🔄</div><p style="font-size:20px; margin-top:16px;">Putar HP Anda ke posisi mendatar<br>untuk menandai sudut grid dengan hasil terbaik</p>';
+        document.body.appendChild(promptEl);
+
+        function onChange() {
+            const nowLandscape = screen.orientation
+                ? screen.orientation.type.startsWith('landscape')
+                : window.innerWidth > window.innerHeight;
+            if (nowLandscape) {
+                promptEl.remove();
+                window.removeEventListener('orientationchange', onChange);
+                window.removeEventListener('resize', onChange);
+                callback();
+            }
+        }
+        window.addEventListener('orientationchange', onChange);
+        window.addEventListener('resize', onChange);
+    }
+
     function onOrientationChange() {
         const isLandscape = screen.orientation
             ? screen.orientation.type.startsWith('landscape')
@@ -603,7 +636,7 @@
                 zoom: 1, panX: 0, panY: 0, pinch: null, // BARU -- dukung pinch-zoom & pan gambar
             };
             el('rect-crop-overlay').style.display = 'block';
-            ensureLandscapeThenRun(redrawRectCrop);
+            redrawRectCrop();
         };
         img.src = URL.createObjectURL(file);
     }
