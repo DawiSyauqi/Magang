@@ -384,26 +384,41 @@
      * proses crop/wrap sebaiknya di landscape).
      */
     function ensureLandscapeThenRun(callback) {
-        const isLandscape = screen.orientation
-            ? screen.orientation.type.startsWith('landscape')
-            : window.innerWidth > window.innerHeight;
-        if (isLandscape) { callback(); return; }
+        function isLandscapeNow() {
+            return screen.orientation
+                ? screen.orientation.type.startsWith('landscape')
+                : window.innerWidth > window.innerHeight;
+        }
+
+        // PATCH: selalu tunda 1 frame + sedikit delay sebelum menjalankan
+        // callback (walau SUDAH landscape saat fungsi ini dipanggil) --
+        // browser (terutama iOS) kadang laporkan innerWidth/innerHeight
+        // yg BELUM ter-update tepat saat event orientationchange/resize
+        // menyala, menyebabkan canvas dihitung dgn ukuran salah/nol
+        // (gambar jadi tampak blank krn digambar di luar area terlihat).
+        function runWhenSettled() {
+            requestAnimationFrame(() => {
+                setTimeout(callback, 100);
+            });
+        }
+
+        if (isLandscapeNow()) {
+            runWhenSettled();
+            return;
+        }
 
         const promptEl = document.createElement('div');
         promptEl.id = 'landscape-prompt-generic';
-        promptEl.style. cssText = 'position:fixed; inset:0; z-index:10001; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; text-align:center;';
-        promptEl.innerHTML = '<div style="font-size:64px;">🔄</div><p style="font-size:20px; margin-top:16px;">Putar HP Anda ke posisi mendatar<br>untuk hasil potong/tarik sudut terbaik</p>';
+        promptEl.style.cssText = 'position:fixed; inset:0; z-index:10001; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; text-align:center;';
+        promptEl.innerHTML = '<div style="font-size:64px;">🔄</div><p style="font-size:20px; margin-top:16px;">Putar HP Anda ke posisi mendatar<br>untuk menandai sudut grid dengan hasil terbaik</p>';
         document.body.appendChild(promptEl);
 
         function onChange() {
-            const nowLandscape = screen.orientation
-                ? screen.orientation.type.startsWith('landscape')
-                : window.innerWidth > window.innerHeight;
-            if (nowLandscape) {
+            if (isLandscapeNow()) {
                 promptEl.remove();
                 window.removeEventListener('orientationchange', onChange);
                 window.removeEventListener('resize', onChange);
-                callback();
+                runWhenSettled();
             }
         }
         window.addEventListener('orientationchange', onChange);
