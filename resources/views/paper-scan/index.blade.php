@@ -849,30 +849,39 @@
     function showCornerAdjustUI(file) {
         const img = new Image();
         img.onload = () => {
-            const canvas = el('corner-adjust-canvas');
-            const dpr = window.devicePixelRatio || 1;
-            const viewW = window.innerWidth;
-            const viewH = window.innerHeight;
-            canvas.width = viewW * dpr;
-            canvas.height = viewH * dpr;
+            // PATCH: tunda SEMUA kalkulasi ukuran (canvas, baseScale, offset)
+            // sampai landscape benar-benar terkonfirmasi -- window.innerWidth/
+            // innerHeight SEBELUM rotasi selesai masih portrait, kalau dipakai
+            // duluan hasilnya distorsi (canvas ke-set ukuran lama, gambar
+            // digambar setelah dimensi window sudah berubah).
+            ensureLandscapeThenRun(() => {
+                const canvas = el('corner-adjust-canvas');
+                const dpr = window.devicePixelRatio || 1;
+                const viewW = window.innerWidth;
+                const viewH = window.innerHeight;
+                canvas.width = viewW * dpr;
+                canvas.height = viewH * dpr;
+                canvas.style.width = viewW + 'px';
+                canvas.style.height = viewH + 'px';
 
-            const baseScale = Math.min(viewW / img.width, viewH / img.height);
-            const baseOffsetX = (viewW - img.width * baseScale) / 2;
-            const baseOffsetY = (viewH - img.height * baseScale) / 2;
+                const baseScale = Math.min(viewW / img.width, viewH / img.height);
+                const baseOffsetX = (viewW - img.width * baseScale) / 2;
+                const baseOffsetY = (viewH - img.height * baseScale) / 2;
 
-            cornerAdjustState = {
-                img, dpr, viewW, viewH, baseScale, baseOffsetX, baseOffsetY,
-                zoom: 1, panX: 0, panY: 0, dragIdx: null, pendingFile: file,
-                pinch: null,
-                points: [
-                    { u: 0.15, v: 0.4 },  // kiri-atas
-                    { u: 0.85, v: 0.4 },  // kanan-atas
-                    { u: 0.15, v: 0.6 },  // kiri-bawah
-                ],
-            };
+                cornerAdjustState = {
+                    img, dpr, viewW, viewH, baseScale, baseOffsetX, baseOffsetY,
+                    zoom: 1, panX: 0, panY: 0, dragIdx: null, pendingFile: file,
+                    pinch: null,
+                    points: [
+                        { u: 0.15, v: 0.4 },
+                        { u: 0.85, v: 0.4 },
+                        { u: 0.15, v: 0.6 },
+                    ],
+                };
 
-            el('corner-adjust-overlay').style.display = 'block';
-            ensureLandscapeThenRun(redrawCornerAdjust);
+                el('corner-adjust-overlay').style.display = 'block';
+                redrawCornerAdjust();
+            });
         };
         img.src = URL.createObjectURL(file);
     }
