@@ -150,6 +150,7 @@
                 </div>
 
                 <div id="section2-table-wrapper">
+                    <div class="table-responsive">
                     <table class="table table-sm mb-0">
                         <thead>
                             <tr>
@@ -159,6 +160,7 @@
                         </thead>
                         <tbody id="rowsTableBody"></tbody>
                     </table>
+                    </div>
                     <div class="p-2">
                         <button id="addRowBtn" class="btn btn-sm btn-outline-primary" type="button">+ Tambah Baris Manual</button>
                     </div>
@@ -376,6 +378,38 @@
         checkOrientationAndProceed();
     }
 
+    /**
+     * Sama seperti checkOrientationAndProceed (kamera), tapi generik --
+     * dipakai jg utk overlay crop-rectangle & corner-adjust (poin 2 Anda:
+     * proses crop/wrap sebaiknya di landscape).
+     */
+    function ensureLandscapeThenRun(callback) {
+        const isLandscape = screen.orientation
+            ? screen.orientation.type.startsWith('landscape')
+            : window.innerWidth > window.innerHeight;
+        if (isLandscape) { callback(); return; }
+
+        const promptEl = document.createElement('div');
+        promptEl.id = 'landscape-prompt-generic';
+        promptEl.style. cssText = 'position:fixed; inset:0; z-index:10001; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; text-align:center;';
+        promptEl.innerHTML = '<div style="font-size:64px;">🔄</div><p style="font-size:20px; margin-top:16px;">Putar HP Anda ke posisi mendatar<br>untuk hasil potong/tarik sudut terbaik</p>';
+        document.body.appendChild(promptEl);
+
+        function onChange() {
+            const nowLandscape = screen.orientation
+                ? screen.orientation.type.startsWith('landscape')
+                : window.innerWidth > window.innerHeight;
+            if (nowLandscape) {
+                promptEl.remove();
+                window.removeEventListener('orientationchange', onChange);
+                window.removeEventListener('resize', onChange);
+                callback();
+            }
+        }
+        window.addEventListener('orientationchange', onChange);
+        window.addEventListener('resize', onChange);
+    }
+
     function checkOrientationAndProceed() {
         const isLandscape = screen.orientation
             ? screen.orientation.type.startsWith('landscape')
@@ -564,22 +598,30 @@
 
             rectCropState = {
                 img, dpr, viewW, viewH, baseScale, baseOffsetX, baseOffsetY, pendingFile: file,
-                rect: { x0: 0.1, y0: 0.35, x1: 0.9, y1: 0.65 },
+                rect: { x0: 0.1, y0: 0.3, x1: 0.9, y1: 0.7 },
                 dragHandle: null,
+                zoom: 1, panX: 0, panY: 0, pinch: null, // BARU -- dukung pinch-zoom & pan gambar
             };
             el('rect-crop-overlay').style.display = 'block';
-            redrawRectCrop();
+            ensureLandscapeThenRun(redrawRectCrop);
         };
         img.src = URL.createObjectURL(file);
     }
 
     function rectUvToScreen(u, v) {
         const s = rectCropState;
-        return { x: s.baseOffsetX + u * s.img.width * s.baseScale, y: s.baseOffsetY + v * s.img.height * s.baseScale };
+        const baseX = s.baseOffsetX + u * s.img.width * s.baseScale;
+        const baseY = s.baseOffsetY + v * s.img.height * s.baseScale;
+        return { x: baseX * s.zoom + s.panX, y: baseY * s.zoom + s.panY };
     }
     function rectScreenToUv(x, y) {
         const s = rectCropState;
-        return { u: (x - s.baseOffsetX) / (s.img.width * s.baseScale), v: (y - s.baseOffsetY) / (s.img.height * s.baseScale) };
+        const baseX = (x - s.panX) / s.zoom;
+        const baseY = (y - s.panY) / s.zoom;
+        return {
+            u: (baseX - s.baseOffsetX) / (s.img.width * s.baseScale),
+            v: (baseY - s.baseOffsetY) / (s.img.height * s.baseScale),
+        };
     }
 
     function redrawRectCrop() {
@@ -588,7 +630,12 @@
         const ctx = canvas.getContext('2d');
         ctx.setTransform(s.dpr, 0, 0, s.dpr, 0, 0);
         ctx.clearRect(0, 0, s.viewW, s.viewH);
-        ctx.drawImage(s.img, s.baseOffsetX, s.baseOffsetY, s.img.width * s.baseScale, s.img.height * s.baseScale);
+
+        const topLeft = rectUvToScreen(0, 0);
+        ctx.drawImage(
+            s.img, topLeft.x, topLeft.y,
+            s.img.width * s.baseScale * s.zoom, s.img.height * s.baseScale * s.zoom
+        );
 
         const p0 = rectUvToScreen(s.rect.x0, s.rect.y0);
         const p1 = rectUvToScreen(s.rect.x1, s.rect.y1);
@@ -630,40 +677,116 @@
             if (x > p0.x && x < p1.x && y > p0.y && y < p1.y) return 'move';
             return null;
         }
-        let lastPos = null;
-        function onStart(e) {
-            const pos = rectPointerPos(e);
-            rectCropState.dragHandle = hitTest(pos.x, pos.y);
-            lastPos = pos;
+        function pinchDistance(t0, t1) { return Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY); }
+        function pinchMidpoint(t0, t1) {
+            const rect = canvas.getBoundingClientRect();
+            return { x: (t0.clientX + t1.clientX) / 2 - rect.left, y: (t0.clientY + t1.clientY) / 2 - rect.top };
         }
-        function onMove(e) {
-            if (!rectCropState.dragHandle) return;
-            e.preventDefault();
-            const pos = rectPointerPos(e);
+
+        let lastPos = null, panState = null;
+
+        function onTouchStart(e) {
             const s = rectCropState;
-            const duv = rectScreenToUv(pos.x, pos.y);
-            if (s.dragHandle === 'move') {
-                const dPrev = rectScreenToUv(lastPos.x, lastPos.y);
-                const dx = duv.u - dPrev.u, dy = duv.v - dPrev.v;
-                const w = s.rect.x1 - s.rect.x0, h = s.rect.y1 - s.rect.y0;
-                s.rect.x0 = Math.min(Math.max(s.rect.x0 + dx, 0), 1 - w);
-                s.rect.x1 = s.rect.x0 + w;
-                s.rect.y0 = Math.min(Math.max(s.rect.y0 + dy, 0), 1 - h);
-                s.rect.y1 = s.rect.y0 + h;
-            } else if (s.dragHandle === 'tl') { s.rect.x0 = Math.min(duv.u, s.rect.x1 - 0.05); s.rect.y0 = Math.min(duv.v, s.rect.y1 - 0.05); }
-            else if (s.dragHandle === 'tr') { s.rect.x1 = Math.max(duv.u, s.rect.x0 + 0.05); s.rect.y0 = Math.min(duv.v, s.rect.y1 - 0.05); }
-            else if (s.dragHandle === 'bl') { s.rect.x0 = Math.min(duv.u, s.rect.x1 - 0.05); s.rect.y1 = Math.max(duv.v, s.rect.y0 + 0.05); }
-            else if (s.dragHandle === 'br') { s.rect.x1 = Math.max(duv.u, s.rect.x0 + 0.05); s.rect.y1 = Math.max(duv.v, s.rect.y0 + 0.05); }
+            if (e.touches.length === 2) {
+                s.dragHandle = null; panState = null;
+                const dist = pinchDistance(e.touches[0], e.touches[1]);
+                const mid = pinchMidpoint(e.touches[0], e.touches[1]);
+                s.pinch = { startDist: dist, startZoom: s.zoom, startPanX: s.panX, startPanY: s.panY, focal: mid };
+            } else if (e.touches.length === 1) {
+                const pos = rectPointerPos(e.touches[0]);
+                const handle = hitTest(pos.x, pos.y);
+                if (handle) {
+                    s.dragHandle = handle;
+                } else {
+                    s.dragHandle = null;
+                    panState = { startX: pos.x, startY: pos.y, startPanX: s.panX, startPanY: s.panY };
+                }
+                lastPos = pos;
+            }
+        }
+
+        function onTouchMove(e) {
+            const s = rectCropState;
+            e.preventDefault();
+
+            if (e.touches.length === 2 && s.pinch) {
+                const dist = pinchDistance(e.touches[0], e.touches[1]);
+                const newZoom = Math.min(Math.max(s.pinch.startZoom * (dist / s.pinch.startDist), 0.5), 8); // BARU: min 0.5 -- bisa zoom OUT lebih dari 1:1
+                const f = s.pinch.focal;
+                const baseX = (f.x - s.pinch.startPanX) / s.pinch.startZoom;
+                const baseY = (f.y - s.pinch.startPanY) / s.pinch.startZoom;
+                s.zoom = newZoom;
+                s.panX = f.x - baseX * newZoom;
+                s.panY = f.y - baseY * newZoom;
+                redrawRectCrop();
+                return;
+            }
+
+            if (e.touches.length === 1) {
+                const pos = rectPointerPos(e.touches[0]);
+                if (s.dragHandle) {
+                    applyRectDrag(s.dragHandle, pos, lastPos);
+                    lastPos = pos;
+                    redrawRectCrop();
+                } else if (panState) {
+                    s.panX = panState.startPanX + (pos.x - panState.startX);
+                    s.panY = panState.startPanY + (pos.y - panState.startY);
+                    redrawRectCrop();
+                }
+            }
+        }
+
+        function onTouchEnd(e) {
+            const s = rectCropState;
+            if (e.touches.length < 2) s.pinch = null;
+            if (e.touches.length === 0) { s.dragHandle = null; panState = null; lastPos = null; }
+        }
+
+        canvas.addEventListener('touchstart', onTouchStart, { passive: true });
+        canvas.addEventListener('touchmove', onTouchMove, { passive: false });
+        canvas.addEventListener('touchend', onTouchEnd);
+
+        // Fallback mouse (desktop): drag handle saja + wheel utk zoom.
+        let mouseHandle = null;
+        canvas.addEventListener('mousedown', (e) => {
+            const pos = { x: e.clientX - canvas.getBoundingClientRect().left, y: e.clientY - canvas.getBoundingClientRect().top };
+            mouseHandle = hitTest(pos.x, pos.y);
+            lastPos = pos;
+        });
+        canvas.addEventListener('mousemove', (e) => {
+            if (!mouseHandle) return;
+            const pos = { x: e.clientX - canvas.getBoundingClientRect().left, y: e.clientY - canvas.getBoundingClientRect().top };
+            applyRectDrag(mouseHandle, pos, lastPos);
             lastPos = pos;
             redrawRectCrop();
-        }
-        function onEnd() { rectCropState.dragHandle = null; lastPos = null; }
-        canvas.addEventListener('touchstart', onStart, { passive: true });
-        canvas.addEventListener('touchmove', onMove, { passive: false });
-        canvas.addEventListener('touchend', onEnd);
-        canvas.addEventListener('mousedown', onStart);
-        canvas.addEventListener('mousemove', (e) => { if (rectCropState?.dragHandle) onMove(e); });
-        window.addEventListener('mouseup', onEnd);
+        });
+        window.addEventListener('mouseup', () => { mouseHandle = null; });
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const s = rectCropState;
+            const delta = e.deltaY < 0 ? 1.1 : 0.9;
+            s.zoom = Math.min(Math.max(s.zoom * delta, 0.5), 8);
+            redrawRectCrop();
+        }, { passive: false });
+    }
+
+    // PATCH: batas minimum ukuran kotak crop DIPERKECIL DRASTIS (dari 0.05
+    // jadi 0.01 fraksi) -- sesuai permintaan, hilangkan batasan kecil yg
+    // terlalu ketat.
+    function applyRectDrag(handle, pos, lastPos) {
+        const s = rectCropState;
+        const duv = rectScreenToUv(pos.x, pos.y);
+        const MIN_SIZE = 0.01;
+        if (handle === 'move') {
+            const dPrev = rectScreenToUv(lastPos.x, lastPos.y);
+            const dx = duv.u - dPrev.u, dy = duv.v - dPrev.v;
+            const w = s.rect.x1 - s.rect.x0, h = s.rect.y1 - s.rect.y0;
+            s.rect.x0 += dx; s.rect.x1 = s.rect.x0 + w;
+            s.rect.y0 += dy; s.rect.y1 = s.rect.y0 + h;
+        } else if (handle === 'tl') { s.rect.x0 = Math.min(duv.u, s.rect.x1 - MIN_SIZE); s.rect.y0 = Math.min(duv.v, s.rect.y1 - MIN_SIZE); }
+        else if (handle === 'tr') { s.rect.x1 = Math.max(duv.u, s.rect.x0 + MIN_SIZE); s.rect.y0 = Math.min(duv.v, s.rect.y1 - MIN_SIZE); }
+        else if (handle === 'bl') { s.rect.x0 = Math.min(duv.u, s.rect.x1 - MIN_SIZE); s.rect.y1 = Math.max(duv.v, s.rect.y0 + MIN_SIZE); }
+        else if (handle === 'br') { s.rect.x1 = Math.max(duv.u, s.rect.x0 + MIN_SIZE); s.rect.y1 = Math.max(duv.v, s.rect.y0 + MIN_SIZE); }
     }
     initRectCropHandlers();
 
@@ -716,7 +839,7 @@
             };
 
             el('corner-adjust-overlay').style.display = 'block';
-            redrawCornerAdjust();
+            ensureLandscapeThenRun(redrawCornerAdjust);
         };
         img.src = URL.createObjectURL(file);
     }
@@ -832,10 +955,20 @@
             if (score > bestRowScore) { bestRowScore = score; bestRow = cy; }
         }
 
-        const threshold = sw * 12;
-        const snappedScreenX = bestColScore > threshold ? (sx / s.dpr + bestCol / s.dpr) : screenX;
-        const snappedScreenY = bestRowScore > threshold ? (sy / s.dpr + bestRow / s.dpr) : screenY;
-        return screenToUv(snappedScreenX, snappedScreenY);
+        // PATCH: magnet dilemahkan -- (a) threshold dinaikkan (butuh tepi
+        // lebih jelas/tegas baru snap aktif), (b) hasil snap di-BLEND
+        // dengan posisi jari asli (70% titik asli + 30% arah tarikan snap)
+        // supaya tidak "melompat" tegas ke tepi, lebih terasa lembut.
+        const threshold = sw * 20; // naik dari 12 -> lebih sulit trigger
+        const blendFactor = 0.3;   // 0 = snap penuh (lama), 1 = tanpa snap sama sekali
+
+        const targetScreenX = bestColScore > threshold ? (sx / s.dpr + bestCol / s.dpr) : screenX;
+        const targetScreenY = bestRowScore > threshold ? (sy / s.dpr + bestRow / s.dpr) : screenY;
+
+        const blendedX = screenX + (targetScreenX - screenX) * (1 - blendFactor);
+        const blendedY = screenY + (targetScreenY - screenY) * (1 - blendFactor);
+
+        return screenToUv(blendedX, blendedY);
     }
 
     function initCornerAdjustDragHandlers() {

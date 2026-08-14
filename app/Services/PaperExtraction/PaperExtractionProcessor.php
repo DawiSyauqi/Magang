@@ -113,8 +113,22 @@ class PaperExtractionProcessor
             return ['date' => null, 'perlu_review' => true, 'alasan' => 'Tanggal tidak terbaca dari kertas.'];
         }
 
-        // Buang bagian nama hari kalau ada ("Senin, 3-08-2025" -> "3-08-2025").
-        $parts = explode(',', $raw);
+        $trimmed = trim($raw);
+
+        // PATCH: cek format ISO (Y-m-d) DULU -- ini format yg dikirim
+        // <input type="date"> dari form Section 1 baru (alur split), SELALU
+        // ISO & sudah pasti valid dari sisi browser. Cek terpisah dari
+        // regex teks-mentah di bawah supaya tidak bentrok urutan digit.
+        if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $trimmed, $iso)) {
+            [, $y, $mo, $d] = $iso;
+            if (checkdate((int) $mo, (int) $d, (int) $y)) {
+                return ['date' => $trimmed, 'perlu_review' => false, 'alasan' => null];
+            }
+        }
+
+        // Buang bagian nama hari kalau ada ("Senin, 3-08-2025" -> "3-08-2025")
+        // -- format teks mentah hasil OCR, hari-bulan-tahun.
+        $parts = explode(',', $trimmed);
         $datePart = trim(end($parts));
 
         if (preg_match('/(\d{1,2})[\-\/.](\d{1,2})[\-\/.](\d{4})/', $datePart, $m)) {
