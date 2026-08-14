@@ -4,63 +4,195 @@
 @push('styles')
 <style>
     :root {
-        --ir-accent: #0FD9C4;
-        --ir-accent-hover: #0BC1AE;
-        --ir-accent-light: rgba(15, 217, 196, .12);
-        --ir-cyan: #22E1FF;
-        --ir-green: #00E68A;
-        --ir-amber: #FFB020;
-        --ir-coral: #FF4D6A;
+        --ir-accent: var(--text);
+        --ir-accent-hover: var(--n-800);
+        --ir-accent-light: var(--surface-alt);
     }
-    .ir-card { border: none; border-radius: 14px; box-shadow: 0 2px 10px rgba(28,30,33,.06); }
+    .ir-card { 
+        border: 1px solid var(--border); 
+        border-radius: var(--r-lg); 
+        background: var(--surface);
+    }
     .ir-btn-primary {
-        background-color: var(--ir-accent); border-color: var(--ir-accent);
-        border-radius: 999px; color: #fff; font-weight: 600;
+        background-color: var(--text); border-color: var(--text);
+        border-radius: 999px; color: var(--bg); font-weight: 600;
+        transition: background-color .15s ease, border-color .15s ease, transform .15s ease;
     }
-    .ir-btn-primary:hover { background-color: var(--ir-accent-hover); border-color: var(--ir-accent-hover); }
+    .ir-btn-primary:hover { 
+        background-color: var(--n-800); border-color: var(--n-800); 
+        color: var(--bg);
+    }
+    :root[data-theme="dark"] .ir-btn-primary {
+        background-color: var(--n-0); border-color: var(--n-0); color: var(--n-900);
+    }
+    :root[data-theme="dark"] .ir-btn-primary:hover {
+        background-color: var(--n-200); border-color: var(--n-200); color: var(--n-900);
+    }
     .ir-badge { border-radius: 999px; padding: .3rem .7rem; font-size: .75rem; font-weight: 600; }
-    .ir-badge-review { background-color: rgba(255,176,32,.15); color: #B5780B; }
-    .ir-badge-ok { background-color: rgba(0,230,138,.15); color: #0A9A5C; }
+    .ir-badge-review { background-color: rgba(245, 158, 11, 0.12); color: var(--warning); }
+    .ir-badge-ok { background-color: rgba(34, 197, 94, 0.12); color: var(--success); }
     .ir-icon-circle {
         width: 48px; height: 48px; border-radius: 50%;
-        background-color: var(--ir-accent-light); color: var(--ir-accent);
+        background-color: var(--surface-alt); color: var(--text);
         display: inline-flex; align-items: center; justify-content: center; font-size: 1.4rem;
+        border: 1px solid var(--border);
+    }
+    .table-row-review {
+        background-color: rgba(239, 68, 68, 0.04) !important;
+    }
+    :root[data-theme="dark"] .table-row-review {
+        background-color: rgba(239, 68, 68, 0.08) !important;
     }
 </style>
 @endpush
-<div class="d-flex align-items-center justify-content-between px-3 px-md-4 py-2" style="background-color: var(--dt-charcoal);">
-    <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-2 text-white text-decoration-none">
-        <i class="bi bi-arrow-left"></i>
+<div class="d-flex align-items-center justify-content-between px-3 px-md-4 py-2 border-bottom" style="background: var(--surface); transition: background-color .2s ease;">
+    <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-2 text-decoration-none" style="color: var(--text);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
         <span class="fw-semibold small">Kembali ke Dashboard</span>
     </a>
-    <span class="text-white-50 small d-none d-md-inline">
-        <i class="bi bi-stars" style="color: var(--ir-accent);"></i> AI Baca Kertas
-    </span>
+    <div class="d-flex align-items-center gap-3">
+        @include('layouts.partials._theme-toggle')
+        <span class="text-muted small d-none d-md-inline">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px; color: var(--text-muted);">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            AI Baca Kertas
+        </span>
+    </div>
 </div>
 <div class="container py-3" style="max-width: 900px;">
     <h4 class="mb-3">Ambil Foto Kertas — Laporan Proses Drawing Harian</h4>
 
     {{-- ===================== STATE 1: IDLE (form upload) ===================== --}}
     
-    <section id="state-idle">
-        <div class="card ir-card">
-            <div class="card-body text-center py-5">
-                <div class="ir-icon-circle mb-3"><i class="bi bi-camera"></i></div>
-                <button type="button" id="btn-open-camera" class="btn ir-btn-primary btn-lg mb-3 px-4">
-                    Ambil Foto
-                </button>
-                <div class="mb-3">
-                    <input type="file" id="photoInput" accept="image/*" capture="environment" class="form-control" style="display:none;">
-                    <button id="analyzeBtn" class="btn ir-btn-primary btn-lg d-none px-4" disabled>Analisa Foto</button>
+    <section id="state-main">
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>1. Konfirmasi Mesin & Info Umum</span>
+                <span id="section1-status-badge"></span>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <button type="button" id="btn-open-camera-s1" class="btn ir-btn-primary">
+                        📷 Ambil Foto (Header + Speed/Size)
+                    </button>
+                    <input type="file" id="photoInputS1" accept="image/*" capture="environment" class="d-none">
+                    <div id="section1-loading" class="d-none mt-2">
+                        <div class="spinner-border spinner-border-sm" style="color: var(--ir-accent);"></div>
+                        Menganalisa...
+                    </div>
                 </div>
-                <div class="mt-3">
-                    <a href="{{ route('dashboard') }}" class="btn btn-link text-muted">Batal, kembali ke Dashboard</a>
+
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Tanggal</label>
+                        <input type="date" id="tanggalInput" class="form-control">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Shift</label>
+                        <select id="shiftSelectManual" class="form-select">
+                            <option value="">-- pilih --</option>
+                            <option value="1">Shift 1</option>
+                            <option value="2">Shift 2</option>
+                            <option value="3">Shift 3</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Speed (m/mnt)</label>
+                        <input type="text" inputmode="decimal" id="speedInput" class="form-control">
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label">Mesin</label>
+                        <div class="input-group">
+                            <input type="text" id="mesinSearch" class="form-control" list="mesinList" placeholder="Cari kode/nama mesin...">
+                            <datalist id="mesinList"></datalist>
+                            <input type="hidden" id="mesinSelect">
+                            <button id="confirmMesinBtn" class="btn btn-outline-success">Setuju</button>
+                        </div>
+                        <p id="mesinStatus" class="small mt-1"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Operator</label>
+                        <input type="text" id="operatorSearch" class="form-control" list="operatorList" placeholder="Cari NIK/nama...">
+                        <datalist id="operatorList"></datalist>
+                        <input type="hidden" id="operatorSelect">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Nomor Item / Produk</label>
+                        <input type="text" id="itemSearch" class="form-control" list="itemList" placeholder="-- konfirmasi Mesin dulu --" disabled>
+                        <datalist id="itemList"></datalist>
+                        <input type="hidden" id="itemSelect">
+                        <p id="itemStatus" class="small mt-1"></p>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>2. Downtime Grid</span>
+                <span id="section2-status-badge"></span>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <button type="button" id="btn-open-camera-s2" class="btn ir-btn-primary" disabled>
+                        📷 Ambil Foto Grid Downtime
+                    </button>
+                    <p id="section2-lock-note" class="small text-muted mt-1">Isi Shift dulu di Section 1 sebelum ambil foto grid.</p>
+                    <input type="file" id="photoInputS2" accept="image/*" capture="environment" class="d-none">
+                    <div id="section2-loading" class="d-none mt-2">
+                        <div class="spinner-border spinner-border-sm" style="color: var(--ir-accent);"></div>
+                        Menganalisa...
+                    </div>
+                </div>
+
+                <div id="section2-table-wrapper">
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr>
+                                <th>No</th><th>Jam Mulai</th><th>Jam Selesai</th><th>Menit</th>
+                                <th>Kategori</th><th>Detail Masalah</th><th>Status</th><th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="rowsTableBody"></tbody>
+                    </table>
+                    <div class="p-2">
+                        <button id="addRowBtn" class="btn btn-sm btn-outline-primary" type="button">+ Tambah Baris Manual</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="saveResultBox" class="alert d-none mb-3"></div>
+        <div id="backToDashboardBox" class="d-none mb-3">
+            <a href="{{ route('dashboard') }}" class="btn btn-primary">Kembali ke Dashboard</a>
+        </div>
+        <button id="saveAllBtn" class="btn ir-btn-primary btn-lg" disabled>Simpan Semua</button>
     </section>
 
-    <!-- Overlay kamera custom -- taruh di luar <section>, sejajar dengan section lain -->
+    <section id="state-error" class="d-none">
+        <div class="alert alert-danger">
+            <p id="errorMessage"></p>
+            <button id="retryBtn" class="btn btn-secondary">Tutup</button>
+        </div>
+    </section>
+
+    <!-- Overlay crop-rectangle KHUSUS close-up grid, tampil SEBELUM overlay 3-titik -->
+    <div id="rect-crop-overlay" style="display:none; position:fixed; inset:0; z-index:10000; background:#000;">
+        <canvas id="rect-crop-canvas" style="width:100%; height:100%; touch-action:none; display:block;"></canvas>
+        <p style="position:absolute; top:16px; left:0; right:0; text-align:center; color:white; font-size:14px;">
+            Geser & perbesar kotak untuk memilih area grid yang ingin dipotong
+        </p>
+        <div style="position:absolute; bottom:16px; left:0; right:0; display:flex; justify-content:center; gap:12px;">
+            <button type="button" id="btn-rect-cancel" class="btn btn-outline-light">Batal</button>
+            <button type="button" id="btn-rect-confirm" class="btn btn-success btn-lg">✓ Lanjut Tandai Sudut</button>
+        </div>
+    </div>
+
+    <!-- Overlay kamera custom -->
     <div id="camera-overlay" style="display:none; position:fixed; inset:0; z-index:9999; background:#000;">
         <div id="rotate-prompt" style="display:none; position:absolute; inset:0; flex-direction:column;
             align-items:center; justify-content:center; color:white; text-align:center;">
@@ -78,7 +210,8 @@
         </div>
         <canvas id="capture-canvas" style="display:none;"></canvas>
     </div>
-    <!-- Overlay penyesuaian 4-titik sudut, khusus close-up grid -->
+
+    <!-- Overlay penyesuaian 4-titik/3-titik sudut, khusus close-up grid -->
     <div id="corner-adjust-overlay" style="display:none; position:fixed; inset:0; z-index:10000; background:#000;">
         <canvas id="corner-adjust-canvas" style="width:100%; height:100%; touch-action:none; display:block;"></canvas>
         <p style="position:absolute; top:16px; left:0; right:0; text-align:center; color:white; font-size:14px;">
@@ -89,58 +222,11 @@
             <button type="button" id="btn-corner-confirm" class="btn btn-success btn-lg">✓ Sudah Pas</button>
         </div>
     </div>
-    {{-- ===================== STATE 2: LOADING ===================== --}}
-    <section id="state-loading" class="d-none text-center py-5">
-        <div class="spinner-border mb-3" style="color: var(--ir-accent);" role="status"></div>
-        <p>Sedang membaca kertas... (bisa sampai beberapa menit, mohon tunggu)</p>
-    </section>
-
-    {{-- ===================== STATE 3: RETAKE ===================== --}}
-    <section id="state-retake" class="d-none">
-        <div class="alert alert-warning">
-            <p id="retakeMessage"></p>
-            <button id="retakeBtn" class="btn btn-warning">Foto Ulang</button>
-            <a href="{{ route('dashboard') }}" class="btn btn-link text-muted">Batal, kembali ke Dashboard</a>
-        </div>
-    </section>
-
-    {{-- ===================== STATE 4: PILIH SHIFT ===================== --}}
-    <section id="state-shift" class="d-none">
-        <div class="alert alert-info">
-            <p>Shift tidak terbaca jelas dari foto. Pilih shift yang benar:</p>
-            <select id="shiftSelect" class="form-select mb-2" style="max-width:200px;">
-                <option value="1">Shift 1</option>
-                <option value="2">Shift 2</option>
-                <option value="3">Shift 3</option>
-            </select>
-            <button id="confirmShiftBtn" class="btn btn-primary">Lanjutkan</button>
-            <a href="{{ route('dashboard') }}" class="btn btn-link text-muted">Batal, kembali ke Dashboard</a>
-        </div>
-    </section>
-
-    {{-- ===================== STATE 4b: FOTO CLOSE-UP SECTION ===================== --}}
-    <section id="state-section-photo" class="d-none">
-        <div class="alert alert-warning">
-            <p id="sectionPhotoMessage"></p>
-            <button type="button" id="btn-open-camera-section" class="btn btn-warning">📷 Foto Bagian Ini</button>
-            <button type="button" id="fallbackManualBtn" class="btn btn-outline-secondary">Lewati, Isi Manual</button>
-            <a href="{{ route('dashboard') }}" class="btn btn-link text-muted">Batal, kembali ke Dashboard</a>
-            <input type="file" id="sectionPhotoInput" accept="image/*" capture="environment" class="form-control d-none">
-        </div>
-    </section>
-    {{-- ===================== STATE 5: ERROR ===================== --}}
-    <section id="state-error" class="d-none">
-        <div class="alert alert-danger">
-            <p id="errorMessage"></p>
-            <button id="retryBtn" class="btn btn-secondary">Coba Lagi</button>
-            <a href="{{ route('dashboard') }}" class="btn btn-link text-muted">Batal, kembali ke Dashboard</a>
-        </div>
-    </section>
 
     {{-- ===================== STATE 6: REVIEW ===================== --}}
     <section id="state-review" class="d-none">
-    <div class="card mb-3 border-primary">
-        <div class="card-header bg-primary text-white">1. Konfirmasi Mesin</div>
+    <div class="card mb-3">
+        <div class="card-header">1. Konfirmasi Mesin</div>
         <div class="card-body">
             <p class="mb-1">Teks di kertas: <strong id="mesinRawText"></strong></p>
             <p class="text-muted small" id="mesinAlasan"></p>
@@ -239,37 +325,60 @@
 <script>
 (function () {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-    let currentToken = null;
-    let currentData = null; // {header, rows} hasil analyze sukses
-    let currentFailingSection = null; // 'header'|'speed_size'|'grid' -- section yg sedang ditunggu close-up-nya
+    let mesinConfirmedResrceno = null; // kode mesin yg SUDAH terdaftar alias -- auto-apply tanpa tombol
+    let section1Data = null; // hasil sukses section 1 (atau null kalau manual semua)
+    let section2GridWaktu = null; // hasil sukses section 2
+    let currentRows = []; // hasil finalize() -- baris siap review
     let mesinOptionsCache = null;
     let operatorOptionsCache = null;
+    let kategoriOptionsCache = null;
 
     const el = (id) => document.getElementById(id);
-    const states = ['idle', 'loading', 'retake', 'shift', 'section-photo', 'error', 'review'];
-    function showState(name) {
-        states.forEach((s) => el(`state-${s}`).classList.toggle('d-none', s !== name));
+
+    async function apiPost(url, body, isJson = true) {
+        const headers = { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' };
+        if (isJson) headers['Content-Type'] = 'application/json';
+        const res = await fetch(url, { method: 'POST', headers, body: isJson ? JSON.stringify(body) : body });
+        return res.json();
+    }
+    async function apiGet(url) {
+        const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        return res.json();
     }
 
-    // ---------- KAMERA CUSTOM (Fase P) ----------
-    let cameraStream = null;
+    function showError(msg) {
+        el('errorMessage').textContent = msg;
+        el('state-main').classList.add('d-none');
+        el('state-error').classList.remove('d-none');
+    }
+    el('retryBtn').addEventListener('click', () => {
+        el('state-error').classList.add('d-none');
+        el('state-main').classList.remove('d-none');
+    });
 
-    el('btn-open-camera').addEventListener('click', async () => {
-        cameraCaptureTarget = 'full';
+    // ================== SECTION 1: kamera + submit ==================
+    let cameraStream = null;
+    let cameraCaptureTarget = null; // 's1' | 's2'
+    let rectCropState = null;
+    let cornerAdjustState = null;
+
+    el('btn-open-camera-s1').addEventListener('click', () => openCameraFor('s1'));
+    el('btn-open-camera-s2').addEventListener('click', () => openCameraFor('s2'));
+
+    function openCameraFor(target) {
+        cameraCaptureTarget = target;
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            console.warn('getUserMedia tidak didukung, fallback ke input file biasa.');
-            el('photoInput').click();
+            (target === 's1' ? el('photoInputS1') : el('photoInputS2')).click();
             return;
         }
         el('camera-overlay').style.display = 'block';
         checkOrientationAndProceed();
-    });
+    }
 
     function checkOrientationAndProceed() {
         const isLandscape = screen.orientation
             ? screen.orientation.type.startsWith('landscape')
             : window.innerWidth > window.innerHeight;
-
         if (!isLandscape) {
             el('rotate-prompt').style.display = 'flex';
             el('camera-active-area').style.display = 'none';
@@ -279,7 +388,6 @@
             startCameraStream();
         }
     }
-
     function onOrientationChange() {
         const isLandscape = screen.orientation
             ? screen.orientation.type.startsWith('landscape')
@@ -291,7 +399,6 @@
             startCameraStream();
         }
     }
-
     async function startCameraStream() {
         try {
             cameraStream = await navigator.mediaDevices.getUserMedia({
@@ -302,51 +409,43 @@
             el('camera-active-area').style.display = 'block';
             drawViewfinderGuide();
         } catch (err) {
-            console.error('Gagal akses kamera:', err);
             closeCameraOverlay();
-            el('photoInput').click();
+            (cameraCaptureTarget === 's1' ? el('photoInputS1') : el('photoInputS2')).click();
         }
     }
-
     function drawViewfinderGuide() {
         const canvas = el('viewfinder-overlay');
         const video = el('camera-video');
-
         function resize() {
             canvas.width = video.clientWidth;
             canvas.height = video.clientHeight;
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            const isGridCloseup = cameraCaptureTarget === 'section' && currentFailingSection === 'grid';
-            const targetRatio = isGridCloseup ? 4.0 : 1.4;
-            const guideText = cameraCaptureTarget === 'section'
-                ? 'Pegang HP tegak lurus, foto HANYA kotak grid jam ini'
-                : 'Posisikan kertas di dalam kotak';
-
+            const isS2 = cameraCaptureTarget === 's2';
+            const targetRatio = isS2 ? 2.5 : 1.4;
+            const guideText = isS2 ? 'Foto area grid downtime (boleh sedikit longgar)' : 'Posisikan seluruh kertas di dalam kotak';
             let boxW = canvas.width * 0.9;
             let boxH = boxW / targetRatio;
-            if (boxH > canvas.height * 0.85) {
-                boxH = canvas.height * 0.85;
-                boxW = boxH * targetRatio;
-            }
-            const boxX = (canvas.width - boxW) / 2;
-            const boxY = (canvas.height - boxH) / 2;
-
+            if (boxH > canvas.height * 0.85) { boxH = canvas.height * 0.85; boxW = boxH * targetRatio; }
+            const boxX = (canvas.width - boxW) / 2, boxY = (canvas.height - boxH) / 2;
             ctx.strokeStyle = 'rgba(0, 255, 100, 0.9)';
-            ctx.lineWidth = 3;
-            ctx.setLineDash([12, 8]);
+            ctx.lineWidth = 3; ctx.setLineDash([12, 8]);
             ctx.strokeRect(boxX, boxY, boxW, boxH);
-
             ctx.setLineDash([]);
             ctx.fillStyle = 'rgba(0, 255, 100, 0.9)';
             ctx.font = '16px sans-serif';
             ctx.fillText(guideText, boxX, boxY - 10);
         }
-
         resize();
         window.addEventListener('resize', resize);
     }
+    function closeCameraOverlay() {
+        if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
+        el('camera-overlay').style.display = 'none';
+        el('rotate-prompt').style.display = 'none';
+        el('camera-active-area').style.display = 'none';
+    }
+    el('btn-cancel-camera').addEventListener('click', closeCameraOverlay);
 
     el('btn-capture').addEventListener('click', () => {
         const video = el('camera-video');
@@ -354,38 +453,240 @@
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         canvas.getContext('2d').drawImage(video, 0, 0);
-
         canvas.toBlob((blob) => {
             const file = new File([blob], `capture_${Date.now()}.jpg`, { type: 'image/jpeg' });
             closeCameraOverlay();
-
-            if (cameraCaptureTarget === 'section') {
-                if (currentFailingSection === 'grid') {
-                    showCornerAdjustUI(file);
-                } else {
-                    submitSectionPhoto(file);
-                }
-                return;
+            if (cameraCaptureTarget === 's1') {
+                submitSection1(file);
+            } else {
+                showRectCropUI(file); // S2: crop-rectangle DULU (poin 1), baru 3-titik
             }
-
-            const dt = new DataTransfer();
-            dt.items.add(file);
-            el('photoInput').files = dt.files;
-            el('analyzeBtn').disabled = false;
-            el('analyzeBtn').click();
         }, 'image/jpeg', 0.92);
     });
 
-    el('sectionPhotoInput').addEventListener('change', () => {
-        const file = el('sectionPhotoInput').files[0];
-        if (file) {
-            if (currentFailingSection === 'grid') {
-                showCornerAdjustUI(file);
-            } else {
-                submitSectionPhoto(file);
+    el('photoInputS1').addEventListener('change', () => {
+        const f = el('photoInputS1').files[0];
+        if (f) { submitSection1(f); el('photoInputS1').value = ''; }
+    });
+    el('photoInputS2').addEventListener('change', () => {
+        const f = el('photoInputS2').files[0];
+        if (f) { showRectCropUI(f); el('photoInputS2').value = ''; }
+    });
+
+    async function submitSection1(file) {
+        el('section1-loading').classList.remove('d-none');
+        const fd = new FormData();
+        fd.append('photo', file);
+        try {
+            const res = await apiPost('/paper-scan/section1/analyze', fd, false);
+            el('section1-loading').classList.add('d-none');
+            if (res.status === 'needs_retake') {
+                alert(res.message);
+                return;
             }
-            el('sectionPhotoInput').value = '';
+            if (res.status === 'error') { showError(res.message); return; }
+
+            section1Data = res.data;
+            await applySection1ToForm(res.data);
+        } catch (e) {
+            el('section1-loading').classList.add('d-none');
+            showError('Tidak bisa menghubungi server.');
         }
+    }
+
+    async function applySection1ToForm(data) {
+        el('tanggalInput').value = data.tanggal_raw ? parseTanggalToInputDate(data.tanggal_raw) : el('tanggalInput').value;
+        el('speedInput').value = data.speed ?? el('speedInput').value;
+        if (data.shift) el('shiftSelectManual').value = data.shift;
+
+        if (!mesinOptionsCache) mesinOptionsCache = await apiGet('/referensi/mesin');
+        el('mesinList').innerHTML = mesinOptionsCache.map(m => `<option data-kode="${m.kode}" value="${m.kode} — ${m.nama}"></option>`).join('');
+        let shouldLoadItems = false;
+        if (data.mesin_resolution && data.mesin_resolution.resrceno) {
+            const matched = mesinOptionsCache.find(m => m.kode === data.mesin_resolution.resrceno);
+            if (matched) {
+                el('mesinSearch').value = `${matched.kode} — ${matched.nama}`;
+                el('mesinSelect').value = matched.kode;
+                shouldLoadItems = true;
+            }
+        }
+        if (data.mesin_resolution?.dikonfirmasi) {
+            mesinConfirmedResrceno = data.mesin_resolution.resrceno;
+            setMesinConfirmedUI('✓ Sudah terdaftar alias -- otomatis diterapkan.', true);
+            applyMesinToAllRows(data.mesin_resolution.resrceno);
+            shouldLoadItems = true;
+        } else {
+            mesinConfirmedResrceno = null;
+            el('mesinStatus').textContent = data.mesin_resolution?.sumber === 'ai'
+                ? '⚠ Ini tebakan AI, wajib diperiksa & disetujui.'
+                : '';
+            el('mesinStatus').className = 'small mt-2 text-warning';
+        }
+        if (shouldLoadItems && data.mesin_resolution?.resrceno) {
+            await loadItemOptions(data.mesin_resolution.resrceno);
+        }
+
+        const badge = el('section1-status-badge');
+        badge.innerHTML = (data.header_partial_failure || data.speed_size_partial_failure)
+            ? '<span class="ir-badge ir-badge-review">Sebagian perlu dilengkapi manual</span>'
+            : '<span class="ir-badge ir-badge-ok">Terbaca</span>';
+
+        updateSection2LockState();
+        updateSaveButtonState();
+    }
+
+    function parseTanggalToInputDate(raw) {
+        const m = raw.match(/(\d{1,2})[\s.\-\/](\d{1,2})[\s.\-\/](\d{4})/);
+        if (!m) return '';
+        return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+    }
+
+    el('shiftSelectManual').addEventListener('change', () => { updateSection2LockState(); updateSaveButtonState(); });
+
+    function updateSection2LockState() {
+        const hasShift = !!el('shiftSelectManual').value;
+        el('btn-open-camera-s2').disabled = !hasShift;
+        el('section2-lock-note').classList.toggle('d-none', hasShift);
+    }
+
+    // ================== SECTION 2: crop-rectangle -> 3-titik -> submit ==================
+    function showRectCropUI(file) {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = el('rect-crop-canvas');
+            const dpr = window.devicePixelRatio || 1;
+            const viewW = window.innerWidth, viewH = window.innerHeight;
+            canvas.width = viewW * dpr; canvas.height = viewH * dpr;
+            const baseScale = Math.min(viewW / img.width, viewH / img.height);
+            const baseOffsetX = (viewW - img.width * baseScale) / 2;
+            const baseOffsetY = (viewH - img.height * baseScale) / 2;
+
+            rectCropState = {
+                img, dpr, viewW, viewH, baseScale, baseOffsetX, baseOffsetY, pendingFile: file,
+                rect: { x0: 0.1, y0: 0.35, x1: 0.9, y1: 0.65 },
+                dragHandle: null,
+            };
+            el('rect-crop-overlay').style.display = 'block';
+            redrawRectCrop();
+        };
+        img.src = URL.createObjectURL(file);
+    }
+
+    function rectUvToScreen(u, v) {
+        const s = rectCropState;
+        return { x: s.baseOffsetX + u * s.img.width * s.baseScale, y: s.baseOffsetY + v * s.img.height * s.baseScale };
+    }
+    function rectScreenToUv(x, y) {
+        const s = rectCropState;
+        return { u: (x - s.baseOffsetX) / (s.img.width * s.baseScale), v: (y - s.baseOffsetY) / (s.img.height * s.baseScale) };
+    }
+
+    function redrawRectCrop() {
+        const s = rectCropState;
+        const canvas = el('rect-crop-canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.setTransform(s.dpr, 0, 0, s.dpr, 0, 0);
+        ctx.clearRect(0, 0, s.viewW, s.viewH);
+        ctx.drawImage(s.img, s.baseOffsetX, s.baseOffsetY, s.img.width * s.baseScale, s.img.height * s.baseScale);
+
+        const p0 = rectUvToScreen(s.rect.x0, s.rect.y0);
+        const p1 = rectUvToScreen(s.rect.x1, s.rect.y1);
+
+        ctx.fillStyle = 'rgba(0,0,0,0.55)';
+        ctx.fillRect(0, 0, s.viewW, p0.y);
+        ctx.fillRect(0, p1.y, s.viewW, s.viewH - p1.y);
+        ctx.fillRect(0, p0.y, p0.x, p1.y - p0.y);
+        ctx.fillRect(p1.x, p0.y, s.viewW - p1.x, p1.y - p0.y);
+
+        ctx.strokeStyle = 'rgba(0,255,100,0.95)';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(p0.x, p0.y, p1.x - p0.x, p1.y - p0.y);
+
+        const handles = { tl: p0, tr: { x: p1.x, y: p0.y }, bl: { x: p0.x, y: p1.y }, br: p1 };
+        Object.values(handles).forEach(h => {
+            ctx.fillStyle = 'rgba(0,255,100,0.95)';
+            ctx.fillRect(h.x - 8, h.y - 8, 16, 16);
+        });
+    }
+
+    function rectPointerPos(e) {
+        const rect = el('rect-crop-canvas').getBoundingClientRect();
+        const t = e.touches ? e.touches[0] : e;
+        return { x: t.clientX - rect.left, y: t.clientY - rect.top };
+    }
+
+    function initRectCropHandlers() {
+        const canvas = el('rect-crop-canvas');
+        function hitTest(x, y) {
+            const s = rectCropState;
+            const p0 = rectUvToScreen(s.rect.x0, s.rect.y0);
+            const p1 = rectUvToScreen(s.rect.x1, s.rect.y1);
+            const near = (px, py) => Math.hypot(px - x, py - y) < 30;
+            if (near(p0.x, p0.y)) return 'tl';
+            if (near(p1.x, p0.y)) return 'tr';
+            if (near(p0.x, p1.y)) return 'bl';
+            if (near(p1.x, p1.y)) return 'br';
+            if (x > p0.x && x < p1.x && y > p0.y && y < p1.y) return 'move';
+            return null;
+        }
+        let lastPos = null;
+        function onStart(e) {
+            const pos = rectPointerPos(e);
+            rectCropState.dragHandle = hitTest(pos.x, pos.y);
+            lastPos = pos;
+        }
+        function onMove(e) {
+            if (!rectCropState.dragHandle) return;
+            e.preventDefault();
+            const pos = rectPointerPos(e);
+            const s = rectCropState;
+            const duv = rectScreenToUv(pos.x, pos.y);
+            if (s.dragHandle === 'move') {
+                const dPrev = rectScreenToUv(lastPos.x, lastPos.y);
+                const dx = duv.u - dPrev.u, dy = duv.v - dPrev.v;
+                const w = s.rect.x1 - s.rect.x0, h = s.rect.y1 - s.rect.y0;
+                s.rect.x0 = Math.min(Math.max(s.rect.x0 + dx, 0), 1 - w);
+                s.rect.x1 = s.rect.x0 + w;
+                s.rect.y0 = Math.min(Math.max(s.rect.y0 + dy, 0), 1 - h);
+                s.rect.y1 = s.rect.y0 + h;
+            } else if (s.dragHandle === 'tl') { s.rect.x0 = Math.min(duv.u, s.rect.x1 - 0.05); s.rect.y0 = Math.min(duv.v, s.rect.y1 - 0.05); }
+            else if (s.dragHandle === 'tr') { s.rect.x1 = Math.max(duv.u, s.rect.x0 + 0.05); s.rect.y0 = Math.min(duv.v, s.rect.y1 - 0.05); }
+            else if (s.dragHandle === 'bl') { s.rect.x0 = Math.min(duv.u, s.rect.x1 - 0.05); s.rect.y1 = Math.max(duv.v, s.rect.y0 + 0.05); }
+            else if (s.dragHandle === 'br') { s.rect.x1 = Math.max(duv.u, s.rect.x0 + 0.05); s.rect.y1 = Math.max(duv.v, s.rect.y0 + 0.05); }
+            lastPos = pos;
+            redrawRectCrop();
+        }
+        function onEnd() { rectCropState.dragHandle = null; lastPos = null; }
+        canvas.addEventListener('touchstart', onStart, { passive: true });
+        canvas.addEventListener('touchmove', onMove, { passive: false });
+        canvas.addEventListener('touchend', onEnd);
+        canvas.addEventListener('mousedown', onStart);
+        canvas.addEventListener('mousemove', (e) => { if (rectCropState?.dragHandle) onMove(e); });
+        window.addEventListener('mouseup', onEnd);
+    }
+    initRectCropHandlers();
+
+    el('btn-rect-cancel').addEventListener('click', () => {
+        el('rect-crop-overlay').style.display = 'none';
+        rectCropState = null;
+    });
+
+    el('btn-rect-confirm').addEventListener('click', () => {
+        const s = rectCropState;
+        const { img, rect } = s;
+        const cropCanvas = document.createElement('canvas');
+        const cw = Math.round((rect.x1 - rect.x0) * img.width);
+        const ch = Math.round((rect.y1 - rect.y0) * img.height);
+        cropCanvas.width = cw; cropCanvas.height = ch;
+        cropCanvas.getContext('2d').drawImage(
+            img, rect.x0 * img.width, rect.y0 * img.height, cw, ch, 0, 0, cw, ch
+        );
+        cropCanvas.toBlob((blob) => {
+            const croppedFile = new File([blob], `cropped_${Date.now()}.jpg`, { type: 'image/jpeg' });
+            el('rect-crop-overlay').style.display = 'none';
+            rectCropState = null;
+            showCornerAdjustUI(croppedFile);
+        }, 'image/jpeg', 0.92);
     });
 
     function showCornerAdjustUI(file) {
@@ -405,9 +706,7 @@
             cornerAdjustState = {
                 img, dpr, viewW, viewH, baseScale, baseOffsetX, baseOffsetY,
                 zoom: 1, panX: 0, panY: 0, dragIdx: null, pendingFile: file,
-                pinch: null, // {startDist, startZoom, startPanX, startPanY, focalScreenX, focalScreenY}
-                // titik disimpan sbg fraksi 0-1 RELATIF KE GAMBAR ASLI (u,v) --
-                // bukan koordinat layar -- supaya tahan terhadap zoom/pan.
+                pinch: null,
                 points: [
                     { u: 0.15, v: 0.4 },  // kiri-atas
                     { u: 0.85, v: 0.4 },  // kanan-atas
@@ -419,24 +718,6 @@
             redrawCornerAdjust();
         };
         img.src = URL.createObjectURL(file);
-    }
-
-    // ---- transformasi koordinat: (u,v) fraksi gambar <-> posisi layar ----
-    function uvToScreen(u, v) {
-        const s = cornerAdjustState;
-        const baseX = s.baseOffsetX + u * s.img.width * s.baseScale;
-        const baseY = s.baseOffsetY + v * s.img.height * s.baseScale;
-        return { x: baseX * s.zoom + s.panX, y: baseY * s.zoom + s.panY };
-    }
-
-    function screenToUv(x, y) {
-        const s = cornerAdjustState;
-        const baseX = (x - s.panX) / s.zoom;
-        const baseY = (y - s.panY) / s.zoom;
-        return {
-            u: (baseX - s.baseOffsetX) / (s.img.width * s.baseScale),
-            v: (baseY - s.baseOffsetY) / (s.img.height * s.baseScale),
-        };
     }
 
     function redrawCornerAdjust() {
@@ -479,8 +760,6 @@
             }
         }
 
-        // Marker KECIL (ring + titik tengah), bukan lingkaran solid besar --
-        // supaya tidak menutupi pandangan ke garis kertas di bawahnya.
         s.points.forEach((p) => {
             const scr = uvToScreen(p.u, p.v);
             ctx.beginPath();
@@ -493,6 +772,23 @@
             ctx.fillStyle = 'rgba(0, 255, 100, 0.95)';
             ctx.fill();
         });
+    }
+
+    function uvToScreen(u, v) {
+        const s = cornerAdjustState;
+        const baseX = s.baseOffsetX + u * s.img.width * s.baseScale;
+        const baseY = s.baseOffsetY + v * s.img.height * s.baseScale;
+        return { x: baseX * s.zoom + s.panX, y: baseY * s.zoom + s.panY };
+    }
+
+    function screenToUv(x, y) {
+        const s = cornerAdjustState;
+        const baseX = (x - s.panX) / s.zoom;
+        const baseY = (y - s.panY) / s.zoom;
+        return {
+            u: (baseX - s.baseOffsetX) / (s.img.width * s.baseScale),
+            v: (baseY - s.baseOffsetY) / (s.img.height * s.baseScale),
+        };
     }
 
     function cornerAdjustPointerPos(touch) {
@@ -552,7 +848,7 @@
                 const d = Math.hypot(scr.x - screenX, scr.y - screenY);
                 if (d < nearestDist) { nearestDist = d; nearestIdx = i; }
             });
-            return nearestDist < 40 ? nearestIdx : -1; // target sentuh 40px, lebih besar drpd marker visual (10px)
+            return nearestDist < 40 ? nearestIdx : -1;
         }
 
         function pinchDistance(t0, t1) {
@@ -623,7 +919,6 @@
         canvas.addEventListener('touchmove', onTouchMove, { passive: false });
         canvas.addEventListener('touchend', onTouchEnd);
 
-        // Fallback mouse (desktop testing) -- drag titik saja, tanpa pinch/pan.
         let mouseDragIdx = null;
         canvas.addEventListener('mousedown', (e) => {
             const pos = { x: e.clientX - canvas.getBoundingClientRect().left, y: e.clientY - canvas.getBoundingClientRect().top };
@@ -637,262 +932,91 @@
         });
         window.addEventListener('mouseup', () => { mouseDragIdx = null; });
     }
+
     initCornerAdjustDragHandlers();
 
     el('btn-corner-cancel').addEventListener('click', () => {
         el('corner-adjust-overlay').style.display = 'none';
         cornerAdjustState = null;
-        showState('section-photo');
     });
 
     el('btn-corner-confirm').addEventListener('click', () => {
         const s = cornerAdjustState;
-        const normalized = s.points.map((p) => ({
-            x: Math.min(Math.max(p.u, 0), 1),
-            y: Math.min(Math.max(p.v, 0), 1),
-        }));
+        const normalized = s.points.map(p => ({ x: Math.min(Math.max(p.u, 0), 1), y: Math.min(Math.max(p.v, 0), 1) }));
         el('corner-adjust-overlay').style.display = 'none';
         const file = s.pendingFile;
         cornerAdjustState = null;
-        submitSectionPhoto(file, normalized);
+        submitSection2(file, normalized);
     });
 
-    async function submitSectionPhoto(file, points = null) {
+    async function submitSection2(file, points) {
+        const shift = el('shiftSelectManual').value;
+        if (!shift) { alert('Pilih Shift dulu di Section 1.'); return; }
+
+        el('section2-loading').classList.remove('d-none');
         const fd = new FormData();
         fd.append('photo', file);
-        fd.append('token', currentToken);
-        if (points) fd.append('points', JSON.stringify(points));
-        showState('loading');
+        fd.append('shift', shift);
+        fd.append('points', JSON.stringify(points));
+
         try {
-            const data = await apiPost('/paper-scan/analyze/section-photo', fd, false);
-            handlePipelineResult(data);
+            const res = await apiPost('/paper-scan/section2/analyze', fd, false);
+            el('section2-loading').classList.add('d-none');
+            if (res.status === 'needs_retake') { alert(res.message); return; }
+            if (res.status === 'error') { showError(res.message); return; }
+
+            section2GridWaktu = res.data.grid_waktu;
+            el('section2-status-badge').innerHTML = '<span class="ir-badge ir-badge-ok">Terbaca</span>';
+            await refreshRowsFromFinalize();
         } catch (e) {
-            el('errorMessage').textContent = 'Tidak bisa menghubungi server. Cek koneksi internet.';
-            showState('error');
+            el('section2-loading').classList.add('d-none');
+            showError('Tidak bisa menghubungi server.');
         }
     }
 
-    el('btn-cancel-camera').addEventListener('click', closeCameraOverlay);
-    // ---------- STATE 4b: foto close-up section ----------
-    let cameraCaptureTarget = 'full'; // 'full' | 'section' -- menentukan endpoint tujuan saat capture
-    let cornerAdjustState = null; // {img, points:[{x,y}x4], dragIdx, canvasW, canvasH, pendingFile}
-    el('btn-open-camera-section').addEventListener('click', () => {
-        cameraCaptureTarget = 'section';
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            console.warn('getUserMedia tidak didukung, fallback ke input file biasa.');
-            el('sectionPhotoInput').click();
-            return;
-        }
-        el('camera-overlay').style.display = 'block';
-        checkOrientationAndProceed();
-    });
-
-    el('fallbackManualBtn').addEventListener('click', () => {
-        // Lanjut ke review dgn section itu dikosongkan + ditandai perlu_review.
-        // currentData BELUM ada di titik ini kalau ini kegagalan pertama kali
-        // (sebelum sempat sukses sama sekali) -- perlu diminta dari server.
-        submitSectionFallbackManual();
-    });
-
-    async function submitSectionFallbackManual() {
-        showState('loading');
-        const data = await apiPost('/paper-scan/analyze/section-photo/fallback', {
-            token: currentToken, section: currentFailingSection,
-        });
-        handlePipelineResult(data);
-    }
-    function closeCameraOverlay() {
-        if (cameraStream) {
-            cameraStream.getTracks().forEach(track => track.stop());
-            cameraStream = null;
-        }
-        el('camera-overlay').style.display = 'none';
-        el('rotate-prompt').style.display = 'none';
-        el('camera-active-area').style.display = 'none';
-    }
-
-    async function apiPost(url, body, isJson = true) {
-        const headers = { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' };
-        if (isJson) headers['Content-Type'] = 'application/json';
-        const res = await fetch(url, { method: 'POST', headers, body: isJson ? JSON.stringify(body) : body });
-        return res.json();
-    }
-
-    async function apiGet(url) {
-        const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-        return res.json();
-    }
-
-    function handlePipelineResult(data) {
-        if (data.status === 'needs_retake') {
-            el('retakeMessage').textContent = data.message;
-            showState('retake');
-        } else if (data.status === 'needs_shift_confirmation') {
-            currentToken = data.token;
-            showState('shift');
-        } else if (data.status === 'needs_section_photo') {
-            currentToken = data.token;
-            currentFailingSection = data.section;
-            const retryNote = data.retry ? ' Masih belum terbaca, coba lagi lebih dekat & jelas.' : '';
-            el('sectionPhotoMessage').textContent =
-                `Bagian "${data.section_label}" tidak terbaca jelas.${retryNote} `
-                + `Foto ulang HANYA bagian ini saja (lebih dekat & jelas).`;
-            showState('section-photo');
-        } else if (data.status === 'error') {
-            el('errorMessage').textContent = data.message;
-            showState('error');
-        } else if (data.status === 'success') {
-            currentData = data;
-            renderReview(data);
-            showState('review');
-        }
-    }
-
-    el('addRowBtn').addEventListener('click', () => {
-        const tanggal = currentData.header.tanggal_parsed || el('tanggalInput').value || null;
-        const shift = currentData.header.shift || null;
-
-        currentData.rows.push({
-            Tgl_Trs: tanggal,
-            ShiftCode: shift,
-            Time_Start: null,
-            Time_End: null,
-            Time_Total: null,
-            MesinCode: currentData.header.mesin_code_resolved || null,
-            NIK: el('operatorSelect').value || null,
-            Speed_Mesin: el('speedInput').value || null,
-            ProblemCode: null,
-            Problem_Desc: null,
-            ITEMNO: el('itemSelect').value || null,
-            _raw_code: '(manual)',
-            _review: {
-                perlu_review: true,
-                alasan: ['Baris ditambahkan manual oleh petugas -- belum diisi.'],
-                problem_code_debug: null,
-            },
-        });
-
-        renderRows(currentData.rows);
-        updateSaveButtonState();
-    });
-
-    // ---------- STATE 1: upload ----------
-    el('photoInput').addEventListener('change', () => {
-        const hasFile = el('photoInput').files.length > 0;
-        el('analyzeBtn').disabled = !hasFile;
-        if (hasFile) {
-            el('analyzeBtn').click(); // auto-trigger juga di jalur fallback, sama seperti jalur capture kamera
-        }
-    });
-
-    el('analyzeBtn').addEventListener('click', async () => {
-        const fd = new FormData();
-        fd.append('photo', el('photoInput').files[0]);
-        showState('loading');
-        try {
-            const data = await apiPost('/paper-scan/analyze', fd, false);
-            handlePipelineResult(data);
-        } catch (e) {
-            el('errorMessage').textContent = 'Tidak bisa menghubungi server. Cek koneksi internet.';
-            showState('error');
-        }
-    });
-
-    // ---------- STATE 3: retake ----------
-    el('retakeBtn').addEventListener('click', () => {
-        el('photoInput').value = '';
-        el('analyzeBtn').disabled = true;
-        showState('idle');
-    });
-
-    // ---------- STATE 4: shift ----------
-    el('confirmShiftBtn').addEventListener('click', async () => {
-        showState('loading');
-        const data = await apiPost('/paper-scan/analyze/confirm-shift', {
-            token: currentToken, shift: el('shiftSelect').value,
-        });
-        handlePipelineResult(data);
-    });
-
-    // ---------- STATE 5: error ----------
-    el('retryBtn').addEventListener('click', () => {
-        el('photoInput').value = '';
-        el('analyzeBtn').disabled = true;
-        showState('idle');
-    });
-
-    // ---------- STATE 6: review ----------
-    // ---------- STATE 6: review (GANTI seluruh blok lama dgn ini) ----------
-    async function renderReview(data) {
-        const h = data.header;
-
-        el('mesinRawText').textContent = h.mesin_raw ?? '(tidak terbaca)';
-        el('mesinAlasan').textContent = h.mesin_resolution.alasan ?? '';
-
-        if (!mesinOptionsCache) mesinOptionsCache = await apiGet('/referensi/mesin');
-        const mesinList = el('mesinList');
-        mesinList.innerHTML = mesinOptionsCache.map((m) =>
-            `<option data-kode="${m.kode}" value="${m.kode} — ${m.nama}"></option>`
-        ).join('');
-        if (h.mesin_resolution.resrceno) {
-            const matched = mesinOptionsCache.find(m => m.kode === h.mesin_resolution.resrceno);
-            if (matched) {
-                el('mesinSearch').value = `${matched.kode} — ${matched.nama}`;
-                el('mesinSelect').value = matched.kode;
-            }
-        }
-        if (h.mesin_resolution.dikonfirmasi) {
-            setMesinConfirmedUI('✓ Sudah dikonfirmasi sebelumnya (dari alias).', true);
-            applyMesinToAllRows(h.mesin_resolution.resrceno);
-            await loadItemOptions(h.mesin_resolution.resrceno);
-        } else {
-            el('mesinStatus').textContent = h.mesin_resolution.sumber === 'ai'
-                ? '⚠ Ini tebakan AI, wajib diperiksa & disetujui.'
-                : '⚠ Tidak ada tebakan otomatis, wajib dipilih manual.';
-            el('mesinStatus').className = 'small mt-2 text-warning';
-        }
-
-        el('tanggalInput').value = h.tanggal_parsed ?? '';
-        el('shiftDisplay').value = 'Shift ' + (h.shift ?? '-');
-        el('speedInput').value = h.speed ?? '';
-
-        // GANTI bagian operator di renderReview():
-        if (!operatorOptionsCache) operatorOptionsCache = await apiGet('/referensi/operator');
-        const operatorList = el('operatorList');
-        operatorList.innerHTML = operatorOptionsCache.map((o) =>
-            `<option data-nik="${o.nik}" value="${o.nama} (${o.nik})"></option>`
-        ).join('');
-        if (h.operator_match.nik) {
-            const matched = operatorOptionsCache.find(o => o.nik === h.operator_match.nik);
-            if (matched) {
-                el('operatorSearch').value = `${matched.nama} (${matched.nik})`;
-                el('operatorSelect').value = matched.nik;
-            }
-        }
-
-        renderRows(data.rows);
-        updateSaveButtonState();
-    }
-
-    function setMesinConfirmedUI(msg, ok) {
-        el('mesinStatus').textContent = msg;
-        el('mesinStatus').className = 'small mt-2 ' + (ok ? 'text-success' : 'text-warning');
-    }
-
-    function applyMesinToAllRows(resrceno) {
-        currentData.rows.forEach((r) => { r.MesinCode = resrceno; });
-        currentData.header.mesin_code_resolved = resrceno;
-    }
-
-    function applyItemToAllRows(itemno) {
-        currentData.rows.forEach((r) => { r.ITEMNO = itemno; });
-    }
-
+    // ================== FINALIZE: gabung section1+section2 -> rows ==================
     /**
-     * Cocokkan size_raw ("00.80 MM") ke daftar item (yg ITEMDESC-nya mengandung
-     * teks ukuran, mis. "...DIA.00.80 MM") -- MURNI SARAN, tetap wajib
-     * dikonfirmasi user (tidak auto-submit), sesuai pola Mesin.
+     * Gabung baris MANUAL yang sudah diketik operator dengan baris baru
+     * hasil finalize() (dari foto grid) -- kalau ada baris manual yang
+     * jam-mulainya SAMA PERSIS dengan salah satu baris baru, baris manual
+     * itu DIBUANG (di-overwrite oleh hasil foto, dianggap operator sudah
+     * isi placeholder utk jam itu dan sekarang tergantikan data asli).
+     * Baris manual yg jam-mulainya beda (atau belum diisi jamnya sama
+     * sekali) tetap dipertahankan, ditambahkan di akhir daftar baru.
      */
+    function mergeManualRows(oldRows, newRows) {
+        const manualRows = oldRows.filter(r => r._raw_code === '(manual)');
+        if (manualRows.length === 0) return newRows;
+
+        const newTimes = new Set(
+            newRows.map(r => r.Time_Start ? r.Time_Start.substring(11, 16) : null).filter(Boolean)
+        );
+        const keptManual = manualRows.filter(r => {
+            const t = r.Time_Start ? r.Time_Start.substring(11, 16) : null;
+            return !t || !newTimes.has(t); // tanpa jam ATAU jamnya tidak bentrok -> dipertahankan
+        });
+        return [...newRows, ...keptManual];
+    }
+    
+    async function refreshRowsFromFinalize() {
+        const payload = {
+            tanggal: el('tanggalInput').value || null,
+            mesin_code: section1Data?.mesin_raw ?? null,
+            shift: el('shiftSelectManual').value || null,
+            speed: el('speedInput').value || null,
+            size_raw: section1Data?.size_raw ?? null,
+            grid_waktu: section2GridWaktu || [],
+        };
+        const result = await apiPost('/paper-scan/finalize', payload);
+        if (result.status !== 'success') { showError('Gagal memproses data.'); return; }
+
+        currentRows = mergeManualRows(currentRows, result.rows);
+        if (!kategoriOptionsCache) kategoriOptionsCache = await apiGet('/referensi/problem-kategori');
+        await renderRows(currentRows);
+        updateSaveButtonState();
+    }
+
+    // ================== Mesin/Item/Operator (REUSE logika lama APA ADANYA) ====
     function findItemCandidatesBySize(items, sizeRaw) {
         if (!sizeRaw) return [];
 
@@ -902,8 +1026,6 @@
         const num = parseFloat(m[1].replace(',', '.'));
         if (isNaN(num)) return [];
 
-        // Bentuk beberapa varian teks yg mungkin muncul di ITEMDESC (leading
-        // zero beda-beda: "0.80", "00.80", ".80" semua mengacu angka yg sama).
         const variants = [
             num.toFixed(2),                          // "0.80"
             '0' + num.toFixed(2),                    // "00.80"
@@ -915,7 +1037,6 @@
         );
     }
 
-    // GANTI loadItemOptions():
     async function loadItemOptions(mesinCode) {
         const itemSearch = el('itemSearch');
         const itemList = el('itemList');
@@ -934,8 +1055,7 @@
         itemSearch.disabled = false;
         itemSearch.placeholder = 'Cari kode/nama item...';
 
-        // PATCH: saran Item berdasarkan Size yang terbaca dari kertas.
-        const sizeRaw = currentData.header.size_raw;
+        const sizeRaw = section1Data?.size_raw;
         const candidates = findItemCandidatesBySize(items, sizeRaw);
 
         if (candidates.length === 1) {
@@ -957,22 +1077,40 @@
 
         updateSaveButtonState();
     }
+
+    function applyMesinToAllRows(resrceno) {
+        currentRows.forEach((r) => { r.MesinCode = resrceno; });
+        if (section1Data) {
+            if (!section1Data.mesin_resolution) section1Data.mesin_resolution = {};
+            section1Data.mesin_resolution.resrceno = resrceno;
+        }
+    }
+
+    function applyItemToAllRows(itemno) {
+        currentRows.forEach((r) => { r.ITEMNO = itemno; });
+    }
+
+    function setMesinConfirmedUI(msg, ok) {
+        el('mesinStatus').textContent = msg;
+        el('mesinStatus').className = 'small mt-2 ' + (ok ? 'text-success' : 'text-warning');
+    }
+
     el('confirmMesinBtn').addEventListener('click', async () => {
         const resrceno = el('mesinSelect').value;
         if (!resrceno) { alert('Pilih mesin dulu.'); return; }
 
         await apiPost('/paper-scan/confirm-mesin', {
-            raw_text: currentData.header.mesin_raw,
+            raw_text: section1Data?.mesin_raw,
             resrceno_terpilih: resrceno,
         });
 
+        mesinConfirmedResrceno = resrceno; // TAMBAHAN — dari sini dianggap terdaftar
         setMesinConfirmedUI('✓ Tersimpan sebagai alias untuk lain kali.', true);
         applyMesinToAllRows(resrceno);
         await loadItemOptions(resrceno);
         updateSaveButtonState();
     });
 
-    
     el('tanggalInput').addEventListener('change', updateSaveButtonState);
     el('speedInput').addEventListener('change', updateSaveButtonState);
     el('operatorSearch').addEventListener('input', () => {
@@ -995,91 +1133,128 @@
     el('mesinSearch').addEventListener('input', () => {
         const opts = el('mesinList').querySelectorAll('option');
         const match = Array.from(opts).find(o => o.value === el('mesinSearch').value);
-        el('mesinSelect').value = match ? match.dataset.kode : '';
+        const kode = match ? match.dataset.kode : '';
+        el('mesinSelect').value = kode;
+
+        if (kode && kode === mesinConfirmedResrceno) {
+            // Kode ini PERSIS sama dgn yg sudah terdaftar alias -- auto-apply,
+            // tidak perlu tombol Setuju.
+            applyMesinToAllRows(kode);
+            loadItemOptions(kode);
+            setMesinConfirmedUI('✓ Sudah terdaftar alias -- otomatis diterapkan.', true);
+        } else if (kode) {
+            // Kode BELUM terkonfirmasi (baru dipilih manual, beda dari
+            // suggestion alias, atau belum ada alias sama sekali) -- WAJIB
+            // klik tombol Setuju dulu sebelum diterapkan ke rows/item.
+            el('mesinStatus').textContent = '⚠ Belum terdaftar alias -- klik "Setuju" untuk konfirmasi & terapkan.';
+            el('mesinStatus').className = 'small mt-2 text-warning';
+        }
+        updateSaveButtonState();
     });
 
-    function updateSaveButtonState() {
-        const rowsReady = currentData.rows.every(r =>
-            r.ProblemCode && r.Problem_Desc && r.Time_Start && r.Time_End
-        );
-        const ready = currentData.rows.length > 0 && rowsReady
-            && el('mesinSelect').value && el('itemSelect').value
-            && el('tanggalInput').value && el('operatorSelect').value;
-        el('saveAllBtn').disabled = !ready;
-    }
-    let kategoriOptionsCache = null;
-
+    // ================== Tabel rows (REUSE renderRows/bindRowEvents lama) ====
     async function renderRows(rows) {
-    el('rowCount').textContent = rows.length;
+        el('rowCount').textContent = rows.length;
 
-    // [BARU] State kosong — tidak ada baris downtime terdeteksi
-    if (!rows || rows.length === 0) {
-        el('rowsTableBody').innerHTML = `
-            <tr><td colspan="9" class="text-center py-5 border-0">
-                <i class="bi bi-file-earmark-x" style="font-size: 2rem; color: var(--ir-accent);"></i>
-                <p class="text-muted small mt-2 mb-0">Belum ada data downtime terdeteksi dari foto ini.</p>
-            </td></tr>`;
-        return;
-    }
-
-    if (!kategoriOptionsCache) kategoriOptionsCache = await apiGet('/referensi/problem-kategori');
-
-    el('rowsTableBody').innerHTML = rows.map((row, idx) => {
-        const perluReview = row._review.perlu_review;
-        const alasanTitle = (row._review.alasan || []).join(' | ');
-        const jamMulai = row.Time_Start ? row.Time_Start.substring(11, 16) : '';
-        const jamSelesai = row.Time_End ? row.Time_End.substring(11, 16) : '';
-        const kategoriOpts = '<option value="">-- pilih --</option>' +
-            kategoriOptionsCache.map(k =>
-                `<option value="${k.kode}" ${row.ProblemCode === k.kode ? 'selected' : ''}>${k.kode} — ${k.nama}</option>`
-            ).join('');
-
-        return `
-            <tr class="${perluReview ? 'table-danger' : ''}" data-idx="${idx}" title="${alasanTitle}">
-                <td>${idx + 1}</td>
-                <td><input type="time" class="form-control form-control-sm js-time-start" data-idx="${idx}" value="${jamMulai}"></td>
-                <td><input type="time" class="form-control form-control-sm js-time-end" data-idx="${idx}" value="${jamSelesai}"></td>
-                <td>${row.Time_Total ?? '-'}</td>
-                <td>
-                    <select class="form-select form-select-sm js-row-kategori" data-idx="${idx}">${kategoriOpts}</select>
-                    <small class="text-muted"><code>${row._raw_code}</code></small>
-                </td>
-                <td>
-                    <select class="form-select form-select-sm js-row-detail" data-idx="${idx}" ${row.ProblemCode ? '' : 'disabled'}>
-                        <option value="">-- pilih kategori dulu --</option>
-                    </select>
-                </td>
-                <td>${perluReview ? '<span class="ir-badge ir-badge-review">Perlu Review</span>' : '<span class="ir-badge ir-badge-ok">OK</span>'}</td>
-                <td><button class="btn btn-sm btn-outline-danger delete-row-btn" data-idx="${idx}">✕</button></td>
-                <td><button class="btn btn-sm btn-outline-secondary btn-preview-img" type="button"><i class="bi bi-image"></i></button></td>
-            </tr>`;
-    }).join('');
-
-    // preload detail utk baris yg sudah punya ProblemCode dari AI
-    for (const row of rows) {
-        if (row.ProblemCode) await loadRowDetailOptions(rows.indexOf(row), row.ProblemCode, row.Problem_Desc);
-    }
-
-    bindRowEvents(rows);
-}
-
-    el('previewImageEl').addEventListener('click', function () {
-        this.style.maxWidth = this.style.maxWidth === 'none' ? '100%' : 'none';
-        this.style.cursor = this.style.cursor === 'zoom-out' ? 'zoom-in' : 'zoom-out';
-    });
-
-    el('rowsTableBody').addEventListener('click', (e) => {
-        if (!e.target.classList.contains('btn-preview-img')) return;
-        if (!currentData.preview_token) {
-            alert('Foto tidak tersedia untuk ditinjau.');
+        if (!rows || rows.length === 0) {
+            el('rowsTableBody').innerHTML = `
+                <tr><td colspan="8" class="text-center py-5 border-0">
+                    <i class="bi bi-file-earmark-x" style="font-size: 2rem; color: var(--ir-accent);"></i>
+                    <p class="text-muted small mt-2 mb-0">Belum ada data downtime terdeteksi dari foto ini.</p>
+                </td></tr>`;
             return;
         }
-        const url = `/paper-scan/preview/${currentData.preview_token}`;
-        el('previewImageEl').src = url;
-        el('previewImageOpenNewTab').href = url;
-        const modal = bootstrap.Modal.getOrCreateInstance(el('previewImageModal'));
-        modal.show();
-    });
+
+        if (!kategoriOptionsCache) kategoriOptionsCache = await apiGet('/referensi/problem-kategori');
+
+        el('rowsTableBody').innerHTML = rows.map((row, idx) => {
+            const perluReview = row._review.perlu_review;
+            const alasanTitle = (row._review.alasan || []).join(' | ');
+            const jamMulai = row.Time_Start ? row.Time_Start.substring(11, 16) : '';
+            const jamSelesai = row.Time_End ? row.Time_End.substring(11, 16) : '';
+            const kategoriOpts = '<option value="">-- pilih --</option>' +
+                kategoriOptionsCache.map(k =>
+                    `<option value="${k.kode}" ${row.ProblemCode === k.kode ? 'selected' : ''}>${k.kode} — ${k.nama}</option>`
+                ).join('');
+
+            return `
+                <tr class="${perluReview ? 'table-row-review' : ''}" data-idx="${idx}" title="${alasanTitle}">
+                    <td>${idx + 1}</td>
+                    <td><input type="time" class="form-control form-control-sm js-time-start" data-idx="${idx}" value="${jamMulai}"></td>
+                    <td><input type="time" class="form-control form-control-sm js-time-end" data-idx="${idx}" value="${jamSelesai}"></td>
+                    <td>${row.Time_Total ?? '-'}</td>
+                    <td>
+                        <select class="form-select form-select-sm js-row-kategori" data-idx="${idx}">${kategoriOpts}</select>
+                        <small class="text-muted"><code>${row._raw_code}</code></small>
+                    </td>
+                    <td>
+                        <select class="form-select form-select-sm js-row-detail" data-idx="${idx}" ${row.ProblemCode ? '' : 'disabled'}>
+                            <option value="">-- pilih kategori dulu --</option>
+                        </select>
+                    </td>
+                    <td>${perluReview ? '<span class="ir-badge ir-badge-review">Perlu Review</span>' : '<span class="ir-badge ir-badge-ok">OK</span>'}</td>
+                    <td><button class="btn btn-sm btn-outline-danger delete-row-btn" data-idx="${idx}">✕</button></td>
+                </tr>`;
+        }).join('');
+
+        for (const row of rows) {
+            if (row.ProblemCode) await loadRowDetailOptions(rows.indexOf(row), row.ProblemCode, row.Problem_Desc);
+        }
+
+        bindRowEvents(rows);
+    }
+
+    function bindRowEvents(rows) {
+        document.querySelectorAll('.js-time-start, .js-time-end').forEach(inp => {
+            inp.addEventListener('change', () => {
+                const idx = parseInt(inp.dataset.idx, 10);
+                const field = inp.classList.contains('js-time-start') ? 'Time_Start' : 'Time_End';
+                const existing = currentRows[idx][field];
+                const tgl = (existing ? existing.substring(0, 10) : null)
+                    || el('tanggalInput').value;
+                currentRows[idx][field] = `${tgl} ${inp.value}:00`;
+
+                const row = currentRows[idx];
+                if (row.Time_Start && row.Time_End) {
+                    const start = new Date(row.Time_Start.replace(' ', 'T'));
+                    const end = new Date(row.Time_End.replace(' ', 'T'));
+                    const diffMinutes = Math.round((end - start) / 60000);
+                    row.Time_Total = diffMinutes > 0 ? diffMinutes : null;
+                    renderRows(currentRows);
+                    return;
+                }
+
+                updateSaveButtonState();
+            });
+        });
+
+        document.querySelectorAll('.js-row-kategori').forEach(sel => {
+            sel.addEventListener('change', async () => {
+                const idx = parseInt(sel.dataset.idx, 10);
+                currentRows[idx].ProblemCode = sel.value || null;
+                currentRows[idx].Problem_Desc = null;
+                await loadRowDetailOptions(idx, sel.value);
+                updateSaveButtonState();
+            });
+        });
+
+        document.querySelectorAll('.js-row-detail').forEach(sel => {
+            sel.addEventListener('change', () => {
+                const idx = parseInt(sel.dataset.idx, 10);
+                const opt = sel.options[sel.selectedIndex];
+                currentRows[idx].Problem_Desc = opt ? (opt.dataset.desc || null) : null;
+                updateSaveButtonState();
+            });
+        });
+
+        document.querySelectorAll('.delete-row-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                currentRows.splice(parseInt(btn.dataset.idx, 10), 1);
+                renderRows(currentRows);
+                updateSaveButtonState();
+            });
+        });
+    }
 
     async function loadRowDetailOptions(idx, kategoriKode, selectedDesc = null) {
         const detailSelect = document.querySelector(`.js-row-detail[data-idx="${idx}"]`);
@@ -1094,106 +1269,66 @@
         detailSelect.disabled = false;
     }
 
-    function bindRowEvents(rows) {
-        document.querySelectorAll('.js-time-start, .js-time-end').forEach(inp => {
-            inp.addEventListener('change', () => {
-                const idx = parseInt(inp.dataset.idx, 10);
-                const field = inp.classList.contains('js-time-start') ? 'Time_Start' : 'Time_End';
-                const existing = currentData.rows[idx][field];
-                const tgl = (existing ? existing.substring(0, 10) : null)
-                    || currentData.header.tanggal_parsed
-                    || el('tanggalInput').value;
-                currentData.rows[idx][field] = `${tgl} ${inp.value}:00`;
-
-                // Hitung ulang Time_Total kalau kedua jam sudah terisi (mis. baris manual)
-                const row = currentData.rows[idx];
-                if (row.Time_Start && row.Time_End) {
-                    const start = new Date(row.Time_Start.replace(' ', 'T'));
-                    const end = new Date(row.Time_End.replace(' ', 'T'));
-                    const diffMinutes = Math.round((end - start) / 60000);
-                    row.Time_Total = diffMinutes > 0 ? diffMinutes : null;
-                    renderRows(currentData.rows); // re-render supaya kolom Menit ter-update
-                    return; // renderRows sudah re-bind event, hindari double update
-                }
-
-                updateSaveButtonState();
-            });
+    el('addRowBtn').addEventListener('click', () => {
+        const tanggal = el('tanggalInput').value;
+        const shift = el('shiftSelectManual').value;
+        currentRows.push({
+            Tgl_Trs: tanggal, ShiftCode: shift, Time_Start: null, Time_End: null, Time_Total: null,
+            MesinCode: el('mesinSelect').value || null, NIK: el('operatorSelect').value || null,
+            Speed_Mesin: el('speedInput').value || null, ProblemCode: null, Problem_Desc: null,
+            ITEMNO: el('itemSelect').value || null, _raw_code: '(manual)',
+            _review: { perlu_review: true, alasan: ['Baris ditambahkan manual.'], problem_code_debug: null },
         });
+        renderRows(currentRows);
+        updateSaveButtonState();
+    });
 
-        document.querySelectorAll('.js-row-kategori').forEach(sel => {
-            sel.addEventListener('change', async () => {
-                const idx = parseInt(sel.dataset.idx, 10);
-                currentData.rows[idx].ProblemCode = sel.value || null;
-                currentData.rows[idx].Problem_Desc = null; // reset, wajib pilih detail lagi
-                await loadRowDetailOptions(idx, sel.value);
-                updateSaveButtonState();
-            });
-        });
-
-        document.querySelectorAll('.js-row-detail').forEach(sel => {
-            sel.addEventListener('change', () => {
-                const idx = parseInt(sel.dataset.idx, 10);
-                const opt = sel.options[sel.selectedIndex];
-                currentData.rows[idx].Problem_Desc = opt ? (opt.dataset.desc || null) : null;
-                updateSaveButtonState();
-            });
-        });
-
-        document.querySelectorAll('.delete-row-btn').forEach((btn) => {
-            btn.addEventListener('click', () => {
-                currentData.rows.splice(parseInt(btn.dataset.idx, 10), 1);
-                renderRows(currentData.rows);
-            });
-        });
+    function updateSaveButtonState() {
+        const rowsReady = currentRows.every(r => r.ProblemCode && r.Problem_Desc && r.Time_Start && r.Time_End);
+        const ready = currentRows.length > 0 && rowsReady
+            && el('mesinSelect').value && el('itemSelect').value
+            && el('tanggalInput').value && el('operatorSelect').value;
+        el('saveAllBtn').disabled = !ready;
     }
 
+    // ================== Simpan (REUSE persis logika lama) ==================
     el('saveAllBtn').addEventListener('click', async () => {
-        // propagasi field header yg mungkin diedit user ke SEMUA baris sebelum kirim
-        const tanggal = el('tanggalInput').value;
-        const speed = el('speedInput').value;
-        const nik = el('operatorSelect').value;
-        currentData.rows.forEach((r) => {
-            r.Tgl_Trs = tanggal;
-            r.Speed_Mesin = speed;
-            r.NIK = nik;
-        });
+        const tanggal = el('tanggalInput').value, speed = el('speedInput').value, nik = el('operatorSelect').value;
+        currentRows.forEach(r => { r.Tgl_Trs = tanggal; r.Speed_Mesin = speed; r.NIK = nik; });
 
         el('saveAllBtn').disabled = true;
         el('saveAllBtn').textContent = 'Menyimpan...';
-
-        const result = await apiPost('/paper-scan/store', { rows: currentData.rows });
+        const result = await apiPost('/paper-scan/store', { rows: currentRows });
 
         const box = el('saveResultBox');
         box.classList.remove('d-none', 'alert-success', 'alert-warning');
-
         if (result.gagal === 0) {
             box.classList.add('alert-success');
             box.textContent = `✓ Semua ${result.berhasil} baris berhasil disimpan.`;
-
             el('saveAllBtn').classList.add('d-none');
             el('backToDashboardBox').classList.remove('d-none');
             return;
         }
-
-        // PATCH: sebagian gagal -- buang baris yg SUKSES dari currentData.rows
-        // SEBELUM tombol Simpan diaktifkan lagi, supaya retry TIDAK mengirim
-        // ulang baris yg sudah tersimpan (mencegah duplikat No_Trs). Index di
-        // result.failed[].index merujuk ke posisi SEBELUM array ini diubah,
-        // jadi filter dilakukan pakai index asli, bukan setelah splice.
         const failedIndexes = new Set(result.failed.map(f => f.index));
-        currentData.rows = currentData.rows.filter((_, idx) => failedIndexes.has(idx));
-
+        currentRows = currentRows.filter((_, idx) => failedIndexes.has(idx));
         box.classList.add('alert-warning');
-        box.textContent = `${result.berhasil} baris tersimpan, ${result.gagal} baris GAGAL. `
-            + `Baris yang sudah sukses telah dihapus dari daftar -- perbaiki sisa baris di bawah lalu Simpan lagi.`;
-        console.log('Detail baris gagal:', result.failed);
-
-        renderRows(currentData.rows); // re-render, sekarang cuma tampilkan baris gagal
-
+        box.textContent = `${result.berhasil} baris tersimpan, ${result.gagal} baris GAGAL. Perbaiki sisa baris lalu Simpan lagi.`;
+        renderRows(currentRows);
         el('saveAllBtn').textContent = 'Simpan Semua';
         el('saveAllBtn').disabled = false;
         updateSaveButtonState();
     });
+
+    async function initFormDropdowns() {
+        if (!mesinOptionsCache) mesinOptionsCache = await apiGet('/referensi/mesin');
+        el('mesinList').innerHTML = mesinOptionsCache.map(m => `<option data-kode="${m.kode}" value="${m.kode} — ${m.nama}"></option>`).join('');
+
+        if (!operatorOptionsCache) operatorOptionsCache = await apiGet('/referensi/operator');
+        el('operatorList').innerHTML = operatorOptionsCache.map((o) =>
+            `<option data-nik="${o.nik}" value="${o.nama} (${o.nik})"></option>`
+        ).join('');
+    }
+    initFormDropdowns();
 })();
 </script>
 @endpush

@@ -1,0 +1,146 @@
+// =============================================================================
+// TOKENS — Monochrome Minimal + Glass & Subtle Glow
+// Semua nilai warna, radius, spacing, shadow terpusat di sini.
+// Diakses via CSS variables supaya bisa berubah otomatis saat toggle theme.
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// SCSS variables — dipakai untuk override Bootstrap SEBELUM @import bootstrap
+// -----------------------------------------------------------------------------
+
+// Neutral scale (bukan pure black/white — supaya glass tidak "mati")
+$n-0: #fafafa;
+$n-50: #f4f4f5;
+$n-100: #e4e4e7;
+$n-200: #d4d4d8;
+$n-400: #a1a1aa;
+$n-600: #52525b;
+$n-800: #27272a;
+$n-900: #131316;
+$n-950: #0a0a0a;
+
+// Semantic status colors
+$c-success: #22c55e;
+$c-danger: #ef4444;
+$c-warning: #f59e0b;
+$c-info: #3b82f6;
+
+// Bootstrap overrides (light-mode defaults; dark akan di-override via CSS vars)
+$primary: $n-900;
+$secondary: $n-600;
+$success: $c-success;
+$danger: $c-danger;
+$warning: $c-warning;
+$info: $c-info;
+$light: $n-0;
+$dark: $n-900;
+
+$body-bg: $n-0;
+$body-color: $n-900;
+$border-color: $n-100;
+
+$font-family-sans-serif: 'Inter', system-ui, -apple-system, sans-serif;
+
+$border-radius: .625rem; // 10px  -> --r-md
+$border-radius-sm: .375rem; // 6px   -> --r-sm
+$border-radius-lg: .875rem; // 14px  -> --r-lg
+
+$box-shadow-sm: 0 1px 2px rgba(0, 0, 0, .04);
+$box-shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 8px 24px rgba(0, 0, 0, .06);
+$box-shadow-lg: 0 1px 2px rgba(0, 0, 0, .04), 0 16px 40px rgba(0, 0, 0, .08);
+
+$input-btn-padding-y: .55rem;
+$input-btn-padding-x: .9rem;
+$input-btn-focus-width: 0; // kita pakai ring sendiri (mono, bukan warna primary)
+
+// -----------------------------------------------------------------------------
+// CSS variables — runtime toggle via [data-theme]
+// Bootstrap 5.3 sudah support [data-bs-theme] — kita sync dua-duanya di JS.
+// -----------------------------------------------------------------------------
+
+:root,
+:root[data-theme="light"] {
+    // Neutrals (raw)
+    --n-0: #{$n-0};
+    --n-50: #{$n-50};
+    --n-100: #{$n-100};
+    --n-200: #{$n-200};
+    --n-400: #{$n-400};
+    --n-600: #{$n-600};
+    --n-800: #{$n-800};
+    --n-900: #{$n-900};
+    --n-950: #{$n-950};
+
+    // Semantic surface tokens (LIGHT)
+    --bg: #{$n-0};
+    --surface: #ffffff;
+    --surface-alt: #{$n-50};
+    --text: #{$n-900};
+    --text-muted: #{$n-600};
+    --text-subtle: #{$n-400};
+    --border: #{$n-100};
+    --border-strong: #{$n-200};
+    --focus-ring: rgba(19, 19, 22, .12);
+
+    // Inverted surface (mis. sidebar contrast di light mode → tetap gelap)
+    --inverse-bg: #{$n-900};
+    --inverse-text: #{$n-0};
+    --inverse-muted: #{$n-400};
+
+    // Radius
+    --r-sm: 6px;
+    --r-md: 10px;
+    --r-lg: 14px;
+    --r-xl: 20px;
+
+    // Shadows (non-status; sangat soft, mono)
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .04);
+    --shadow-md: 0 1px 2px rgba(0, 0, 0, .04), 0 8px 24px rgba(0, 0, 0, .06);
+    --shadow-lg: 0 1px 2px rgba(0, 0, 0, .04), 0 16px 40px rgba(0, 0, 0, .08);
+
+    // Status raw (RGB triplets untuk dipakai di rgba() runtime)
+    --success: #{$c-success};
+    --danger: #{$c-danger};
+    --warning: #{$c-warning};
+    --info: #{$c-info};
+
+    --success-rgb: 34, 197, 94;
+    --danger-rgb: 239, 68, 68;
+    --warning-rgb: 245, 158, 11;
+    --info-rgb: 59, 130, 246;
+
+    // Glow (halus, hanya di state warna)
+    --glow-success: 0 0 10px rgba(var(--success-rgb), .35);
+    --glow-danger: 0 0 10px rgba(var(--danger-rgb), .35);
+    --glow-warning: 0 0 10px rgba(var(--warning-rgb), .35);
+    --glow-info: 0 0 10px rgba(var(--info-rgb), .35);
+
+    // Glass tokens (formula sama; blur/saturasi di partial _glass)
+    --glass-surface: color-mix(in srgb, var(--surface) 65%, transparent);
+    --glass-border: color-mix(in srgb, var(--n-100) 50%, transparent);
+}
+
+:root[data-theme="dark"] {
+    --bg: #{$n-950};
+    --surface: #{$n-900};
+    --surface-alt: #{$n-800};
+    --text: #{$n-0};
+    --text-muted: #{$n-400};
+    --text-subtle: #{$n-600};
+    --border: #{$n-800};
+    --border-strong: #{$n-600};
+    --focus-ring: rgba(250, 250, 250, .16);
+
+    --inverse-bg: #{$n-0};
+    --inverse-text: #{$n-900};
+    --inverse-muted: #{$n-600};
+
+    // Shadows sedikit lebih dalam di dark
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .35);
+    --shadow-md: 0 1px 2px rgba(0, 0, 0, .35), 0 8px 24px rgba(0, 0, 0, .45);
+    --shadow-lg: 0 1px 2px rgba(0, 0, 0, .35), 0 16px 40px rgba(0, 0, 0, .55);
+
+    // Glass di dark: overlay dari surface gelap
+    --glass-surface: color-mix(in srgb, var(--surface) 60%, transparent);
+    --glass-border: color-mix(in srgb, var(--n-600) 40%, transparent);
+}

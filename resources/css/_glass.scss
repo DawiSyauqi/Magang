@@ -1,0 +1,39 @@
+// =============================================================================
+// GLASS — dibatasi ke: navbar/sidebar, modal, dropdown, card highlight (.glass)
+// Formula tunggal → satu sumber kebenaran. Gunakan lewat mixin atau class .glass
+// =============================================================================
+
+@mixin glass($blur: 14px,
+    $saturate: 140%,
+    $bg: var(--glass-surface),
+    $border: var(--glass-border)) {
+    background: $bg;
+    backdrop-filter: blur($blur) saturate($saturate);
+    -webkit-backdrop-filter: blur($blur) saturate($saturate);
+    border: 1px solid $border;
+
+    // Fallback: kalau browser tidak support backdrop-filter → solid surface
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+        background: var(--surface);
+    }
+}
+
+// Utility class umum
+.glass {
+    @include glass;
+    border-radius: var(--r-lg);
+}
+
+// Variasi lembut untuk modal (blur lebih halus, saturasi normal)
+.glass-modal {
+    @include glass($blur: 18px, $saturate: 130%);
+    border-radius: var(--r-xl);
+}
+
+// Backdrop modal — gelap tipis + blur 6px seperti spec
+.modal-backdrop.show {
+    opacity: 1;
+    background: rgba(0, 0, 0, .4);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}

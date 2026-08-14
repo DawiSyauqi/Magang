@@ -1,0 +1,54 @@
+// =============================================================================
+// GLOW — halus, hanya untuk state warna (success/danger/warning/info)
+// Jangan dipakai di elemen "kalem". Glow murah kalau di mana-mana.
+// =============================================================================
+
+// Mixin utama — pakai lewat @include glow(danger) atau @include glow(success, .25)
+@mixin glow($token, $intensity: .35) {
+    $rgb: null;
+
+    @if $token =='success' {
+        $rgb: var(--success-rgb);
+    }
+
+    @else if $token =='danger' {
+        $rgb: var(--danger-rgb);
+    }
+
+    @else if $token =='warning' {
+        $rgb: var(--warning-rgb);
+    }
+
+    @else if $token =='info' {
+        $rgb: var(--info-rgb);
+    }
+
+    @else {
+        @error "glow(): token tidak dikenal → #{$token}. Pakai 'success' | 'danger' | 'warning' | 'info'.";
+    }
+
+    box-shadow: 0 0 10px rgba(#{$rgb}, #{$intensity});
+}
+
+// Utility classes — untuk dipakai langsung dari Blade tanpa nulis SCSS
+.glow-success {
+    box-shadow: var(--glow-success);
+}
+
+.glow-danger {
+    box-shadow: var(--glow-danger);
+}
+
+.glow-warning {
+    box-shadow: var(--glow-warning);
+}
+
+.glow-info {
+    box-shadow: var(--glow-info);
+}
+
+// Focus ring mono — bukan warna primary Bootstrap, tapi abu halus
+@mixin focus-ring-mono {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--focus-ring);
+}

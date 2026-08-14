@@ -1,0 +1,1169 @@
+// =============================================================================
+// COMPONENTS — refactor Bootstrap + custom class project (dt-*, dt-modal-*, dst)
+// Semua warna via CSS variables → otomatis ikut theme toggle.
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// TYPOGRAPHY
+// -----------------------------------------------------------------------------
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color .2s ease, color .2s ease;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+    color: var(--text);
+    letter-spacing: -0.01em;
+    font-weight: 700;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+// Selection mono
+::selection {
+    background: var(--text);
+    color: var(--bg);
+}
+
+// -----------------------------------------------------------------------------
+// BUTTONS
+// -----------------------------------------------------------------------------
+.btn {
+    font-weight: 500;
+    border-radius: var(--r-md);
+    padding: .55rem .9rem;
+    transition: transform .15s ease, background-color .15s ease,
+        color .15s ease, border-color .15s ease, box-shadow .15s ease;
+    will-change: transform;
+
+    &:hover {
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    &:focus-visible {
+        @include focus-ring-mono;
+    }
+}
+
+// Primary = solid dark (light) / solid light (dark). BUKAN warna.
+.btn-primary {
+    background: var(--text);
+    color: var(--bg);
+    border: 1px solid var(--text);
+
+    &:hover,
+    &:focus {
+        background: var(--n-800);
+        color: var(--bg);
+        border-color: var(--n-800);
+    }
+
+    :root[data-theme="dark"] & {
+        background: var(--n-0);
+        color: var(--n-900);
+        border-color: var(--n-0);
+
+        &:hover,
+        &:focus {
+            background: var(--n-200);
+            color: var(--n-900);
+            border-color: var(--n-200);
+        }
+    }
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+
+    &:hover {
+        background: var(--surface-alt);
+        color: var(--text);
+        border-color: var(--border-strong);
+    }
+}
+
+// Ghost button — untuk aksi tersier (mis. "Batal")
+.btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid transparent;
+
+    &:hover {
+        color: var(--text);
+        background: var(--surface-alt);
+    }
+}
+
+// Outline status buttons — border + text warna status + hover glow halus
+@mixin outline-status($token) {
+    background: transparent;
+    color: var(--#{$token});
+    border: 1px solid var(--#{$token});
+
+    &:hover {
+        color: var(--#{$token});
+        background: transparent;
+        @include glow($token, .30);
+    }
+
+    &:focus-visible {
+        @include glow($token, .40);
+    }
+}
+
+.btn-outline-success {
+    @include outline-status('success');
+}
+
+.btn-outline-danger {
+    @include outline-status('danger');
+}
+
+.btn-outline-warning {
+    @include outline-status('warning');
+}
+
+.btn-outline-info {
+    @include outline-status('info');
+}
+
+// -----------------------------------------------------------------------------
+// FORMS
+// -----------------------------------------------------------------------------
+.form-label,
+.dt-form-label {
+    font-size: .8125rem; // ~13px
+    font-weight: 500;
+    letter-spacing: .01em;
+    color: var(--text-muted);
+    margin-bottom: .35rem;
+}
+
+.form-control,
+.form-select {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-md);
+    padding: .55rem .75rem;
+    font-size: .9rem;
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+
+    &::placeholder {
+        color: var(--text-subtle);
+    }
+
+    &:focus {
+        background: transparent;
+        color: var(--text);
+        border-color: var(--text);
+        @include focus-ring-mono;
+    }
+
+    &.is-invalid {
+        border-color: var(--danger);
+        @include glow('danger', .30);
+
+        &:focus {
+            @include glow('danger', .40);
+        }
+    }
+
+    &.is-valid {
+        border-color: var(--success);
+        @include glow('success', .25);
+    }
+}
+
+.form-select {
+    // Chevron mono (bukan biru bawaan Bootstrap)
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%2352525b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right .75rem center;
+    background-size: 14px 14px;
+    padding-right: 2rem;
+}
+
+// Input group: bikin ikon menyatu, hilangkan bg putih paksa
+.input-group-text {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-strong);
+    border-right: 0;
+}
+
+.input-group>.form-control,
+.input-group>.form-select {
+    border-left: 0;
+}
+
+.input-group:focus-within {
+    .input-group-text {
+        border-color: var(--text);
+    }
+
+    .form-control,
+    .form-select {
+        border-color: var(--text);
+    }
+}
+
+.form-check-input {
+    background-color: transparent;
+    border: 1px solid var(--border-strong);
+
+    &:checked {
+        background-color: var(--text);
+        border-color: var(--text);
+    }
+
+    &:focus {
+        @include focus-ring-mono;
+    }
+}
+
+.invalid-feedback {
+    color: var(--danger);
+    font-size: .78rem;
+    margin-top: .25rem;
+}
+
+// -----------------------------------------------------------------------------
+// CARDS
+// -----------------------------------------------------------------------------
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: none;
+    transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease;
+
+    &:hover {
+        box-shadow: var(--shadow-md);
+    }
+}
+
+.card-header {
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-weight: 600;
+    padding: .85rem 1.25rem;
+    transition: background-color .2s ease, border-color .2s ease, color .2s ease;
+}
+
+// Opt-in glass card
+.card.glass {
+    background: var(--glass-surface);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-md);
+}
+
+// -----------------------------------------------------------------------------
+// TABLES
+// -----------------------------------------------------------------------------
+.dt-table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    box-shadow: none;
+    transition: box-shadow .2s ease;
+
+    &:hover {
+        box-shadow: var(--shadow-md);
+    }
+}
+
+.dt-table {
+    thead th {
+        background: var(--surface);
+        color: var(--text-muted);
+        font-size: .7rem; // small, uppercase muted
+        font-weight: 600;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border);
+        padding: .85rem 1rem;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    tbody td {
+        padding: .9rem 1rem;
+        font-size: .875rem;
+        color: var(--text);
+        border-bottom: 1px solid var(--border); // zebra dihilangkan, ganti border tipis
+        background: transparent;
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    tbody tr:hover td {
+        background: var(--surface-alt);
+    }
+}
+
+.dt-badge-mesin {
+    display: inline-block;
+    background: var(--surface-alt);
+    color: var(--text);
+    font-size: .75rem;
+    font-weight: 500;
+    padding: .2rem .55rem;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--border);
+}
+
+.dt-icon-btn {
+    border: none;
+    background: none;
+    padding: .35rem;
+    border-radius: var(--r-sm);
+    line-height: 0;
+    color: var(--text-muted);
+    transition: color .15s ease, background-color .15s ease, box-shadow .15s ease;
+
+    &:hover {
+        background: var(--surface-alt);
+        color: var(--text);
+    }
+
+    &.dt-icon-danger {
+        color: var(--danger);
+
+        &:hover {
+            background: transparent;
+            @include glow('danger', .25);
+        }
+    }
+}
+
+// -----------------------------------------------------------------------------
+// ALERTS — bg neutral surface + border-left 3px status + glow halus di border
+// -----------------------------------------------------------------------------
+@mixin alert-status($token) {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--#{$token});
+    border-radius: var(--r-md);
+    padding: .65rem .85rem;
+    font-size: .875rem;
+    box-shadow: -1px 0 10px -3px rgba(var(--#{$token}-rgb), .35); // glow tipis di sisi border
+}
+
+.alert-success {
+    @include alert-status('success');
+}
+
+.alert-danger,
+.alert-error {
+    @include alert-status('danger');
+}
+
+.alert-warning {
+    @include alert-status('warning');
+}
+
+.alert-info {
+    @include alert-status('info');
+}
+
+// Fallback untuk .alert generic (mis. dari inline style lama)
+.alert {
+    border-radius: var(--r-md);
+}
+
+// -----------------------------------------------------------------------------
+// MODAL — glass + shadow lembut + close halus
+// -----------------------------------------------------------------------------
+.modal-content,
+.dt-modal-content {
+    background: var(--glass-surface);
+    backdrop-filter: blur(18px) saturate(130%);
+    -webkit-backdrop-filter: blur(18px) saturate(130%);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow-lg);
+    color: var(--text);
+
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+        background: var(--surface);
+    }
+}
+
+.dt-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    background: transparent;
+    border-bottom: 1px solid var(--border);
+}
+
+.dt-modal-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.dt-modal-close {
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    padding: .3rem;
+    line-height: 0;
+    border-radius: var(--r-sm);
+    transition: color .15s ease, background-color .15s ease;
+
+    &:hover {
+        color: var(--text);
+        background: var(--surface-alt);
+    }
+}
+
+.dt-modal-infobar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .85rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+}
+
+.dt-modal-infotext {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: var(--text-muted);
+    font-size: .85rem;
+}
+
+.dt-modal-body {
+    padding: 1.25rem;
+    max-height: 65vh;
+    overflow-y: auto;
+}
+
+// Tombol Batal / Simpan di modal — mono
+.dt-btn-batal {
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    font-weight: 500;
+    font-size: .85rem;
+    border-radius: var(--r-md);
+    padding: .5rem .85rem;
+
+    &:hover {
+        background: var(--surface-alt);
+        color: var(--text);
+    }
+}
+
+.dt-btn-simpan {
+    background: var(--text);
+    border: 1px solid var(--text);
+    color: var(--bg);
+    font-weight: 600;
+    font-size: .85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    border-radius: var(--r-md);
+    padding: .5rem .85rem;
+    transition: transform .15s ease, background-color .15s ease, box-shadow .15s ease;
+
+    &:hover {
+        transform: translateY(-1px);
+    }
+
+    :root[data-theme="dark"] & {
+        background: var(--n-0);
+        color: var(--n-900);
+        border-color: var(--n-0);
+    }
+}
+
+.dt-btn-hapus {
+    background: transparent;
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    font-weight: 600;
+    font-size: .85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    border-radius: var(--r-md);
+    padding: .5rem .85rem;
+    transition: transform .15s ease, box-shadow .15s ease;
+
+    &:hover {
+        @include glow('danger', .35);
+        transform: translateY(-1px);
+    }
+}
+
+.dt-confirm-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    @include glow('danger', .25);
+}
+
+.dt-readonly {
+    background: var(--surface-alt) !important;
+    color: var(--text) !important;
+    opacity: 1;
+    border-color: var(--border);
+}
+
+.dt-total-durasi {
+    background: var(--surface-alt);
+    color: var(--text);
+    font-weight: 600;
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: .5rem .75rem;
+    text-align: center;
+}
+
+.dt-operator-suggestions {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    @include glass;
+    border-radius: var(--r-md);
+    margin-top: .35rem;
+    max-height: 220px;
+    overflow-y: auto;
+    box-shadow: var(--shadow-md);
+}
+
+.dt-operator-suggestion-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: .55rem .8rem;
+    border: none;
+    background: none;
+    font-size: .875rem;
+    color: var(--text);
+
+    &:hover {
+        background: var(--surface-alt);
+    }
+}
+
+// -----------------------------------------------------------------------------
+// DROPDOWN (Bootstrap) — glass + border halus
+// -----------------------------------------------------------------------------
+.dropdown-menu {
+    @include glass;
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-md);
+    padding: .35rem;
+
+    .dropdown-item {
+        color: var(--text);
+        border-radius: var(--r-sm);
+        padding: .45rem .65rem;
+        font-size: .875rem;
+
+        &:hover,
+        &:focus {
+            background: var(--surface-alt);
+            color: var(--text);
+        }
+
+        &.text-danger {
+            color: var(--danger);
+        }
+
+        &.text-danger:hover {
+            background: transparent;
+            @include glow('danger', .25);
+        }
+    }
+
+    .dropdown-divider {
+        border-color: var(--border);
+    }
+}
+
+// -----------------------------------------------------------------------------
+// PAGINATION — mono, minimal
+// -----------------------------------------------------------------------------
+.pagination {
+    --bs-pagination-color: var(--text-muted);
+    --bs-pagination-bg: transparent;
+    --bs-pagination-border-color: var(--border);
+    --bs-pagination-hover-color: var(--text);
+    --bs-pagination-hover-bg: var(--surface-alt);
+    --bs-pagination-hover-border-color: var(--border-strong);
+    --bs-pagination-active-color: var(--bg);
+    --bs-pagination-active-bg: var(--text);
+    --bs-pagination-active-border-color: var(--text);
+    --bs-pagination-disabled-color: var(--text-subtle);
+    --bs-pagination-disabled-bg: transparent;
+    --bs-pagination-disabled-border-color: var(--border);
+    gap: .25rem;
+
+    .page-link {
+        border-radius: var(--r-sm);
+        font-size: .85rem;
+    }
+
+    .page-item {
+        .page-link {
+            border-radius: var(--r-sm) !important;
+        }
+    }
+}
+
+// -----------------------------------------------------------------------------
+// THEME TOGGLE BUTTON
+// -----------------------------------------------------------------------------
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color .15s ease, border-color .15s ease, transform .15s ease, background-color .15s ease;
+
+    &:hover {
+        color: var(--text);
+        border-color: var(--border-strong);
+        background: var(--surface-alt);
+        transform: translateY(-1px);
+    }
+
+    &:focus-visible {
+        @include focus-ring-mono;
+    }
+
+    .icon-sun {
+        display: none;
+    }
+
+    .icon-moon {
+        display: block;
+    }
+
+    :root[data-theme="dark"] & {
+        .icon-sun {
+            display: block;
+        }
+
+        .icon-moon {
+            display: none;
+        }
+    }
+}
+
+// -----------------------------------------------------------------------------
+// SIDEBAR / NAVBAR (dt-*) — glass, sticky, active dot indicator
+// -----------------------------------------------------------------------------
+.dt-shell {
+    min-height: 100vh;
+}
+
+.dt-sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    @include glass;
+    border: 0;
+    border-right: 1px solid var(--border);
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1rem;
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    height: 100vh;
+}
+
+.dt-brand-name {
+    color: var(--text);
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+}
+
+.dt-brand-sub {
+    color: var(--text-subtle);
+    font-size: .65rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-top: .2rem;
+}
+
+.dt-nav {
+    margin-top: 2rem;
+}
+
+.dt-nav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .55rem .75rem;
+    border-radius: var(--r-md);
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: .875rem;
+    font-weight: 500;
+    transition: color .15s ease, background-color .15s ease;
+
+    &:hover {
+        color: var(--text);
+        background: var(--surface-alt);
+    }
+
+    &.active {
+        color: var(--text);
+        background: var(--surface-alt);
+
+        &::before {
+            content: '';
+            position: absolute;
+            left: -1px;
+            top: 25%;
+            bottom: 25%;
+            width: 2px;
+            border-radius: 2px;
+            background: var(--text);
+        }
+    }
+}
+
+.dt-sidebar-footer {
+    margin-top: auto;
+}
+
+.dt-user-card {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .75rem;
+    border-top: 1px solid var(--border);
+}
+
+.dt-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--text);
+    color: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: .8rem;
+    flex-shrink: 0;
+
+    :root[data-theme="dark"] & {
+        background: var(--n-0);
+        color: var(--n-900);
+    }
+}
+
+.dt-user-name {
+    color: var(--text);
+    font-size: .85rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.dt-user-status {
+    color: var(--text-subtle);
+    font-size: .72rem;
+}
+
+.dt-logout {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: var(--text-muted);
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-decoration: none;
+    padding: .75rem;
+    border: none;
+    background: none;
+    width: 100%;
+    text-transform: uppercase;
+    border-radius: var(--r-sm);
+    transition: color .15s ease, background-color .15s ease;
+
+    &:hover {
+        color: var(--text);
+        background: var(--surface-alt);
+    }
+}
+
+// -----------------------------------------------------------------------------
+// MAIN AREA (dashboard)
+// -----------------------------------------------------------------------------
+.dt-main {
+    background: var(--bg);
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.dt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.15rem 2rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    @include glass;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+}
+
+.dt-header h1 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.dt-content {
+    padding: 1.75rem 2rem;
+}
+
+.dt-filter-label {
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    color: var(--text-subtle);
+    text-transform: uppercase;
+    margin-bottom: .4rem;
+}
+
+.dt-date-input {
+    width: 220px;
+}
+
+.dt-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    font-size: .78rem;
+    color: var(--text-subtle);
+    border-top: 1px solid var(--border);
+
+    a {
+        color: var(--text-subtle);
+        text-decoration: none;
+        margin-left: 1.5rem;
+
+        &:hover {
+            color: var(--text);
+        }
+    }
+}
+
+// -----------------------------------------------------------------------------
+// MOBILE DASHBOARD
+// -----------------------------------------------------------------------------
+.dt-mobile-shell {
+    min-height: 100vh;
+    background: var(--bg);
+    position: relative;
+    padding-bottom: 5rem;
+}
+
+.dt-mobile-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .9rem 1rem;
+    @include glass;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.dt-mobile-topbar-title {
+    color: var(--text);
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+}
+
+.dt-mobile-avatar-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    font-weight: 600;
+    font-size: .8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    :root[data-theme="dark"] & {
+        background: var(--n-0);
+        color: var(--n-900);
+    }
+}
+
+.dt-mobile-filterbar {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .85rem 1rem;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+
+    input[type="date"] {
+        max-width: 160px;
+    }
+
+    .form-check-label {
+        font-size: .8rem;
+    }
+}
+
+.dt-mobile-cardlist {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+}
+
+.dt-mobile-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: .9rem 1rem;
+    transition: box-shadow .2s ease, border-color .2s ease;
+
+    &:hover {
+        box-shadow: var(--shadow-sm);
+        border-color: var(--border-strong);
+    }
+}
+
+.dt-mobile-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: .5rem;
+}
+
+.dt-mobile-card-notrs {
+    font-size: .78rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: .01em;
+}
+
+.dt-mobile-card-date {
+    font-size: .74rem;
+    color: var(--text-subtle);
+    margin-top: .1rem;
+}
+
+.dt-mobile-card-actions {
+    display: flex;
+    gap: .15rem;
+}
+
+.dt-mobile-card-mesin {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: .4rem;
+}
+
+.dt-mobile-card-mesin-name {
+    font-weight: 600;
+    font-size: .95rem;
+    color: var(--text);
+}
+
+.dt-mobile-card-time {
+    font-size: .82rem;
+    color: var(--text-muted);
+
+    strong {
+        color: var(--text);
+        font-weight: 600;
+    }
+}
+
+.dt-mobile-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-subtle);
+}
+
+// FAB — mono, tanpa warna, glow halus saat hover
+.dt-mobile-fab {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.5rem;
+    z-index: 20;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-lg);
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 0;
+    transition: transform .15s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+    }
+
+    :root[data-theme="dark"] & {
+        background: var(--n-0);
+        color: var(--n-900);
+    }
+}
+
+@media (max-width: 575.98px) {
+    .dt-modal-content {
+        border-radius: var(--r-lg);
+    }
+
+    .dt-modal-body {
+        max-height: none;
+        flex: 1 1 auto;
+    }
+
+    .dt-modal-infobar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .dt-modal-infobar .d-flex.gap-2 {
+        width: 100%;
+    }
+
+    .dt-modal-infobar .d-flex.gap-2 .btn {
+        flex: 1 1 0;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// AUTH SPLIT LAYOUT (login) — panel kiri inverse (selalu dark-ish di light mode)
+// -----------------------------------------------------------------------------
+.dt-auth-panel {
+    background: var(--inverse-bg);
+    color: var(--inverse-text);
+    position: relative;
+    overflow: hidden;
+
+    // Subtle grain via radial noise-like gradient (mono, tidak norak)
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(circle at 20% 20%, rgba(255, 255, 255, .04), transparent 40%),
+            radial-gradient(circle at 80% 90%, rgba(255, 255, 255, .03), transparent 40%);
+        pointer-events: none;
+    }
+
+    h1 {
+        color: var(--inverse-text);
+        letter-spacing: -0.02em;
+    }
+
+    p {
+        color: var(--inverse-muted);
+    }
+}
+
+.dt-auth-mark {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--r-md);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+
+    &.on-inverse {
+        border-color: rgba(255, 255, 255, .15);
+        color: var(--inverse-text);
+    }
+}

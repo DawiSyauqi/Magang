@@ -2,345 +2,15 @@
 
 @section('title', 'Dashboard — Input Performa Mesin')
 
-@push('styles')
-<style>
-    .dt-shell { min-height: 100vh; }
-
-    /* ===== Sidebar ===== */
-    .dt-sidebar {
-        width: 240px;
-        flex-shrink: 0;
-        background-color: var(--dt-charcoal);
-        display: flex;
-        flex-direction: column;
-        padding: 1.5rem 1rem;
-    }
-    .dt-brand-name { color: #fff; font-weight: 700; font-size: 1.05rem; line-height: 1.2; }
-    .dt-brand-sub {
-        color: rgba(255,255,255,.45);
-        font-size: .65rem;
-        letter-spacing: .08em;
-        text-transform: uppercase;
-    }
-    .dt-nav { margin-top: 2rem; }
-    .dt-nav-item {
-        display: flex;
-        align-items: center;
-        gap: .6rem;
-        padding: .6rem .75rem;
-        border-radius: .5rem;
-        color: rgba(255,255,255,.75);
-        text-decoration: none;
-        font-size: .9rem;
-        font-weight: 500;
-        transition: background-color .15s ease;
-    }
-    .dt-nav-item:hover { background-color: rgba(255,255,255,.06); color: #fff; }
-    .dt-nav-item.active { background-color: var(--dt-accent); color: #fff; }
-
-    .dt-sidebar-footer { margin-top: auto; }
-    .dt-user-card {
-        display: flex;
-        align-items: center;
-        gap: .6rem;
-        padding: .75rem;
-        border-top: 1px solid rgba(255,255,255,.08);
-    }
-    .dt-avatar {
-        width: 36px; height: 36px; border-radius: 50%;
-        background-color: var(--dt-accent-light);
-        display: flex; align-items: center; justify-content: center;
-        color: #fff; font-weight: 600; font-size: .8rem; flex-shrink: 0;
-    }
-    .dt-user-name { color: #fff; font-size: .85rem; font-weight: 600; line-height: 1.2; }
-    .dt-user-status { color: rgba(255,255,255,.4); font-size: .72rem; }
-    .dt-logout {
-        display: flex; align-items: center; gap: .5rem;
-        color: rgba(255,255,255,.55);
-        font-size: .8rem; font-weight: 600; letter-spacing: .04em;
-        text-decoration: none; padding: .75rem;
-        border: none; background: none; width: 100%;
-        text-transform: uppercase;
-    }
-    .dt-logout:hover { color: #fff; }
-
-    /* ===== Main content ===== */
-    .dt-main { background-color: var(--dt-bg); flex-grow: 1; min-width: 0; }
-    .dt-header {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 1.25rem 2rem;
-        border-bottom: 1px solid var(--dt-border);
-    }
-    .dt-header h1 { font-size: 1.15rem; font-weight: 700; color: var(--dt-text); margin: 0; }
-
-    .dt-content { padding: 1.75rem 2rem; }
-
-    .dt-filter-label {
-        font-size: .7rem; font-weight: 700; letter-spacing: .06em;
-        color: var(--dt-muted); text-transform: uppercase; margin-bottom: .4rem;
-    }
-    .dt-date-input {
-        width: 220px; background-color: #fff;
-    }
-
-    .dt-table-card {
-        background-color: var(--dt-surface);
-        border: 1px solid var(--dt-border);
-        border-radius: .75rem;
-        overflow: hidden;
-        box-shadow: var(--box-shadow-sm, 0 1px 4px rgba(46,43,39,.05));
-    }
-    .dt-table thead th {
-        background-color: #F5F1EC;
-        color: var(--dt-text);
-        font-size: .78rem;
-        font-weight: 700;
-        border-bottom: 1px solid var(--dt-border);
-        padding: .85rem 1rem;
-        white-space: nowrap;
-        text-align: center;
-    }
-    .dt-table tbody td {
-        padding: .85rem 1rem;
-        font-size: .88rem;
-        color: var(--dt-text);
-        border-bottom: 1px solid var(--dt-border);
-        vertical-align: middle;
-        text-align: center;
-    }
-    .dt-table tbody tr:last-child td { border-bottom: none; }
-    .dt-table tbody tr:hover { background-color: #FBF8F4; }
-
-    .dt-badge-mesin {
-        display: inline-block;
-        background-color: #F5F1EC;
-        color: var(--dt-text);
-        font-size: .78rem;
-        font-weight: 600;
-        padding: .2rem .55rem;
-        border-radius: .4rem;
-    }
-
-    .dt-icon-btn {
-        border: none; background: none; padding: .3rem;
-        border-radius: .4rem; line-height: 0;
-        color: var(--dt-text);
-    }
-    .dt-icon-btn:hover { background-color: var(--dt-bg); }
-    .dt-icon-btn.dt-icon-danger { color: var(--dt-danger, #C1443A); }
-
-    .dt-footer {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 1rem 2rem;
-        font-size: .8rem;
-        color: var(--dt-muted);
-        border-top: 1px solid var(--dt-border);
-    }
-    .dt-footer a { color: var(--dt-muted); text-decoration: none; margin-left: 1.5rem; }
-    .dt-footer a:hover { color: var(--dt-text); }
-
-    /* ===== Modal Tambah/Edit Data ===== */
-    .dt-modal-dialog { max-width: 680px; }
-    .dt-modal-content {
-        border: none;
-        border-radius: .9rem;
-        overflow: hidden;
-    }
-    .dt-modal-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 1rem 1.25rem;
-        background-color: #FBF3EC;
-        border-bottom: 1px solid var(--dt-border);
-    }
-    .dt-modal-title { font-size: 1.05rem; font-weight: 700; color: var(--dt-text); margin: 0; }
-    .dt-modal-close {
-        border: none; background: none; color: var(--dt-muted);
-        padding: .25rem; line-height: 0; border-radius: .4rem;
-    }
-    .dt-modal-close:hover { color: var(--dt-text); background-color: rgba(0,0,0,.05); }
-
-    .dt-modal-infobar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-        padding: .85rem 1.25rem;
-        border-bottom: 1px solid var(--dt-border);
-        flex-wrap: wrap;
-    }
-    .dt-modal-infotext {
-        display: flex;
-        align-items: center;
-        gap: .5rem;
-        color: #2F6B66;
-        font-size: .85rem;
-    }
-    .dt-btn-batal {
-        background-color: #fff;
-        border: 1px solid var(--dt-border);
-        color: var(--dt-text);
-        font-weight: 600;
-        font-size: .85rem;
-    }
-    .dt-btn-batal:hover { background-color: var(--dt-bg); }
-    .dt-btn-simpan {
-        background-color: #8B3A2A;
-        border: 1px solid #8B3A2A;
-        color: #fff;
-        font-weight: 600;
-        font-size: .85rem;
-        display: inline-flex;
-        align-items: center;
-        gap: .4rem;
-    }
-    .dt-btn-simpan:hover { background-color: #7A3123; color: #fff; }
-
-    .dt-btn-hapus {
-        background-color: var(--dt-danger, #C1443A);
-        border: 1px solid var(--dt-danger, #C1443A);
-        color: #fff;
-        font-weight: 600;
-        font-size: .85rem;
-        display: inline-flex;
-        align-items: center;
-        gap: .4rem;
-    }
-    .dt-btn-hapus:hover { background-color: #A8382F; color: #fff; }
-
-    .dt-confirm-icon {
-        width: 48px; height: 48px; border-radius: 50%;
-        background-color: #FBEAE8;
-        color: var(--dt-danger, #C1443A);
-        display: flex; align-items: center; justify-content: center;
-        margin: 0 auto 1rem;
-    }
-
-    .dt-modal-body {
-        padding: 1.25rem;
-        max-height: 65vh;
-        overflow-y: auto;
-    }
-    .dt-form-label {
-        display: block;
-        font-size: .82rem;
-        font-weight: 600;
-        color: var(--dt-text);
-        margin-bottom: .35rem;
-    }
-    .dt-readonly {
-        background-color: #F5F1EC !important;
-        color: var(--dt-text);
-        opacity: 1;
-    }
-    .dt-total-durasi {
-        background-color: var(--dt-accent-light);
-        color: var(--dt-text);
-        font-weight: 700;
-        border-radius: .5rem;
-        padding: .5rem .75rem;
-        text-align: center;
-    }
-    .dt-select-problem { color: var(--dt-danger, #C1443A); font-weight: 600; }
-
-    .dt-operator-suggestions {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        z-index: 30;
-        background-color: #fff;
-        border: 1px solid var(--dt-border);
-        border-radius: .5rem;
-        margin-top: .25rem;
-        max-height: 220px;
-        overflow-y: auto;
-        box-shadow: var(--box-shadow-sm, 0 4px 14px rgba(46,43,39,.1));
-    }
-    .dt-operator-suggestion-item {
-        display: block;
-        width: 100%;
-        text-align: left;
-        padding: .5rem .75rem;
-        border: none;
-        background: none;
-        font-size: .85rem;
-        color: var(--dt-text);
-    }
-    .dt-operator-suggestion-item:hover { background-color: var(--dt-bg); }
-
-    @media (max-width: 575.98px) {
-        .dt-modal-content { border-radius: 0; height: 100%; }
-        .dt-modal-body { max-height: none; flex: 1 1 auto; }
-        .dt-modal-infobar { flex-direction: column; align-items: stretch; }
-        .dt-modal-infobar .d-flex.gap-2 { width: 100%; }
-        .dt-modal-infobar .d-flex.gap-2 .btn { flex: 1 1 0; }
-    }
-
-    /* ===== Dashboard Mobile ===== */
-    .dt-mobile-shell { min-height: 100vh; background-color: var(--dt-bg); position: relative; padding-bottom: 5rem; }
-
-    .dt-mobile-topbar {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: .9rem 1rem;
-        background-color: var(--dt-charcoal);
-        position: sticky; top: 0; z-index: 10;
-    }
-    .dt-mobile-topbar-title { color: #fff; font-weight: 700; font-size: 1.05rem; }
-    .dt-mobile-avatar-btn {
-        width: 34px; height: 34px; border-radius: 50%;
-        background-color: var(--dt-accent-light);
-        border: none; color: #fff; font-weight: 600; font-size: .8rem;
-        display: flex; align-items: center; justify-content: center;
-    }
-
-    .dt-mobile-filterbar {
-        display: flex; align-items: center; gap: .75rem;
-        padding: .85rem 1rem;
-        border-bottom: 1px solid var(--dt-border);
-        flex-wrap: wrap;
-    }
-    .dt-mobile-filterbar input[type="date"] { max-width: 160px; }
-    .dt-mobile-filterbar .form-check-label { font-size: .82rem; }
-
-    .dt-mobile-cardlist { padding: 1rem; display: flex; flex-direction: column; gap: .75rem; }
-
-    .dt-mobile-card {
-        background-color: var(--dt-surface);
-        border: 1px solid var(--dt-border);
-        border-radius: .75rem;
-        padding: .9rem 1rem;
-        box-shadow: var(--box-shadow-sm, 0 1px 4px rgba(46,43,39,.05));
-    }
-    .dt-mobile-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: .5rem; }
-    .dt-mobile-card-notrs { font-size: .78rem; font-weight: 700; color: var(--dt-text); }
-    .dt-mobile-card-date { font-size: .74rem; color: var(--dt-muted); margin-top: .1rem; }
-    .dt-mobile-card-actions { display: flex; gap: .15rem; }
-
-    .dt-mobile-card-mesin { display: flex; align-items: center; gap: .5rem; margin-bottom: .4rem; }
-    .dt-mobile-card-mesin-name { font-weight: 700; font-size: .95rem; color: var(--dt-text); }
-
-    .dt-mobile-card-time { font-size: .82rem; color: var(--dt-muted); }
-    .dt-mobile-card-time strong { color: var(--dt-text); font-weight: 700; }
-
-    .dt-mobile-empty {
-        text-align: center; padding: 3rem 1rem; color: var(--dt-muted);
-    }
-
-    .dt-mobile-fab {
-        position: fixed; right: 1.25rem; bottom: 1.5rem; z-index: 20;
-        width: 56px; height: 56px; border-radius: 50%;
-        background-color: var(--dt-accent);
-        color: #fff; border: none;
-        display: flex; align-items: center; justify-content: center;
-        box-shadow: var(--box-shadow-lg, 0 8px 30px rgba(46,43,39,.18));
-        font-size: 1.6rem; font-weight: 700; line-height: 0;
-    }
-    .dt-mobile-fab:hover { background-color: var(--dt-accent-light); color: #fff; }
-</style>
-@endpush
+{{--
+    CATATAN REFACTOR (Monochrome Minimal + Glass & Subtle Glow):
+    - Semua style yang tadinya inline di @push('styles') sudah pindah ke SCSS
+      (resources/sass/_components.scss). Blade cukup pakai class saja.
+    - Warna orange/brown lama diganti oleh CSS variables mono (--text, --bg,
+      --surface, --border) sehingga otomatis mengikuti light/dark theme.
+    - Tombol theme toggle ditambahkan di header desktop & topbar mobile.
+    - Logika JS (fetch, cascading select, modal edit dinamis) TIDAK diubah.
+--}}
 
 @section('content')
 <div class="dt-page">
@@ -366,7 +36,10 @@
                 Dashboard
             </a>
             <a href="{{ route('paper-scan.index') }}" class="dt-nav-item">
-                <i class="bi bi-camera" style="font-size: 1.1rem; line-height: 1;"></i>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                </svg>
                 Ambil Foto
             </a>
         </nav>
@@ -397,12 +70,22 @@
     <main class="dt-main">
         <div class="dt-header">
             <h1>Dashboard Input Performa Mesin</h1>
-            <div class="d-flex gap-2">
-                <a href="{{ route('paper-scan.index') }}" class="btn btn-primary fw-semibold d-flex align-items-center gap-2">
-                    <i class="bi bi-camera"></i> Ambil Foto
+            <div class="d-flex gap-2 align-items-center">
+                @include('layouts.partials._theme-toggle')
+
+                <a href="{{ route('paper-scan.index') }}" class="btn btn-secondary fw-semibold d-flex align-items-center gap-2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                    Ambil Foto
                 </a>
-                <button type="button" class="btn btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#modalTambahData">
-                    <span class="fw-bold">+</span> Tambah Data
+                <button type="button" class="btn btn-primary fw-semibold d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalTambahData">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Tambah Data
                 </button>
             </div>
         </div>
@@ -410,8 +93,7 @@
         <div class="dt-content">
 
             @if (session('status'))
-                <div class="alert py-2 px-3 small mb-3"
-                     style="background-color:#EAF3E6; color: var(--dt-success, #5C8A4A); border:1px solid #C9E0C1; border-radius:8px;">
+                <div class="alert alert-success mb-3">
                     {{ session('status') }}
                 </div>
             @endif
@@ -456,7 +138,7 @@
                                     <td>{{ $row->shift }}</td>
                                     <td>{{ $row->start }}</td>
                                     <td>{{ $row->end }}</td>
-                                    <td class="fw-bold">{{ $row->total }}</td>
+                                    <td class="fw-semibold">{{ $row->total }}</td>
                                     <td><span class="dt-badge-mesin">{{ $row->mesin }}</span></td>
                                     <td>{{ $row->nama }}</td>
                                     <td class="text-center">
@@ -518,10 +200,16 @@
     <div class="d-lg-none dt-mobile-shell">
         <div class="dt-mobile-topbar">
             <div class="dt-mobile-topbar-title">Dashboard</div>
- 
-            <div class="d-flex align-items-center gap-3">
-                <a href="{{ route('paper-scan.index') }}" class="text-white d-flex align-items-center" title="Ambil Foto" style="text-decoration: none;">
-                    <i class="bi bi-camera fs-4"></i>
+
+            <div class="d-flex align-items-center gap-2">
+                @include('layouts.partials._theme-toggle')
+
+                <a href="{{ route('paper-scan.index') }}" class="d-flex align-items-center justify-content-center" title="Ambil Foto"
+                   style="width:34px;height:34px;border-radius:50%;color:var(--text);text-decoration:none;border:1px solid var(--border);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
                 </a>
                 <div class="dropdown">
                     <button type="button" class="dt-mobile-avatar-btn" data-bs-toggle="dropdown" aria-expanded="false">
@@ -543,8 +231,7 @@
         </div>
 
         @if (session('status'))
-            <div class="alert py-2 px-3 small mx-3 mt-3 mb-0"
-                 style="background-color:#EAF3E6; color: var(--dt-success, #5C8A4A); border:1px solid #C9E0C1; border-radius:8px;">
+            <div class="alert alert-success mx-3 mt-3 mb-0">
                 {{ session('status') }}
             </div>
         @endif
@@ -614,8 +301,11 @@
             </div>
         @endforelse
 
-        <button type="button" class="dt-mobile-fab" title="Tambah Data" data-bs-toggle="modal" data-bs-target="#modalTambahData">
-            +
+        <button type="button" class="dt-mobile-fab" title="Tambah Data" data-bs-toggle="modal" data-bs-target="#modalTambahData" aria-label="Tambah Data">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
         </button>
     </div>{{-- /d-lg-none (mobile) --}}
 
@@ -635,9 +325,7 @@
         'data' => [],
     ])
 
-    {{-- Modal konfirmasi Hapus (ringan, bukan halaman terpisah) — FR-13.
-         Form aslinya SATU, dipakai bergantian untuk baris manapun; action
-         di-set dinamis lewat JS begitu modal ini dibuka. --}}
+    {{-- Modal konfirmasi Hapus --}}
     <div class="modal fade" id="modalKonfirmasiHapus" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content dt-modal-content">
@@ -683,9 +371,6 @@
         item: '{{ route("referensi.item") }}',
     };
 
-    // Isi ulang isi <select> dari hasil fetch, sambil menjaga nilai awal
-    // (data-initial) supaya Edit mode bisa ter-select otomatis begitu
-    // opsinya selesai dimuat (dipakai lagi utuh di Tahap 5).
     function fillSelect(select, items, placeholder) {
         const initial = select.dataset.initial || '';
         select.innerHTML = '';
@@ -730,7 +415,6 @@
         let itemCache = [];
         let problemDetailCache = [];
 
-        // ===== Mesin → Nama Mesin + cascading Nomor Item =====
         fetch(REF_URL.mesin)
             .then((r) => r.json())
             .then(function (data) {
@@ -772,7 +456,6 @@
             itemNama.value = selected ? selected.nama : '';
         });
 
-        // ===== Kode Masalah (Kategori) → cascading Detail Masalah =====
         fetch(REF_URL.problemKategori)
             .then((r) => r.json())
             .then(function (data) {
@@ -805,13 +488,10 @@
         });
 
         problemDetailSelect.addEventListener('change', function () {
-            // Sesuai PRD Bab 6.1: Deskripsi Masalah = ProblemDescD, sama
-            // persis dengan label yang dipilih di Detail Masalah.
             const selected = problemDetailCache.find((d) => d.kode === problemDetailSelect.value);
             problemDesc.value = selected ? selected.nama : '';
         });
 
-        // ===== Pencarian Operator (NIK) =====
         let debounceTimer = null;
         nikInput.addEventListener('input', function () {
             clearTimeout(debounceTimer);
@@ -859,7 +539,6 @@
             }
         });
 
-        // ===== Hitung Total Durasi otomatis dari Waktu Mulai/Selesai =====
         function hitungDurasi() {
             if (!timeStart.value || !timeEnd.value) {
                 totalDurasiBox.textContent = '0 Menit';
@@ -868,7 +547,7 @@
             const [sh, sm] = timeStart.value.split(':').map(Number);
             const [eh, em] = timeEnd.value.split(':').map(Number);
             let total = (eh * 60 + em) - (sh * 60 + sm);
-            if (total < 0) total += 24 * 60; // jaga-jaga kalau shift lewat tengah malam
+            if (total < 0) total += 24 * 60;
             totalDurasiBox.textContent = total + ' Menit';
         }
         timeStart.addEventListener('change', hitungDurasi);
@@ -878,14 +557,11 @@
     initModal('modalTambahData');
     initModal('modalEditData');
 
-    // ===== Isi Modal Edit secara dinamis begitu ikon pensil diklik =====
-    // Satu modal Edit dipakai bergantian untuk semua baris — datanya diambil
-    // fresh lewat fetch() setiap kali dibuka, BUKAN dirender statis dari Blade.
     var modalEditEl = document.getElementById('modalEditData');
     if (modalEditEl) {
         modalEditEl.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
-            if (!button) return; // dibuka lewat cara lain (mis. reopen-on-error), bukan klik pensil
+            if (!button) return;
 
             var noTrs = button.getAttribute('data-no-trs');
             if (!noTrs) return;
@@ -917,9 +593,6 @@
                 modalEl.querySelector('.js-nik-input').value = data.nik;
                 modalEl.querySelector('.js-operator-nama').value = data.operator_nama;
 
-                // Set dataset.initial DULU sebelum trigger cascading, supaya
-                // fillSelect() (di initModal) otomatis pilih nilai yang benar
-                // begitu opsi dropdown-nya selesai dimuat.
                 var itemSelect = modalEl.querySelector('.js-item-select');
                 itemSelect.dataset.initial = data.itemno;
 
@@ -934,9 +607,6 @@
                 problemKategoriSelect.value = data.problem_code;
                 problemKategoriSelect.dispatchEvent(new Event('change'));
 
-                // Paksa ke teks ASLI yang tersimpan di database (bukan hasil
-                // re-derive dari master data Detail Masalah), supaya data lama
-                // tetap akurat ditampilkan apa adanya.
                 modalEl.querySelector('.js-problem-desc').value = data.problem_desc;
             })
             .catch(function () {
@@ -944,7 +614,6 @@
             });
     }
 
-    // ===== Modal konfirmasi Hapus =====
     var modalHapusEl = document.getElementById('modalKonfirmasiHapus');
     if (modalHapusEl) {
         modalHapusEl.addEventListener('show.bs.modal', function (event) {
@@ -962,16 +631,10 @@
 })();
 
 @if ($errors->any() && in_array(old('_form'), ['tambah', 'edit']))
-    // Validasi Tambah/Edit gagal (redirect back membawa error) — buka lagi
-    // modal yang sesuai secara otomatis, supaya user langsung lihat pesan
-    // errornya tanpa perlu klik ulang.
     document.addEventListener('DOMContentLoaded', function () {
         var targetId = @json(old('_form') === 'edit' ? 'modalEditData' : 'modalTambahData');
         var modalEl = document.getElementById(targetId);
         if (modalEl) {
-            // Dibuka TANPA lewat klik ikon pensil (relatedTarget kosong),
-            // jadi listener show.bs.modal di atas tidak akan fetch ulang —
-            // field-field-nya sudah terisi dari old() lewat Blade langsung.
             new bootstrap.Modal(modalEl).show();
         }
     });

@@ -9,27 +9,24 @@
     atribut "name" karena memang tidak ada kolomnya di MFDOWNTIME (murni
     tampilan) — kecuali "Deskripsi Masalah" yang punya name="problem_desc"
     karena itu kolom asli (Problem_Desc).
+
+    REFACTOR MONOKROM: styling murni via SCSS. Warna orange (--dt-accent)
+    dihilangkan dari header modal & icon-nya diganti currentColor mono.
 --}}
 @php
     $data = $data ?? [];
     $isEdit = ($mode ?? 'tambah') === 'edit';
-    // old()/error session bersifat GLOBAL per field name, padahal modal Tambah
-    // & Edit sama-sama punya field bernama sama (mesin_code, nik, dst).
-    // $showErrors sekarang dicek berdasarkan modal MANA yang benar-benar gagal
-    // submit terakhir kali (lewat hidden field _form), bukan cuma "selalu
-    // suppress kalau Edit" — supaya Edit yang gagal validasi juga bisa
-    // menampilkan errornya sendiri tanpa bocor ke modal satunya.
     $showErrors = old('_form') === ($isEdit ? 'edit' : 'tambah');
 @endphp
 
 <div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down dt-modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down dt-modal-dialog" style="max-width: 680px;">
         <div class="modal-content dt-modal-content">
 
             {{-- Header --}}
             <div class="dt-modal-header">
                 <div class="d-flex align-items-center gap-2">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--dt-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted);">
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                     </svg>
@@ -46,7 +43,7 @@
             {{-- Info bar + aksi utama --}}
             <div class="dt-modal-infobar">
                 <div class="dt-modal-infotext">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
                         <line x1="12" y1="16" x2="12" y2="12"></line>
                         <line x1="12" y1="8" x2="12.01" y2="8"></line>
@@ -60,7 +57,7 @@
                 <div class="d-flex gap-2">
                     <button type="button" class="btn dt-btn-batal" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" form="form-{{ $modalId }}" class="btn dt-btn-simpan">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                         Simpan
@@ -83,11 +80,9 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="dt-form-label">Tanggal Transaksi</label>
-                            <div class="dt-input-icon-group">
-                                <input type="date" class="form-control {{ $showErrors && $errors->has('tgl_trs') ? 'is-invalid' : '' }}" name="tgl_trs"
-                                       value="{{ $showErrors ? old('tgl_trs', $data['tgl_trs'] ?? now()->format('Y-m-d')) : ($data['tgl_trs'] ?? now()->format('Y-m-d')) }}">
-                                @if ($showErrors) @error('tgl_trs') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror @endif
-                            </div>
+                            <input type="date" class="form-control {{ $showErrors && $errors->has('tgl_trs') ? 'is-invalid' : '' }}" name="tgl_trs"
+                                   value="{{ $showErrors ? old('tgl_trs', $data['tgl_trs'] ?? now()->format('Y-m-d')) : ($data['tgl_trs'] ?? now()->format('Y-m-d')) }}">
+                            @if ($showErrors) @error('tgl_trs') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror @endif
                         </div>
                         <div class="col-md-6">
                             <label class="dt-form-label">Shift</label>
@@ -116,7 +111,7 @@
                         <div class="col-md-6">
                             <label class="dt-form-label">Operator (NIK)</label>
                             <div class="input-group position-relative">
-                                <span class="input-group-text bg-white">
+                                <span class="input-group-text">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <circle cx="11" cy="11" r="8"></circle>
                                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -139,7 +134,7 @@
                             <div class="input-group">
                                 <input type="number" class="form-control {{ $showErrors && $errors->has('speed_mesin') ? 'is-invalid' : '' }}" name="speed_mesin"
                                        value="{{ $isEdit ? ($data['speed'] ?? '') : old('speed_mesin', $data['speed'] ?? '') }}">
-                                <span class="input-group-text bg-white text-muted">RPM</span>
+                                <span class="input-group-text text-muted">RPM</span>
                             </div>
                             @if ($showErrors) @error('speed_mesin') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror @endif
                         </div>

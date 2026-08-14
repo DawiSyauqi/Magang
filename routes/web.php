@@ -51,6 +51,9 @@ Route::middleware(['auth', 'menu.access'])->group(function () {
     Route::post('/paper-scan/analyze/section-photo/fallback', [PaperScanController::class, 'sectionPhotoFallback'])->name('paper-scan.section-photo-fallback');
     Route::post('/paper-scan/confirm-mesin', [PaperScanController::class, 'confirmMesin'])->name('paper-scan.confirm-mesin');
     Route::get('/paper-scan/test-upload', fn () => view('paper-scan-test'));
+    Route::post('/paper-scan/section1/analyze', [PaperScanController::class, 'analyzeSection1'])->name('paper-scan.section1.analyze');
+    Route::post('/paper-scan/section2/analyze', [PaperScanController::class, 'analyzeSection2'])->name('paper-scan.section2.analyze');
+    Route::post('/paper-scan/finalize', [PaperScanController::class, 'finalize'])->name('paper-scan.finalize');
 
     Route::prefix('admin/mesin-aliases')->name('admin.mesin-aliases.')->group(function () {
         Route::get('/', [MesinAliasAdminController::class, 'index'])->name('index');
