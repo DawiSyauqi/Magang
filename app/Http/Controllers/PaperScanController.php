@@ -405,6 +405,188 @@ class PaperScanController extends Controller
         return response()->json(['status' => 'ok']);
     }
 
+    /**
+     * POST /paper-scan/section1/analyze
+     * Foto FULL-PAGE, HANYA proses Header+Speed/Size (skema split baru).
+     * TIDAK menahan foto (tidak ada shift-ambiguous di sini -- shift
+     * null cukup ditampilkan apa adanya, operator pilih manual di form
+     * kalau AI tidak berhasil baca).
+     */
+    public function analyzeSection1(Request $request): JsonResponse
+    {
+        $request->validate(['photo' => 'required|image|max:20480']);
+
+        $token = (string) Str::uuid();
+        $relativePath = self::TMP_DISK_DIR."/{$token}.jpg";
+
+        Storage::disk('local')->putFileAs(
+            self::TMP_DISK_DIR, $request->file('photo'), "{$token}.jpg"
+        );
+        $absolutePath = Storage::disk('local')->path($relativePath);
+
+        try {
+            $raw = $this->paperReader->extract($absolutePath, sectionRetake: 'header_speed_size');
+        } catch (PaperReaderException $e) {
+            Storage::disk('local')->delete($relativePath);
+            return $this->errorResponse($e);
+        }
+
+        Storage::disk('local')->delete($relativePath);
+
+        if ($raw['_status'] === 'needs_retake') {
+            return response()->json([
+                'status' => 'needs_retake',
+                'message' => 'Sudut kertas tidak terdeteksi jelas. Silakan foto ulang.',
+            ]);
+        }
+
+        if ($raw['_status'] === 'needs_section_photo') {
+            return response()->json([
+                'status' => 'needs_retake',
+                'message' => 'Header dan Speed/Size sama sekali tidak terbaca. Silakan foto ulang dengan pencahayaan lebih baik, atau isi manual.',
+            ]);
+        }
+
+        // success -- kembalikan data mentah apa adanya, TANPA lewat
+        // processor->process() (itu utk baris downtime, section ini blm
+        // ada grid sama sekali). Mesin tetap perlu di-resolve spy dropdown
+        // Mesin di UI section 1 bisa auto-terisi.
+        $mesinResolution = $this->mesinResolver->resolve($raw['mesin_code'] ?? '');
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'tanggal_raw' => $raw['tanggal'] ?? null,
+                'mesin_raw' => $raw['mesin_code'] ?? null,
+                'mesin_resolution' => $mesinResolution,
+                'shift' => $raw['shift'] ?? null,
+                'speed' => $raw['speed'] ?? null,
+                'size_raw' => $raw['size_raw'] ?? null,
+                'header_partial_failure' => $raw['_meta']['header_partial_failure'] ?? false,
+                'speed_size_partial_failure' => $raw['_meta']['speed_size_partial_failure'] ?? false,
+            ],
+        ]);
+    }
+
+    /**
+     * POST /paper-scan/section2/analyze
+     * Foto CLOSE-UP grid (sudah lewat crop-rectangle + 3-titik di client).
+     * WAJIB shift sudah diketahui (dari Section 1 atau input manual operator
+     * di form) -- dikirim dari client, BUKAN ditebak ulang di sini.
+     */
+    public function analyzeSection2(Request $request): JsonResponse
+    {
+        $request->validate([
+            'photo' => 'required|image|max:20480',
+            'shift' => 'required|in:1,2,3',
+            'points' => 'required|json',
+        ]);
+
+        $points = json_decode($request->input('points'), true);
+        if (! is_array($points) || count($points) !== 3) {
+            return response()->json(['status' => 'error', 'message' => 'Data titik crop tidak valid.'], 422);
+        }
+
+        $token = (string) Str::uuid();
+        $relativePath = self::TMP_DISK_DIR."/{$token}_grid.jpg";
+
+        Storage::disk('local')->putFileAs(
+            self::TMP_DISK_DIR, $request->file('photo'), "{$token}_grid.jpg"
+        );
+        $absolutePath = Storage::disk('local')->path($relativePath);
+
+        try {
+            $raw = $this->paperReader->extract(
+                $absolutePath, confirmedShift: $request->input('shift'),
+                sectionRetake: 'grid', points: $points
+            );
+        } catch (PaperReaderException $e) {
+            Storage::disk('local')->delete($relativePath);
+            return $this->errorResponse($e);
+        }
+
+        Storage::disk('local')->delete($relativePath);
+
+        if ($raw['_status'] === 'needs_section_photo') {
+            return response()->json([
+                'status' => 'needs_retake',
+                'message' => 'Grid downtime tidak terbaca jelas. Pastikan 3 titik menandai sudut baris grid dengan tepat, lalu coba lagi.',
+            ]);
+        }
+
+        // success -- kembalikan grid_waktu_partial APA ADANYA (24 baris,
+        // hanya row_key target yg terisi, sisanya null blok) -- shape ini
+        // SAMA PERSIS dgn yg dihasilkan run_pipeline() lama, supaya
+        // kompatibel dgn processor->process() di finalize().
+        $rowKey = $raw['row_key'] ?? null;
+        $gridPartial = $raw['grid_waktu_partial'] ?? [];
+
+        $allRowKeys = ['jam_07_15', 'jam_15_23', 'jam_23_07'];
+        $rowBlockLabels = [
+            'jam_07_15' => ['07.00 - 08.00','08.00 - 09.00','09.00 - 10.00','10.00 - 11.00','11.00 - 12.00','12.00 - 13.00','13.00 - 14.00','14.00 - 15.00'],
+            'jam_15_23' => ['15.00 - 16.00','16.00 - 17.00','17.00 - 18.00','18.00 - 19.00','19.00 - 20.00','20.00 - 21.00','21.00 - 22.00','22.00 - 23.00'],
+            'jam_23_07' => ['23.00 - 24.00','24.00 - 01.00','01.00 - 02.00','02.00 - 03.00','03.00 - 04.00','04.00 - 05.00','05.00 - 06.00','06.00 - 07.00'],
+        ];
+
+        $gridWaktuFull = [];
+        foreach ($allRowKeys as $rk) {
+            if ($rk === $rowKey && ! empty($gridPartial)) {
+                foreach ($gridPartial as $row) {
+                    $gridWaktuFull[] = $row;
+                }
+            } else {
+                foreach ($rowBlockLabels[$rk] as $label) {
+                    $gridWaktuFull[] = ['jam_mulai' => $label, 'blok' => array_fill(0, 6, null)];
+                }
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'grid_waktu' => $gridWaktuFull,
+                'row_key' => $rowKey,
+            ],
+        ]);
+    }
+
+    /**
+     * POST /paper-scan/finalize
+     * Gabungkan hasil Section 1 (header/speed/size, mungkin sudah diedit
+     * manual operator) + Section 2 (grid_waktu, mungkin kosong kalau
+     * operator pilih isi manual) -- proses lewat processor SAMA seperti
+     * alur lama, hasilkan "rows" siap ditinjau di tabel review.
+     */
+    public function finalize(Request $request): JsonResponse
+    {
+        $request->validate([
+            'tanggal' => 'nullable|date',
+            'mesin_code' => 'nullable|string',
+            'shift' => 'nullable|in:1,2,3',
+            'speed' => 'nullable|numeric',
+            'size_raw' => 'nullable|string',
+            'grid_waktu' => 'nullable|array',
+        ]);
+
+        $raw = [
+            'tanggal' => $request->input('tanggal'),
+            'mesin_code' => $request->input('mesin_code'),
+            'shift' => $request->input('shift'),
+            'speed' => $request->input('speed'),
+            'size_raw' => $request->input('size_raw'),
+            'operator_nama' => null,
+            'grid_waktu' => $request->input('grid_waktu', []),
+        ];
+
+        $response = $this->buildSuccessResponse($raw);
+        // TIDAK ada preview_token -- section 1/2 fotonya sudah dihapus
+        // segera setelah tiap analisa (tidak ditahan spt alur lama), jadi
+        // tombol preview foto di tabel review otomatis tidak tersedia utk
+        // baris dari alur baru ini (lihat catatan UI).
+
+        return response()->json($response);
+    }
+
     protected function buildSuccessResponse(array $raw): array
     {
         $mesinResolution = $this->mesinResolver->resolve($raw['mesin_code'] ?? '');
