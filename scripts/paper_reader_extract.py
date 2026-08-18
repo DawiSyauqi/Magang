@@ -657,6 +657,21 @@ def get_calibrated_row_bounds(image, y_search_range=None, x_search_range=None, k
     }
     return ROW_BOUNDS_FALLBACK, lost_time_fallback, "fallback"
 
+def get_calibrated_block_x_bounds(image, row_bounds, expected_blocks=8, x_search_range=None):
+    """Wrapper 2-lapis utk kolom, analog get_calibrated_row_bounds() utk
+    baris -- coba global dulu, baru anchored (lokal per-garis) kalau gagal,
+    baru fallback statis (yg akan memicu SectionDetectionError di caller)."""
+    cols, sumber = detect_block_x_bounds_hough(image, row_bounds, expected_blocks, x_search_range)
+    if sumber != "fallback":
+        return cols, sumber
+
+    print("  [diag col] Hough GLOBAL gagal -> coba mode ANCHORED (per-garis lokal)")
+    cols_anchored = detect_block_x_bounds_hough_anchored(image, row_bounds, expected_blocks, x_search_range)
+    if cols_anchored is not None:
+        return cols_anchored, "auto_hough_anchored"
+
+    print("  [diag col] ANCHORED gagal juga -> fallback statis (BERISIKO)")
+    return BLOCK_X_BOUNDS_FALLBACK, "fallback"
 
 # ============================================================
 # 6. PATCH v3 — block_x_bounds whole-table (dari Cell 33)
@@ -1047,6 +1062,87 @@ def detect_block_x_bounds_hough(image, row_bounds, expected_blocks=8, x_search_r
     print(f"  [diag col-hough] window {expected_blocks+1}-garis ditemukan via Hough: {[round(x) for x in window]}")
     cols = [(x0 + lx) / w for lx in window]
     return cols, "auto_hough"
+
+def detect_block_x_bounds_hough_anchored(image, row_bounds, expected_blocks=8, x_search_range=None):
+    """Fallback KEDUA dari detect_block_x_bounds_hough() KHUSUS saat versi
+    global (cari 9 garis sekaligus) gagal -- analog dgn
+    detect_row_bounds_hough_per_block() tapi utk kolom: bukan split per-blok
+    (kolom ITU SENDIRI adalah batas blok, tidak ada 'dalam blok' yg bisa
+    displit), melainkan cari tiap 1 dari 9 garis SECARA LOKAL di sekitar
+    posisi yg diharapkan (anchor dari BLOCK_X_BOUNDS_FALLBACK, discale ke
+    x_search_range aktual) -- window pencarian sempit per anchor jauh lebih
+    toleran drpd menuntut 9 garis konsisten sekaligus di seluruh lebar
+    tabel yg mungkin melengkung/miring."""
+    h, w = image.shape[:2]
+    y0f = min(v[0] for v in row_bounds.values())
+    y1f = max(v[1] for v in row_bounds.values())
+    y0, y1 = int(y0f * h), int(y1f * h)
+    x0f, x1f = x_search_range if x_search_range is not None else (0.08, 0.82)
+    x0, x1 = int(x0f * w), int(x1f * w)
+
+    table = image[y0:y1, x0:x1]
+    if table.size == 0:
+        return None
+    gray = cv2.cvtColor(table, cv2.COLOR_BGR2GRAY) if table.ndim == 3 else table
+    edges = cv2.Canny(gray, 50, 150, apertureSize=3)
+    th, tw = gray.shape[:2]
+
+    lines = cv2.HoughLinesP(edges, 1, np.pi / 360, threshold=20,
+                             minLineLength=max(int(th * 0.5), 8), maxLineGap=8)
+    if lines is None:
+        print("  [diag col-anchored] tidak ada garis Hough sama sekali")
+        return None
+
+    xs = []
+    for l in lines:
+        lx1, ly1, lx2, ly2 = np.ravel(l)
+        angle = np.degrees(np.arctan2(ly2 - ly1, lx2 - lx1))
+        ymin, ymax = min(ly1, ly2), max(ly1, ly2)
+        overlap = min(ymax, th) - max(ymin, 0)
+        ang_from_vert = abs(abs(angle) - 90)
+        if ang_from_vert < 25 and overlap > 10:
+            xs.append((lx1 + lx2) / 2)
+
+    if not xs:
+        print("  [diag col-anchored] tidak ada kandidat garis vertikal")
+        return None
+
+    # Anchor posisi 9 garis dari fallback (SUDAH dikalibrasi dari foto lain,
+    # tapi cukup sbg TEBAKAN AWAL posisi relatif -- bukan nilai final),
+    # discale supaya cocok dgn x_search_range yg dipakai SEKARANG.
+    fb_span = BLOCK_X_BOUNDS_FALLBACK[-1] - BLOCK_X_BOUNDS_FALLBACK[0]
+    anchors_frac = [(v - BLOCK_X_BOUNDS_FALLBACK[0]) / fb_span for v in BLOCK_X_BOUNDS_FALLBACK]
+    anchors_px = [af * tw for af in anchors_frac]  # posisi anchor dlm px lokal (relatif ke table crop)
+
+    search_window = tw * 0.06  # toleransi pencarian di sekitar tiap anchor
+    found = [None] * (expected_blocks + 1)
+    for i, anchor in enumerate(anchors_px):
+        nearby = [x for x in xs if abs(x - anchor) <= search_window]
+        if nearby:
+            # kalau ada beberapa kandidat dekat anchor, pilih yg PALING dekat
+            found[i] = min(nearby, key=lambda x: abs(x - anchor))
+            print(f"  [diag col-anchored] garis-{i}: anchor={anchor:.1f}px -> ditemukan={found[i]:.1f}px")
+        else:
+            print(f"  [diag col-anchored] garis-{i}: anchor={anchor:.1f}px -> TIDAK ditemukan dlm radius {search_window:.1f}px")
+
+    n_found = sum(1 for f in found if f is not None)
+    if n_found < 6:  # sama spt min_valid_blocks versi baris
+        print(f"  [diag col-anchored] cuma {n_found}/9 garis ditemukan (butuh >=6)")
+        return None
+
+    # Isi yg kosong pakai interpolasi dari tetangga terdekat yg valid
+    # (nearest-neighbor, sama pola dgn _validate_and_interpolate_block_windows).
+    valid_idx = [i for i, f in enumerate(found) if f is not None]
+    for i in range(len(found)):
+        if found[i] is None:
+            nearest = min(valid_idx, key=lambda j: abs(j - i))
+            # geser proporsional dari anchor, bukan copy persis posisi tetangga
+            offset = anchors_px[i] - anchors_px[nearest]
+            found[i] = found[nearest] + offset
+            print(f"  [diag col-anchored] garis-{i} diinterpolasi dari garis-{nearest}")
+
+    cols = [(x0 + fx) / w for fx in found]
+    return cols
 # ============================================================
 # 7. MODE E — crop per-kotak-kecil (dari Cell 47/49)
 # ============================================================
@@ -1176,7 +1272,7 @@ def extract_split_by_cell(cfg: OllamaConfig, image, header_result, target_row_ke
     print(f"ROW_BOUNDS terkalibrasi via: {row_sumber}")
     validate_row_bounds_source(row_sumber)
 
-    block_x_bounds_raw, col_sumber = detect_block_x_bounds_hough(image, row_bounds)
+    block_x_bounds_raw, col_sumber = get_calibrated_block_x_bounds(image, row_bounds)
     print(f"block_x_bounds terkalibrasi via: {col_sumber}")
     block_x_bounds = get_block_x_bounds_validated(block_x_bounds_raw, col_sumber, "whole_table")
 
