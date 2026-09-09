@@ -7,6 +7,9 @@ use App\Http\Controllers\PaperScanController;
 use App\Http\Controllers\ReferensiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MesinAliasAdminController;
+use App\Http\Controllers\PaperScanEksplorasi2Controller;
+use App\Http\Controllers\PaperScanEksplorasi1Controller;
+use App\Http\Controllers\PaperScanEksplorasi3Controller;
 
 Route::get('/', function () {
     return redirect()->route(auth()->check() ? 'dashboard' : 'login');
@@ -50,10 +53,33 @@ Route::middleware(['auth', 'menu.access'])->group(function () {
     Route::post('/paper-scan/analyze/section-photo', [PaperScanController::class, 'analyzeSectionPhoto'])->name('paper-scan.section-photo');
     Route::post('/paper-scan/analyze/section-photo/fallback', [PaperScanController::class, 'sectionPhotoFallback'])->name('paper-scan.section-photo-fallback');
     Route::post('/paper-scan/confirm-mesin', [PaperScanController::class, 'confirmMesin'])->name('paper-scan.confirm-mesin');
-    Route::get('/paper-scan/test-upload', fn () => view('paper-scan-test'));
+    // Tahap O-lanjutan: TEST perbandingan full-page vs auto-crop-grid (SEMENTARA, hapus setelah keputusan final)
+    Route::get('/paper-scan/grid-resolution-test', fn () => view('paper-scan-grid-test'))->name('paper-scan.grid-test');
+    Route::post('/paper-scan/grid-resolution-test/run', [PaperScanController::class, 'gridResolutionTest'])->name('paper-scan.grid-test.run');
     Route::post('/paper-scan/section1/analyze', [PaperScanController::class, 'analyzeSection1'])->name('paper-scan.section1.analyze');
     Route::post('/paper-scan/section2/analyze', [PaperScanController::class, 'analyzeSection2'])->name('paper-scan.section2.analyze');
     Route::post('/paper-scan/finalize', [PaperScanController::class, 'finalize'])->name('paper-scan.finalize');
+
+    Route::get('/paper-scan-eksplorasi2-test', function () {
+        return view('paper-scan-eksplorasi2-test');
+    })->name('paper-scan-eksplorasi2-test');
+
+    Route::post('/paper-scan/eksplorasi2/analyze', [PaperScanEksplorasi2Controller::class, 'analyze'])
+        ->name('paper-scan.eksplorasi2.analyze');
+
+    Route::get('/paper-scan-eksplorasi3-test', function () {
+        return view('paper-scan-eksplorasi3-test');
+    })->name('paper-scan-eksplorasi3-test');
+
+    Route::post('/paper-scan/eksplorasi3/analyze', [PaperScanEksplorasi3Controller::class, 'analyze'])
+        ->name('paper-scan.eksplorasi3.analyze');
+
+    Route::get('/paper-scan-eksplorasi1-test', function () {
+        return view('paper-scan-eksplorasi1-test');
+    })->name('paper-scan-eksplorasi1-test');
+
+    Route::post('/paper-scan/eksplorasi1/analyze', [PaperScanEksplorasi1Controller::class, 'analyze'])
+        ->name('paper-scan.eksplorasi1.analyze');
 
     Route::prefix('admin/mesin-aliases')->name('admin.mesin-aliases.')->group(function () {
         Route::get('/', [MesinAliasAdminController::class, 'index'])->name('index');

@@ -20,7 +20,7 @@ use App\Services\PaperReaderService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-
+use Symfony\Component\Process\Process;
 
 /**
  * Tahap 5 — endpoint upload & orkestrasi. TIDAK menulis apa pun ke
@@ -789,4 +789,88 @@ class PaperScanController extends Controller
             ]);
         }
     }
+
+    /**
+ * POST /paper-scan/grid-resolution-test/run
+ * KHUSUS testing empiris Fase O-lanjutan. Shell-out ke script Python
+ * TERPISAH (scripts/grid_resolution_test.py) dengan pola PERSIS sama
+ * dengan PaperReaderService::extract() (env Windows, Process facade,
+ * envelope {"status": ...}) supaya perilakunya konsisten dgn produksi.
+ * TIDAK memanggil paper_reader_extract.py produksi.
+ *
+ * HAPUS method ini setelah keputusan arsitektur final diambil.
+ */
+public function gridResolutionTest(Request $request): JsonResponse
+{
+    $request->validate(['photo' => 'required|image|max:20480']);
+
+    $token = (string) Str::uuid();
+    $relativePath = self::TMP_DISK_DIR."/{$token}_gridtest.jpg";
+
+    Storage::disk('local')->putFileAs(
+        self::TMP_DISK_DIR, $request->file('photo'), "{$token}_gridtest.jpg"
+    );
+    $absolutePath = Storage::disk('local')->path($relativePath);
+
+    $scriptPath = config('paper_reader.script_path');
+    $scriptPath = str_replace('paper_reader_extract.py', 'grid_resolution_test.py', $scriptPath);
+
+    $command = [
+        config('paper_reader.python_binary'),
+        $scriptPath,
+        '--image', $absolutePath,
+        '--model', config('paper_reader.ollama.model'),
+        '--ollama-url', config('paper_reader.ollama.base_url'),
+        '--timeout', (string) config('paper_reader.ollama_call_timeout'),
+        '--num-ctx', (string) config('paper_reader.ollama.num_ctx'),
+    ];
+
+    // Sama persis dengan PaperReaderService::extract() -- WAJIB di Windows,
+    // kalau tidak proses Python bisa gagal resolve DNS/SSL diam-diam.
+    $env = getenv();
+    if (! is_array($env)) {
+        $env = [];
+    }
+    $env['SystemRoot'] = $env['SystemRoot'] ?? getenv('SystemRoot') ?: 'C:\\Windows';
+    $env['SystemDrive'] = $env['SystemDrive'] ?? getenv('SystemDrive') ?: 'C:';
+    $env['windir'] = $env['windir'] ?? getenv('windir') ?: 'C:\\Windows';
+    $env['PATH'] = $env['PATH'] ?? getenv('PATH') ?: '';
+    $userSite = 'C:\\Users\\User\\AppData\\Roaming\\Python\\Python314\\site-packages';
+    if (is_dir($userSite)) {
+        $existingPath = $env['PYTHONPATH'] ?? '';
+        $env['PYTHONPATH'] = $existingPath ? $userSite.PATH_SEPARATOR.$existingPath : $userSite;
+    }
+
+    try {
+        $result = Process::timeout(900)->env($env)->run($command); // 900s: 2 panggilan Ollama berurutan
+    } catch (ProcessTimedOutException $e) {
+        Storage::disk('local')->delete($relativePath);
+        return response()->json(['status' => 'error', 'message' => 'Timeout menunggu script test.'], 502);
+    }
+
+    Storage::disk('local')->delete($relativePath);
+
+    $stdout = trim($result->output());
+    $stderr = $result->errorOutput();
+
+    $lines = array_values(array_filter(explode("\n", $stdout), fn ($l) => trim($l) !== ''));
+    $lastLine = end($lines) ?: '';
+    $decoded = json_decode($lastLine, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE || ! is_array($decoded)) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Output script bukan JSON valid.',
+            'raw_stdout' => $stdout,
+            'stderr' => $stderr,
+        ], 502);
+    }
+
+    return response()->json([
+        'status' => 'success',
+        'result' => $decoded,
+        'stderr_log' => $stderr,
+    ]);
 }
+}
+
