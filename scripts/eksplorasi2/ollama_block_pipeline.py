@@ -99,7 +99,7 @@ def main():
     ap.add_argument("--shift", required=True, choices=["1", "2", "3"])
     ap.add_argument("--ref-dir", required=True,
                      help="Folder hasil calibrate_reference_cli.py (isi ref_template.npz + ref_anchors.json)")
-    ap.add_argument("--model", default="qwen2.5vl:7b")
+    ap.add_argument("--model", default="qwen3-vl:8b")
     ap.add_argument("--ollama-url", default="http://127.0.0.1:11434")
     ap.add_argument("--timeout", type=int, default=120)
     ap.add_argument("--num-ctx", type=int, default=8192)
@@ -130,10 +130,12 @@ def main():
         for i, crop in enumerate(crops):
             print(f"  blok {i} ({labels[i]}) -- memanggil Ollama...")
             res = call_ollama(args.ollama_url, args.model, args.timeout, args.num_ctx, crop, BLOCK_PROMPT)
+            res["crop_image_b64"] = encode_b64_array(crop)
             res["expected_jam_label"] = labels[i]
             res["block_idx"] = i
             blocks_result.append(res)
             print(f"    -> {res.get('parsed', res.get('error'))}")
+
 
         n_ok = sum(1 for r in blocks_result if r.get("validation", {}).get("n_kotak_ok"))
         envelope = {
