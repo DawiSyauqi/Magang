@@ -83,7 +83,7 @@
                 const div = document.createElement('div');
                 div.className = 'block-card';
                 div.id = `block-${b.block_idx}`;
-                const kotak = b.parsed ? JSON.stringify(b.parsed.kotak) : '(gagal: ' + (b.error || 'unknown') + ')';
+                const kotak = b.kotak ? JSON.stringify(b.kotak) : (b.parsed ? JSON.stringify(b.parsed.kotak || b.parsed) : '(gagal: ' + (b.error || 'unknown') + ')');
                 div.innerHTML = `
                     <img src="data:image/jpeg;base64,${b.crop_image_b64 || ''}">
                     <div style="flex:1;">

@@ -1,0 +1,4 @@
+timestamp,image,shift,status,confidence,n_inliers,n_good_matches,inlier_ratio,ocr_diff,manual_grade_presisi
+2026-09-20T15:11:05,IMG_20260901_134505.jpg.jpeg,1,success,high,5000,5000,1.0,0.0,
+2026-09-20T20:47:07,IMG_20260902_141217.jpg.jpeg,1,success,medium,99,325,0.3046153846153846,,False
+2026-09-21T01:21:47,IMG_20260921_004756.jpg.jpeg,1,success,high,78,300,0.26,0.010351181,True

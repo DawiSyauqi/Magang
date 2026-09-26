@@ -1,0 +1,172 @@
+[
+  {
+    "block_idx": 0,
+    "response": {
+      "parsed": {
+        "jam_label": "07.00 - 08.00",
+        "kotak": [
+          "6a",
+          "5b",
+          "x",
+          "x",
+          "x",
+          "x"
+        ]
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"07.00 - 08.00\",\n  \"kotak\": [\"6a\", \"5b\", \"x\", \"x\", \"x\", \"x\"]\n}\n```",
+      "elapsed_sec": 45.63189673423767,
+      "validation": {
+        "n_kotak_returned": 6,
+        "n_kotak_ok": true
+      }
+    },
+    "manual_grade": true
+  },
+  {
+    "block_idx": 1,
+    "response": {
+      "parsed": {
+        "jam_label": "08.00 - 09.00",
+        "kotak": [
+          "x",
+          "x",
+          "x",
+          "x",
+          "x",
+          "x"
+        ]
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"08.00 - 09.00\",\n  \"kotak\": [\"x\", \"x\", \"x\", \"x\", \"x\", \"x\"]\n}\n```",
+      "elapsed_sec": 4.567179441452026,
+      "validation": {
+        "n_kotak_returned": 6,
+        "n_kotak_ok": true
+      }
+    },
+    "manual_grade": true
+  },
+  {
+    "block_idx": 2,
+    "response": {
+      "parsed": {
+        "jam_label": "09.00 - 10.00",
+        "kotak": [
+          "7a",
+          "2a",
+          "x",
+          "x",
+          "x",
+          "x"
+        ]
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"09.00 - 10.00\",\n  \"kotak\": [\"7a\", \"2a\", \"x\", \"x\", \"x\", \"x\"]\n}\n```",
+      "elapsed_sec": 4.816891193389893,
+      "validation": {
+        "n_kotak_returned": 6,
+        "n_kotak_ok": true
+      }
+    },
+    "manual_grade": true
+  },
+  {
+    "block_idx": 3,
+    "response": {
+      "parsed": {
+        "jam_label": "10.00 - 11.00",
+        "kotak": [
+          "2F",
+          "x",
+          "3;",
+          "x",
+          "x",
+          "x"
+        ]
+      },
+      "raw_text": "```json\n{\"jam_label\": \"10.00 - 11.00\", \"kotak\": [\"2F\", \"x\", \"3;\", \"x\", \"x\", \"x\"]}\n```",
+      "elapsed_sec": 4.540528774261475,
+      "validation": {
+        "n_kotak_returned": 6,
+        "n_kotak_ok": true
+      }
+    },
+    "manual_grade": true
+  },
+  {
+    "block_idx": 4,
+    "response": {
+      "parsed": {
+        "jam_label": "11.00 - 12.00",
+        "kotak": [
+          "3c",
+          "x",
+          "x",
+          "x",
+          "x",
+          "x"
+        ]
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"11.00 - 12.00\",\n  \"kotak\": [\"3c\", \"x\", \"x\", \"x\", \"x\", \"x\"]\n}\n```",
+      "elapsed_sec": 4.8415305614471436,
+      "validation": {
+        "n_kotak_returned": 6,
+        "n_kotak_ok": true
+      }
+    },
+    "manual_grade": true
+  },
+  {
+    "block_idx": 5,
+    "response": {
+      "parsed": {
+        "jam_label": "12.00 - 13.00",
+        "kotak": [
+          "x",
+          "x",
+          "x",
+          "x",
+          "x",
+          "x"
+        ]
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"12.00 - 13.00\",\n  \"kotak\": [\"x\", \"x\", \"x\", \"x\", \"x\", \"x\"]\n}\n```",
+      "elapsed_sec": 4.977524995803833,
+      "validation": {
+        "n_kotak_returned": 6,
+        "n_kotak_ok": true
+      }
+    },
+    "manual_grade": true
+  },
+  {
+    "block_idx": 6,
+    "response": {
+      "parsed": {
+        "jam_label": "15.00 - 14.00",
+        "kotak": [
+          "x",
+          "x",
+          "x",
+          "x",
+          "x",
+          "x"
+        ]
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"15.00 - 14.00\",\n  \"kotak\": [\"x\", \"x\", \"x\", \"x\", \"x\", \"x\"]\n}\n```",
+      "elapsed_sec": 5.16265869140625,
+      "validation": {
+        "n_kotak_returned": 6,
+        "n_kotak_ok": true
+      }
+    },
+    "manual_grade": true
+  },
+  {
+    "block_idx": 7,
+    "response": {
+      "error": "JSON tidak valid",
+      "raw_text": "```json\n{\"jam_label\": \"07.00 - 08.00\", \"kotak\": [\"x\", \"x\", \"x\", \"x\", \"x\", \"x\"]}}\n```",
+      "elapsed_sec": 5.004453182220459
+    },
+    "manual_grade": true
+  }
+]

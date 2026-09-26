@@ -12,7 +12,7 @@ from detect_grid import detect_grid
 
 N_BLOCKS = 8
 
-BLOCK_PAD_X_FRAC = 0.15
+BLOCK_PAD_X_FRAC = 0
 BLOCK_PAD_Y_TOP_FRAC = 0.9
 BLOCK_PAD_Y_BOT_FRAC = 0.3
 

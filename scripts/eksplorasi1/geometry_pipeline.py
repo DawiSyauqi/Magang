@@ -90,7 +90,14 @@ def main():
         print("ERROR:", traceback.format_exc())
         envelope = {"status": "error", "error": str(e), "error_type": type(e).__name__}
 
-    _stdout_print(json.dumps(envelope, ensure_ascii=False))
+    def _json_default(o):
+        if isinstance(o, (np.floating, float)):
+            return float(o)
+        if isinstance(o, (np.integer, int)):
+            return int(o)
+        return str(o)
+
+    _stdout_print(json.dumps(envelope, ensure_ascii=False, default=_json_default))
     return 0 if envelope["status"] != "error" else 1
 
 

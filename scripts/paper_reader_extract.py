@@ -22,7 +22,7 @@ dipakai produksi (lihat keputusan Tahap 2).
 
 Penggunaan:
     python3 paper_reader_extract.py --image /path/to/foto.jpg \
-        [--model qwen2.5vl:7b] [--ollama-url http://127.0.0.1:11434] \
+        [--model qwen2.5vl:3b] [--ollama-url http://127.0.0.1:11434] \
         [--timeout 600] [--num-ctx 16384] [--keep-temp]
 """
 
@@ -1476,7 +1476,7 @@ def run_section_closeup_pipeline(cfg: OllamaConfig, image, section: str, shift_o
 def main():
     parser = argparse.ArgumentParser(description="Ekstrak MFDOWNTIME dari foto kertas (Mode E).")
     parser.add_argument("--image", required=True, help="Path foto input (mentah, belum di-crop).")
-    parser.add_argument("--model", default="qwen2.5vl:7b")
+    parser.add_argument("--model", default="qwen2.5vl:3b")
     parser.add_argument("--ollama-url", default="http://127.0.0.1:11434")
     parser.add_argument("--timeout", type=int, default=600, help="Timeout per panggilan Ollama (detik).")
     parser.add_argument("--num-ctx", type=int, default=16384)

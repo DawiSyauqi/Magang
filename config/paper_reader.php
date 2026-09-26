@@ -44,11 +44,11 @@ return [
     | Ollama
     |--------------------------------------------------------------------
     | Ganti 'model' sesuai keputusan Tahap 1 kalau ternyata model lain yang
-    | dipilih (bukan qwen2.5vl:7b).
+    | dipilih (bukan qwen2.5vl:3b).
     */
     'ollama' => [
         'base_url' => env('PAPER_READER_OLLAMA_URL', 'http://127.0.0.1:11434'),
-        'model' => env('PAPER_READER_OLLAMA_MODEL', 'qwen2.5vl:7b'),
+        'model' => env('PAPER_READER_OLLAMA_MODEL', 'qwen2.5vl:3b'),
         'num_ctx' => (int) env('PAPER_READER_OLLAMA_NUM_CTX', 16384),
     ],
 

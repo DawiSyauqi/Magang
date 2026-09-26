@@ -1,7 +1,19 @@
+import os
+import shutil
 import cv2
 import numpy as np
 from PIL import Image, ImageOps
 import pytesseract
+
+if not shutil.which("tesseract"):
+    for _p in [
+        r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+        r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+        os.path.expanduser(r"~\AppData\Local\Programs\Tesseract-OCR\tesseract.exe"),
+    ]:
+        if os.path.exists(_p):
+            pytesseract.pytesseract.tesseract_cmd = _p
+            break
 
 
 def imread_exif_safe(path):

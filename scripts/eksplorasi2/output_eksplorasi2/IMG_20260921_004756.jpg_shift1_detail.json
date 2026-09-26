@@ -1,0 +1,186 @@
+[
+  {
+    "block_idx": 0,
+    "response": {
+      "parsed": {
+        "jam_label": "07.00 - 08.00",
+        "kotak": [
+          "6a",
+          "5b",
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"07.00 - 08.00\",\n  \"kotak\": [\"6a\", \"5b\", null, null, null, null]\n}\n```",
+      "elapsed_sec": 6.187429428100586,
+      "validation": {
+        "n_kotak_returned": 6,
+        "n_kotak_ok": true
+      }
+    },
+    "manual_grade": true
+  },
+  {
+    "block_idx": 1,
+    "response": {
+      "parsed": {
+        "jam_label": "08.00 - 09.00",
+        "kotak": [
+          "x",
+          "x",
+          "x",
+          "x",
+          "x",
+          "x"
+        ]
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"08.00 - 09.00\",\n  \"kotak\": [\"x\", \"x\", \"x\", \"x\", \"x\", \"x\"]\n}\n```",
+      "elapsed_sec": 4.690847635269165,
+      "validation": {
+        "n_kotak_returned": 6,
+        "n_kotak_ok": true
+      }
+    },
+    "manual_grade": true
+  },
+  {
+    "block_idx": 2,
+    "response": {
+      "parsed": {
+        "jam_label": "09.00 - 10.00",
+        "kotak": [
+          "7a",
+          null,
+          "2a",
+          null,
+          null,
+          null
+        ]
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"09.00 - 10.00\",\n  \"kotak\": [\"7a\", null, \"2a\", null, null, null]\n}\n```",
+      "elapsed_sec": 4.772546291351318,
+      "validation": {
+        "n_kotak_returned": 6,
+        "n_kotak_ok": true
+      }
+    },
+    "manual_grade": true
+  },
+  {
+    "block_idx": 3,
+    "response": {
+      "parsed": {
+        "jam_label": "10.00 - 11.00",
+        "kotak": [
+          "2F",
+          null,
+          "3i",
+          null,
+          null,
+          null
+        ]
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"10.00 - 11.00\",\n  \"kotak\": [\"2F\", null, \"3i\", null, null, null]\n}\n```",
+      "elapsed_sec": 4.9275124073028564,
+      "validation": {
+        "n_kotak_returned": 6,
+        "n_kotak_ok": true
+      }
+    },
+    "manual_grade": true
+  },
+  {
+    "block_idx": 4,
+    "response": {
+      "parsed": {
+        "jam_label": "11.00 - 12.00",
+        "kotak": [
+          "3c",
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"11.00 - 12.00\",\n  \"kotak\": [\"3c\", null, null, null, null, null]\n}\n```",
+      "elapsed_sec": 4.523631572723389,
+      "validation": {
+        "n_kotak_returned": 6,
+        "n_kotak_ok": true
+      }
+    },
+    "manual_grade": true
+  },
+  {
+    "block_idx": 5,
+    "response": {
+      "parsed": {
+        "jam_label": "12.00 - 13.00",
+        "kotak": [
+          "x",
+          null,
+          "x",
+          null,
+          "x",
+          null
+        ]
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"12.00 - 13.00\",\n  \"kotak\": [\"x\", null, \"x\", null, \"x\", null]\n}\n```",
+      "elapsed_sec": 4.7694621086120605,
+      "validation": {
+        "n_kotak_returned": 6,
+        "n_kotak_ok": true
+      }
+    },
+    "manual_grade": true
+  },
+  {
+    "block_idx": 6,
+    "response": {
+      "parsed": {
+        "jam_label": "13.00 - 14.00",
+        "kotak": [
+          "x",
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"13.00 - 14.00\",\n  \"kotak\": [\"x\", null, null, null, null, null]\n}\n```",
+      "elapsed_sec": 4.631843328475952,
+      "validation": {
+        "n_kotak_returned": 6,
+        "n_kotak_ok": true
+      }
+    },
+    "manual_grade": true
+  },
+  {
+    "block_idx": 7,
+    "response": {
+      "parsed": {
+        "jam_label": "14.00 - 15.00",
+        "kotak": [
+          "x",
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"14.00 - 15.00\",\n  \"kotak\": [\"x\", null, null, null, null, null]\n}\n```",
+      "elapsed_sec": 5.371030807495117,
+      "validation": {
+        "n_kotak_returned": 6,
+        "n_kotak_ok": true
+      }
+    },
+    "manual_grade": true
+  }
+]

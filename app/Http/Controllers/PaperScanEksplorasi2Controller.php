@@ -59,9 +59,9 @@ class PaperScanEksplorasi2Controller extends Controller
         $env['SystemRoot'] = $env['SystemRoot'] ?? getenv('SystemRoot') ?: 'C:\\Windows';
         $env['SystemDrive'] = $env['SystemDrive'] ?? getenv('SystemDrive') ?: 'C:';
         $env['windir'] = $env['windir'] ?? getenv('windir') ?: 'C:\\Windows';
-        $env['PATH'] = $env['PATH'] ?? getenv('PATH') ?: '';
-        $userSite = 'C:\\Users\\User\\AppData\\Roaming\\Python\\Python314\\site-packages';
-        if (is_dir($userSite)) {
+        $appData = getenv('APPDATA') ?: (getenv('USERPROFILE') ? getenv('USERPROFILE').'\\AppData\\Roaming' : '');
+        $userSite = $appData ? $appData.'\\Python\\Python314\\site-packages' : '';
+        if ($userSite && is_dir($userSite)) {
             $existingPath = $env['PYTHONPATH'] ?? '';
             $env['PYTHONPATH'] = $existingPath ? $userSite.PATH_SEPARATOR.$existingPath : $userSite;
         }

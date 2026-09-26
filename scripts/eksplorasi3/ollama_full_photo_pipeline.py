@@ -61,17 +61,33 @@ def call_ollama(base_url, model, timeout, num_ctx, image_b64, prompt):
     if resp.status_code != 200:
         return {"error": f"HTTP {resp.status_code}: {resp.text[:300]}", "elapsed_sec": elapsed}
 
-    raw_text = resp.json()["message"]["content"]
+    raw_text = resp.json().get("message", {}).get("content", "")
     text = raw_text.strip()
-    if text.startswith("```"):
-        text = text.split("```")[1]
-        if text.startswith("json"):
-            text = text[4:]
-        text = text.strip()
-    try:
-        parsed = json.loads(text)
-    except json.JSONDecodeError:
-        return {"error": "JSON tidak valid", "raw_text": raw_text, "elapsed_sec": elapsed}
+    parsed = None
+    if "```" in text:
+        parts = text.split("```")
+        for part in parts[1:]:
+            cleaned = part.strip()
+            if cleaned.startswith("json"):
+                cleaned = cleaned[4:].strip()
+            try:
+                parsed = json.loads(cleaned)
+                break
+            except json.JSONDecodeError:
+                pass
+    if parsed is None:
+        import re
+        m = re.search(r"\{[\s\S]*\}", text)
+        if m:
+            try:
+                parsed = json.loads(m.group(0))
+            except json.JSONDecodeError:
+                pass
+    if parsed is None:
+        try:
+            parsed = json.loads(text)
+        except json.JSONDecodeError:
+            return {"error": "JSON tidak valid", "raw_text": raw_text, "elapsed_sec": elapsed}
 
     n_kotak = len(parsed.get("kotak", [])) if isinstance(parsed.get("kotak"), list) else None
     return {
@@ -84,7 +100,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--image", required=True)
     ap.add_argument("--shift", required=True, choices=["1", "2", "3"])
-    ap.add_argument("--model", default="qwen3-vl:8b")
+    ap.add_argument("--model", default="qwen2.5vl:3b")
     ap.add_argument("--ollama-url", default="http://127.0.0.1:11434")
     ap.add_argument("--timeout", type=int, default=120)
     ap.add_argument("--num-ctx", type=int, default=8192)
@@ -133,7 +149,14 @@ def main():
         print("ERROR:", traceback.format_exc())
         envelope = {"status": "error", "error": str(e), "error_type": type(e).__name__}
 
-    _stdout_print(json.dumps(envelope, ensure_ascii=False))
+    def _json_default(o):
+        if isinstance(o, (np.floating, float)):
+            return float(o)
+        if isinstance(o, (np.integer, int)):
+            return int(o)
+        return str(o)
+
+    _stdout_print(json.dumps(envelope, ensure_ascii=False, default=_json_default))
     return 0 if envelope["status"] != "error" else 1
 
 

@@ -146,7 +146,7 @@ def crop_grid_row_auto(full_page_image):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--image", required=True)
-    ap.add_argument("--model", default="qwen2.5vl:7b")
+    ap.add_argument("--model", default="qwen2.5vl:3b")
     ap.add_argument("--ollama-url", default="http://127.0.0.1:11434")
     ap.add_argument("--timeout", type=int, default=600)
     ap.add_argument("--num-ctx", type=int, default=16384)

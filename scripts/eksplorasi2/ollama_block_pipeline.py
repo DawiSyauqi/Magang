@@ -34,7 +34,15 @@ def print(*args, **kwargs):  # noqa: A001
 
 
 from crop_blocks import crop_jam_blocks  # noqa: E402
+from grid_overlay import draw_grid_overlay  # noqa: E402
 from prompt import BLOCK_PROMPT  # noqa: E402
+
+
+def dict_to_kotak_list(parsed):
+    """Konversi skema object {'kolom_1':..,'kolom_6':..} balik ke list 6
+    elemen berurutan -- dilakukan di Python (deterministik), BUKAN
+    dipercayakan ke urutan yang ditulis model."""
+    return [parsed.get(f"kolom_{i}") for i in range(1, 7)]
 
 
 def encode_b64_array(image):
@@ -64,22 +72,47 @@ def call_ollama(base_url, model, timeout, num_ctx, image, prompt):
     if resp.status_code != 200:
         return {"error": f"HTTP {resp.status_code}: {resp.text[:300]}", "elapsed_sec": elapsed}
 
-    raw_text = resp.json()["message"]["content"]
+    raw_text = resp.json().get("message", {}).get("content", "")
     text = raw_text.strip()
-    if text.startswith("```"):
-        text = text.split("```")[1]
-        if text.startswith("json"):
-            text = text[4:]
-        text = text.strip()
-    try:
-        parsed = json.loads(text)
-    except json.JSONDecodeError:
-        return {"error": "JSON tidak valid", "raw_text": raw_text, "elapsed_sec": elapsed}
+    parsed = None
+    if "```" in text:
+        parts = text.split("```")
+        for part in parts[1:]:
+            cleaned = part.strip()
+            if cleaned.startswith("json"):
+                cleaned = cleaned[4:].strip()
+            try:
+                parsed = json.loads(cleaned)
+                break
+            except json.JSONDecodeError:
+                pass
+    if parsed is None:
+        import re
+        m = re.search(r"\{[\s\S]*\}", text)
+        if m:
+            try:
+                parsed = json.loads(m.group(0))
+            except json.JSONDecodeError:
+                pass
+    if parsed is None:
+        try:
+            parsed = json.loads(text)
+        except json.JSONDecodeError:
+            return {"error": "JSON tidak valid", "raw_text": raw_text, "elapsed_sec": elapsed}
 
-    n_kotak = len(parsed.get("kotak", [])) if isinstance(parsed.get("kotak"), list) else None
+    kolom_keys = [f"kolom_{i}" for i in range(1, 7)]
+    n_kolom_present = sum(1 for k in kolom_keys if k in parsed)
+    kotak = dict_to_kotak_list(parsed)
+    n_x = sum(1 for v in kotak if v == "x")
     return {
         "parsed": parsed, "raw_text": raw_text, "elapsed_sec": elapsed,
-        "validation": {"n_kotak_returned": n_kotak, "n_kotak_ok": n_kotak == 6},
+        "kotak": kotak,
+        "validation": {
+            "n_kolom_present": n_kolom_present,
+            "n_kolom_ok": n_kolom_present == 6,
+            "n_x_in_block": n_x,
+            "x_count_suspicious": n_x > 1,
+        },
     }
 
 
@@ -99,7 +132,7 @@ def main():
     ap.add_argument("--shift", required=True, choices=["1", "2", "3"])
     ap.add_argument("--ref-dir", required=True,
                      help="Folder hasil calibrate_reference_cli.py (isi ref_template.npz + ref_anchors.json)")
-    ap.add_argument("--model", default="qwen3-vl:8b")
+    ap.add_argument("--model", default="qwen2.5vl:3b")
     ap.add_argument("--ollama-url", default="http://127.0.0.1:11434")
     ap.add_argument("--timeout", type=int, default=120)
     ap.add_argument("--num-ctx", type=int, default=8192)
@@ -124,20 +157,29 @@ def main():
             _stdout_print(json.dumps(envelope, ensure_ascii=False))
             return 0
 
+        # BARU: gambar overlay garis bantu di tiap crop, SEBELUM dikirim ke
+        # Ollama -- posisi garis dihitung dari geometri asli (det["image_shape"]
+        # + det["block_crops_meta"]), bukan dibagi rata dari tepi crop.
+        img_h, img_w = det["image_shape"]
+        crops = [
+            draw_grid_overlay(crop, meta, img_h, img_w)
+            for crop, meta in zip(crops, det["block_crops_meta"])
+        ]
+
         print(f"Geometri OK (confidence={det.get('confidence')}), memanggil Ollama utk 8 blok...")
         blocks_result = []
         labels = ROW_BLOCK_LABELS[args.shift]
         for i, crop in enumerate(crops):
             print(f"  blok {i} ({labels[i]}) -- memanggil Ollama...")
             res = call_ollama(args.ollama_url, args.model, args.timeout, args.num_ctx, crop, BLOCK_PROMPT)
-            res["crop_image_b64"] = encode_b64_array(crop)
+            res["crop_image_b64"] = encode_b64_array(crop)  # sekarang otomatis versi ber-overlay
             res["expected_jam_label"] = labels[i]
             res["block_idx"] = i
             blocks_result.append(res)
             print(f"    -> {res.get('parsed', res.get('error'))}")
 
 
-        n_ok = sum(1 for r in blocks_result if r.get("validation", {}).get("n_kotak_ok"))
+        n_ok = sum(1 for r in blocks_result if r.get("validation", {}).get("n_kolom_ok"))
         envelope = {
             "status": "success",
             "data": {"shift": args.shift, "blocks": blocks_result},
@@ -153,7 +195,14 @@ def main():
         print("ERROR:", traceback.format_exc())
         envelope = {"status": "error", "error": str(e), "error_type": type(e).__name__}
 
-    _stdout_print(json.dumps(envelope, ensure_ascii=False))
+    def _json_default(o):
+        if isinstance(o, (np.floating, float)):
+            return float(o)
+        if isinstance(o, (np.integer, int)):
+            return int(o)
+        return str(o)
+
+    _stdout_print(json.dumps(envelope, ensure_ascii=False, default=_json_default))
     return 0 if envelope["status"] != "error" else 1
 
 

@@ -1,0 +1,4 @@
+timestamp,image,shift,model,geometry_confidence,n_blocks_struktur_ok,n_blocks_manual_correct,n_blocks_manual_graded,elapsed_total_sec
+2026-09-20T22:06:09,IMG_20260902_141217.jpg.jpeg,1,qwen3vl:8b,medium,0,8,8,4353.7
+2026-09-20T23:16:23,IMG_20260902_141217.jpg.jpeg,1,qwen2.5vl:3b,medium,7,8,8,231.9
+2026-09-21T01:38:24,IMG_20260921_004756.jpg.jpeg,1,qwen2.5vl:3b,high,8,8,8,92.9
