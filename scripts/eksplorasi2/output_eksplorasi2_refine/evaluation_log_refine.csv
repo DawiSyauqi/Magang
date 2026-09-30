@@ -1,0 +1,11 @@
+timestamp,image,shift,model,geometry_confidence,refined,refine_quality,ink_gate,ink_hint,overlay,prompt,n_blocks_struktur_ok,n_blocks_skipped_empty,n_blocks_manual_correct,n_blocks_manual_graded,elapsed_total_sec
+2026-09-29T05:46:09,IMG_20260901_134505.jpg.jpeg,1,qwen2.5vl:3b,high,True,good,True,True,True,refine,8,0,0,0,93.7
+2026-09-29T05:47:37,IMG_20260901_134510.jpg.jpeg,1,qwen2.5vl:3b,high,True,good,True,True,True,refine,8,0,0,0,87.1
+2026-09-29T05:48:49,IMG_20260901_134514.jpg.jpeg,1,qwen2.5vl:3b,high,True,good,True,True,True,refine,8,0,0,0,72.0
+2026-09-29T05:50:05,IMG_20260901_134520.jpg.jpeg,1,qwen2.5vl:3b,high,True,good,True,True,True,refine,8,0,0,0,75.0
+2026-09-29T05:51:18,IMG_20260901_134523.jpg.jpeg,1,qwen2.5vl:3b,high,True,good,True,True,True,refine,8,0,0,0,72.2
+2026-09-29T05:52:09,IMG_20260902_141208.jpg.jpeg,1,qwen2.5vl:3b,medium,True,good,True,True,True,refine,8,3,0,0,49.9
+2026-09-29T05:53:01,IMG_20260902_141212.jpg.jpeg,1,qwen2.5vl:3b,medium,True,good,True,True,True,refine,8,3,0,0,51.3
+2026-09-29T05:53:53,IMG_20260902_141217.jpg.jpeg,1,qwen2.5vl:3b,medium,True,good,True,True,True,refine,8,3,0,0,51.6
+2026-09-29T05:54:43,IMG_20260902_141223.jpg.jpeg,1,qwen2.5vl:3b,high,True,good,True,True,True,refine,8,3,0,0,48.9
+2026-09-29T05:55:45,IMG_20260921_004756.jpg.jpeg,1,qwen2.5vl:3b,high,True,good,True,True,True,refine,8,3,0,0,46.7

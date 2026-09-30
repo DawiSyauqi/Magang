@@ -1,0 +1,426 @@
+[
+  {
+    "block_idx": 0,
+    "response": {
+      "parsed": {
+        "jam_label": "07.00 - 08.00",
+        "kolom_1": "41",
+        "kolom_2": "7b",
+        "kolom_3": "1a",
+        "kolom_4": "1b",
+        "kolom_5": "1c",
+        "kolom_6": "12"
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"07.00 - 08.00\",\n  \"kolom_1\": \"41\",\n  \"kolom_2\": \"7b\",\n  \"kolom_3\": \"1a\",\n  \"kolom_4\": \"1b\",\n  \"kolom_5\": \"1c\",\n  \"kolom_6\": \"12\"\n}\n```",
+      "elapsed_sec": 7.465965509414673,
+      "skipped_ollama": false,
+      "cell_ink": [
+        0.22569444444444445,
+        0.3359375,
+        0.19835069444444445,
+        0.20833333333333334,
+        0.1527777777777778,
+        0.18359375
+      ],
+      "cell_filled": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ink_gate": {
+        "overridden": [],
+        "ink_but_null": []
+      },
+      "kotak": [
+        "41",
+        "7b",
+        "1a",
+        "1b",
+        "1c",
+        "12"
+      ],
+      "validation": {
+        "n_kolom_present": 6,
+        "n_kolom_ok": true,
+        "n_x_in_block": 0,
+        "x_count_suspicious": false,
+        "unreadable_kolom": []
+      }
+    },
+    "manual_grade": null
+  },
+  {
+    "block_idx": 1,
+    "response": {
+      "parsed": {
+        "jam_label": "08.00 - 09.00",
+        "kolom_1": "0",
+        "kolom_2": "0",
+        "kolom_3": "0",
+        "kolom_4": "0",
+        "kolom_5": "0",
+        "kolom_6": "0"
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"08.00 - 09.00\",\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"0\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"0\"\n}\n```",
+      "elapsed_sec": 8.169066667556763,
+      "skipped_ollama": false,
+      "cell_ink": [
+        0.1558159722222222,
+        0.1015625,
+        0.13151041666666666,
+        0.5334201388888888,
+        0.13585069444444445,
+        0.1015625
+      ],
+      "cell_filled": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ink_gate": {
+        "overridden": [],
+        "ink_but_null": []
+      },
+      "kotak": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "validation": {
+        "n_kolom_present": 6,
+        "n_kolom_ok": true,
+        "n_x_in_block": 0,
+        "x_count_suspicious": false,
+        "unreadable_kolom": []
+      }
+    },
+    "manual_grade": null
+  },
+  {
+    "block_idx": 2,
+    "response": {
+      "parsed": {
+        "jam_label": "09.00 - 10.00",
+        "kolom_1": "2a",
+        "kolom_2": "2b",
+        "kolom_3": "2c",
+        "kolom_4": "2d",
+        "kolom_5": "2e",
+        "kolom_6": "2f"
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"09.00 - 10.00\",\n  \"kolom_1\": \"2a\",\n  \"kolom_2\": \"2b\",\n  \"kolom_3\": \"2c\",\n  \"kolom_4\": \"2d\",\n  \"kolom_5\": \"2e\",\n  \"kolom_6\": \"2f\"\n}\n```",
+      "elapsed_sec": 8.539626359939575,
+      "skipped_ollama": false,
+      "cell_ink": [
+        0.2065972222222222,
+        0.1909722222222222,
+        0.17274305555555555,
+        0.19661458333333334,
+        0.19053819444444445,
+        0.1566840277777778
+      ],
+      "cell_filled": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ink_gate": {
+        "overridden": [],
+        "ink_but_null": []
+      },
+      "kotak": [
+        "2a",
+        "2b",
+        "2c",
+        "2d",
+        "2e",
+        "2f"
+      ],
+      "validation": {
+        "n_kolom_present": 6,
+        "n_kolom_ok": true,
+        "n_x_in_block": 0,
+        "x_count_suspicious": false,
+        "unreadable_kolom": []
+      }
+    },
+    "manual_grade": null
+  },
+  {
+    "block_idx": 3,
+    "response": {
+      "parsed": {
+        "jam_label": "10.00 - 11.00",
+        "kolom_1": "3a",
+        "kolom_2": "3b",
+        "kolom_3": "3c",
+        "kolom_4": "3d",
+        "kolom_5": "3e",
+        "kolom_6": "0"
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"10.00 - 11.00\",\n  \"kolom_1\": \"3a\",\n  \"kolom_2\": \"3b\",\n  \"kolom_3\": \"3c\",\n  \"kolom_4\": \"3d\",\n  \"kolom_5\": \"3e\",\n  \"kolom_6\": \"0\"\n}\n```",
+      "elapsed_sec": 8.469048976898193,
+      "skipped_ollama": false,
+      "cell_ink": [
+        0.21744791666666666,
+        0.20572916666666666,
+        0.15711805555555555,
+        0.22352430555555555,
+        0.18446180555555555,
+        0.08723958333333333
+      ],
+      "cell_filled": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ink_gate": {
+        "overridden": [],
+        "ink_but_null": []
+      },
+      "kotak": [
+        "3a",
+        "3b",
+        "3c",
+        "3d",
+        "3e",
+        "0"
+      ],
+      "validation": {
+        "n_kolom_present": 6,
+        "n_kolom_ok": true,
+        "n_x_in_block": 0,
+        "x_count_suspicious": false,
+        "unreadable_kolom": []
+      }
+    },
+    "manual_grade": null
+  },
+  {
+    "block_idx": 4,
+    "response": {
+      "parsed": {
+        "jam_label": "11.00 - 12.00",
+        "kolom_1": "0",
+        "kolom_2": "0",
+        "kolom_3": "0",
+        "kolom_4": "0",
+        "kolom_5": "0",
+        "kolom_6": "0"
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"11.00 - 12.00\",\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"0\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"0\"\n}\n```",
+      "elapsed_sec": 8.299309492111206,
+      "skipped_ollama": false,
+      "cell_ink": [
+        0.11284722222222222,
+        0.1254340277777778,
+        0.11371527777777778,
+        0.12196180555555555,
+        0.14713541666666666,
+        0.1284722222222222
+      ],
+      "cell_filled": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ink_gate": {
+        "overridden": [],
+        "ink_but_null": []
+      },
+      "kotak": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "validation": {
+        "n_kolom_present": 6,
+        "n_kolom_ok": true,
+        "n_x_in_block": 0,
+        "x_count_suspicious": false,
+        "unreadable_kolom": []
+      }
+    },
+    "manual_grade": null
+  },
+  {
+    "block_idx": 5,
+    "response": {
+      "parsed": {
+        "jam_label": "12.00 - 13.00",
+        "kolom_1": "0",
+        "kolom_2": "0",
+        "kolom_3": "0",
+        "kolom_4": "0",
+        "kolom_5": "0",
+        "kolom_6": "0"
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"12.00 - 13.00\",\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"0\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"0\"\n}\n```",
+      "elapsed_sec": 8.044255018234253,
+      "skipped_ollama": false,
+      "cell_ink": [
+        0.12022569444444445,
+        0.12456597222222222,
+        0.11675347222222222,
+        0.12413194444444445,
+        0.12586805555555555,
+        0.11241319444444445
+      ],
+      "cell_filled": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ink_gate": {
+        "overridden": [],
+        "ink_but_null": []
+      },
+      "kotak": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "validation": {
+        "n_kolom_present": 6,
+        "n_kolom_ok": true,
+        "n_x_in_block": 0,
+        "x_count_suspicious": false,
+        "unreadable_kolom": []
+      }
+    },
+    "manual_grade": null
+  },
+  {
+    "block_idx": 6,
+    "response": {
+      "parsed": {
+        "jam_label": "13.00 - 14.00",
+        "kolom_1": "0",
+        "kolom_2": "0",
+        "kolom_3": "0",
+        "kolom_4": "0",
+        "kolom_5": "0",
+        "kolom_6": "0"
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"13.00 - 14.00\",\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"0\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"0\"\n}\n```",
+      "elapsed_sec": 8.180988550186157,
+      "skipped_ollama": false,
+      "cell_ink": [
+        0.14583333333333334,
+        0.1440972222222222,
+        0.1410590277777778,
+        0.13541666666666666,
+        0.13758680555555555,
+        0.1462673611111111
+      ],
+      "cell_filled": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ink_gate": {
+        "overridden": [],
+        "ink_but_null": []
+      },
+      "kotak": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "validation": {
+        "n_kolom_present": 6,
+        "n_kolom_ok": true,
+        "n_x_in_block": 0,
+        "x_count_suspicious": false,
+        "unreadable_kolom": []
+      }
+    },
+    "manual_grade": null
+  },
+  {
+    "block_idx": 7,
+    "response": {
+      "parsed": {
+        "jam_label": "14.00 - 15.00",
+        "kolom_1": "0",
+        "kolom_2": "0",
+        "kolom_3": "0",
+        "kolom_4": "0",
+        "kolom_5": "0",
+        "kolom_6": "1a"
+      },
+      "raw_text": "```json\n{\n  \"jam_label\": \"14.00 - 15.00\",\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"0\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"1a\"\n}\n```",
+      "elapsed_sec": 8.185365200042725,
+      "skipped_ollama": false,
+      "cell_ink": [
+        0.11414930555555555,
+        0.12413194444444445,
+        0.1362847222222222,
+        0.1150173611111111,
+        0.125,
+        0.18359375
+      ],
+      "cell_filled": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ink_gate": {
+        "overridden": [],
+        "ink_but_null": []
+      },
+      "kotak": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1a"
+      ],
+      "validation": {
+        "n_kolom_present": 6,
+        "n_kolom_ok": true,
+        "n_x_in_block": 0,
+        "x_count_suspicious": false,
+        "unreadable_kolom": []
+      }
+    },
+    "manual_grade": null
+  }
+]

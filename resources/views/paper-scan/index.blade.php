@@ -28,6 +28,18 @@
     :root[data-theme="dark"] .ir-btn-primary:hover {
         background-color: var(--n-200); border-color: var(--n-200); color: var(--n-900);
     }
+    .ir-btn-secondary {
+        background-color: var(--surface); border: 1.5px solid var(--border);
+        border-radius: 999px; color: var(--text); font-weight: 600;
+        transition: background-color .15s ease, border-color .15s ease, transform .15s ease;
+    }
+    .ir-btn-secondary:hover:not(:disabled) { 
+        background-color: var(--surface-alt); border-color: var(--text-muted); 
+        color: var(--text);
+    }
+    .ir-btn-secondary:disabled {
+        opacity: 0.45; cursor: not-allowed;
+    }
     .ir-badge { border-radius: 999px; padding: .3rem .7rem; font-size: .75rem; font-weight: 600; }
     .ir-badge-review { background-color: rgba(245, 158, 11, 0.12); color: var(--warning); }
     .ir-badge-ok { background-color: rgba(34, 197, 94, 0.12); color: var(--success); }
@@ -76,10 +88,16 @@
             </div>
             <div class="card-body">
                 <div class="text-center mb-3">
-                    <button type="button" id="btn-open-camera-s1" class="btn ir-btn-primary">
-                        📷 Ambil Foto (Header + Speed/Size)
-                    </button>
+                    <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap mb-2">
+                        <button type="button" id="btn-open-camera-s1" class="btn ir-btn-primary">
+                            📷 Ambil Foto (Header + Speed/Size)
+                        </button>
+                        <button type="button" id="btn-pick-file-s1" class="btn ir-btn-secondary">
+                            📁 Ambil File
+                        </button>
+                    </div>
                     <input type="file" id="photoInputS1" accept="image/*" capture="environment" class="d-none">
+                    <input type="file" id="fileInputS1" accept="image/*" class="d-none">
                     <div id="section1-loading" class="d-none mt-2">
                         <div class="spinner-border spinner-border-sm" style="color: var(--ir-accent);"></div>
                         Menganalisa...
@@ -138,11 +156,17 @@
             </div>
             <div class="card-body">
                 <div class="text-center mb-3">
-                    <button type="button" id="btn-open-camera-s2" class="btn ir-btn-primary" disabled>
-                        📷 Ambil Foto Grid Downtime
-                    </button>
+                    <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap mb-2">
+                        <button type="button" id="btn-open-camera-s2" class="btn ir-btn-primary" disabled>
+                            📷 Ambil Foto Grid Downtime
+                        </button>
+                        <button type="button" id="btn-pick-file-s2" class="btn ir-btn-secondary" disabled>
+                            📁 Ambil File
+                        </button>
+                    </div>
                     <p id="section2-lock-note" class="small text-muted mt-1">Isi Shift dulu di Section 1 sebelum ambil foto grid.</p>
                     <input type="file" id="photoInputS2" accept="image/*" capture="environment" class="d-none">
+                    <input type="file" id="fileInputS2" accept="image/*" class="d-none">
                     <div id="section2-loading" class="d-none mt-2">
                         <div class="spinner-border spinner-border-sm" style="color: var(--ir-accent);"></div>
                         Menganalisa...
@@ -367,6 +391,8 @@
 
     el('btn-open-camera-s1').addEventListener('click', () => openCameraFor('s1'));
     el('btn-open-camera-s2').addEventListener('click', () => openCameraFor('s2'));
+    el('btn-pick-file-s1').addEventListener('click', () => el('fileInputS1').click());
+    el('btn-pick-file-s2').addEventListener('click', () => el('fileInputS2').click());
 
     function openCameraFor(target) {
         cameraCaptureTarget = target;
@@ -551,9 +577,17 @@
         const f = el('photoInputS1').files[0];
         if (f) { submitSection1(f); el('photoInputS1').value = ''; }
     });
+    el('fileInputS1').addEventListener('change', () => {
+        const f = el('fileInputS1').files[0];
+        if (f) { submitSection1(f); el('fileInputS1').value = ''; }
+    });
     el('photoInputS2').addEventListener('change', () => {
         const f = el('photoInputS2').files[0];
         if (f) { showRectCropUI(f); el('photoInputS2').value = ''; }
+    });
+    el('fileInputS2').addEventListener('change', () => {
+        const f = el('fileInputS2').files[0];
+        if (f) { showRectCropUI(f); el('fileInputS2').value = ''; }
     });
 
     async function submitSection1(file) {
@@ -629,6 +663,7 @@
     function updateSection2LockState() {
         const hasShift = !!el('shiftSelectManual').value;
         el('btn-open-camera-s2').disabled = !hasShift;
+        el('btn-pick-file-s2').disabled = !hasShift;
         el('section2-lock-note').classList.toggle('d-none', hasShift);
     }
 
