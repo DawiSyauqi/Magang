@@ -1,0 +1,229 @@
+{
+ "status": "success",
+ "data": {
+  "shift": "1",
+  "blocks": [
+   {
+    "block_idx": 0,
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     "6a",
+     "1b"
+    ],
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.2743055555555556,
+     0.3055555555555556
+    ],
+    "calls": [
+     {
+      "kolom": 5,
+      "raw_text": "{\"kode\": \"6a\"}",
+      "elapsed_sec": 9.680269002914429
+     },
+     {
+      "kolom": 6,
+      "raw_text": "{\"kode\": \"1b\"}",
+      "elapsed_sec": 3.1469533443450928
+     }
+    ],
+    "expected_jam_label": "07.00 - 08.00"
+   },
+   {
+    "block_idx": 1,
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "calls": [],
+    "expected_jam_label": "08.00 - 09.00"
+   },
+   {
+    "block_idx": 2,
+    "kotak": [
+     null,
+     "1a",
+     null,
+     "2q",
+     null,
+     null
+    ],
+    "cell_ink": [
+     0.0,
+     0.3385416666666667,
+     0.0,
+     0.17578125,
+     0.0,
+     0.0
+    ],
+    "calls": [
+     {
+      "kolom": 2,
+      "raw_text": "{\"kode\": \"1a\"}",
+      "elapsed_sec": 3.1136133670806885
+     },
+     {
+      "kolom": 4,
+      "raw_text": "{\"kode\": \"2q\"}",
+      "elapsed_sec": 3.0595650672912598
+     }
+    ],
+    "expected_jam_label": "09.00 - 10.00"
+   },
+   {
+    "block_idx": 3,
+    "kotak": [
+     null,
+     "2F",
+     null,
+     null,
+     "3i",
+     null
+    ],
+    "cell_ink": [
+     0.0,
+     0.19270833333333334,
+     0.0,
+     0.0,
+     0.1423611111111111,
+     0.0
+    ],
+    "calls": [
+     {
+      "kolom": 2,
+      "raw_text": "{\"kode\": \"2F\"}",
+      "elapsed_sec": 3.040724754333496
+     },
+     {
+      "kolom": 5,
+      "raw_text": "{\"kode\": \"3i\"}",
+      "elapsed_sec": 3.0824179649353027
+     }
+    ],
+    "expected_jam_label": "10.00 - 11.00"
+   },
+   {
+    "block_idx": 4,
+    "kotak": [
+     null,
+     "3c",
+     null,
+     null,
+     null,
+     null
+    ],
+    "cell_ink": [
+     0.0,
+     0.1818576388888889,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "calls": [
+     {
+      "kolom": 2,
+      "raw_text": "{\"kode\": \"3c\"}",
+      "elapsed_sec": 3.1069672107696533
+     }
+    ],
+    "expected_jam_label": "11.00 - 12.00"
+   },
+   {
+    "block_idx": 5,
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "calls": [],
+    "expected_jam_label": "12.00 - 13.00"
+   },
+   {
+    "block_idx": 6,
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "calls": [],
+    "expected_jam_label": "13.00 - 14.00"
+   },
+   {
+    "block_idx": 7,
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     "?"
+    ],
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.07769097222222222
+    ],
+    "calls": [
+     {
+      "kolom": 6,
+      "raw_text": "{\"kode\": \"?\"}",
+      "elapsed_sec": 3.232905387878418
+     }
+    ],
+    "expected_jam_label": "14.00 - 15.00"
+   }
+  ]
+ },
+ "meta": {
+  "geometry_path": "fast",
+  "refine_quality": "good",
+  "geometry_seconds": 1.4,
+  "n_ollama_calls": 8,
+  "ollama_seconds": 31.46341609954834,
+  "elapsed_seconds": 32.9
+ }
+}

@@ -199,6 +199,38 @@ def read_block(args, crop, meta, label, ink_gate=True, ink_hint=True):
         todo = [i for i, v in enumerate(res["kotak"]) if filled[i] and v in ("?", None)]
         if todo:
             res = retry_cells(args, crop, res, todo)
+
+    # tanya ulang "x": menurut aturan form, "x" (penanda akhir rentang) sangat
+    # jarang -- >1 "x" dlm 1 blok hampir pasti salah baca (mis. blok berisi "0")
+    if (args.prompt != "lama" and not getattr(args, "no_x_retry", False)
+            and res.get("validation", {}).get("x_count_suspicious")):
+        res = retry_x(args, meta.get("clean_crop", crop), res, label, filled)
+    return res
+
+
+def retry_x(args, clean_crop, res, label, filled):
+    """Blok dgn >1 "x" dibaca ulang memakai crop POLOS (tanpa garis bantu).
+    Eksperimen: blok berisi enam "0" yg terbaca "x"/"?" dgn overlay, terbaca
+    benar dgn crop polos. Hanya kotak yg tadinya "x" yg boleh berubah."""
+    todo = [i for i, v in enumerate(res["kotak"]) if v == "x"]
+    user_msg = build_user_message_refine(filled, label)
+    r = call_ollama(args.ollama_url, args.model, args.timeout, args.num_ctx,
+                    clean_crop, BLOCK_PROMPT_REFINE, user_msg)
+    before = list(res["kotak"])
+    parsed = r.get("parsed") or {}
+    for i in todo:
+        v = parsed.get(f"kolom_{i + 1}")
+        if isinstance(v, (int, float)):
+            v = str(v)
+        if isinstance(v, str) and v.strip() and v.strip() not in (PLACEHOLDER, "?"):
+            res["kotak"][i] = v.strip()
+    res["x_retry"] = {"kolom": [i + 1 for i in todo], "sebelum": [before[i] for i in todo],
+                      "sesudah": [res["kotak"][i] for i in todo], "raw_text": r.get("raw_text"),
+                      "error": r.get("error"), "elapsed_sec": r.get("elapsed_sec")}
+    res["elapsed_sec"] = (res.get("elapsed_sec") or 0) + (r.get("elapsed_sec") or 0)
+    n_x = sum(1 for v in res["kotak"] if v == "x")
+    res["validation"]["n_x_in_block"] = n_x
+    res["validation"]["x_count_suspicious"] = n_x > 1
     return res
 
 
@@ -251,6 +283,8 @@ def add_common_args(ap):
                      help="Jangan beri tahu model kolom mana yg berisi coretan.")
     ap.add_argument("--no-overlay", action="store_true",
                      help="Kirim crop polos tanpa garis bantu merah/cyan.")
+    ap.add_argument("--no-x-retry", action="store_true",
+                     help="Jangan tanya ulang blok yg berisi >1 'x'.")
     ap.add_argument("--prompt", choices=["refine", "lama"], default="refine",
                      help="refine = prompt_refine_eksplorasi.py (default), lama = prompt.py.")
 
@@ -267,6 +301,7 @@ def main():
         kp_pts, des, ref_w, ref_h, anchors = load_reference(args.ref_dir)
         det, crops = crop_jam_blocks_refined(args.image, args.shift, kp_pts, des, ref_w, ref_h, anchors,
                                              with_overlay=not args.no_overlay)
+        t_geo = time.time() - t0
         if crops is None:
             envelope = {
                 "status": det["status"],
@@ -292,9 +327,15 @@ def main():
         refine = det.get("refine", {})
         n_ok = sum(1 for r in blocks_result if r.get("validation", {}).get("n_kolom_ok"))
         envelope = {
-            "status": "success",
+            "status": det["status"],
             "data": {"shift": args.shift, "blocks": blocks_result},
             "meta": {
+                "geometry_path": det.get("path"),
+                "geometry_seconds": round(t_geo, 2),
+                "n_ollama_calls": sum((0 if r.get("skipped_ollama") else 1) + (1 if "retry" in r else 0)
+                                      + (1 if "x_retry" in r else 0) for r in blocks_result),
+                "n_x_retry": sum(1 for r in blocks_result if "x_retry" in r),
+                "ollama_seconds": sum(r.get("elapsed_sec") or 0 for r in blocks_result),
                 "detection_confidence": det.get("confidence"),
                 "refined": det.get("refined"),
                 "refine_quality": refine.get("quality") or refine.get("reason"),

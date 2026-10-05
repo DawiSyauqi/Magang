@@ -1,0 +1,22 @@
+Memanaskan model qwen2.5vl:3b ...
+[IMG_20260901_134505 shift1] E2 per-blok ... success 74.4s benar=40/47
+[IMG_20260901_134505 shift2] E2 per-blok ... success 10.2s benar=48/48
+[IMG_20260901_134510 shift1] E2 per-blok ... success 79.8s benar=38/47
+[IMG_20260901_134510 shift2] E2 per-blok ... success 10.3s benar=48/48
+[IMG_20260901_134514 shift1] E2 per-blok ... success 70.9s benar=42/47
+[IMG_20260901_134514 shift2] E2 per-blok ... success 10.2s benar=48/48
+[IMG_20260901_134520 shift1] E2 per-blok ... success 67.4s benar=43/47
+[IMG_20260901_134520 shift2] E2 per-blok ... success 10.5s benar=48/48
+[IMG_20260901_134523 shift1] E2 per-blok ... success 75.4s benar=43/47
+[IMG_20260901_134523 shift2] E2 per-blok ... success 10.4s benar=48/48
+[IMG_20260902_141208 shift1] E2 per-blok ... success 40.9s benar=48/48
+[IMG_20260902_141208 shift2] E2 per-blok ... success 2.3s benar=48/48
+[IMG_20260902_141212 shift1] E2 per-blok ... success 42.4s benar=47/48
+[IMG_20260902_141212 shift2] E2 per-blok ... success 2.3s benar=48/48
+[IMG_20260902_141217 shift1] E2 per-blok ... success 44.9s benar=46/48
+[IMG_20260902_141217 shift2] E2 per-blok ... success 2.9s benar=48/48
+[IMG_20260902_141223 shift1] E2 per-blok ... success 44.2s benar=46/48
+[IMG_20260902_141223 shift2] E2 per-blok ... success 2.3s benar=48/48
+[IMG_20260902_141238 shift1] E2 per-blok ... needs_manual_review 62.6s benar=41/48
+[IMG_20260902_141238 shift2] E2 per-blok ... needs_manual_review 2.4s benar=48/48
+[IMG_20260902_141316 shift1] E2 per-blok ... 

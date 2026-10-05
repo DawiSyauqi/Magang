@@ -20,6 +20,52 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'store']);
 });
 
+// Route Preview Halaman Administrasi Alias Mesin (Tanpa Login, untuk kebutuhan dokumentasi/screenshot laporan)
+Route::get('/preview/mesin-aliases', function () {
+    $sampleAliases = collect([
+        ['raw_key' => 'D16', 'resrceno' => 'DD16', 'confirmed_at' => '2026-08-05 10:15:22'],
+        ['raw_key' => 'AN1', 'resrceno' => 'AN01', 'confirmed_at' => '2026-08-05 11:04:10'],
+        ['raw_key' => 'ML', 'resrceno' => 'ML01', 'confirmed_at' => '2026-08-06 08:30:45'],
+        ['raw_key' => 'WD4', 'resrceno' => 'WD04', 'confirmed_at' => '2026-08-06 14:12:00'],
+    ]);
+
+    $sampleMachines = [
+        ['resrceno' => 'DD16', 'desc' => 'DRAWING MACHINE 16'],
+        ['resrceno' => 'DD15', 'desc' => 'DRAWING MACHINE 15'],
+        ['resrceno' => 'AN01', 'desc' => 'ANNEALING MACHINE 01'],
+        ['resrceno' => 'ML01', 'desc' => 'MILLING LINE 01'],
+        ['resrceno' => 'WD04', 'desc' => 'WIRE DRAWING 04'],
+    ];
+
+    try {
+        $aliases = collect(app(\App\Services\PaperExtraction\MesinAliasStore::class)->getAll())
+            ->map(fn ($data, $rawKey) => [
+                'raw_key' => $rawKey,
+                'resrceno' => $data['resrceno'],
+                'confirmed_at' => $data['confirmed_at'],
+            ])
+            ->sortByDesc('confirmed_at')
+            ->values();
+
+        $mesinOptions = (new \App\Services\PaperExtraction\Repositories\EloquentMesinCandidateProvider())->all();
+
+        if ($aliases->isEmpty()) {
+            $aliases = $sampleAliases;
+        }
+        if (empty($mesinOptions)) {
+            $mesinOptions = $sampleMachines;
+        }
+    } catch (\Throwable $e) {
+        $aliases = $sampleAliases;
+        $mesinOptions = $sampleMachines;
+    }
+
+    return view('admin.mesin-aliases.index', [
+        'aliases' => $aliases,
+        'mesinOptions' => $mesinOptions,
+    ]);
+})->name('preview.mesin-aliases');
+
 Route::middleware(['auth', 'menu.access'])->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 

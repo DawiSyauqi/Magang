@@ -1,0 +1,56 @@
+Memanaskan model qwen2.5vl:3b ...
+[IMG_20260901_134505 shift1] E2 per-blok ... success 90.7s benar=31/47
+[IMG_20260901_134505 shift2] E2 per-blok ... success 10.7s benar=48/48
+[IMG_20260901_134510 shift1] E2 per-blok ... success 86.3s benar=45/47
+[IMG_20260901_134510 shift2] E2 per-blok ... success 10.5s benar=48/48
+[IMG_20260901_134514 shift1] E2 per-blok ... success 76.1s benar=39/47
+[IMG_20260901_134514 shift2] E2 per-blok ... success 10.5s benar=48/48
+[IMG_20260901_134520 shift1] E2 per-blok ... success 79.2s benar=44/47
+[IMG_20260901_134520 shift2] E2 per-blok ... success 11.3s benar=48/48
+[IMG_20260901_134523 shift1] E2 per-blok ... success 76.3s benar=45/47
+[IMG_20260901_134523 shift2] E2 per-blok ... success 10.6s benar=48/48
+[IMG_20260902_141208 shift1] E2 per-blok ... success 43.5s benar=48/48
+[IMG_20260902_141208 shift2] E2 per-blok ... success 2.4s benar=48/48
+[IMG_20260902_141212 shift1] E2 per-blok ... success 42.6s benar=48/48
+[IMG_20260902_141212 shift2] E2 per-blok ... success 2.3s benar=48/48
+[IMG_20260902_141217 shift1] E2 per-blok ... success 42.9s benar=48/48
+[IMG_20260902_141217 shift2] E2 per-blok ... success 2.5s benar=48/48
+[IMG_20260902_141223 shift1] E2 per-blok ... success 44.0s benar=48/48
+[IMG_20260902_141223 shift2] E2 per-blok ... success 2.4s benar=48/48
+[IMG_20260902_141238 shift1] E2 per-blok ... needs_manual_review 73.4s benar=41/48
+[IMG_20260902_141238 shift2] E2 per-blok ... needs_manual_review 2.4s benar=48/48
+[IMG_20260902_141316 shift1] E2 per-blok ... success 42.3s benar=48/48
+[IMG_20260902_141316 shift2] E2 per-blok ... success 2.3s benar=48/48
+[IMG_20260921_004756 shift1] E2 per-blok ... success 42.5s benar=48/48
+[IMG_20260921_004756 shift2] E2 per-blok ... success 2.4s benar=48/48
+
+============================================================================================
+foto                   sh | E1 total   geo  ollama call   benar | E2 total   geo  ollama call   benar
+IMG_20260901_134505     1 |        -                            |     90.7   1.9    88.0   12   31/47
+IMG_20260901_134505     2 |        -                            |     10.7   1.9     7.9    1   48/48
+IMG_20260901_134510     1 |        -                            |     86.3   1.7    83.9   11   45/47
+IMG_20260901_134510     2 |        -                            |     10.5   1.5     8.3    1   48/48
+IMG_20260901_134514     1 |        -                            |     76.1   1.8    73.6   10   39/47
+IMG_20260901_134514     2 |        -                            |     10.5   1.8     8.0    1   48/48
+IMG_20260901_134520     1 |        -                            |     79.2   2.1    76.4   11   44/47
+IMG_20260901_134520     2 |        -                            |     11.3   2.2     8.2    1   48/48
+IMG_20260901_134523     1 |        -                            |     76.3   2.6    72.7   10   45/47
+IMG_20260901_134523     2 |        -                            |     10.6   2.0     7.8    1   48/48
+IMG_20260902_141208     1 |        -                            |     43.5   1.6    41.1    7   48/48
+IMG_20260902_141208     2 |        -                            |      2.4   1.6     0.0    0   48/48
+IMG_20260902_141212     1 |        -                            |     42.6   1.5    40.5    6   48/48
+IMG_20260902_141212     2 |        -                            |      2.3   1.6     0.0    0   48/48
+IMG_20260902_141217     1 |        -                            |     42.9   1.5    40.6    6   48/48
+IMG_20260902_141217     2 |        -                            |      2.5   1.7     0.0    0   48/48
+IMG_20260902_141223     1 |        -                            |     44.0   1.4    41.9    7   48/48
+IMG_20260902_141223     2 |        -                            |      2.4   1.7     0.0    0   48/48
+IMG_20260902_141238     1 |        -                            |     73.4   1.4    71.3   13   41/48
+IMG_20260902_141238     2 |        -                            |      2.4   1.7     0.0    0   48/48
+IMG_20260902_141316     1 |        -                            |     42.3   1.2    40.4    6   48/48
+IMG_20260902_141316     2 |        -                            |      2.3   1.6     0.0    0   48/48
+IMG_20260921_004756     1 |        -                            |     42.5   1.6    40.2    6   48/48
+IMG_20260921_004756     2 |        -                            |      2.4   1.7     0.0    0   48/48
+E2 per-blok: total 810.1s, rata2 33.8s/foto | semua kotak 1109/1147 (96.7%) | kotak berisi 263/301 (87.4%)
+============================================================================================
+
+Hasil -> D:\Syauqi\UNAND\Kuliah\Magang\laravel\scripts\output_bandingkan_eksplorasi\3b_e2_overlay_xretry

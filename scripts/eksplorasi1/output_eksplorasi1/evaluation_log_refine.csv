@@ -35,3 +35,4 @@ timestamp,image,shift,status,confidence,n_inliers,inlier_ratio,refined,refine_qu
 2026-09-29T06:09:44,IMG_20260921_004756.jpg.jpeg,1,success,high,78,0.26,True,good,9,49,32.2,
 2026-09-29T06:09:50,IMG_20260921_004756.jpg.jpeg,2,success,high,78,0.26,True,good,9,49,36.6,
 2026-09-29T06:09:57,IMG_20260921_004756.jpg.jpeg,3,success,high,78,0.26,True,good,9,49,45.3,
+2026-10-04T14:59:38,IMG_20260902_141316.jpg.jpeg,1,success,high,44,0.2391304347826087,True,good,9,49,23.1,

@@ -23,7 +23,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent))
 from refine_grid_eksplorasi import (  # noqa: E402
-    detect_grid_refined, draw_refined_overlay, INK_EMPTY_THRESHOLD, N_SUBCELLS,
+    detect_grid_fast, detect_grid_refined, draw_refined_overlay, INK_EMPTY_THRESHOLD, N_SUBCELLS,
 )
 
 
@@ -36,6 +36,8 @@ def main():
     ap.add_argument("--show-coarse", action="store_true",
                      help="Gambar juga posisi versi lama (merah tipis) utk perbandingan.")
     ap.add_argument("--no-interactive", action="store_true")
+    ap.add_argument("--jalur-lama", action="store_true",
+                     help="Geometri lewat OSD + OCR (detect_grid lama) lalu refine. Default: jalur cepat.")
     args = ap.parse_args()
 
     out_dir = Path(args.output_dir)
@@ -55,7 +57,8 @@ def main():
     print(f"EKSPLORASI 1 (REFINE) -- {Path(args.image).name} (shift {args.shift})")
     print(f"{'='*60}")
 
-    det = detect_grid_refined(args.image, args.shift, kp_pts, des, ref_w, ref_h, anchors)
+    detect = detect_grid_refined if args.jalur_lama else detect_grid_fast
+    det = detect(args.image, args.shift, kp_pts, des, ref_w, ref_h, anchors)
     img = det.pop("corrected_image", None)
 
     print(f"Status           : {det['status']}")

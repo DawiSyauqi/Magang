@@ -14,7 +14,7 @@ di prompt.py tetap berlaku.
 import cv2
 import numpy as np
 
-from refine_grid_eksplorasi import detect_grid_refined, N_BLOCKS, N_SUBCELLS
+from refine_grid_eksplorasi import detect_grid_fast, detect_grid_refined, N_BLOCKS, N_SUBCELLS
 
 CELL_PX = 80              # lebar 1 sub-kotak di crop hasil warp
 BLOCK_PAD_X_FRAC = 0.02   # thd lebar blok
@@ -101,10 +101,15 @@ def draw_block_overlay(crop, meta, n_cells=N_SUBCELLS):
 
 
 def crop_jam_blocks_refined(photo_path, shift, ref_kp_pts, ref_des, ref_w, ref_h, anchors,
-                            with_overlay=True, **crop_kwargs):
+                            with_overlay=True, fast=True, **crop_kwargs):
     """Return (det, crops). crops None kalau geometri gagal. Tiap elemen
-    det["block_crops_meta"] punya "cell_ink" (6 nilai) kalau refine sukses."""
-    det = detect_grid_refined(photo_path, shift, ref_kp_pts, ref_des, ref_w, ref_h, anchors)
+    det["block_crops_meta"] punya "cell_ink" (6 nilai) kalau refine sukses.
+    fast=True: geometri jalur cepat (tanpa OSD/OCR, lihat detect_grid_fast);
+    fast=False: jalur lama detect_grid (OSD + OCR) + refine."""
+    if fast:
+        det = detect_grid_fast(photo_path, shift, ref_kp_pts, ref_des, ref_w, ref_h, anchors)
+    else:
+        det = detect_grid_refined(photo_path, shift, ref_kp_pts, ref_des, ref_w, ref_h, anchors)
     if det["status"] not in ("success", "needs_manual_review"):
         return det, None
 
@@ -118,6 +123,9 @@ def crop_jam_blocks_refined(photo_path, shift, ref_kp_pts, ref_des, ref_w, ref_h
         crop, meta = crop_block_rectified(img, top_px, bot_px, b, **crop_kwargs)
         if ink is not None:
             meta["cell_ink"] = ink[b * N_SUBCELLS:(b + 1) * N_SUBCELLS]
+        # crop polos tetap disimpan (tdk ikut ke JSON): dipakai tanya ulang "x",
+        # krn garis bantu terbukti bisa mengganggu pembacaan angka "0"
+        meta["clean_crop"] = crop
         if with_overlay:
             crop = draw_block_overlay(crop, meta)
         crops.append(crop)

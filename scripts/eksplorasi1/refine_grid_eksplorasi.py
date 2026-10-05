@@ -421,6 +421,89 @@ def detect_grid_refined(photo_path, shift, ref_kp_pts, ref_des, ref_w, ref_h, an
 
 
 # ---------------------------------------------------------------------------
+# Jalur CEPAT: tanpa OSD & tanpa OCR
+# ---------------------------------------------------------------------------
+# OSD (~3 dtk) & OCR label "Jam" (~2-8 dtk) memakan ~90% waktu detect_grid.
+# Keduanya bisa dilewati:
+#   - ORB tahan rotasi, jadi homography thd foto MENTAH sudah memuat rotasi
+#     foto; arah sumbu-x grid hasil homography menentukan rotasi koreksi
+#     (0/90/180/270). Ini juga menyelamatkan foto yg OSD-nya salah/gagal.
+#   - cek silang OCR digantikan refine (baris dicari dari garis cetak).
+# Jatuh balik ke jalur lama (OSD + OCR) HANYA kalau homography/refine gagal
+# total; kualitas "partial" dikembalikan dgn status needs_manual_review.
+
+_ROT_CODES = {90: cv2.ROTATE_90_COUNTERCLOCKWISE, 180: cv2.ROTATE_180, 270: cv2.ROTATE_90_CLOCKWISE}
+
+
+def _coarse_from_homography(img, shift, ref_kp_pts, ref_des, ref_w, ref_h, anchors):
+    from detect_grid import match_homography, transform_points_frac
+    h, w = img.shape[:2]
+    hg = match_homography(ref_kp_pts, ref_des, cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
+    if hg["status"] != "success":
+        return None, hg
+    rb = anchors["shift_row_bounds_y_frac"][str(shift)]
+    cols = anchors["grid_columns_x_frac"]
+    top = transform_points_frac(hg["H"], [(x, rb[0]) for x in cols], ref_w, ref_h, w, h)
+    bot = transform_points_frac(hg["H"], [(x, rb[1]) for x in cols], ref_w, ref_h, w, h)
+    return (top, bot), hg
+
+
+def detect_grid_fast(photo_path, shift, ref_kp_pts, ref_des, ref_w, ref_h, anchors, fallback=True):
+    """Hasil format sama dgn detect_grid_refined(). det["path"] = "fast" atau
+    "fallback_osd_ocr" (kalau jalur cepat tdk meyakinkan)."""
+    from imgutil import imread_exif_safe
+
+    raw = imread_exif_safe(photo_path)
+    coarse, hg = _coarse_from_homography(raw, shift, ref_kp_pts, ref_des, ref_w, ref_h, anchors)
+    det = None
+    if coarse is not None:
+        H_, W_ = raw.shape[:2]
+        t0 = np.array(coarse[0][0]) * [W_, H_]
+        t1 = np.array(coarse[0][-1]) * [W_, H_]
+        ang = float(np.degrees(np.arctan2(t1[1] - t0[1], t1[0] - t0[0])))
+        rot = {0: 0, 90: 90, 180: 180, -180: 180, -90: 270}[int(round(ang / 90.0)) * 90]
+        img = raw if rot == 0 else cv2.rotate(raw, _ROT_CODES[rot])
+        if rot:
+            coarse, hg = _coarse_from_homography(img, shift, ref_kp_pts, ref_des, ref_w, ref_h, anchors)
+        if coarse is not None:
+            top, bot = coarse
+            col_x = [p[0] for p in top]
+            ref = refine_grid(img, col_x, [p[1] for p in top], [p[1] for p in bot])
+            if ref["status"] == "success":
+                # kualitas "partial" (mis. foto buram) TETAP dipakai tp ditandai
+                # utk review -- jalur lama (OSD) tdk lebih baik di foto spt ini
+                quality = refine_quality(ref["metrics"])
+                h, w = img.shape[:2]
+                mid = N_COLS // 2
+                det = {
+                    "status": "success" if quality == "good" else "needs_manual_review",
+                    "reason": None if quality == "good" else "refine_partial",
+                    "confidence": "high" if quality == "good" else "low", "path": "fast",
+                    "orientation_rot": rot,
+                    "homography_debug": {k: v for k, v in hg.items() if k != "H"},
+                    "image_shape": [h, w],
+                    "coarse": {
+                        "top_pts_px": [[x * w, y * h] for x, y in top],
+                        "bot_pts_px": [[x * w, y * h] for x, y in bot],
+                    },
+                    "refined": True,
+                    "refine": {"status": "success", "quality": quality, "metrics": ref["metrics"]},
+                    "row_y_frac": [ref["row_y_top_per_col"][mid], ref["row_y_bot_per_col"][mid]],
+                    "corrected_image": img,
+                }
+                for k in ("col_x_frac", "row_y_top_per_col", "row_y_bot_per_col", "top_pts_px", "bot_pts_px"):
+                    det[k] = ref[k]
+                det["cell_ink"] = cell_ink_ratios(img, ref["top_pts_px"], ref["bot_pts_px"])
+                return det
+
+    if not fallback:
+        return {"status": "needs_retake", "reason": "fast_path_failed", "path": "fast", "refined": False}
+    det = detect_grid_refined(photo_path, shift, ref_kp_pts, ref_des, ref_w, ref_h, anchors)
+    det["path"] = "fallback_osd_ocr"
+    return det
+
+
+# ---------------------------------------------------------------------------
 # Overlay
 # ---------------------------------------------------------------------------
 

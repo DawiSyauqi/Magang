@@ -1,0 +1,68 @@
+{
+  "_catatan": [
+    "Kunci jawaban utk bandingkan_eksplorasi.py, disusun dari PENGAMATAN VISUAL foto (bukan dari data resmi) -- mohon dicek & dikoreksi bila ada yg salah.",
+    "12 foto di folder images = 2 lembar kertas yg difoto berulang. 'foto' memetakan nama foto -> nama lembar.",
+    "Format: lembar -> shift -> 8 blok x 6 kotak. null = kotak kosong. \"SKIP\" = kotak tdk dinilai (mis. coretan tebal tak terbaca).",
+    "Shift yg tdk dicantumkan tdk dinilai."
+  ],
+  "foto": {
+    "IMG_20260901_134505": "lembar_padat",
+    "IMG_20260901_134510": "lembar_padat",
+    "IMG_20260901_134514": "lembar_padat",
+    "IMG_20260901_134520": "lembar_padat",
+    "IMG_20260901_134523": "lembar_padat",
+    "IMG_20260902_141208": "lembar_jarang",
+    "IMG_20260902_141212": "lembar_jarang",
+    "IMG_20260902_141217": "lembar_jarang",
+    "IMG_20260902_141223": "lembar_jarang",
+    "IMG_20260902_141238": "lembar_jarang",
+    "IMG_20260902_141316": "lembar_jarang",
+    "IMG_20260921_004756": "lembar_jarang"
+  },
+  "lembar": {
+    "lembar_padat": {
+      "1": [
+        ["4i", "7b", "1a", "1b", "1c", "1d"],
+        ["0", "0", "0", "SKIP", "0", "0"],
+        ["2a", "2b", "2c", "2d", "2e", "2F"],
+        ["3a", "3b", "3c", "3d", "3e", "0"],
+        ["0", "0", "0", "0", "0", "0"],
+        ["0", "0", "0", "0", "0", "0"],
+        ["0", "0", "0", "0", "0", "0"],
+        ["0", "0", "0", "0", "0", "1a"]
+      ],
+      "2": [
+        ["1a", "7b", null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null]
+      ]
+    },
+    "lembar_jarang": {
+      "1": [
+        [null, null, null, null, "6a", "5b"],
+        [null, null, null, null, null, null],
+        [null, "7a", null, "2a", null, null],
+        [null, "2F", null, null, "3i", null],
+        [null, "3c", null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, "x"]
+      ],
+      "2": [
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null]
+      ]
+    }
+  }
+}

@@ -1,0 +1,464 @@
+{
+ "status": "success",
+ "data": {
+  "shift": "1",
+  "blocks": [
+   {
+    "parsed": {
+     "jam_label": "07.00 - 08.00",
+     "kolom_1": "41",
+     "kolom_2": "7b",
+     "kolom_3": "1a",
+     "kolom_4": "1b",
+     "kolom_5": "1c",
+     "kolom_6": "12"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"07.00 - 08.00\",\n  \"kolom_1\": \"41\",\n  \"kolom_2\": \"7b\",\n  \"kolom_3\": \"1a\",\n  \"kolom_4\": \"1b\",\n  \"kolom_5\": \"1c\",\n  \"kolom_6\": \"12\"\n}\n```",
+    "elapsed_sec": 8.686625480651855,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.22178819444444445,
+     0.3294270833333333,
+     0.1948784722222222,
+     0.20399305555555555,
+     0.1488715277777778,
+     0.18446180555555555
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "41",
+     "7b",
+     "1a",
+     "1b",
+     "1c",
+     "12"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "07.00 - 08.00",
+    "block_idx": 0
+   },
+   {
+    "parsed": {
+     "jam_label": "08.00 - 09.00",
+     "kolom_1": "0",
+     "kolom_2": "0",
+     "kolom_3": "0",
+     "kolom_4": "x",
+     "kolom_5": "0",
+     "kolom_6": "0"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"08.00 - 09.00\",\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"x\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"0\"\n}\n```",
+    "elapsed_sec": 8.396633863449097,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.1540798611111111,
+     0.10026041666666667,
+     0.13020833333333334,
+     0.5360243055555556,
+     0.13758680555555555,
+     0.10026041666666667
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "x",
+     "0",
+     "0"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 1,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "08.00 - 09.00",
+    "block_idx": 1
+   },
+   {
+    "parsed": {
+     "jam_label": "09.00 - 10.00",
+     "kolom_1": "2U",
+     "kolom_2": "2b",
+     "kolom_3": "2c",
+     "kolom_4": "2d",
+     "kolom_5": "2e",
+     "kolom_6": "2F"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"09.00 - 10.00\",\n  \"kolom_1\": \"2U\",\n  \"kolom_2\": \"2b\",\n  \"kolom_3\": \"2c\",\n  \"kolom_4\": \"2d\",\n  \"kolom_5\": \"2e\",\n  \"kolom_6\": \"2F\"\n}\n```",
+    "elapsed_sec": 8.79951548576355,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.2026909722222222,
+     0.1948784722222222,
+     0.171875,
+     0.19661458333333334,
+     0.18836805555555555,
+     0.15625
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "2U",
+     "2b",
+     "2c",
+     "2d",
+     "2e",
+     "2F"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "09.00 - 10.00",
+    "block_idx": 2
+   },
+   {
+    "parsed": {
+     "jam_label": "10.00 - 11.00",
+     "kolom_1": "3a",
+     "kolom_2": "3b",
+     "kolom_3": "3c",
+     "kolom_4": "3d",
+     "kolom_5": "3e",
+     "kolom_6": "0"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"10.00 - 11.00\",\n  \"kolom_1\": \"3a\",\n  \"kolom_2\": \"3b\",\n  \"kolom_3\": \"3c\",\n  \"kolom_4\": \"3d\",\n  \"kolom_5\": \"3e\",\n  \"kolom_6\": \"0\"\n}\n```",
+    "elapsed_sec": 8.368751525878906,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.21354166666666666,
+     0.203125,
+     0.15625,
+     0.22395833333333334,
+     0.1801215277777778,
+     0.09071180555555555
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "3a",
+     "3b",
+     "3c",
+     "3d",
+     "3e",
+     "0"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "10.00 - 11.00",
+    "block_idx": 3
+   },
+   {
+    "parsed": {
+     "jam_label": "11.00 - 12.00",
+     "kolom_1": "?",
+     "kolom_2": "?",
+     "kolom_3": "?",
+     "kolom_4": "?",
+     "kolom_5": "?",
+     "kolom_6": "?"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"11.00 - 12.00\",\n  \"kolom_1\": \"?\",\n  \"kolom_2\": \"?\",\n  \"kolom_3\": \"?\",\n  \"kolom_4\": \"?\",\n  \"kolom_5\": \"?\",\n  \"kolom_6\": \"?\"\n}\n```",
+    "elapsed_sec": 11.798214197158813,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.1171875,
+     0.1254340277777778,
+     0.11848958333333333,
+     0.11241319444444445,
+     0.140625,
+     0.13151041666666666
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "retry": {
+     "kolom": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "forced_guess": true,
+     "raw_text": "```json\n{\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"0\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"0\"\n}\n```",
+     "error": null,
+     "elapsed_sec": 3.9120965003967285
+    },
+    "expected_jam_label": "11.00 - 12.00",
+    "block_idx": 4
+   },
+   {
+    "parsed": {
+     "jam_label": "12.00 - 13.00",
+     "kolom_1": "?",
+     "kolom_2": "?",
+     "kolom_3": "?",
+     "kolom_4": "?",
+     "kolom_5": "?",
+     "kolom_6": "?"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"12.00 - 13.00\",\n  \"kolom_1\": \"?\",\n  \"kolom_2\": \"?\",\n  \"kolom_3\": \"?\",\n  \"kolom_4\": \"?\",\n  \"kolom_5\": \"?\",\n  \"kolom_6\": \"?\"\n}\n```",
+    "elapsed_sec": 11.449886798858643,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.12022569444444445,
+     0.12456597222222222,
+     0.11762152777777778,
+     0.11979166666666667,
+     0.12456597222222222,
+     0.11067708333333333
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "0",
+     "?",
+     "?",
+     "?",
+     "?",
+     "?"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    "retry": {
+     "kolom": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "forced_guess": true,
+     "raw_text": "```json\n{\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"?\",\n  \"kolom_3\": \"?\",\n  \"kolom_4\": \"?\",\n  \"kolom_5\": \"?\",\n  \"kolom_6\": \"?\"\n}\n```",
+     "error": null,
+     "elapsed_sec": 3.8300039768218994
+    },
+    "expected_jam_label": "12.00 - 13.00",
+    "block_idx": 5
+   },
+   {
+    "parsed": {
+     "jam_label": "13.00 - 14.00",
+     "kolom_1": "0",
+     "kolom_2": "0",
+     "kolom_3": "0",
+     "kolom_4": "0",
+     "kolom_5": "0",
+     "kolom_6": "0"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"13.00 - 14.00\",\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"0\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"0\"\n}\n```",
+    "elapsed_sec": 7.956833124160767,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.14192708333333334,
+     0.14322916666666666,
+     0.13932291666666666,
+     0.1284722222222222,
+     0.13151041666666666,
+     0.1423611111111111
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "13.00 - 14.00",
+    "block_idx": 6
+   },
+   {
+    "parsed": {
+     "jam_label": "14.00 - 15.00",
+     "kolom_1": "0",
+     "kolom_2": "0",
+     "kolom_3": "0",
+     "kolom_4": "0",
+     "kolom_5": "0",
+     "kolom_6": "1a"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"14.00 - 15.00\",\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"0\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"1a\"\n}\n```",
+    "elapsed_sec": 8.102189302444458,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.1111111111111111,
+     0.12196180555555555,
+     0.1349826388888889,
+     0.1150173611111111,
+     0.1228298611111111,
+     0.1857638888888889
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "1a"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "14.00 - 15.00",
+    "block_idx": 7
+   }
+  ]
+ },
+ "meta": {
+  "geometry_path": "fast",
+  "geometry_seconds": 1.78,
+  "n_ollama_calls": 10,
+  "n_x_retry": 0,
+  "ollama_seconds": 73.55864977836609,
+  "detection_confidence": "high",
+  "refined": true,
+  "refine_quality": "good",
+  "n_blocks_ok": 8,
+  "n_blocks_total": 8,
+  "n_blocks_skipped_empty": 0,
+  "elapsed_seconds": 75.4
+ }
+}

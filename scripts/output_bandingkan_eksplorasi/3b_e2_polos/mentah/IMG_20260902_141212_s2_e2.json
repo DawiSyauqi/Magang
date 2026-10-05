@@ -1,0 +1,430 @@
+{
+ "status": "success",
+ "data": {
+  "shift": "2",
+  "blocks": [
+   {
+    "parsed": {
+     "jam_label": "15.00 - 16.00",
+     "kolom_1": null,
+     "kolom_2": null,
+     "kolom_3": null,
+     "kolom_4": null,
+     "kolom_5": null,
+     "kolom_6": null
+    },
+    "raw_text": null,
+    "elapsed_sec": 0.0,
+    "skipped_ollama": true,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "15.00 - 16.00",
+    "block_idx": 0
+   },
+   {
+    "parsed": {
+     "jam_label": "16.00 - 17.00",
+     "kolom_1": null,
+     "kolom_2": null,
+     "kolom_3": null,
+     "kolom_4": null,
+     "kolom_5": null,
+     "kolom_6": null
+    },
+    "raw_text": null,
+    "elapsed_sec": 0.0,
+    "skipped_ollama": true,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "16.00 - 17.00",
+    "block_idx": 1
+   },
+   {
+    "parsed": {
+     "jam_label": "17.00 - 18.00",
+     "kolom_1": null,
+     "kolom_2": null,
+     "kolom_3": null,
+     "kolom_4": null,
+     "kolom_5": null,
+     "kolom_6": null
+    },
+    "raw_text": null,
+    "elapsed_sec": 0.0,
+    "skipped_ollama": true,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "17.00 - 18.00",
+    "block_idx": 2
+   },
+   {
+    "parsed": {
+     "jam_label": "18.00 - 19.00",
+     "kolom_1": null,
+     "kolom_2": null,
+     "kolom_3": null,
+     "kolom_4": null,
+     "kolom_5": null,
+     "kolom_6": null
+    },
+    "raw_text": null,
+    "elapsed_sec": 0.0,
+    "skipped_ollama": true,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "18.00 - 19.00",
+    "block_idx": 3
+   },
+   {
+    "parsed": {
+     "jam_label": "19.00 - 20.00",
+     "kolom_1": null,
+     "kolom_2": null,
+     "kolom_3": null,
+     "kolom_4": null,
+     "kolom_5": null,
+     "kolom_6": null
+    },
+    "raw_text": null,
+    "elapsed_sec": 0.0,
+    "skipped_ollama": true,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "19.00 - 20.00",
+    "block_idx": 4
+   },
+   {
+    "parsed": {
+     "jam_label": "20.00 - 21.00",
+     "kolom_1": null,
+     "kolom_2": null,
+     "kolom_3": null,
+     "kolom_4": null,
+     "kolom_5": null,
+     "kolom_6": null
+    },
+    "raw_text": null,
+    "elapsed_sec": 0.0,
+    "skipped_ollama": true,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "20.00 - 21.00",
+    "block_idx": 5
+   },
+   {
+    "parsed": {
+     "jam_label": "21.00 - 22.00",
+     "kolom_1": null,
+     "kolom_2": null,
+     "kolom_3": null,
+     "kolom_4": null,
+     "kolom_5": null,
+     "kolom_6": null
+    },
+    "raw_text": null,
+    "elapsed_sec": 0.0,
+    "skipped_ollama": true,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "21.00 - 22.00",
+    "block_idx": 6
+   },
+   {
+    "parsed": {
+     "jam_label": "22.00 - 23.00",
+     "kolom_1": null,
+     "kolom_2": null,
+     "kolom_3": null,
+     "kolom_4": null,
+     "kolom_5": null,
+     "kolom_6": null
+    },
+    "raw_text": null,
+    "elapsed_sec": 0.0,
+    "skipped_ollama": true,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "22.00 - 23.00",
+    "block_idx": 7
+   }
+  ]
+ },
+ "meta": {
+  "geometry_path": "fast",
+  "geometry_seconds": 1.61,
+  "n_ollama_calls": 0,
+  "n_x_retry": 0,
+  "ollama_seconds": 0,
+  "detection_confidence": "high",
+  "refined": true,
+  "refine_quality": "good",
+  "n_blocks_ok": 8,
+  "n_blocks_total": 8,
+  "n_blocks_skipped_empty": 8,
+  "elapsed_seconds": 1.6
+ }
+}

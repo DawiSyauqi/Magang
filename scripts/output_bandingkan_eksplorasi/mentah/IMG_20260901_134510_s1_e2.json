@@ -1,0 +1,443 @@
+{
+ "status": "success",
+ "data": {
+  "shift": "1",
+  "blocks": [
+   {
+    "parsed": {
+     "jam_label": "07.00 - 08.00",
+     "kolom_1": "41",
+     "kolom_2": "7b",
+     "kolom_3": "1a",
+     "kolom_4": "1b",
+     "kolom_5": "1c",
+     "kolom_6": "1d"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"07.00 - 08.00\",\n  \"kolom_1\": \"41\",\n  \"kolom_2\": \"7b\",\n  \"kolom_3\": \"1a\",\n  \"kolom_4\": \"1b\",\n  \"kolom_5\": \"1c\",\n  \"kolom_6\": \"1d\"\n}\n```",
+    "elapsed_sec": 16.534422874450684,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.2204861111111111,
+     0.33203125,
+     0.20008680555555555,
+     0.2026909722222222,
+     0.15104166666666666,
+     0.1840277777777778
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "41",
+     "7b",
+     "1a",
+     "1b",
+     "1c",
+     "1d"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "07.00 - 08.00",
+    "block_idx": 0
+   },
+   {
+    "parsed": {
+     "jam_label": "08.00 - 09.00",
+     "kolom_1": "0",
+     "kolom_2": "0",
+     "kolom_3": "0",
+     "kolom_4": "x",
+     "kolom_5": "0",
+     "kolom_6": "0"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"08.00 - 09.00\",\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"x\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"0\"\n}\n```",
+    "elapsed_sec": 7.668578386306763,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.1519097222222222,
+     0.10199652777777778,
+     0.13368055555555555,
+     0.5329861111111112,
+     0.13671875,
+     0.10243055555555555
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "x",
+     "0",
+     "0"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 1,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "08.00 - 09.00",
+    "block_idx": 1
+   },
+   {
+    "parsed": {
+     "jam_label": "09.00 - 10.00",
+     "kolom_1": "2U",
+     "kolom_2": "2b",
+     "kolom_3": "2c",
+     "kolom_4": "2d",
+     "kolom_5": "2e",
+     "kolom_6": "2F"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"09.00 - 10.00\",\n  \"kolom_1\": \"2U\",\n  \"kolom_2\": \"2b\",\n  \"kolom_3\": \"2c\",\n  \"kolom_4\": \"2d\",\n  \"kolom_5\": \"2e\",\n  \"kolom_6\": \"2F\"\n}\n```",
+    "elapsed_sec": 7.946345329284668,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.20572916666666666,
+     0.1896701388888889,
+     0.17708333333333334,
+     0.19921875,
+     0.19444444444444445,
+     0.15538194444444445
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "2U",
+     "2b",
+     "2c",
+     "2d",
+     "2e",
+     "2F"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "09.00 - 10.00",
+    "block_idx": 2
+   },
+   {
+    "parsed": {
+     "jam_label": "10.00 - 11.00",
+     "kolom_1": "3a",
+     "kolom_2": "3b",
+     "kolom_3": "3c",
+     "kolom_4": "3d",
+     "kolom_5": "3e",
+     "kolom_6": "0"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"10.00 - 11.00\",\n  \"kolom_1\": \"3a\",\n  \"kolom_2\": \"3b\",\n  \"kolom_3\": \"3c\",\n  \"kolom_4\": \"3d\",\n  \"kolom_5\": \"3e\",\n  \"kolom_6\": \"0\"\n}\n```",
+    "elapsed_sec": 8.096900224685669,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.22135416666666666,
+     0.2092013888888889,
+     0.1584201388888889,
+     0.2282986111111111,
+     0.1879340277777778,
+     0.08940972222222222
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "3a",
+     "3b",
+     "3c",
+     "3d",
+     "3e",
+     "0"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "10.00 - 11.00",
+    "block_idx": 3
+   },
+   {
+    "parsed": {
+     "jam_label": "11.00 - 12.00",
+     "kolom_1": "0",
+     "kolom_2": "0",
+     "kolom_3": "0",
+     "kolom_4": "0",
+     "kolom_5": "0",
+     "kolom_6": "0"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"11.00 - 12.00\",\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"0\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"0\"\n}\n```",
+    "elapsed_sec": 7.92331600189209,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.11197916666666667,
+     0.1267361111111111,
+     0.1115451388888889,
+     0.12196180555555555,
+     0.1427951388888889,
+     0.12803819444444445
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "11.00 - 12.00",
+    "block_idx": 4
+   },
+   {
+    "parsed": {
+     "jam_label": "12.00 - 13.00",
+     "kolom_1": "?",
+     "kolom_2": "?",
+     "kolom_3": "?",
+     "kolom_4": "?",
+     "kolom_5": "?",
+     "kolom_6": "?"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"12.00 - 13.00\",\n  \"kolom_1\": \"?\",\n  \"kolom_2\": \"?\",\n  \"kolom_3\": \"?\",\n  \"kolom_4\": \"?\",\n  \"kolom_5\": \"?\",\n  \"kolom_6\": \"?\"\n}\n```",
+    "elapsed_sec": 11.144245862960815,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.1154513888888889,
+     0.1271701388888889,
+     0.11631944444444445,
+     0.12022569444444445,
+     0.12413194444444445,
+     0.10590277777777778
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "retry": {
+     "kolom": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "forced_guess": true,
+     "raw_text": "```json\n{\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"0\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"0\"\n}\n```",
+     "error": null,
+     "elapsed_sec": 3.894498348236084
+    },
+    "expected_jam_label": "12.00 - 13.00",
+    "block_idx": 5
+   },
+   {
+    "parsed": {
+     "jam_label": "13.00 - 14.00",
+     "kolom_1": "0",
+     "kolom_2": "0",
+     "kolom_3": "0",
+     "kolom_4": "0",
+     "kolom_5": "0",
+     "kolom_6": "0"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"13.00 - 14.00\",\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"0\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"0\"\n}\n```",
+    "elapsed_sec": 7.866720199584961,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.1362847222222222,
+     0.14192708333333334,
+     0.1384548611111111,
+     0.12977430555555555,
+     0.12803819444444445,
+     0.13802083333333334
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "13.00 - 14.00",
+    "block_idx": 6
+   },
+   {
+    "parsed": {
+     "jam_label": "14.00 - 15.00",
+     "kolom_1": "0",
+     "kolom_2": "0",
+     "kolom_3": "0",
+     "kolom_4": "0",
+     "kolom_5": "0",
+     "kolom_6": "1a"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"14.00 - 15.00\",\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"0\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"1a\"\n}\n```",
+    "elapsed_sec": 7.751418352127075,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.11328125,
+     0.11805555555555555,
+     0.1349826388888889,
+     0.1154513888888889,
+     0.125,
+     0.1892361111111111
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "1a"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "14.00 - 15.00",
+    "block_idx": 7
+   }
+  ]
+ },
+ "meta": {
+  "geometry_path": "fast",
+  "geometry_seconds": 1.59,
+  "n_ollama_calls": 9,
+  "ollama_seconds": 74.93194723129272,
+  "detection_confidence": "high",
+  "refined": true,
+  "refine_quality": "good",
+  "n_blocks_ok": 8,
+  "n_blocks_total": 8,
+  "n_blocks_skipped_empty": 0,
+  "elapsed_seconds": 76.5
+ }
+}

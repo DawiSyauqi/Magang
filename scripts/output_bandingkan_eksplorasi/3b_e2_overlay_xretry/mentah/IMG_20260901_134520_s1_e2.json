@@ -1,0 +1,472 @@
+{
+ "status": "success",
+ "data": {
+  "shift": "1",
+  "blocks": [
+   {
+    "parsed": {
+     "jam_label": "07.00 - 08.00",
+     "kolom_1": "41",
+     "kolom_2": "7b",
+     "kolom_3": "1a",
+     "kolom_4": "1b",
+     "kolom_5": "1c",
+     "kolom_6": "1d"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"07.00 - 08.00\",\n  \"kolom_1\": \"41\",\n  \"kolom_2\": \"7b\",\n  \"kolom_3\": \"1a\",\n  \"kolom_4\": \"1b\",\n  \"kolom_5\": \"1c\",\n  \"kolom_6\": \"1d\"\n}\n```",
+    "elapsed_sec": 8.310917615890503,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.2248263888888889,
+     0.3428819444444444,
+     0.1974826388888889,
+     0.2087673611111111,
+     0.1488715277777778,
+     0.1853298611111111
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "41",
+     "7b",
+     "1a",
+     "1b",
+     "1c",
+     "1d"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "07.00 - 08.00",
+    "block_idx": 0
+   },
+   {
+    "parsed": {
+     "jam_label": "08.00 - 09.00",
+     "kolom_1": "?",
+     "kolom_2": "?",
+     "kolom_3": "?",
+     "kolom_4": "?",
+     "kolom_5": "?",
+     "kolom_6": "?"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"08.00 - 09.00\",\n  \"kolom_1\": \"?\",\n  \"kolom_2\": \"?\",\n  \"kolom_3\": \"?\",\n  \"kolom_4\": \"?\",\n  \"kolom_5\": \"?\",\n  \"kolom_6\": \"?\"\n}\n```",
+    "elapsed_sec": 11.594110250473022,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.1558159722222222,
+     0.10069444444444445,
+     0.1332465277777778,
+     0.5355902777777778,
+     0.1362847222222222,
+     0.0993923611111111
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "x",
+     "0",
+     "0"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 1,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "retry": {
+     "kolom": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "forced_guess": true,
+     "raw_text": "```json\n{\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"x\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"0\"\n}\n```",
+     "error": null,
+     "elapsed_sec": 3.906909465789795
+    },
+    "expected_jam_label": "08.00 - 09.00",
+    "block_idx": 1
+   },
+   {
+    "parsed": {
+     "jam_label": "09.00 - 10.00",
+     "kolom_1": "20",
+     "kolom_2": "2b",
+     "kolom_3": "2c",
+     "kolom_4": "2d",
+     "kolom_5": "2e",
+     "kolom_6": "2f"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"09.00 - 10.00\",\n  \"kolom_1\": \"20\",\n  \"kolom_2\": \"2b\",\n  \"kolom_3\": \"2c\",\n  \"kolom_4\": \"2d\",\n  \"kolom_5\": \"2e\",\n  \"kolom_6\": \"2f\"\n}\n```",
+    "elapsed_sec": 8.552903890609741,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.2052951388888889,
+     0.1931423611111111,
+     0.17100694444444445,
+     0.1957465277777778,
+     0.1896701388888889,
+     0.15494791666666666
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "20",
+     "2b",
+     "2c",
+     "2d",
+     "2e",
+     "2f"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "09.00 - 10.00",
+    "block_idx": 2
+   },
+   {
+    "parsed": {
+     "jam_label": "10.00 - 11.00",
+     "kolom_1": "3a",
+     "kolom_2": "3b",
+     "kolom_3": "3c",
+     "kolom_4": "3d",
+     "kolom_5": "3e",
+     "kolom_6": "0"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"10.00 - 11.00\",\n  \"kolom_1\": \"3a\",\n  \"kolom_2\": \"3b\",\n  \"kolom_3\": \"3c\",\n  \"kolom_4\": \"3d\",\n  \"kolom_5\": \"3e\",\n  \"kolom_6\": \"0\"\n}\n```",
+    "elapsed_sec": 8.30286955833435,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.2165798611111111,
+     0.20399305555555555,
+     0.1527777777777778,
+     0.2243923611111111,
+     0.1818576388888889,
+     0.08723958333333333
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "3a",
+     "3b",
+     "3c",
+     "3d",
+     "3e",
+     "0"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "10.00 - 11.00",
+    "block_idx": 3
+   },
+   {
+    "parsed": {
+     "jam_label": "11.00 - 12.00",
+     "kolom_1": "0",
+     "kolom_2": "0",
+     "kolom_3": "0",
+     "kolom_4": "0",
+     "kolom_5": "0",
+     "kolom_6": "0"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"11.00 - 12.00\",\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"0\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"0\"\n}\n```",
+    "elapsed_sec": 7.977110862731934,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.11458333333333333,
+     0.12760416666666666,
+     0.1115451388888889,
+     0.12065972222222222,
+     0.14322916666666666,
+     0.12760416666666666
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "11.00 - 12.00",
+    "block_idx": 4
+   },
+   {
+    "parsed": {
+     "jam_label": "12.00 - 13.00",
+     "kolom_1": "?",
+     "kolom_2": "?",
+     "kolom_3": "?",
+     "kolom_4": "?",
+     "kolom_5": "?",
+     "kolom_6": "?"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"12.00 - 13.00\",\n  \"kolom_1\": \"?\",\n  \"kolom_2\": \"?\",\n  \"kolom_3\": \"?\",\n  \"kolom_4\": \"?\",\n  \"kolom_5\": \"?\",\n  \"kolom_6\": \"?\"\n}\n```",
+    "elapsed_sec": 11.523406267166138,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.12109375,
+     0.1228298611111111,
+     0.1171875,
+     0.11805555555555555,
+     0.125,
+     0.10894097222222222
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "retry": {
+     "kolom": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "forced_guess": true,
+     "raw_text": "```json\n{\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"0\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"0\"\n}\n```",
+     "error": null,
+     "elapsed_sec": 3.993436336517334
+    },
+    "expected_jam_label": "12.00 - 13.00",
+    "block_idx": 5
+   },
+   {
+    "parsed": {
+     "jam_label": "13.00 - 14.00",
+     "kolom_1": "?",
+     "kolom_2": "?",
+     "kolom_3": "?",
+     "kolom_4": "?",
+     "kolom_5": "?",
+     "kolom_6": "?"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"13.00 - 14.00\",\n  \"kolom_1\": \"?\",\n  \"kolom_2\": \"?\",\n  \"kolom_3\": \"?\",\n  \"kolom_4\": \"?\",\n  \"kolom_5\": \"?\",\n  \"kolom_6\": \"?\"\n}\n```",
+    "elapsed_sec": 11.913192510604858,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.13932291666666666,
+     0.14453125,
+     0.1401909722222222,
+     0.13411458333333334,
+     0.13671875,
+     0.1462673611111111
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "retry": {
+     "kolom": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "forced_guess": true,
+     "raw_text": "```json\n{\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"0\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"0\"\n}\n```",
+     "error": null,
+     "elapsed_sec": 4.04099178314209
+    },
+    "expected_jam_label": "13.00 - 14.00",
+    "block_idx": 6
+   },
+   {
+    "parsed": {
+     "jam_label": "14.00 - 15.00",
+     "kolom_1": "0",
+     "kolom_2": "0",
+     "kolom_3": "0",
+     "kolom_4": "0",
+     "kolom_5": "0",
+     "kolom_6": "1a"
+    },
+    "raw_text": "```json\n{\n  \"jam_label\": \"14.00 - 15.00\",\n  \"kolom_1\": \"0\",\n  \"kolom_2\": \"0\",\n  \"kolom_3\": \"0\",\n  \"kolom_4\": \"0\",\n  \"kolom_5\": \"0\",\n  \"kolom_6\": \"1a\"\n}\n```",
+    "elapsed_sec": 8.187486410140991,
+    "skipped_ollama": false,
+    "cell_ink": [
+     0.11197916666666667,
+     0.12109375,
+     0.13411458333333334,
+     0.11631944444444445,
+     0.12065972222222222,
+     0.1853298611111111
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "ink_gate": {
+     "overridden": [],
+     "ink_but_null": []
+    },
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "1a"
+    ],
+    "validation": {
+     "n_kolom_present": 6,
+     "n_kolom_ok": true,
+     "n_x_in_block": 0,
+     "x_count_suspicious": false,
+     "unreadable_kolom": []
+    },
+    "expected_jam_label": "14.00 - 15.00",
+    "block_idx": 7
+   }
+  ]
+ },
+ "meta": {
+  "geometry_path": "fast",
+  "geometry_seconds": 2.06,
+  "n_ollama_calls": 11,
+  "n_x_retry": 0,
+  "ollama_seconds": 76.36199736595154,
+  "detection_confidence": "high",
+  "refined": true,
+  "refine_quality": "good",
+  "n_blocks_ok": 8,
+  "n_blocks_total": 8,
+  "n_blocks_skipped_empty": 0,
+  "elapsed_seconds": 78.4
+ }
+}

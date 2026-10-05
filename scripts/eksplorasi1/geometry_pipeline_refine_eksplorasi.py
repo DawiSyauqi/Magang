@@ -32,7 +32,7 @@ def print(*args, **kwargs):  # noqa: A001
 
 from geometry_pipeline import encode_b64_array  # noqa: E402
 from refine_grid_eksplorasi import (  # noqa: E402
-    detect_grid_refined, draw_refined_overlay, INK_EMPTY_THRESHOLD,
+    detect_grid_fast, detect_grid_refined, draw_refined_overlay, INK_EMPTY_THRESHOLD,
 )
 
 
@@ -41,6 +41,8 @@ def main():
     ap.add_argument("--image", required=True)
     ap.add_argument("--shift", required=True, choices=["1", "2", "3"])
     ap.add_argument("--ref-dir", required=True)
+    ap.add_argument("--jalur-lama", action="store_true",
+                     help="Geometri lewat OSD + OCR (detect_grid lama) lalu refine. Default: jalur cepat.")
     args = ap.parse_args()
 
     t0 = time.time()
@@ -51,7 +53,8 @@ def main():
         ref_h, ref_w = int(data["img_h"]), int(data["img_w"])
         anchors = json.loads((ref_dir / "ref_anchors.json").read_text())
 
-        det = detect_grid_refined(args.image, args.shift, kp_pts, des, ref_w, ref_h, anchors)
+        detect = detect_grid_refined if args.jalur_lama else detect_grid_fast
+        det = detect(args.image, args.shift, kp_pts, des, ref_w, ref_h, anchors)
         img = det.pop("corrected_image", None)
 
         if det["status"] not in ("success", "needs_manual_review"):
