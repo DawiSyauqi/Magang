@@ -1,0 +1,548 @@
+{
+  "tentang": [
+    [
+      "Tujuan:",
+      "mengganti pembaca tulisan Ollama (qwen2.5vl:3b) dengan model OCR tulisan tangan yang sudah jadi (pretrained), TANPA melatih data, lalu membandingkannya dengan E1 dan E2. Geometri, deteksi tinta, dan crop dibuat sama supaya perbedaan hasil murni berasal dari pembaca tulisan."
+    ],
+    [
+      "E4 (per kotak, tiruan E1):",
+      "setiap kotak bertinta di-crop sendiri (crop yang sama dengan E1) lalu dibaca TrOCR satu kotak per inferensi. Skrip: scripts/eksplorasi4/baca_kotak_trocr_eksplorasi.py."
+    ],
+    [
+      "E5 (per blok, tiruan E2):",
+      "setiap blok jam dibaca TrOCR satu kali sebagai satu baris teks. Skrip: scripts/eksplorasi5/baca_blok_trocr_eksplorasi.py."
+    ],
+    [
+      "Model:",
+      "microsoft/trocr-small-handwritten (62 juta parameter, dilatih pada tulisan tangan bahasa Inggris IAM). Jalan di CPU, tidak butuh Ollama maupun GPU."
+    ],
+    [
+      "Mode kandidat (utama):",
+      "jawaban dipaksa berupa kode yang sah di formulir: angka 0–8, opsional diikuti 1 huruf sub-poin a–k (huruf besar/kecil), atau \"x\" saja sebagai penanda akhir kode yang durasinya lama. Pada E4 semua kode dinilai dan dipilih yang paling mungkin; pada E5 beam search dibatasi tata bahasa \"kode kode ...\" sebanyak kotak bertinta. Uji pertama memakai huruf a–z (aturan regex ProblemCodeConverter) dan tetap ditampilkan sebagai pembanding."
+    ],
+    [
+      "Mode bebas (pembanding):",
+      "TrOCR menulis apa saja tanpa batasan."
+    ],
+    [
+      "E1 dan E2:",
+      "angka diambil dari hasil uji sebelumnya (scripts/output_bandingkan_eksplorasi/mentah, sama dengan laporan \"Hasil Perbandingan Eksplorasi 1 vs 2\"), tidak dijalankan ulang."
+    ],
+    [
+      "Kunci jawaban:",
+      "scripts/kunci_jawaban_eksplorasi.json (pengamatan visual, bukan data resmi), fungsi penilaian sama dengan bandingkan_eksplorasi.py."
+    ],
+    [
+      "Cara membaca:",
+      "hijau = sama dengan kunci, merah = berbeda, · = kotak kosong. Shift yang seluruh kotaknya kosong tidak ditampilkan (semua eksplorasi benar karena deteksi tinta)."
+    ],
+    [
+      "Perangkat uji E4/E5:",
+      "laptop Intel Core i5-7200U (2 core), tanpa GPU. Waktu E1/E2 diukur di laptop lain dengan GPU + Ollama, jadi perbandingan waktu hanya gambaran kasar."
+    ]
+  ],
+  "waktu": {
+    "e1": "45.6 dtk (GPU, laptop lain)",
+    "e2": "35.8 dtk (GPU, laptop lain)",
+    "e4_kandidat": "23.4 dtk (CPU)",
+    "e4_bebas": "25.0 dtk (CPU)",
+    "e5_kandidat": "20.5 dtk (CPU)",
+    "e5_bebas": "20.1 dtk (CPU)",
+    "e4_kandidat_az": "23.4 dtk (CPU)",
+    "e5_kandidat_az": "20.4 dtk (CPU)"
+  },
+  "pengembangan": {
+    "judul": "Pengembangan dan penyetelan",
+    "isi": [
+      "Praproses gambar disetel HANYA pada 2 foto (134505 lembar padat dan 004756 lembar jarang, 55 kotak berisi) dengan E4 mode kandidat. Setelah itu pengaturan dikunci dan dijalankan ke semua foto. Hasil pada 10 foto lain (yang tidak dipakai menyetel) dilaporkan terpisah di bagian Temuan.",
+      {
+        "tabel": [
+          [
+            "Praproses crop kotak (E4)",
+            "Benar persis",
+            "Abaikan besar/kecil",
+            "Catatan"
+          ],
+          [
+            "Crop E1 apa adanya, pita tepi 3% dihapus",
+            "34/55",
+            "36/55",
+            "sisa garis kotak terbaca \"1\", \"7\", \"x\"; \"0\" jadi \"1a\""
+          ],
+          [
+            "Pita tepi 6% dihapus",
+            "44/55",
+            "46/55",
+            ""
+          ],
+          [
+            "Pita tepi 8% dihapus",
+            "42/55",
+            "43/55",
+            ""
+          ],
+          [
+            "Pita tepi 10% dihapus",
+            "40/55",
+            "43/55",
+            "ujung tulisan mulai terpotong"
+          ],
+          [
+            "Crop rapat ke tinta",
+            "40/55",
+            "42/55",
+            ""
+          ],
+          [
+            "Crop rapat + rasio 2:1 / 3:1",
+            "21/55 · 20/55",
+            "22/55 · 21/55",
+            "jauh lebih buruk"
+          ],
+          [
+            "Pita 8% + binarisasi",
+            "45/55",
+            "48/55",
+            ""
+          ],
+          [
+            "Pita 6% + normalisasi kontras",
+            "45/55",
+            "50/55",
+            ""
+          ],
+          [
+            "Pita 8% + normalisasi kontras (DIPAKAI)",
+            "47/55",
+            "52/55",
+            "kertas jadi putih, tinta hitam"
+          ],
+          [
+            "Pita 10% + normalisasi kontras",
+            "46/55",
+            "50/55",
+            ""
+          ]
+        ],
+        "lebar": [
+          8.5,
+          3.2,
+          3.8,
+          9.0
+        ]
+      },
+      [
+        "Penyebab utama salah baca adalah sisa garis kotak,",
+        "bukan bentuk tulisannya. TrOCR dilatih pada tulisan di kertas putih polos, sehingga garis tipis di tepi crop dianggap goresan (\"0\" menjadi \"1a\", \"x\" menjadi \"1x\")."
+      ],
+      [
+        "Mode kandidat dicari secara eksak dengan best-first search:",
+        "skor sementara sebuah awalan kode selalu lebih tinggi dari skor kode lengkapnya, jadi pencarian bisa berhenti begitu kode lengkap terbaik ditemukan. Hasilnya identik dengan menilai semua ±490 kode, tetapi 14× lebih cepat (0,8 dtk vs 11 dtk per kotak di CPU)."
+      ],
+      [
+        "Penyesuaian E5 (dibanding E2):",
+        "(1) ruang label jam di atas blok dibuang karena TrOCR ikut membacanya sebagai teks; (2) garis bantu merah/cyan tidak dipakai, garis cetak justru dihapus; (3) kotak kosong dibuang dari gambar dan kotak bertinta dirangkai rapat menjadi satu baris — padanan \"ink hint\" E2 karena TrOCR tidak menerima prompt. Tanpa langkah (3), \"6a 5b\" yang terletak di ujung kanan blok terbaca \"1 1M\"."
+      ],
+      [
+        "Huruf sub-poin dibatasi a–k (uji kedua).",
+        "Uji pertama memakai a–z dan banyak salah ke huruf yang tidak ada di legenda (\"2a\"→\"2Q\" 7×, \"7a\"→\"7u\" 4×, \"2a\"→\"2U\" 3×) serta \"x\"→\"1x\". Setelah pemilik proyek mengonfirmasi bahwa sub-poin hanya a–k dan \"x\" hanya dipakai sendiri sebagai penanda akhir, kandidat dibatasi ke aturan itu. Praproses tidak diubah. E4 naik dari 88,0% ke 91,0% (abaikan besar/kecil), terutama di lembar jarang (66,1% → 82,1%)."
+      ],
+      [
+        "Catatan teknis:",
+        "transformers 5.x gagal memuat tokenizer TrOCR-small, sehingga dipakai transformers 4.49. Model ini tidak menghasilkan token <s> di awal teks, sehingga label kandidat dibuat tanpa <s> (sudah diverifikasi sama dengan loss bawaan model)."
+      ]
+    ]
+  },
+  "temuan": {
+    "judul": "Temuan",
+    "isi": [
+      {
+        "tabel": [
+          [
+            "Subset (kotak berisi, abaikan besar/kecil)",
+            "E1",
+            "E2",
+            "E4 a–k",
+            "E5 a–k",
+            "E4 a–z",
+            "E5 a–z"
+          ],
+          [
+            "Semua foto (301 kotak)",
+            "54.2%",
+            "85.7%",
+            "91.0%",
+            "74.4%",
+            "88.0%",
+            "71.8%"
+          ],
+          [
+            "Semua foto, benar persis (301 kotak)",
+            "54.2%",
+            "83.4%",
+            "83.7%",
+            "67.4%",
+            "80.7%",
+            "65.4%"
+          ],
+          [
+            "Lembar padat (245 kotak)",
+            "55.5%",
+            "86.5%",
+            "93.1%",
+            "75.1%",
+            "93.1%",
+            "73.9%"
+          ],
+          [
+            "Lembar jarang (56 kotak)",
+            "48.2%",
+            "82.1%",
+            "82.1%",
+            "71.4%",
+            "66.1%",
+            "62.5%"
+          ],
+          [
+            "10 foto yang tidak dipakai menyetel (244 kotak)",
+            "52.9%",
+            "88.9%",
+            "89.8%",
+            "74.6%",
+            "86.5%",
+            "70.5%"
+          ],
+          [
+            "Foto buram 141238 (8 kotak)",
+            "0%",
+            "12.5%",
+            "0%",
+            "0%",
+            "0%",
+            "0%"
+          ]
+        ],
+        "lebar": [
+          8.5,
+          2.2,
+          2.2,
+          2.4,
+          2.4,
+          2.4,
+          2.4
+        ]
+      },
+      [
+        "E4 (TrOCR per kotak, huruf a–k) adalah metode terbaik sejauh ini, tanpa Ollama dan tanpa GPU.",
+        "91,0% kotak berisi benar (abaikan besar/kecil) vs 85,7% untuk E2; bahkan dengan perbandingan persis pun E4 sedikit unggul (83,7% vs 83,4%). Pada 10 foto yang tidak dipakai menyetel E4 juga unggul tipis (89,8% vs 88,9%), jadi keunggulannya bukan karena penyetelan."
+      ],
+      [
+        "Lembar padat: E4 jauh lebih baik dari E2 (93,1% vs 86,5%).",
+        "Angka \"0\" yang menjadi kelemahan E1/E2 (\"0\"→\"x\" 18 kali, \"0\"→\"00\" 5 kali di E2) hampir tidak pernah salah di E4. Mode kandidat membuat jawaban di luar format seperti \"41\", \"00\", \"0x\", \"?\" mustahil muncul."
+      ],
+      [
+        "Lembar jarang: E4 kini setara E2 (82,1%).",
+        "Pembatasan huruf a–k menghapus kesalahan \"7a\"→\"7u\", \"2a\"→\"2Q\" dan \"x\"→\"1x\". Sisa kesalahan: \"a\" yang ditulis mirip \"u\"/\"q\" kini terbaca \"2D\" (5×) dan \"x\" kadang terbaca \"4\"."
+      ],
+      [
+        "Sisa kesalahan E4 (49 kotak):",
+        "22 hanya beda huruf besar/kecil (mis. \"3c\" → \"3C\"; aplikasi menormalkan ke huruf kecil sehingga tidak berdampak). Selebihnya: \"7b\"→\"1b\" (7×), \"2a\"→\"2D\" (5×), \"2c\"→\"8C\" (4×), \"x\"→\"4\" (2×)."
+      ],
+      [
+        "E5 (per blok) tetap lebih buruk dari E4 — kebalikan dari E1 vs E2.",
+        "VLM diuntungkan melihat 6 kotak sekaligus (konteks), sedangkan TrOCR justru lebih mudah salah pada baris panjang: \"0\" terbaca \"1\"/\"1a\" (16×) dan huruf berubah besar. Untuk OCR biasa, membaca per kotak lebih tepat."
+      ],
+      [
+        "Mode bebas tidak layak (31–37%).",
+        "TrOCR menebak kata bahasa Inggris (\"job\", \"lair\", \"men's\", \"the end of the time\") karena dilatih pada kalimat. Pembatasan ke format kode adalah kunci keberhasilan E4."
+      ],
+      [
+        "Foto buram 141238 gagal di semua eksplorasi,",
+        "termasuk E2 (1/8). Masalahnya ada di kualitas foto, bukan di pembaca tulisan."
+      ],
+      [
+        "Waktu (CPU i5-7200U, tanpa GPU):",
+        "E4 lembar padat shift 1 ±54 dtk (48 kotak × 0,8 dtk + 6 dtk memuat model), lembar jarang ±24 dtk, shift kosong ±6 dtk. Sebagai pembanding, E1 di laptop ber-GPU butuh ±155 dtk untuk lembar padat. Memuat model (±6 dtk) terjadi tiap proses; bila dijalankan sebagai layanan yang tetap hidup, waktu ini hilang."
+      ]
+    ]
+  },
+  "rekomendasi": {
+    "judul": "Rekomendasi",
+    "isi": [
+      [
+        "Pakai E4 (TrOCR per kotak, kandidat a–k) sebagai pembaca utama, dengan konfirmasi operator untuk kotak ragu.",
+        "Pada ambang keyakinan 0,85, sekitar 1 dari 5 kotak berisi ditandai dan kebenaran akhir ±98,7–99,2%. Di aplikasi: tampilkan kotak ragu dengan warna berbeda beserta 3 kandidat teratas untuk dipilih."
+      ],
+      [
+        "Kotak ragu bisa juga dibaca ulang oleh E2/Ollama bila server memiliki GPU,",
+        "sebelum ditampilkan ke operator. Belum diuji karena Ollama tidak tersedia di laptop uji."
+      ],
+      [
+        "Bila daftar sub-poin per kategori tersedia di ProblemDetailMaster,",
+        "kandidat bisa dipersempit lagi per angka (mis. bila suatu kategori hanya punya sub-poin a–f). Pembatasan a–k saja sudah menaikkan akurasi 3 poin persen."
+      ],
+      [
+        "Uji ketahanan deteksi blok (geometri) sebelum dipakai luas.",
+        "Geometri baru teruji pada 2 lembar dengan template yang sama. Perlu diuji dengan gangguan buatan (rotasi, perspektif, skala, blur, pencahayaan, potongan tepi) dan formulir versi lain perlu kalibrasi foto referensi baru."
+      ],
+      [
+        "Tetap tambahkan pengecekan foto buram sebelum pembacaan,",
+        "karena semua metode gagal pada foto buram."
+      ],
+      [
+        "Data uji perlu ditambah.",
+        "12 foto hanya berasal dari 2 lembar kertas dan penyetelan memakai 2 di antaranya; angka di atas sebaiknya dibaca sebagai gambaran, bukan hasil final."
+      ],
+      [
+        "Jalur YOLO / model yang dilatih",
+        "masih bisa dicoba sebagai eksplorasi berikutnya bila data berlabel bertambah — hasil konfirmasi operator dari alur hibrida bisa langsung menjadi data latih."
+      ]
+    ]
+  },
+  "ambang_hibrida": 0.85,
+  "ringkasan_catatan": [
+    [
+      "E4 + konfirmasi operator (uji hibrida):",
+      "dengan ambang keyakinan 0,85, sebanyak 21,6% kotak berisi ditandai \"ragu\" untuk dicek operator, dan kebenaran akhir naik dari 91,0% menjadi 98,7%. Rincian di bagian Uji hibrida."
+    ]
+  ],
+  "hibrida": {
+    "judul": "Uji hibrida: E4 + konfirmasi operator",
+    "isi": [
+      "E4 tetap membaca semua kotak, tetapi setiap jawaban diberi nilai keyakinan. Kotak dengan keyakinan di bawah ambang ditandai \"ragu\" dan dikonfirmasi operator, yang cukup memilih dari 3 kandidat teratas (atau mengetik bila tidak ada yang cocok). Analisis ini memakai skor 5 kandidat teratas yang sudah disimpan E4, jadi model tidak dijalankan ulang. Skrip: scripts/eksplorasi4/analisis_hibrida_e4.py.",
+      {
+        "subjudul": "Ukuran keyakinan"
+      },
+      [
+        "Keyakinan = peluang kode teratas dibanding 5 kandidat teratas (0–1).",
+        "Varian huruf besar/kecil kode yang sama digabung (\"3c\" dan \"3C\" dihitung satu kode). Contoh nyata (foto 004756): \"7a\" 0,98 dan \"3i\" 0,99 (sangat yakin, benar); \"5b\" 0,62 (ragu antara 5b/6b, ternyata benar). Di foto 134510, \"3c\" terbaca \"3d\" dengan keyakinan 0,36 — salah, tetapi tertangkap sebagai ragu."
+      ],
+      [
+        "Tiga ukuran dibandingkan:",
+        "keyakinan (0–1), selisih skor kode teratas dengan kode berikutnya, dan skor kode teratas. Hasilnya mirip (tabel di bawah); keyakinan 0–1 dipilih karena paling mudah dipahami dan ditampilkan ke operator."
+      ],
+      {
+        "tabel": [
+          [
+            "Kotak ditandai",
+            "Kesalahan tertangkap — keyakinan",
+            "— selisih skor",
+            "— skor teratas"
+          ],
+          [
+            "±5%",
+            "12/27",
+            "11/27",
+            "12/27"
+          ],
+          [
+            "±10%",
+            "17/27",
+            "16/27",
+            "19/27"
+          ],
+          [
+            "±15%",
+            "21/27",
+            "18/27",
+            "20/27"
+          ],
+          [
+            "±20%",
+            "23/27",
+            "24/27",
+            "23/27"
+          ],
+          [
+            "±25%",
+            "24/27",
+            "24/27",
+            "25/27"
+          ],
+          [
+            "±30%",
+            "25/27",
+            "26/27",
+            "25/27"
+          ],
+          [
+            "±40%",
+            "27/27",
+            "27/27",
+            "26/27"
+          ]
+        ],
+        "lebar": [
+          4.0,
+          6.0,
+          4.5,
+          4.5
+        ]
+      },
+      {
+        "subjudul": "Berapa kotak yang perlu dicek operator"
+      },
+      "Kesalahan dihitung tanpa membedakan huruf besar/kecil (27 kotak salah dari 301 kotak berisi). \"Benar akhir\" mengasumsikan operator membetulkan semua kotak yang ditandai.",
+      {
+        "tabel": [
+          [
+            "Kotak ditandai (beban operator)",
+            "Akurasi kotak otomatis",
+            "Kesalahan tertangkap",
+            "Benar akhir",
+            "Jawaban benar ada di 3 kandidat teratas"
+          ],
+          [
+            "0% (E4 saja)",
+            "91.0%",
+            "0/27",
+            "91.0%",
+            "-"
+          ],
+          [
+            "5.0%",
+            "94.8%",
+            "12/27",
+            "95.0%",
+            "73.3%"
+          ],
+          [
+            "10.0%",
+            "96.3%",
+            "17/27",
+            "96.7%",
+            "76.7%"
+          ],
+          [
+            "15.0%",
+            "97.7%",
+            "21/27",
+            "98.0%",
+            "77.8%"
+          ],
+          [
+            "21.6% (ambang 0,85 — disarankan)",
+            [
+              "98.7%",
+              "E5F4EA"
+            ],
+            [
+              "23/27",
+              "E5F4EA"
+            ],
+            [
+              "98.7%",
+              "E5F4EA"
+            ],
+            "83.1%"
+          ],
+          [
+            "24.9%",
+            "98.7%",
+            "24/27",
+            "99.0%",
+            "85.3%"
+          ],
+          [
+            "29.9%",
+            "99.1%",
+            "25/27",
+            "99.3%",
+            "87.8%"
+          ],
+          [
+            "39.9%",
+            "100.0%",
+            "27/27",
+            "100.0%",
+            "90.8%"
+          ]
+        ],
+        "lebar": [
+          6.5,
+          4.0,
+          4.0,
+          3.5,
+          6.5
+        ]
+      },
+      [
+        "Beban per lembar pada ambang 0,85:",
+        "lembar padat shift 1 ±6,8 dari 47 kotak berisi per foto; lembar jarang shift 1 ±3,3 dari 8; lembar padat shift 2 ±1,6 dari 2. Sekitar 2 dari 3 kotak yang ditandai sebenarnya sudah benar, jadi operator sering hanya menekan \"benar\"; 83% kotak yang ditandai jawabannya ada di 3 kandidat teratas (cukup klik)."
+      ],
+      {
+        "subjudul": "Validasi ambang"
+      },
+      "Supaya tidak memilih ambang dengan melihat jawaban, ambang juga dipilih HANYA dari 2 foto tuning lalu diterapkan ke 10 foto lain (237 kotak, 25 salah):",
+      {
+        "tabel": [
+          [
+            "Ambang (dari 2 foto tuning)",
+            "Ditandai di 10 foto lain",
+            "Kesalahan tertangkap",
+            "Benar akhir",
+            "Tanpa konfirmasi"
+          ],
+          [
+            "0,78",
+            "20.1%",
+            "21/25",
+            "98.4%",
+            "89.8%"
+          ],
+          [
+            "0,86",
+            "23.8%",
+            "23/25",
+            "99.2%",
+            "89.8%"
+          ],
+          [
+            "0,89",
+            "27.0%",
+            "23/25",
+            "99.2%",
+            "89.8%"
+          ],
+          [
+            "0,91",
+            "31.1%",
+            "24/25",
+            "99.6%",
+            "89.8%"
+          ]
+        ],
+        "lebar": [
+          5.5,
+          4.5,
+          4.0,
+          3.5,
+          4.0
+        ]
+      },
+      {
+        "subjudul": "Kesalahan yang lolos (model yakin tetapi salah)"
+      },
+      {
+        "gambar": [
+          "crops/e4_kandidat/IMG_20260901_134505_s1/IMG_20260901_134505_b2_k1.jpg",
+          "crops/e4_kandidat/IMG_20260901_134510_s1/IMG_20260901_134510_b2_k1.jpg",
+          "crops/e4_kandidat/IMG_20260901_134514_s1/IMG_20260901_134514_b2_k1.jpg",
+          "crops/e4_kandidat/IMG_20260901_134520_s1/IMG_20260901_134520_b2_k1.jpg"
+        ],
+        "label": [
+          "134505: 2D (yakin 0,92)",
+          "134510: 2D (yakin 0,85)",
+          "134514: 2D (yakin 0,89)",
+          "134520: 2D (yakin 0,91)"
+        ],
+        "lebar_cm": 2.6,
+        "keterangan": "Kunci: \"2a\". Keempatnya adalah kotak fisik yang SAMA (lembar padat, blok 09.00–10.00, kotak 1) yang difoto berulang. Huruf \"a\" ditulis terbuka di atas sehingga mirip \"u\"; E1 membacanya \"20\"/\"10\" dan E2 \"2A\"/\"2U\"/\"20\" — kotak ini memang sulit, bukan kesalahan acak."
+      },
+      [
+        "Keterbatasan:",
+        "12 foto berasal dari 2 lembar yang difoto berulang, sehingga kesalahan saling berkaitan (satu kotak sulit muncul 4–5 kali). Ambang 0,85 adalah titik awal yang wajar, dan perlu dikalibrasi ulang setelah foto lembar lain terkumpul."
+      ]
+    ]
+  }
+}

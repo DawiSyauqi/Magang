@@ -1,0 +1,52 @@
+{
+ "subjudul": "Satu foto seluruh halaman → header, Speed/Size, Operator dan Lost time sekaligus · 7 foto di folder fullimg (2 lembar formulir) · TrOCR small di CPU, tanpa Ollama, tanpa pelatihan · 11 Oktober 2026",
+ "ringkasan": [
+  ["Ide.", "Alur aplikasi sekarang butuh 2 foto: Section 1 (foto utuh, header & Speed/Size dibaca Ollama) dan Section 2 (foto close-up grid + 3 titik diklik operator). Eksplorasi 6 mencoba SATU foto seluruh halaman untuk semuanya, tanpa klik titik."],
+  ["Geometri berhasil di 7/7 foto,", "termasuk 2 foto yang formulirnya diputar 90° dan 2 foto yang diambil jauh (formulir hanya ±36% luas foto). Referensi baru hanya memakai titik fitur dari CETAKAN formulir, sehingga tidak bergantung pada isi lembar referensi."],
+  ["Header terbaca 7/7 untuk tanggal, mesin, shift, Size dan Speed;", "operator hanya 3/7 (3 foto yang memang kosong). Nama operator di lembar padat ditulis dengan coretan dan terbaca sebagai kata lain — field ini harus selalu dikonfirmasi/dicocokkan ke master operator."],
+  ["Lost time 90,0% kotak berisi benar", "(198/220, abaikan huruf besar/kecil) — setara E4 di foto close-up (91,0%), padahal kotak di foto utuh lebih kecil. Pola salahnya sama dengan E4 (7b→1b, 2a→2D, 1c→1d)."],
+  ["Dengan konfirmasi operator (ambang 0,85)", "20,5% kotak ditandai ragu, 18 dari 22 kesalahan tertangkap, benar akhir 98,2%. Yang lolos hanya 1 kotak fisik (\"2a\" yang ditulis mirip \"2D\") di 4 foto lembar yang sama — kotak yang juga lolos di E4."],
+  ["Waktu:", "±41 dtk (lembar jarang) sampai ±75 dtk (lembar padat, 49 kotak) per foto di CPU laptop, termasuk load model ±6 dtk dan header ±17 dtk."],
+  ["Catatan penting:", "cara membaca header disusun sambil melihat 7 foto ini sendiri (hanya 2 lembar, 1 penulis). Angka header 7/7 belum teruji di lembar lain — perlu foto lembar baru sebelum dipercaya."]
+ ],
+ "cara_field": {
+  "tanggal": "Beam search TrOCR dipaksa pola \"<hari>, D-MM-YYYY\"; lalu diurai & dicek valid + nama hari cocok kalender.",
+  "mesin": "Beam search dipaksa pola kode mesin 1–2 huruf + 1–2 angka (AN1, D16, DD16, AN01); hasil mentah dicocokkan aplikasi (MesinResolver).",
+  "shift": "3 kandidat (1/2/3) dinilai seperti kode kotak E4 → peluang tiap shift.",
+  "operator": "Beam search dipaksa huruf/spasi (nama bebas); dicocokkan aplikasi (OperatorMatcher).",
+  "size": "Per karakter: komponen tinta dipisah, titik dikenali dari ukurannya, tiap digit dinilai 10 kandidat 0–9; \"MM\" dari jarak lebar setelah angka.",
+  "speed": "Per karakter, sama seperti Size (tanpa satuan)."
+ },
+ "catatan_header": "Kosong = benar bila kunci juga kosong (Size & Speed lembar padat, Operator lembar jarang): field tanpa tulisan dikenali dari jumlah tinta, model tidak dipanggil. Perbandingan tanpa huruf besar/kecil & spasi.",
+ "catatan_lost": "Bukan perbandingan foto yang sama: E6 dinilai di 7 foto utuh (fullimg), E2/E4 di 12 foto close-up (images), tetapi lembar & kuncinya SAMA. Lembar jarang di images memuat 1 foto buram (141238) yang gagal di semua metode, sehingga angka lembar jarang E2/E4 lebih rendah. Kolom eksak = huruf besar/kecil harus sama.",
+ "catatan_waktu": "Lembar padat membaca 49 kotak (shift 1 + 2), lembar jarang 8 kotak. Header ±17 dtk, terbesar dari tanggal (beam search dengan pola). Model TrOCR base (lebih besar) juga dicoba untuk header: tidak lebih akurat (Speed terbaca \"3.36\", mesin lebih buruk) dan 3–4× lebih lambat, sehingga tidak dipakai.",
+ "cara_kerja": [
+  ["1 · Referensi formulir utuh (sekali).", "Foto 143018 diluruskan ke bingkai cetak formulir menjadi kanvas 3400 × 2330 px. Titik fitur SIFT hanya diambil dari cetakan (logo, judul, label kiri, legenda kanan, label jam, catatan) — semua area isian dimasker (merah pada gambar di bawah)."],
+  {"gambar": "reference/titik_fitur_referensi.jpg", "lebar_cm": 17, "keterangan": "Titik fitur referensi (hijau) — area isian tulisan tangan dimasker (merah), jadi lembar lain dengan isi berbeda tetap cocok."},
+  ["2 · Pemetaan foto.", "SIFT di foto (diperkecil ke 2000 px) dicocokkan ke referensi → homography (RANSAC). SIFT tahan rotasi & skala, jadi foto landscape, portrait, atau terbalik langsung terpetakan tanpa OSD. Cek: jumlah titik cocok, bentuk formulir cembung, luas formulir ≥ 8% foto; gagal → needs_retake."],
+  ["3 · Semua field punya posisi tetap di kanvas.", "Header (tanggal, mesin, shift), Operator, Size, Speed dipotong dari kotak tetap, garis cetak & coretan tebal dibuang, field tanpa tulisan = kosong (model tidak dipanggil)."],
+  ["4 · Lost time = cara E4.", "Baris Lost time tiap shift di-snap ke garis cetak dengan refine_grid (salinan E1, tidak diubah); kotak kosong dari tinta; kotak bertinta dibaca TrOCR kandidat kode (0–8 + a–k, atau x) persis seperti E4. Default: semua baris yang bertinta dibaca, jadi shift tidak perlu ditebak dulu."],
+  ["5 · Konfirmasi.", "Kotak dengan keyakinan < 0,85 ditandai ragu beserta 3 kandidat (sama dengan hibrida E4). Field header punya tanda sendiri: peluang shift, tanggal valid/nama hari cocok, keyakinan digit terendah Size/Speed."]
+ ],
+ "temuan": [
+  ["Foto utuh tidak menurunkan akurasi Lost time.", "Kotak di kanvas ±46 px, di foto aslinya 33–53 px — sebanding dengan foto close-up di images (±53 px). Foto terjauh (143036, 0,76 px foto per px kanvas) tetap 42/47 di lembar padat, hanya 1 kotak lebih buruk dari foto terdekat."],
+  ["Geometri foto utuh lebih mudah daripada close-up.", "Seluruh cetakan formulir (judul, legenda kanan, label) ikut terfoto, jadi titik cocok 673–2137 per foto; masalah referensi E1–E5 (titik jatuh di tulisan tangan lembar referensi) hilang karena area isian dimasker."],
+  ["Membaca angka per karakter lebih andal daripada per baris.", "Dibaca 1 baris, TrOCR small menulis Speed \"3.6\" sebagai \"36\" (titik hilang) dan Size \"00.80\" sebagai \"00.90\" di 3/3 foto. Per karakter (titik dari ukurannya, digit dari 10 kandidat): 3/3 benar."],
+  ["Pola (regex) memaksa jawaban yang masuk akal.", "Tanggal dibaca bebas jadi \"Sable , 1300-2026\" atau \"Serin , 3- ( 8-\" 102s\"; dipaksa pola hari + tanggal: 7/7 benar. Mesin dengan pola longgar sempat \"ANIX1\"; dengan pola kode mesin (1–2 huruf + 1–2 angka): 7/7."],
+  ["Cek kalender menemukan kejanggalan di formulir.", "Lembar jarang bertulis \"Senin, 3-08-2025\", padahal 3 Agustus 2025 hari Minggu (3 Agustus 2026 = Senin). E6 menandai ini (hari_cocok_kalender = false) — bisa dipakai sebagai peringatan di aplikasi."],
+  ["Coretan adalah masalah utama field teks.", "Kata yang dicoret tebal (\"BIP\" sebelum AN1, angka sebelum \"1\" di shift, kata pertama operator) berhasil dibuang dari crop. Tetapi nama \"Sugiyanto\" sendiri ditulis dengan garis coret tipis di tengah, dan TrOCR membacanya \"Navigator\"/\"Skylights\" — tanpa daftar nama operator, field ini tidak bisa dipercaya."]
+ ],
+ "keterbatasan": [
+  ["Data uji sangat sedikit.", "7 foto dari 2 lembar formulir, kemungkinan 1 penulis. Ambang pembersih field (coretan, tinta minimum) dan pola dipilih sambil melihat foto yang sama — belum ada foto validasi terpisah untuk header."],
+  ["Lost time sudah lebih teruji.", "Pembaca kotak sama dengan E4 (dinilai di 12 foto close-up) dan ambang 0,85 berasal dari E4, jadi angka Lost time E6 lebih bisa dipercaya daripada angka header."],
+  ["Referensi dibuat dari 1 foto.", "Kanvas referensi berasal dari foto 143018 yang kertasnya sedikit melengkung; refine_grid menyerap lengkungan di baris Lost time, tetapi kotak field header memakai posisi tetap (dibuat longgar)."],
+  ["Belum diuji:", "pencahayaan buruk, foto buram, resolusi kamera lebih rendah, dan formulir yang terpotong sebagian di tepi foto."]
+ ],
+ "rekomendasi": [
+  ["E6 layak menggantikan alur 2 section,", "dengan syarat diuji ulang di lembar lain. Lost time setara E4 (90,0% vs 91,0%; dengan konfirmasi 98,2%), header terbaca tanpa Ollama, operator tidak perlu foto kedua maupun klik 3 titik."],
+  ["Kumpulkan 5–10 foto utuh dari lembar & penulis berbeda", "(beserta isinya sebagai kunci). Jalankan ulang bandingkan_e6.py tanpa mengubah ambang untuk menguji header & Lost time di data yang belum pernah dilihat."],
+  ["Di aplikasi, tampilkan tanda konfirmasi untuk:", "kotak Lost time ragu (3 kandidat), operator (selalu, dicocokkan ke master operator), shift dengan peluang < 0,85, tanggal tidak valid atau nama hari tidak cocok kalender, dan digit Size/Speed dengan keyakinan rendah."],
+  ["Instruksi foto:", "seluruh formulir masuk frame (keempat sisi terlihat), sejajar sebisa mungkin, pencahayaan rata. Jarak sampai formulir ±36% luas foto masih terbaca baik."],
+  ["Bila Ollama tersedia di server,", "field teks bebas (operator, dan mesin sebagai cadangan) bisa tetap memakai Ollama seperti Section 1 sekarang, sementara Lost time & angka memakai TrOCR — dibandingkan di data validasi yang sama."]
+ ]
+}

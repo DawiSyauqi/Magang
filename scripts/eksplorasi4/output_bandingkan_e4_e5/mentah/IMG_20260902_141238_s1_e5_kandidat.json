@@ -1,0 +1,277 @@
+{
+ "status": "needs_manual_review",
+ "data": {
+  "shift": "1",
+  "blocks": [
+   {
+    "block_idx": 0,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.18055555555555555,
+     0.2035590277777778
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     true,
+     true
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     "6M",
+     "2A"
+    ],
+    "raw_text": "6M 2A",
+    "n_kode_terbaca": 2,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 2.115,
+    "expected_jam_label": "07.00 - 08.00"
+   },
+   {
+    "block_idx": 1,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "skipped_model": true,
+    "elapsed_sec": 0.0,
+    "expected_jam_label": "08.00 - 09.00"
+   },
+   {
+    "block_idx": 2,
+    "cell_ink": [
+     0.0,
+     0.2361111111111111,
+     0.0,
+     0.1684027777777778,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     true,
+     false,
+     true,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     "4",
+     null,
+     "0",
+     null,
+     null
+    ],
+    "raw_text": "4 0",
+    "n_kode_terbaca": 2,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 1.36,
+    "expected_jam_label": "09.00 - 10.00"
+   },
+   {
+    "block_idx": 3,
+    "cell_ink": [
+     0.0,
+     0.15538194444444445,
+     0.0,
+     0.0,
+     0.10026041666666667,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     true,
+     false,
+     false,
+     true,
+     false
+    ],
+    "kotak": [
+     null,
+     "0",
+     null,
+     null,
+     "0",
+     null
+    ],
+    "raw_text": "0 0",
+    "n_kode_terbaca": 2,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 1.206,
+    "expected_jam_label": "10.00 - 11.00"
+   },
+   {
+    "block_idx": 4,
+    "cell_ink": [
+     0.0,
+     0.1462673611111111,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     true,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     "4a",
+     null,
+     null,
+     null,
+     null
+    ],
+    "raw_text": "4a",
+    "n_kode_terbaca": 1,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 0.956,
+    "expected_jam_label": "11.00 - 12.00"
+   },
+   {
+    "block_idx": 5,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "skipped_model": true,
+    "elapsed_sec": 0.0,
+    "expected_jam_label": "12.00 - 13.00"
+   },
+   {
+    "block_idx": 6,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "skipped_model": true,
+    "elapsed_sec": 0.0,
+    "expected_jam_label": "13.00 - 14.00"
+   },
+   {
+    "block_idx": 7,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.19010416666666666
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     true
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     "0"
+    ],
+    "raw_text": "0",
+    "n_kode_terbaca": 1,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 0.877,
+    "expected_jam_label": "14.00 - 15.00"
+   }
+  ]
+ },
+ "meta": {
+  "reader": "trocr",
+  "trocr_model": "microsoft/trocr-small-handwritten",
+  "mode": "kandidat",
+  "hapus_garis": true,
+  "padatkan": true,
+  "geometry_path": "fast",
+  "refine_quality": "partial",
+  "geometry_seconds": 1.88,
+  "model_load_seconds": 6.21,
+  "n_model_calls": 5,
+  "model_seconds": 6.51,
+  "elapsed_seconds": 18.5
+ }
+}

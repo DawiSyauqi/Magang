@@ -1,0 +1,262 @@
+{
+ "status": "success",
+ "data": {
+  "shift": "2",
+  "blocks": [
+   {
+    "block_idx": 0,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "skipped_model": true,
+    "elapsed_sec": 0.0,
+    "expected_jam_label": "15.00 - 16.00"
+   },
+   {
+    "block_idx": 1,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "skipped_model": true,
+    "elapsed_sec": 0.0,
+    "expected_jam_label": "16.00 - 17.00"
+   },
+   {
+    "block_idx": 2,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "skipped_model": true,
+    "elapsed_sec": 0.0,
+    "expected_jam_label": "17.00 - 18.00"
+   },
+   {
+    "block_idx": 3,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "skipped_model": true,
+    "elapsed_sec": 0.0,
+    "expected_jam_label": "18.00 - 19.00"
+   },
+   {
+    "block_idx": 4,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "skipped_model": true,
+    "elapsed_sec": 0.0,
+    "expected_jam_label": "19.00 - 20.00"
+   },
+   {
+    "block_idx": 5,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "skipped_model": true,
+    "elapsed_sec": 0.0,
+    "expected_jam_label": "20.00 - 21.00"
+   },
+   {
+    "block_idx": 6,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "skipped_model": true,
+    "elapsed_sec": 0.0,
+    "expected_jam_label": "21.00 - 22.00"
+   },
+   {
+    "block_idx": 7,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "skipped_model": true,
+    "elapsed_sec": 0.0,
+    "expected_jam_label": "22.00 - 23.00"
+   }
+  ]
+ },
+ "meta": {
+  "reader": "trocr",
+  "trocr_model": "microsoft/trocr-small-handwritten",
+  "mode": "kandidat",
+  "hapus_garis": true,
+  "padatkan": true,
+  "geometry_path": "fast",
+  "refine_quality": "good",
+  "geometry_seconds": 1.42,
+  "model_load_seconds": 0.0,
+  "n_model_calls": 0,
+  "model_seconds": 0.0,
+  "elapsed_seconds": 1.4
+ }
+}

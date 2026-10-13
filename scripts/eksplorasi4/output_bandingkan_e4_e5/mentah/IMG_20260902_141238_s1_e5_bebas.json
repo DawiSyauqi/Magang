@@ -1,0 +1,277 @@
+{
+ "status": "needs_manual_review",
+ "data": {
+  "shift": "1",
+  "blocks": [
+   {
+    "block_idx": 0,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.18055555555555555,
+     0.2035590277777778
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     true,
+     true
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     "in",
+     "an"
+    ],
+    "raw_text": "in an",
+    "n_kode_terbaca": 2,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 0.964,
+    "expected_jam_label": "07.00 - 08.00"
+   },
+   {
+    "block_idx": 1,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "skipped_model": true,
+    "elapsed_sec": 0.0,
+    "expected_jam_label": "08.00 - 09.00"
+   },
+   {
+    "block_idx": 2,
+    "cell_ink": [
+     0.0,
+     0.2361111111111111,
+     0.0,
+     0.1684027777777778,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     true,
+     false,
+     true,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     "in",
+     null,
+     "an",
+     null,
+     null
+    ],
+    "raw_text": "in an",
+    "n_kode_terbaca": 2,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 0.895,
+    "expected_jam_label": "09.00 - 10.00"
+   },
+   {
+    "block_idx": 3,
+    "cell_ink": [
+     0.0,
+     0.15538194444444445,
+     0.0,
+     0.0,
+     0.10026041666666667,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     true,
+     false,
+     false,
+     true,
+     false
+    ],
+    "kotak": [
+     null,
+     "are",
+     null,
+     null,
+     "not",
+     null
+    ],
+    "raw_text": "are not",
+    "n_kode_terbaca": 2,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 0.791,
+    "expected_jam_label": "10.00 - 11.00"
+   },
+   {
+    "block_idx": 4,
+    "cell_ink": [
+     0.0,
+     0.1462673611111111,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     true,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     "ac",
+     null,
+     null,
+     null,
+     null
+    ],
+    "raw_text": "ac",
+    "n_kode_terbaca": 1,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 0.955,
+    "expected_jam_label": "11.00 - 12.00"
+   },
+   {
+    "block_idx": 5,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "skipped_model": true,
+    "elapsed_sec": 0.0,
+    "expected_jam_label": "12.00 - 13.00"
+   },
+   {
+    "block_idx": 6,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "skipped_model": true,
+    "elapsed_sec": 0.0,
+    "expected_jam_label": "13.00 - 14.00"
+   },
+   {
+    "block_idx": 7,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.19010416666666666
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     true
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     "#"
+    ],
+    "raw_text": "#",
+    "n_kode_terbaca": 1,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 0.696,
+    "expected_jam_label": "14.00 - 15.00"
+   }
+  ]
+ },
+ "meta": {
+  "reader": "trocr",
+  "trocr_model": "microsoft/trocr-small-handwritten",
+  "mode": "bebas",
+  "hapus_garis": true,
+  "padatkan": true,
+  "geometry_path": "fast",
+  "refine_quality": "partial",
+  "geometry_seconds": 1.8,
+  "model_load_seconds": 6.26,
+  "n_model_calls": 5,
+  "model_seconds": 4.3,
+  "elapsed_seconds": 16.0
+ }
+}

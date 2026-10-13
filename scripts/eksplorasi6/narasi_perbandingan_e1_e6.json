@@ -1,0 +1,134 @@
+{
+ "judul": "Perbandingan & Rekomendasi Eksplorasi 1–6",
+ "subjudul": "Modul ekstraksi foto formulir \"Laporan Proses Drawing Harian\" · rangkuman dari laporan Evaluasi Visual Eksplorasi (E1–E2), Hasil Perbandingan Eksplorasi 1 vs 2, Evaluasi Visual Eksplorasi 4 vs 5, dan Evaluasi Visual Eksplorasi 6 · 11 Oktober 2026",
+ "bagian": [
+  {
+   "judul": "Kesimpulan singkat",
+   "isi": [
+    {"jenis": "kotak", "warna": "ok", "judul": "Rekomendasi: kembangkan Eksplorasi 6 (foto seluruh halaman) dengan pembaca kotak E4 + konfirmasi operator.",
+     "baris": [
+      "• Satu foto menggantikan 2 foto + 3 klik titik di alur sekarang; header, Size/Speed, Operator dan Lost time dibaca sekaligus.",
+      "• Lost time 90,0% kotak berisi benar tanpa bantuan, 98,2% setelah operator mengecek ±1 dari 5 kotak — setara E4 (91,0% / 98,7%) dan jauh di atas E1 (54,2%) & E2 (85,7%).",
+      "• Berjalan di CPU tanpa Ollama/GPU dan tanpa melatih model; hasilnya selalu berupa kode yang sah (0–8 + a–k, atau x).",
+      "• Syarat sebelum dipakai: uji ulang di 5–10 lembar baru (data E1–E6 hanya 2 lembar), dan nama operator selalu dikonfirmasi."
+     ]},
+    {"jenis": "tabel", "kolom": ["Peringkat", "Eksplorasi", "Alasan singkat"], "lebar_cm": [2.2, 6.3, 17.5],
+     "baris": [
+      ["1", ["E6 · foto utuh + TrOCR", "ok"], "Akurasi Lost time setara E4, plus header otomatis, 1 foto, tanpa klik, tanpa GPU."],
+      ["2", ["E4 · close-up + TrOCR per kotak", "ok"], "Akurasi tertinggi di foto close-up (91,0%); butuh foto kedua untuk header (alur 2 section tetap)."],
+      ["3", "E2 · close-up + Ollama per blok", "85,7%, tetapi hasil berubah antar-run, butuh GPU/Ollama, dan bisa menulis kode tidak sah (\"41\", \"00\", \"x\")."],
+      ["4", "E5 · close-up + TrOCR per blok", "74,4%: TrOCR kurang andal membaca 6 kode sekaligus dalam 1 gambar."],
+      ["5", "E1 · close-up + Ollama per kotak", "54,2%: Ollama 3B sulit membaca 1 kotak tanpa konteks (\"0\" → \"?\"/\"0x\") dan paling lambat."],
+      ["–", ["E3 · foto utuh tanpa crop + Ollama", "warn"], "Tidak ada hasil terukur dengan kunci jawaban; pendekatan \"model mencari sendiri\" ditinggalkan (lihat bagian E3)."]
+     ],
+     "catatan": "Akurasi = kotak berisi tulisan yang benar, tanpa membedakan huruf besar/kecil (aplikasi menormalkan ke huruf kecil lewat ProblemCodeConverter)."}
+   ]
+  },
+  {
+   "judul": "Pertanyaan: apakah posisi blok & field ditulis manual?",
+   "isi": [
+    {"jenis": "paragraf", "teks": "Jawaban singkat: TIDAK per foto, tetapi YA sekali saat menyiapkan template formulir. Operator tidak pernah mengisi koordinat; semua posisi di setiap foto ditemukan otomatis. Namun setiap pendekatan berbasis geometri membutuhkan \"peta\" formulir yang dibuat SEKALI dari satu foto referensi, mirip cetakan (template). Rinciannya:"},
+    {"jenis": "tabel", "kolom": ["Pendekatan", "Per foto (saat dipakai operator)", "Sekali saat menyiapkan template (oleh pengembang)", "Yang tetap otomatis"],
+     "lebar_cm": [4.2, 5.6, 9.0, 7.2],
+     "baris": [
+      ["Alur produksi sekarang", ["Operator mengklik 3 titik sudut grid di foto close-up", "bad"], "Potongan header & tabel Data Material memakai fraksi posisi tetap (mis. header 0–12,5% tinggi foto; Size/Speed 8–48%).", "Batas baris & blok dicari dari struktur garis setelah foto diluruskan dengan 3 titik."],
+      ["E1 · E2 · E4 · E5", ["Tidak ada", "ok"], "Dari foto referensi close-up 134505: batas kiri & kanan grid diisi sebagai angka (0,164 dan 0,8558 lebar foto); baris Jam dicari OCR, baris Lost time dari rasio empiris; 49 garis kolom dibagi rata.", "Homography ORB memetakan peta ke tiap foto, lalu refine_grid menempelkan setiap garis ke garis cetak yang sebenarnya (koreksi miring, perspektif, kertas melengkung)."],
+      ["E3", ["Tidak ada", "ok"], "Tidak ada koordinat sama sekali — prompt hanya mendeskripsikan letak baris shift & blok jam.", "Model Ollama sendiri yang harus menemukan baris & blok (dan di sinilah kelemahannya)."],
+      ["E6", ["Tidak ada", "ok"], "Bingkai formulir di foto referensi 143018 dideteksi otomatis (kontur terbesar) lalu disimpan; di kanvas 3400 × 2330 px saya menuliskan kotak field (tanggal, mesin, shift, operator, Size, Speed), posisi kasar baris Lost time, dan area isian yang dimasker.", "SIFT memetakan foto ke kanvas; baris Lost time ditempelkan ke garis cetak (refine_grid); dalam kotak field, posisi tulisan dicari dari tinta, kotak field sengaja dibuat longgar."]
+     ],
+     "catatan": "Peta formulir hanya mendeskripsikan cetakan formulir, bukan isi atau posisi foto. Karena formulir tidak akan berubah (dikonfirmasi pemilik proyek), peta cukup dibuat sekali. Bila formulir berganti, peta dibuat ulang sekali dari 1 foto formulir baru (beberapa menit)."},
+    {"jenis": "poin", "daftar": [
+     ["Kenapa tidak dibuat sepenuhnya otomatis (tanpa peta)?", "Pendekatan tanpa peta sudah dicoba: transformasi Hough global (gagal — jumlah blok berlebih/tertukar, dicatat di laporan E1 vs E2 dan laporan KP) dan E3 (model mencari sendiri). Keduanya kalah andal dari \"peta + penempelan ke garis cetak\"."],
+     ["Peta TIDAK harus presisi.", "Posisi dari peta hanya titik awal: garis Lost time ditempelkan ke garis cetak sebenarnya (jendela ±1,5 kotak), dan kotak field E6 dibuat longgar lalu tulisan dicari dari tinta. Di semua foto uji, garis hasil akhir menempel ke garis cetak (dicek visual di laporan E1 vs E2)."]
+    ]}
+   ]
+  },
+  {
+   "judul": "Ringkasan tiap eksplorasi",
+   "halaman_baru": true,
+   "isi": [
+    {"jenis": "tabel",
+     "kolom": ["", "Foto", "Cari posisi", "Pembaca tulisan", "Lost time berisi benar", "+ konfirmasi", "Header", "Waktu / foto", "Butuh"],
+     "lebar_cm": [1.4, 2.7, 3.6, 3.6, 3.0, 2.6, 3.0, 3.0, 3.1],
+     "baris": [
+      ["E1", "close-up", "ORB + refine ke garis cetak", "Ollama qwen2.5vl:3b, 1 kotak/panggilan", ["54,2%", "bad"], "–", "tidak", "±33 dtk (jarang) – ±155 dtk (padat)", "GPU + Ollama"],
+      ["E2", "close-up", "sama dgn E1", "Ollama, 6 kotak (1 blok)/panggilan", ["85,7%", "warn"], "–", "tidak", "±42–56 dtk – ±75–90 dtk", "GPU + Ollama"],
+      ["E3", "foto utuh", "tidak ada (model mencari sendiri)", "Ollama, foto utuh dikirim 8×", ["tidak terukur", "warn"], "–", "tidak", "–", "GPU + Ollama"],
+      ["E4", "close-up", "sama dgn E1", "TrOCR small, kandidat kode sah per kotak", ["91,0%", "ok"], ["98,7%", "ok"], "tidak", "±22 dtk – ±57 dtk", "CPU saja"],
+      ["E5", "close-up", "sama dgn E2", "TrOCR small, 1 blok per panggilan", ["74,4%", "bad"], "–", "tidak", "±22 dtk – ±41 dtk", "CPU saja"],
+      ["E6", "foto utuh", "SIFT thd peta formulir + refine", "TrOCR small: kotak = E4; field sesuai isinya", ["90,0%", "ok"], ["98,2%", "ok"], ["5 dari 6 field 7/7; operator tidak andal", "ok"], "±41 dtk – ±75 dtk (2 baris + header)", "CPU saja"]
+     ],
+     "catatan": "E1, E2, E4, E5 dinilai di 12 foto close-up (images, 301 kotak berisi); E6 di 7 foto utuh (fullimg, 220 kotak berisi) dari 2 lembar yang SAMA. Waktu tidak sebanding langsung: E1/E2 diukur dengan Ollama, E4–E6 di CPU laptop (i5-7200U, tanpa GPU); E1–E5 per foto per shift, E6 per foto (header + semua baris bertinta). Akurasi eksak (huruf besar/kecil harus sama): E1 54,2%, E2 83,4%, E4 83,7%, E5 67,4%, E6 84,1%."},
+    {"jenis": "sub", "teks": "E1 — close-up, Ollama per kotak"},
+    {"jenis": "poin", "daftar": [
+     ["Kontribusi utama:", "geometri yang tepat — homography ORB + refine_grid menempelkan garis ke garis cetak (12/12 foto berhasil, dicek visual), deteksi kotak kosong dari tinta (kosong selalu benar), jalur cepat tanpa OSD/OCR (1–2 dtk). Geometri ini dipakai ulang E2, E4, E5 dan menjadi dasar E6."],
+     ["Kelemahan:", "Ollama 3B membaca 1 kotak tanpa konteks: \"0\" dijawab \"?\" (34×) atau \"0x\" (22×); lembar padat ±155 dtk (48 panggilan)."]
+    ]},
+    {"jenis": "sub", "teks": "E2 — close-up, Ollama per blok"},
+    {"jenis": "poin", "daftar": [
+     ["Kelebihan:", "konteks 6 kotak membantu model 3B; jauh lebih baik dari E1 (85,7%) dan lebih cepat di lembar padat."],
+     ["Kelemahan:", "hasil berubah antar-run (foto 134505: 20/47, 28/47, 31/47 di uji berbeda); blok penuh \"0\" dibaca \"x\"; jawaban di luar format (\"41\", \"00\"); butuh GPU + Ollama."]
+    ]},
+    {"jenis": "sub", "teks": "E3 — foto utuh tanpa crop, Ollama mencari sendiri"},
+    {"jenis": "poin", "daftar": [
+     ["Status:", "kodenya ada (scripts/eksplorasi3) tetapi tidak ada hasil yang dinilai dengan kunci jawaban di laporan mana pun, dan tidak bisa dijalankan ulang di laptop uji (Ollama tidak terpasang)."],
+     ["Catatan dari laporan KP:", "membaca seluruh formulir dalam satu foto oleh model gagal di tabel berpetak kecil — tiap petak hanya terwakili sedikit piksel — sehingga alur dipecah menjadi 2 section."],
+     ["Pelajaran untuk E6:", "masalahnya bukan foto utuh itu sendiri, tetapi menyerahkan pencarian posisi ke model. E6 tetap memakai foto utuh, tetapi posisi dicari dengan geometri lalu setiap kotak dipotong & diperbesar sebelum dibaca — hasilnya setara foto close-up."]
+    ]},
+    {"jenis": "sub", "teks": "E4 — close-up, TrOCR per kotak dengan kandidat kode sah"},
+    {"jenis": "poin", "daftar": [
+     ["Kelebihan:", "akurasi tertinggi (91,0%; lembar padat 93,1%), deterministik (hasil sama tiap run), selalu kode sah, CPU saja, tanpa pelatihan. Skor tiap kandidat memberi ukuran keyakinan: dengan ambang 0,85, 21,6% kotak ditandai, 23 dari 27 kesalahan tertangkap, benar akhir 98,7%; ambang yang dipilih dari 2 foto tuning memberi 98,4–99,6% di 10 foto lain."],
+     ["Kelemahan:", "tetap foto close-up → header masih butuh foto/section lain; huruf besar/kecil sering tertukar (22 dari 49 kesalahan eksak); \"7b\" sering dibaca \"1b\"."]
+    ]},
+    {"jenis": "sub", "teks": "E5 — close-up, TrOCR per blok"},
+    {"jenis": "poin", "daftar": [
+     ["Hasil:", "74,4% — TrOCR (dilatih pada baris teks bahasa Inggris) kurang andal membaca 6 kode yang dipisah garis kotak sekaligus, walau garis dihapus & kotak kosong dirapatkan. Kebalikan dari Ollama: untuk TrOCR, per kotak lebih baik daripada per blok."]
+    ]},
+    {"jenis": "sub", "teks": "E6 — foto utuh, peta formulir + TrOCR"},
+    {"jenis": "poin", "daftar": [
+     ["Geometri 7/7,", "termasuk foto diputar 90° dan foto jauh (formulir ±36% luas foto); peta hanya memakai titik fitur cetakan sehingga tidak bergantung isi lembar."],
+     ["Header:", "tanggal, mesin, shift, Size, Speed 7/7 (pola regex & pembacaan angka per karakter; cek kalender menemukan \"Senin, 3-08-2025\" yang sebenarnya Minggu). Operator tidak andal (nama bercoret terbaca kata lain)."],
+     ["Lost time:", "90,0% → 98,2% dengan konfirmasi; satu-satunya kesalahan yang lolos adalah kotak \"2a\" mirip \"2D\" — kotak yang juga lolos di E4."],
+     ["Catatan:", "cara membaca header disusun dari 7 foto yang sama dengan pengujian (2 lembar) — angka header belum tervalidasi di lembar lain."]
+    ]}
+   ]
+  },
+  {
+   "judul": "Perbandingan per aspek",
+   "halaman_baru": true,
+   "isi": [
+    {"jenis": "tabel", "kolom": ["Aspek", "Ollama (E1/E2/E3, alur sekarang)", "TrOCR (E4/E5/E6)", "Paling baik"], "lebar_cm": [4.0, 8.5, 8.5, 5.0],
+     "baris": [
+      ["Akurasi Lost time", "E2 85,7% terbaik; E1 54,2%", "E4 91,0%, E6 90,0%; E5 74,4%", ["E4 ≈ E6", "ok"]],
+      ["Konsistensi", "berubah antar-run (temperature ≈ 0 pun tetap bervariasi)", "deterministik — foto sama, hasil sama", ["TrOCR", "ok"]],
+      ["Format jawaban", "bisa di luar format (\"41\", \"00\", \"0x\", \"?\")", "dipaksa kode sah (0–8 + a–k, atau x)", ["TrOCR", "ok"]],
+      ["Ukuran keyakinan", "tidak ada (model hanya memberi teks)", "peluang tiap kandidat → kotak ragu + 3 kandidat untuk operator", ["TrOCR", "ok"]],
+      ["Perangkat keras", "GPU dengan VRAM ±6 GB (laporan KP), Ollama di server", "CPU biasa, model ±250 MB, tanpa server AI", ["TrOCR", "ok"]],
+      ["Membaca teks bebas (nama operator, mesin)", "lebih fleksibel, sudah dipakai di Section 1", "terbatas; perlu pola/daftar, nama bercoret gagal", ["Ollama", "warn"]],
+      ["Jumlah foto & tindakan operator", "2 foto + 3 klik (alur sekarang); E1/E2 tetap butuh foto header terpisah", "E4/E5: 2 foto; E6: 1 foto, tanpa klik", ["E6", "ok"]],
+      ["Ketahanan foto", "geometri E1/E2 andal di close-up; foto buram gagal di semua metode", "E6: andal di foto utuh, diputar, jauh; belum diuji pencahayaan buruk/buram", ["seri", "warn"]]
+     ]}
+   ]
+  },
+  {
+   "judul": "Rekomendasi pengembangan",
+   "isi": [
+    {"jenis": "poin", "daftar": [
+     ["1 · Jadikan E6 arah pengembangan utama.", "Satu endpoint baru menggantikan Section 1 + Section 2: Laravel memanggil scripts/eksplorasi6/baca_fullpage_eksplorasi.py (envelope JSON sama gaya dengan skrip sekarang), hasilnya masuk ke PaperExtractionProcessor seperti alur sekarang (grid_waktu per baris shift + header)."],
+     ["2 · Validasi dulu dengan data baru.", "Kumpulkan 5–10 foto utuh dari lembar & penulis berbeda beserta kuncinya, jalankan bandingkan_e6.py TANPA mengubah ambang/pola. Target: Lost time ≥ 88% tanpa konfirmasi dan ≥ 97% dengan konfirmasi; field header ≥ 90%. Bila turun jauh, sesuaikan di data baru ini, lalu uji lagi di set lain."],
+     ["3 · Layar konfirmasi operator.", "Tampilkan kotak Lost time ragu (keyakinan < 0,85) dengan 3 kandidat untuk diklik; operator (selalu, dicocokkan ke master operator lewat OperatorMatcher); mesin (lewat MesinResolver + alias, seperti sekarang); shift dengan peluang < 0,85; tanggal tidak valid atau nama hari tidak cocok kalender; digit Size/Speed dengan keyakinan rendah."],
+     ["4 · Pertahankan Ollama hanya bila perlu.", "Bila server GPU tetap ada, Ollama bisa dipakai khusus untuk teks bebas (nama operator, cadangan mesin); Lost time & angka tetap TrOCR. Bila tidak, E6 berjalan penuh di CPU — menghapus kebutuhan GPU 6 GB."],
+     ["5 · Instruksi foto untuk operator.", "Seluruh formulir masuk frame (keempat sisi terlihat), sejajar, pencahayaan rata, tidak buram. Foto yang gagal dipetakan otomatis mendapat status needs_retake."],
+     ["6 · Simpan E4 sebagai cadangan.", "Bila suatu saat foto close-up tetap diperlukan (mis. formulir terlalu besar untuk satu foto), pembaca kotak E4 + geometri E1 sudah teruji di 12 foto close-up."],
+     ["7 · Yang tidak disarankan dilanjutkan:", "E1 & E5 (akurasi rendah), E3 (model mencari posisi sendiri), dan klik 3 titik manual (sudah tergantikan geometri otomatis)."]
+    ]},
+    {"jenis": "sub", "teks": "Keterbatasan seluruh eksplorasi"},
+    {"jenis": "poin", "daftar": [
+     ["Data uji sedikit:", "semua foto (12 close-up + 7 utuh) berasal dari 2 lembar formulir, kemungkinan 1 penulis. Kunci jawaban disusun dari pengamatan visual, bukan data resmi."],
+     ["Belum diuji:", "foto dengan pencahayaan buruk, resolusi kamera rendah, sudut ekstrem, dan formulir yang terpotong di tepi foto."],
+     ["Waktu pada perangkat berbeda:", "angka waktu E1/E2 (Ollama) dan E4–E6 (CPU laptop) tidak diukur di mesin yang sama."]
+    ]}
+   ]
+  }
+ ]
+}

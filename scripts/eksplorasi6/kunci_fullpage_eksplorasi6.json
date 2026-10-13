@@ -1,0 +1,22 @@
+{
+ "_catatan": [
+  "Kunci jawaban EKSPLORASI 6 (foto seluruh halaman di folder fullimg).",
+  "Header/Size/Speed/Operator disalin manual dari foto resolusi penuh; null = field kosong.",
+  "Lost time memakai kunci yg SAMA dgn E1-E5 (../kunci_jawaban_eksplorasi.json, kunci 'lembar') krn 7 foto ini memotret 2 lembar yg sama: lembar_padat (4 foto) & lembar_jarang (3 foto) -- dicek dari pola kotak bertinta (48+2 vs 8 kotak) & isi header.",
+  "operator lembar_padat: tertulis 'Sugiyanto' dgn garis coret tipis di tengah (kata sebelumnya dicoret tebal) -- PERLU DIKONFIRMASI pemilik proyek apakah ini nama yg berlaku.",
+  "tanggal lembar_jarang: tertulis 'Senin, 3-08-2025' padahal 3 Agustus 2025 = Minggu (3 Agustus 2026 = Senin) -- ditranskrip apa adanya."
+ ],
+ "foto": {
+  "IMG_20261011_143018": "lembar_padat",
+  "IMG_20261011_143022": "lembar_padat",
+  "IMG_20261011_143029": "lembar_padat",
+  "IMG_20261011_143036": "lembar_padat",
+  "IMG_20261011_143042": "lembar_jarang",
+  "IMG_20261011_143050": "lembar_jarang",
+  "IMG_20261011_143055": "lembar_jarang"
+ },
+ "header": {
+  "lembar_padat": {"tanggal": "Sabtu, 13-06-2026", "mesin": "AN1", "shift": "1", "operator": "Sugiyanto", "size": null, "speed": null},
+  "lembar_jarang": {"tanggal": "Senin, 3-08-2025", "mesin": "AN1", "shift": "1", "operator": null, "size": "00.80 MM", "speed": 3.6}
+ }
+}

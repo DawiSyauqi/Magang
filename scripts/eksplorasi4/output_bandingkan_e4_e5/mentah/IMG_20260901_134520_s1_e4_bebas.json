@@ -1,0 +1,389 @@
+{
+ "status": "success",
+ "data": {
+  "shift": "1",
+  "blocks": [
+   {
+    "block_idx": 0,
+    "kotak": [
+     "vii",
+     "to",
+     "la",
+     "lb.",
+     "16",
+     "id"
+    ],
+    "cell_ink": [
+     0.2248263888888889,
+     0.3415798611111111,
+     0.19791666666666666,
+     0.2092013888888889,
+     0.14930555555555555,
+     0.18489583333333334
+    ],
+    "calls": [
+     {
+      "kolom": 1,
+      "elapsed_sec": 0.882
+     },
+     {
+      "kolom": 2,
+      "elapsed_sec": 0.717
+     },
+     {
+      "kolom": 3,
+      "elapsed_sec": 0.731
+     },
+     {
+      "kolom": 4,
+      "elapsed_sec": 0.734
+     },
+     {
+      "kolom": 5,
+      "elapsed_sec": 0.732
+     },
+     {
+      "kolom": 6,
+      "elapsed_sec": 0.784
+     }
+    ],
+    "expected_jam_label": "07.00 - 08.00"
+   },
+   {
+    "block_idx": 1,
+    "kotak": [
+     "0",
+     "0",
+     "0'",
+     "sp",
+     "' 0",
+     "0"
+    ],
+    "cell_ink": [
+     0.1566840277777778,
+     0.10026041666666667,
+     0.1328125,
+     0.5355902777777778,
+     0.13671875,
+     0.0993923611111111
+    ],
+    "calls": [
+     {
+      "kolom": 1,
+      "elapsed_sec": 0.723
+     },
+     {
+      "kolom": 2,
+      "elapsed_sec": 0.772
+     },
+     {
+      "kolom": 3,
+      "elapsed_sec": 0.732
+     },
+     {
+      "kolom": 4,
+      "elapsed_sec": 0.734
+     },
+     {
+      "kolom": 5,
+      "elapsed_sec": 0.866
+     },
+     {
+      "kolom": 6,
+      "elapsed_sec": 0.866
+     }
+    ],
+    "expected_jam_label": "08.00 - 09.00"
+   },
+   {
+    "block_idx": 2,
+    "kotak": [
+     "20",
+     "ab",
+     "qc",
+     "2d",
+     "je",
+     "2f"
+    ],
+    "cell_ink": [
+     0.2052951388888889,
+     0.19270833333333334,
+     0.17100694444444445,
+     0.1957465277777778,
+     0.1909722222222222,
+     0.1540798611111111
+    ],
+    "calls": [
+     {
+      "kolom": 1,
+      "elapsed_sec": 0.816
+     },
+     {
+      "kolom": 2,
+      "elapsed_sec": 0.869
+     },
+     {
+      "kolom": 3,
+      "elapsed_sec": 0.797
+     },
+     {
+      "kolom": 4,
+      "elapsed_sec": 0.902
+     },
+     {
+      "kolom": 5,
+      "elapsed_sec": 0.815
+     },
+     {
+      "kolom": 6,
+      "elapsed_sec": 0.844
+     }
+    ],
+    "expected_jam_label": "09.00 - 10.00"
+   },
+   {
+    "block_idx": 3,
+    "kotak": [
+     "3a",
+     "3b",
+     "36",
+     "3d",
+     "38",
+     "0"
+    ],
+    "cell_ink": [
+     0.2170138888888889,
+     0.20399305555555555,
+     0.15321180555555555,
+     0.2243923611111111,
+     0.1814236111111111,
+     0.08723958333333333
+    ],
+    "calls": [
+     {
+      "kolom": 1,
+      "elapsed_sec": 0.83
+     },
+     {
+      "kolom": 2,
+      "elapsed_sec": 0.842
+     },
+     {
+      "kolom": 3,
+      "elapsed_sec": 0.867
+     },
+     {
+      "kolom": 4,
+      "elapsed_sec": 0.841
+     },
+     {
+      "kolom": 5,
+      "elapsed_sec": 0.765
+     },
+     {
+      "kolom": 6,
+      "elapsed_sec": 0.868
+     }
+    ],
+    "expected_jam_label": "10.00 - 11.00"
+   },
+   {
+    "block_idx": 4,
+    "kotak": [
+     "' 0'",
+     "0",
+     "0",
+     "\" O.",
+     "\" 0",
+     "\" 0"
+    ],
+    "cell_ink": [
+     0.1150173611111111,
+     0.12760416666666666,
+     0.1115451388888889,
+     0.12152777777777778,
+     0.1423611111111111,
+     0.12760416666666666
+    ],
+    "calls": [
+     {
+      "kolom": 1,
+      "elapsed_sec": 0.928
+     },
+     {
+      "kolom": 2,
+      "elapsed_sec": 0.8
+     },
+     {
+      "kolom": 3,
+      "elapsed_sec": 0.75
+     },
+     {
+      "kolom": 4,
+      "elapsed_sec": 1.03
+     },
+     {
+      "kolom": 5,
+      "elapsed_sec": 1.217
+     },
+     {
+      "kolom": 6,
+      "elapsed_sec": 0.904
+     }
+    ],
+    "expected_jam_label": "11.00 - 12.00"
+   },
+   {
+    "block_idx": 5,
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "0",
+     ". 0",
+     "0"
+    ],
+    "cell_ink": [
+     0.12065972222222222,
+     0.1228298611111111,
+     0.11762152777777778,
+     0.11805555555555555,
+     0.125,
+     0.109375
+    ],
+    "calls": [
+     {
+      "kolom": 1,
+      "elapsed_sec": 0.865
+     },
+     {
+      "kolom": 2,
+      "elapsed_sec": 0.813
+     },
+     {
+      "kolom": 3,
+      "elapsed_sec": 0.781
+     },
+     {
+      "kolom": 4,
+      "elapsed_sec": 0.784
+     },
+     {
+      "kolom": 5,
+      "elapsed_sec": 0.756
+     },
+     {
+      "kolom": 6,
+      "elapsed_sec": 0.799
+     }
+    ],
+    "expected_jam_label": "12.00 - 13.00"
+   },
+   {
+    "block_idx": 6,
+    "kotak": [
+     "\" 0",
+     "10",
+     "10",
+     "\" o",
+     "10",
+     "\" O."
+    ],
+    "cell_ink": [
+     0.13932291666666666,
+     0.1449652777777778,
+     0.13975694444444445,
+     0.1293402777777778,
+     0.1384548611111111,
+     0.1462673611111111
+    ],
+    "calls": [
+     {
+      "kolom": 1,
+      "elapsed_sec": 0.888
+     },
+     {
+      "kolom": 2,
+      "elapsed_sec": 0.821
+     },
+     {
+      "kolom": 3,
+      "elapsed_sec": 0.779
+     },
+     {
+      "kolom": 4,
+      "elapsed_sec": 0.852
+     },
+     {
+      "kolom": 5,
+      "elapsed_sec": 0.818
+     },
+     {
+      "kolom": 6,
+      "elapsed_sec": 0.949
+     }
+    ],
+    "expected_jam_label": "13.00 - 14.00"
+   },
+   {
+    "block_idx": 7,
+    "kotak": [
+     "\" a",
+     "0",
+     "\" o",
+     "0",
+     "0",
+     "10"
+    ],
+    "cell_ink": [
+     0.11197916666666667,
+     0.12109375,
+     0.13411458333333334,
+     0.11588541666666667,
+     0.12022569444444445,
+     0.18446180555555555
+    ],
+    "calls": [
+     {
+      "kolom": 1,
+      "elapsed_sec": 0.797
+     },
+     {
+      "kolom": 2,
+      "elapsed_sec": 0.8
+     },
+     {
+      "kolom": 3,
+      "elapsed_sec": 0.82
+     },
+     {
+      "kolom": 4,
+      "elapsed_sec": 0.782
+     },
+     {
+      "kolom": 5,
+      "elapsed_sec": 0.819
+     },
+     {
+      "kolom": 6,
+      "elapsed_sec": 0.69
+     }
+    ],
+    "expected_jam_label": "14.00 - 15.00"
+   }
+  ]
+ },
+ "meta": {
+  "reader": "trocr",
+  "trocr_model": "microsoft/trocr-small-handwritten",
+  "mode": "bebas",
+  "hapus_garis": true,
+  "geometry_path": "fast",
+  "refine_quality": "good",
+  "geometry_seconds": 2.01,
+  "model_load_seconds": 5.83,
+  "n_model_calls": 48,
+  "model_seconds": 39.57,
+  "elapsed_seconds": 50.9
+ }
+}

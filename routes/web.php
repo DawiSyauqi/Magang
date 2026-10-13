@@ -66,6 +66,34 @@ Route::get('/preview/mesin-aliases', function () {
     ]);
 })->name('preview.mesin-aliases');
 
+// Uji coba AI Baca Kertas TANPA login & TANPA database (hasil berupa teks, tidak ada simpan).
+// Session & CSRF dimatikan krn SESSION_DRIVER=database butuh koneksi SQL Server.
+Route::prefix('test/paper-scan')->name('test.paper-scan.')
+    ->withoutMiddleware([
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+    ])
+    ->group(function () {
+        Route::get('/', fn () => view('test.paper-scan'))->name('index');
+        Route::post('/section1/analyze', [\App\Http\Controllers\TestPaperScanController::class, 'analyzeSection1'])->name('section1');
+        Route::post('/section2/analyze', [\App\Http\Controllers\TestPaperScanController::class, 'analyzeSection2'])->name('section2');
+        Route::post('/finalize', [\App\Http\Controllers\TestPaperScanController::class, 'finalize'])->name('finalize');
+    });
+
+// Uji coba Eksplorasi 4-6 (TrOCR, tanpa Ollama) TANPA login & TANPA database.
+Route::prefix('test/eksplorasi')->name('test.eksplorasi.')
+    ->withoutMiddleware([
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+    ])
+    ->group(function () {
+        Route::get('/', fn () => view('test.eksplorasi'))->name('index');
+        Route::post('/{versi}/analyze', [\App\Http\Controllers\TestEksplorasiController::class, 'analyze'])
+            ->whereIn('versi', ['e4', 'e5', 'e6'])->name('analyze');
+    });
+
 Route::middleware(['auth', 'menu.access'])->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 

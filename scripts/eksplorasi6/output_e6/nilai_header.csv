@@ -1,0 +1,8 @@
+﻿foto,lembar,status,total_dtk,geometri_dtk,field_dtk,lost_time_dtk,skala_px,tanggal,tanggal_benar,mesin,mesin_benar,shift,shift_benar,operator,operator_benar,size,size_benar,speed,speed_benar,tanggal_hari_cocok_kalender
+IMG_20261011_143018,lembar_padat,success,76.79333567619324,2.7,15.6,42.14,0.962,"Sabtu, 13-06-2026",True,AN1,True,1,True,Navigator,False,,True,,True,True
+IMG_20261011_143022,lembar_padat,success,75.24473237991333,2.49,17.07,40.39,1.0,"Sabtu, 13-06-2026",True,AN1,True,1,True,Navigator,False,,True,,True,True
+IMG_20261011_143029,lembar_padat,success,74.21981716156006,2.24,17.79,38.52,0.806,"Sabtu, 13-06-2026",True,AN1,True,1,True,Skylights,False,,True,,True,True
+IMG_20261011_143036,lembar_padat,success,74.25570869445801,2.2,17.87,38.88,0.761,"Sabtu, 13-06-2026",True,AN1,True,1,True,Skylights,False,,True,,True,True
+IMG_20261011_143042,lembar_jarang,success,46.8890061378479,2.54,17.49,7.04,1.147,"Senin, 3-08-2025",True,AN1,True,1,True,,True,00.80 MM,True,3.6,True,False
+IMG_20261011_143050,lembar_jarang,success,41.016488790512085,2.44,17.64,6.73,1.033,"Senin, 3-08-2025",True,AN1,True,1,True,,True,00.80 MM,True,3.6,True,False
+IMG_20261011_143055,lembar_jarang,success,40.98345232009888,1.71,17.73,6.79,0.713,"Senin, 3-08-2025",True,AN1,True,1,True,,True,00.80 MM,True,3.6,True,False

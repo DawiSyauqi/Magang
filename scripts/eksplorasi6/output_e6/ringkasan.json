@@ -1,0 +1,4126 @@
+{
+ "ringkasan": {
+  "header": {
+   "tanggal": "7/7",
+   "mesin": "7/7",
+   "shift": "7/7",
+   "operator": "3/7",
+   "size": "7/7",
+   "speed": "7/7"
+  },
+  "header_semua_field_benar": "3/7",
+  "lost_time_semua": {
+   "berisi_eksak": "185/220 (84.1%)",
+   "berisi_ci": "198/220 (90.0%)",
+   "semua_kotak": "633/668 (94.8%)"
+  },
+  "lost_time_lembar_padat": {
+   "berisi_eksak": "168/196 (85.7%)",
+   "berisi_ci": "175/196 (89.3%)",
+   "semua_kotak": "352/380 (92.6%)"
+  },
+  "lost_time_lembar_jarang": {
+   "berisi_eksak": "17/24 (70.8%)",
+   "berisi_ci": "23/24 (95.8%)",
+   "semua_kotak": "281/288 (97.6%)"
+  },
+  "hibrida": {
+   "kotak_berisi": 220,
+   "ditandai_ragu": "45 (20.5%)",
+   "salah": 22,
+   "salah_tertangkap": 18,
+   "benar_akhir": "98.2%",
+   "ragu_benar_di_top3": "38/45"
+  },
+  "rata_waktu_per_foto_dtk": 61.3
+ },
+ "header": [
+  {
+   "foto": "IMG_20261011_143018",
+   "lembar": "lembar_padat",
+   "status": "success",
+   "total_dtk": 76.79333567619324,
+   "geometri_dtk": 2.7,
+   "field_dtk": 15.6,
+   "lost_time_dtk": 42.14,
+   "skala_px": 0.962,
+   "tanggal": "Sabtu, 13-06-2026",
+   "tanggal_benar": true,
+   "mesin": "AN1",
+   "mesin_benar": true,
+   "shift": "1",
+   "shift_benar": true,
+   "operator": "Navigator",
+   "operator_benar": false,
+   "size": null,
+   "size_benar": true,
+   "speed": null,
+   "speed_benar": true,
+   "tanggal_hari_cocok_kalender": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "lembar": "lembar_padat",
+   "status": "success",
+   "total_dtk": 75.24473237991333,
+   "geometri_dtk": 2.49,
+   "field_dtk": 17.07,
+   "lost_time_dtk": 40.39,
+   "skala_px": 1.0,
+   "tanggal": "Sabtu, 13-06-2026",
+   "tanggal_benar": true,
+   "mesin": "AN1",
+   "mesin_benar": true,
+   "shift": "1",
+   "shift_benar": true,
+   "operator": "Navigator",
+   "operator_benar": false,
+   "size": null,
+   "size_benar": true,
+   "speed": null,
+   "speed_benar": true,
+   "tanggal_hari_cocok_kalender": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "lembar": "lembar_padat",
+   "status": "success",
+   "total_dtk": 74.21981716156006,
+   "geometri_dtk": 2.24,
+   "field_dtk": 17.79,
+   "lost_time_dtk": 38.52,
+   "skala_px": 0.806,
+   "tanggal": "Sabtu, 13-06-2026",
+   "tanggal_benar": true,
+   "mesin": "AN1",
+   "mesin_benar": true,
+   "shift": "1",
+   "shift_benar": true,
+   "operator": "Skylights",
+   "operator_benar": false,
+   "size": null,
+   "size_benar": true,
+   "speed": null,
+   "speed_benar": true,
+   "tanggal_hari_cocok_kalender": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "lembar": "lembar_padat",
+   "status": "success",
+   "total_dtk": 74.25570869445801,
+   "geometri_dtk": 2.2,
+   "field_dtk": 17.87,
+   "lost_time_dtk": 38.88,
+   "skala_px": 0.761,
+   "tanggal": "Sabtu, 13-06-2026",
+   "tanggal_benar": true,
+   "mesin": "AN1",
+   "mesin_benar": true,
+   "shift": "1",
+   "shift_benar": true,
+   "operator": "Skylights",
+   "operator_benar": false,
+   "size": null,
+   "size_benar": true,
+   "speed": null,
+   "speed_benar": true,
+   "tanggal_hari_cocok_kalender": true
+  },
+  {
+   "foto": "IMG_20261011_143042",
+   "lembar": "lembar_jarang",
+   "status": "success",
+   "total_dtk": 46.8890061378479,
+   "geometri_dtk": 2.54,
+   "field_dtk": 17.49,
+   "lost_time_dtk": 7.04,
+   "skala_px": 1.147,
+   "tanggal": "Senin, 3-08-2025",
+   "tanggal_benar": true,
+   "mesin": "AN1",
+   "mesin_benar": true,
+   "shift": "1",
+   "shift_benar": true,
+   "operator": null,
+   "operator_benar": true,
+   "size": "00.80 MM",
+   "size_benar": true,
+   "speed": "3.6",
+   "speed_benar": true,
+   "tanggal_hari_cocok_kalender": false
+  },
+  {
+   "foto": "IMG_20261011_143050",
+   "lembar": "lembar_jarang",
+   "status": "success",
+   "total_dtk": 41.016488790512085,
+   "geometri_dtk": 2.44,
+   "field_dtk": 17.64,
+   "lost_time_dtk": 6.73,
+   "skala_px": 1.033,
+   "tanggal": "Senin, 3-08-2025",
+   "tanggal_benar": true,
+   "mesin": "AN1",
+   "mesin_benar": true,
+   "shift": "1",
+   "shift_benar": true,
+   "operator": null,
+   "operator_benar": true,
+   "size": "00.80 MM",
+   "size_benar": true,
+   "speed": "3.6",
+   "speed_benar": true,
+   "tanggal_hari_cocok_kalender": false
+  },
+  {
+   "foto": "IMG_20261011_143055",
+   "lembar": "lembar_jarang",
+   "status": "success",
+   "total_dtk": 40.98345232009888,
+   "geometri_dtk": 1.71,
+   "field_dtk": 17.73,
+   "lost_time_dtk": 6.79,
+   "skala_px": 0.713,
+   "tanggal": "Senin, 3-08-2025",
+   "tanggal_benar": true,
+   "mesin": "AN1",
+   "mesin_benar": true,
+   "shift": "1",
+   "shift_benar": true,
+   "operator": null,
+   "operator_benar": true,
+   "size": "00.80 MM",
+   "size_benar": true,
+   "speed": "3.6",
+   "speed_benar": true,
+   "tanggal_hari_cocok_kalender": false
+  }
+ ],
+ "lost_time": [
+  {
+   "foto": "IMG_20261011_143018",
+   "lembar": "lembar_padat",
+   "shift": "1",
+   "status_baris": "success",
+   "benar": "41/47",
+   "berisi_benar": "41/47",
+   "berisi_benar_ci": "43/47",
+   "ragu": 6,
+   "salah_ci": 4,
+   "salah_tertangkap": 3,
+   "kotak": "4i 1b 1a 1b 1d 1d | 0 0 0 x 0 0 | 2D 2b 4 2d 2e 2f | 3a 3b 3C 3d 3e 0 | 0 0 0 0 0 0 | 0 0 0 0 0 0 | 0 0 0 0 0 0 | 0 0 0 0 0 1a"
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "lembar": "lembar_padat",
+   "shift": "2",
+   "status_baris": "success",
+   "benar": "47/48",
+   "berisi_benar": "1/2",
+   "berisi_benar_ci": "1/2",
+   "ragu": 1,
+   "salah_ci": 1,
+   "salah_tertangkap": 1,
+   "kotak": "1a 1b . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . ."
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "lembar": "lembar_padat",
+   "shift": "1",
+   "status_baris": "success",
+   "benar": "41/47",
+   "berisi_benar": "41/47",
+   "berisi_benar_ci": "43/47",
+   "ragu": 6,
+   "salah_ci": 4,
+   "salah_tertangkap": 3,
+   "kotak": "4i 1b 1a 1b 1d 1d | 0 0 0 x 0 0 | 2D 2b 4 2d 2e 2f | 3a 3b 3C 3d 3e 0 | 0 0 0 0 0 0 | 0 0 0 0 0 0 | 0 0 0 0 0 0 | 0 0 0 0 0 1a"
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "lembar": "lembar_padat",
+   "shift": "2",
+   "status_baris": "success",
+   "benar": "47/48",
+   "berisi_benar": "1/2",
+   "berisi_benar_ci": "1/2",
+   "ragu": 1,
+   "salah_ci": 1,
+   "salah_tertangkap": 1,
+   "kotak": "1a 1b . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . ."
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "lembar": "lembar_padat",
+   "shift": "1",
+   "status_baris": "success",
+   "benar": "41/47",
+   "berisi_benar": "41/47",
+   "berisi_benar_ci": "43/47",
+   "ragu": 10,
+   "salah_ci": 4,
+   "salah_tertangkap": 3,
+   "kotak": "4i 7b 1a 1b 1d 1d | 0 0 0 x 0 0 | 2D 2b 8C 2d 2e 2f | 3a 3b 3C 3d 3e 0 | 0 0 0 0 0 0 | 0 0 0 0 0 0 | 0 0 0 0 0 1a | 0 0 0 0 0 1a"
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "lembar": "lembar_padat",
+   "shift": "2",
+   "status_baris": "success",
+   "benar": "47/48",
+   "berisi_benar": "1/2",
+   "berisi_benar_ci": "1/2",
+   "ragu": 1,
+   "salah_ci": 1,
+   "salah_tertangkap": 1,
+   "kotak": "1a 1b . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . ."
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "lembar": "lembar_padat",
+   "shift": "1",
+   "status_baris": "success",
+   "benar": "41/47",
+   "berisi_benar": "41/47",
+   "berisi_benar_ci": "42/47",
+   "ragu": 12,
+   "salah_ci": 5,
+   "salah_tertangkap": 4,
+   "kotak": "4i 1b 1a 1b 6 1d | 0 0 0 x 0 0 | 2D 2b 8C 2d 2e 2f | 3a 3b 3d 3d 3e 0 | 0 0 0 0 0 0 | 0 0 0 0 0 0 | 0 0 0 0 0 0 | 0 0 0 0 0 1a"
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "lembar": "lembar_padat",
+   "shift": "2",
+   "status_baris": "success",
+   "benar": "47/48",
+   "berisi_benar": "1/2",
+   "berisi_benar_ci": "1/2",
+   "ragu": 1,
+   "salah_ci": 1,
+   "salah_tertangkap": 1,
+   "kotak": "1a 1b . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . ."
+  },
+  {
+   "foto": "IMG_20261011_143042",
+   "lembar": "lembar_jarang",
+   "shift": "1",
+   "status_baris": "success",
+   "benar": "45/48",
+   "berisi_benar": "5/8",
+   "berisi_benar_ci": "7/8",
+   "ragu": 3,
+   "salah_ci": 1,
+   "salah_tertangkap": 1,
+   "kotak": ". . . . 6a 6b | . . . . . . | . 7a . 2a . . | . 2f . . 3i . | . 3C . . . . | . . . . . . | . . . . . . | . . . . . x"
+  },
+  {
+   "foto": "IMG_20261011_143042",
+   "lembar": "lembar_jarang",
+   "shift": "2",
+   "status_baris": null,
+   "benar": "48/48",
+   "berisi_benar": "0/0",
+   "berisi_benar_ci": "0/0",
+   "ragu": 0,
+   "salah_ci": 0,
+   "salah_tertangkap": 0,
+   "kotak": ". . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . ."
+  },
+  {
+   "foto": "IMG_20261011_143050",
+   "lembar": "lembar_jarang",
+   "shift": "1",
+   "status_baris": "success",
+   "benar": "46/48",
+   "berisi_benar": "6/8",
+   "berisi_benar_ci": "8/8",
+   "ragu": 2,
+   "salah_ci": 0,
+   "salah_tertangkap": 0,
+   "kotak": ". . . . 6a 5b | . . . . . . | . 7a . 2a . . | . 2f . . 3i . | . 3C . . . . | . . . . . . | . . . . . . | . . . . . x"
+  },
+  {
+   "foto": "IMG_20261011_143050",
+   "lembar": "lembar_jarang",
+   "shift": "2",
+   "status_baris": null,
+   "benar": "48/48",
+   "berisi_benar": "0/0",
+   "berisi_benar_ci": "0/0",
+   "ragu": 0,
+   "salah_ci": 0,
+   "salah_tertangkap": 0,
+   "kotak": ". . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . ."
+  },
+  {
+   "foto": "IMG_20261011_143055",
+   "lembar": "lembar_jarang",
+   "shift": "1",
+   "status_baris": "success",
+   "benar": "46/48",
+   "berisi_benar": "6/8",
+   "berisi_benar_ci": "8/8",
+   "ragu": 2,
+   "salah_ci": 0,
+   "salah_tertangkap": 0,
+   "kotak": ". . . . 6a 5b | . . . . . . | . 7a . 2a . . | . 2f . . 3i . | . 3C . . . . | . . . . . . | . . . . . . | . . . . . x"
+  },
+  {
+   "foto": "IMG_20261011_143055",
+   "lembar": "lembar_jarang",
+   "shift": "2",
+   "status_baris": null,
+   "benar": "48/48",
+   "berisi_benar": "0/0",
+   "berisi_benar_ci": "0/0",
+   "ragu": 0,
+   "salah_ci": 0,
+   "salah_tertangkap": 0,
+   "kotak": ". . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . . | . . . . . ."
+  }
+ ],
+ "sel": [
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 1,
+   "kunci": "4i",
+   "e6": "4i",
+   "benar": true,
+   "keyakinan": 0.909,
+   "ragu": false,
+   "kandidat_3": [
+    "4i",
+    "4",
+    "4c"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 2,
+   "kunci": "7b",
+   "e6": "1b",
+   "benar": false,
+   "keyakinan": 0.616,
+   "ragu": true,
+   "kandidat_3": [
+    "1b",
+    "7b",
+    "2b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 3,
+   "kunci": "1a",
+   "e6": "1a",
+   "benar": true,
+   "keyakinan": 0.975,
+   "ragu": false,
+   "kandidat_3": [
+    "1a",
+    "1d",
+    "1"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 4,
+   "kunci": "1b",
+   "e6": "1b",
+   "benar": true,
+   "keyakinan": 0.987,
+   "ragu": false,
+   "kandidat_3": [
+    "1b",
+    "1d",
+    "7b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 5,
+   "kunci": "1c",
+   "e6": "1d",
+   "benar": false,
+   "keyakinan": 0.344,
+   "ragu": true,
+   "kandidat_3": [
+    "1d",
+    "6",
+    "1c"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 6,
+   "kunci": "1d",
+   "e6": "1d",
+   "benar": true,
+   "keyakinan": 0.947,
+   "ragu": false,
+   "kandidat_3": [
+    "1d",
+    "2d",
+    "0"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.998,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.987,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "5"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.986,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "0i",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.837,
+   "ragu": true,
+   "kandidat_3": [
+    "0",
+    "4",
+    "1"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.993,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "5"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 1,
+   "kunci": "2a",
+   "e6": "2D",
+   "benar": false,
+   "keyakinan": 0.87,
+   "ragu": false,
+   "kandidat_3": [
+    "2d",
+    "2c",
+    "1d"
+   ],
+   "benar_di_top3": false
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 2,
+   "kunci": "2b",
+   "e6": "2b",
+   "benar": true,
+   "keyakinan": 0.445,
+   "ragu": true,
+   "kandidat_3": [
+    "2b",
+    "4b",
+    "8b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 3,
+   "kunci": "2c",
+   "e6": "4",
+   "benar": false,
+   "keyakinan": 0.463,
+   "ragu": true,
+   "kandidat_3": [
+    "4",
+    "x",
+    "2"
+   ],
+   "benar_di_top3": false
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 4,
+   "kunci": "2d",
+   "e6": "2d",
+   "benar": true,
+   "keyakinan": 0.99,
+   "ragu": false,
+   "kandidat_3": [
+    "2d",
+    "1d",
+    "3d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 5,
+   "kunci": "2e",
+   "e6": "2e",
+   "benar": true,
+   "keyakinan": 0.895,
+   "ragu": false,
+   "kandidat_3": [
+    "2e",
+    "2c",
+    "1e"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 6,
+   "kunci": "2F",
+   "e6": "2f",
+   "benar": true,
+   "keyakinan": 0.996,
+   "ragu": false,
+   "kandidat_3": [
+    "2f",
+    "2d",
+    "2g"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 1,
+   "kunci": "3a",
+   "e6": "3a",
+   "benar": true,
+   "keyakinan": 0.985,
+   "ragu": false,
+   "kandidat_3": [
+    "3a",
+    "2a",
+    "3d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 2,
+   "kunci": "3b",
+   "e6": "3b",
+   "benar": true,
+   "keyakinan": 0.966,
+   "ragu": false,
+   "kandidat_3": [
+    "3b",
+    "3d",
+    "3h"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 3,
+   "kunci": "3c",
+   "e6": "3C",
+   "benar": true,
+   "keyakinan": 0.921,
+   "ragu": false,
+   "kandidat_3": [
+    "3c",
+    "3d",
+    "3g"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 4,
+   "kunci": "3d",
+   "e6": "3d",
+   "benar": true,
+   "keyakinan": 0.993,
+   "ragu": false,
+   "kandidat_3": [
+    "3d",
+    "2d",
+    "3c"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 5,
+   "kunci": "3e",
+   "e6": "3e",
+   "benar": true,
+   "keyakinan": 0.983,
+   "ragu": false,
+   "kandidat_3": [
+    "3e",
+    "3a",
+    "2e"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.997,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "7"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.999,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "8"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.991,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "5",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.988,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 4,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.737,
+   "ragu": true,
+   "kandidat_3": [
+    "0",
+    "6",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.955,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.933,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.961,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.908,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.98,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "5"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 4,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.95,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "5",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.925,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "5",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 1.0,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "8"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.993,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "7"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.994,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "5"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.998,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "1"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 4,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.968,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "5",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.999,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "8"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.985,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "8",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.953,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "5"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.997,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.99,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "7"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 4,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.984,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "5"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.993,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "5",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 6,
+   "kunci": "1a",
+   "e6": "1a",
+   "benar": true,
+   "keyakinan": 0.995,
+   "ragu": false,
+   "kandidat_3": [
+    "1a",
+    "1d",
+    "1c"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "2",
+   "blok": 0,
+   "kolom": 1,
+   "kunci": "1a",
+   "e6": "1a",
+   "benar": true,
+   "keyakinan": 0.989,
+   "ragu": false,
+   "kandidat_3": [
+    "1a",
+    "1d",
+    "2a"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143018",
+   "shift": "2",
+   "blok": 0,
+   "kolom": 2,
+   "kunci": "7b",
+   "e6": "1b",
+   "benar": false,
+   "keyakinan": 0.627,
+   "ragu": true,
+   "kandidat_3": [
+    "1b",
+    "7b",
+    "4b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 1,
+   "kunci": "4i",
+   "e6": "4i",
+   "benar": true,
+   "keyakinan": 0.888,
+   "ragu": false,
+   "kandidat_3": [
+    "4i",
+    "4",
+    "4c"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 2,
+   "kunci": "7b",
+   "e6": "1b",
+   "benar": false,
+   "keyakinan": 0.56,
+   "ragu": true,
+   "kandidat_3": [
+    "1b",
+    "7b",
+    "2b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 3,
+   "kunci": "1a",
+   "e6": "1a",
+   "benar": true,
+   "keyakinan": 0.99,
+   "ragu": false,
+   "kandidat_3": [
+    "1a",
+    "1d",
+    "7a"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 4,
+   "kunci": "1b",
+   "e6": "1b",
+   "benar": true,
+   "keyakinan": 0.994,
+   "ragu": false,
+   "kandidat_3": [
+    "1b",
+    "1d",
+    "7b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 5,
+   "kunci": "1c",
+   "e6": "1d",
+   "benar": false,
+   "keyakinan": 0.434,
+   "ragu": true,
+   "kandidat_3": [
+    "1d",
+    "1k",
+    "1h"
+   ],
+   "benar_di_top3": false
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 6,
+   "kunci": "1d",
+   "e6": "1d",
+   "benar": true,
+   "keyakinan": 0.954,
+   "ragu": false,
+   "kandidat_3": [
+    "1d",
+    "8",
+    "7d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.997,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.987,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "5"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.962,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "0i",
+    "0f"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.993,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "1"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.995,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "5",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 1,
+   "kunci": "2a",
+   "e6": "2D",
+   "benar": false,
+   "keyakinan": 0.883,
+   "ragu": false,
+   "kandidat_3": [
+    "2d",
+    "2c",
+    "2"
+   ],
+   "benar_di_top3": false
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 2,
+   "kunci": "2b",
+   "e6": "2b",
+   "benar": true,
+   "keyakinan": 0.47,
+   "ragu": true,
+   "kandidat_3": [
+    "2b",
+    "8b",
+    "4b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 3,
+   "kunci": "2c",
+   "e6": "4",
+   "benar": false,
+   "keyakinan": 0.713,
+   "ragu": true,
+   "kandidat_3": [
+    "4",
+    "x",
+    "2"
+   ],
+   "benar_di_top3": false
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 4,
+   "kunci": "2d",
+   "e6": "2d",
+   "benar": true,
+   "keyakinan": 0.98,
+   "ragu": false,
+   "kandidat_3": [
+    "2d",
+    "1d",
+    "3d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 5,
+   "kunci": "2e",
+   "e6": "2e",
+   "benar": true,
+   "keyakinan": 0.938,
+   "ragu": false,
+   "kandidat_3": [
+    "2e",
+    "2c",
+    "2a"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 6,
+   "kunci": "2F",
+   "e6": "2f",
+   "benar": true,
+   "keyakinan": 0.989,
+   "ragu": false,
+   "kandidat_3": [
+    "2f",
+    "2d",
+    "2g"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 1,
+   "kunci": "3a",
+   "e6": "3a",
+   "benar": true,
+   "keyakinan": 0.988,
+   "ragu": false,
+   "kandidat_3": [
+    "3a",
+    "2a",
+    "3d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 2,
+   "kunci": "3b",
+   "e6": "3b",
+   "benar": true,
+   "keyakinan": 0.973,
+   "ragu": false,
+   "kandidat_3": [
+    "3b",
+    "3d",
+    "3h"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 3,
+   "kunci": "3c",
+   "e6": "3C",
+   "benar": true,
+   "keyakinan": 0.835,
+   "ragu": true,
+   "kandidat_3": [
+    "3c",
+    "3d",
+    "3k"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 4,
+   "kunci": "3d",
+   "e6": "3d",
+   "benar": true,
+   "keyakinan": 0.997,
+   "ragu": false,
+   "kandidat_3": [
+    "3d",
+    "3c",
+    "2d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 5,
+   "kunci": "3e",
+   "e6": "3e",
+   "benar": true,
+   "keyakinan": 0.986,
+   "ragu": false,
+   "kandidat_3": [
+    "3e",
+    "2e",
+    "3a"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.997,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "7"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 1.0,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.998,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.995,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 4,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.952,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.961,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.879,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.986,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "8"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.997,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "8",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.977,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "5",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 4,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.963,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "5"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.935,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "5",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.996,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "7"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.994,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "8",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.996,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "5",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.995,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "8"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 4,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.964,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "5"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.999,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "8"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.982,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "8"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.831,
+   "ragu": true,
+   "kandidat_3": [
+    "0",
+    "4",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.988,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "1"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.988,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "7"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 4,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.986,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "7"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.967,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 6,
+   "kunci": "1a",
+   "e6": "1a",
+   "benar": true,
+   "keyakinan": 0.996,
+   "ragu": false,
+   "kandidat_3": [
+    "1a",
+    "2a",
+    "1d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "2",
+   "blok": 0,
+   "kolom": 1,
+   "kunci": "1a",
+   "e6": "1a",
+   "benar": true,
+   "keyakinan": 0.987,
+   "ragu": false,
+   "kandidat_3": [
+    "1a",
+    "1d",
+    "1g"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143022",
+   "shift": "2",
+   "blok": 0,
+   "kolom": 2,
+   "kunci": "7b",
+   "e6": "1b",
+   "benar": false,
+   "keyakinan": 0.636,
+   "ragu": true,
+   "kandidat_3": [
+    "1b",
+    "4b",
+    "7b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 1,
+   "kunci": "4i",
+   "e6": "4i",
+   "benar": true,
+   "keyakinan": 0.968,
+   "ragu": false,
+   "kandidat_3": [
+    "4i",
+    "4c",
+    "4d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 2,
+   "kunci": "7b",
+   "e6": "7b",
+   "benar": true,
+   "keyakinan": 0.859,
+   "ragu": false,
+   "kandidat_3": [
+    "7b",
+    "1b",
+    "7d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 3,
+   "kunci": "1a",
+   "e6": "1a",
+   "benar": true,
+   "keyakinan": 0.992,
+   "ragu": false,
+   "kandidat_3": [
+    "1a",
+    "1d",
+    "7a"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 4,
+   "kunci": "1b",
+   "e6": "1b",
+   "benar": true,
+   "keyakinan": 0.957,
+   "ragu": false,
+   "kandidat_3": [
+    "1b",
+    "7b",
+    "1d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 5,
+   "kunci": "1c",
+   "e6": "1d",
+   "benar": false,
+   "keyakinan": 0.418,
+   "ragu": true,
+   "kandidat_3": [
+    "1d",
+    "6",
+    "1c"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 6,
+   "kunci": "1d",
+   "e6": "1d",
+   "benar": true,
+   "keyakinan": 0.978,
+   "ragu": false,
+   "kandidat_3": [
+    "1d",
+    "2d",
+    "7d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.988,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.981,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "5"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.99,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "0i",
+    "0j"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.994,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "1"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.997,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 1,
+   "kunci": "2a",
+   "e6": "2D",
+   "benar": false,
+   "keyakinan": 0.901,
+   "ragu": false,
+   "kandidat_3": [
+    "2d",
+    "5d",
+    "2c"
+   ],
+   "benar_di_top3": false
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 2,
+   "kunci": "2b",
+   "e6": "2b",
+   "benar": true,
+   "keyakinan": 0.659,
+   "ragu": true,
+   "kandidat_3": [
+    "2b",
+    "8b",
+    "4b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 3,
+   "kunci": "2c",
+   "e6": "8C",
+   "benar": false,
+   "keyakinan": 0.237,
+   "ragu": true,
+   "kandidat_3": [
+    "8c",
+    "4a",
+    "2a"
+   ],
+   "benar_di_top3": false
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 4,
+   "kunci": "2d",
+   "e6": "2d",
+   "benar": true,
+   "keyakinan": 0.981,
+   "ragu": false,
+   "kandidat_3": [
+    "2d",
+    "3d",
+    "1d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 5,
+   "kunci": "2e",
+   "e6": "2e",
+   "benar": true,
+   "keyakinan": 0.931,
+   "ragu": false,
+   "kandidat_3": [
+    "2e",
+    "2c",
+    "1e"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 6,
+   "kunci": "2F",
+   "e6": "2f",
+   "benar": true,
+   "keyakinan": 0.973,
+   "ragu": false,
+   "kandidat_3": [
+    "2f",
+    "2d",
+    "2g"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 1,
+   "kunci": "3a",
+   "e6": "3a",
+   "benar": true,
+   "keyakinan": 0.988,
+   "ragu": false,
+   "kandidat_3": [
+    "3a",
+    "3d",
+    "2a"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 2,
+   "kunci": "3b",
+   "e6": "3b",
+   "benar": true,
+   "keyakinan": 0.969,
+   "ragu": false,
+   "kandidat_3": [
+    "3b",
+    "3d",
+    "2b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 3,
+   "kunci": "3c",
+   "e6": "3C",
+   "benar": true,
+   "keyakinan": 0.778,
+   "ragu": true,
+   "kandidat_3": [
+    "3c",
+    "3d",
+    "3g"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 4,
+   "kunci": "3d",
+   "e6": "3d",
+   "benar": true,
+   "keyakinan": 0.995,
+   "ragu": false,
+   "kandidat_3": [
+    "3d",
+    "2d",
+    "3c"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 5,
+   "kunci": "3e",
+   "e6": "3e",
+   "benar": true,
+   "keyakinan": 0.714,
+   "ragu": true,
+   "kandidat_3": [
+    "3e",
+    "3a",
+    "3b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.925,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.988,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.961,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.955,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 4,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.763,
+   "ragu": true,
+   "kandidat_3": [
+    "0",
+    "6",
+    "8"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.914,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "5"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.971,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.354,
+   "ragu": true,
+   "kandidat_3": [
+    "0",
+    "6",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.95,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.908,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 4,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.661,
+   "ragu": true,
+   "kandidat_3": [
+    "0",
+    "1a",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.457,
+   "ragu": true,
+   "kandidat_3": [
+    "0",
+    "1a",
+    "1d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.892,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1a",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.964,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.899,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "5"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.968,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 4,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.921,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.996,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "8"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "1a",
+   "benar": false,
+   "keyakinan": 0.792,
+   "ragu": true,
+   "kandidat_3": [
+    "1a",
+    "0",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.927,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "5"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.998,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.99,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "7"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 4,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.998,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "8"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.998,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "8"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 6,
+   "kunci": "1a",
+   "e6": "1a",
+   "benar": true,
+   "keyakinan": 0.969,
+   "ragu": false,
+   "kandidat_3": [
+    "1a",
+    "1d",
+    "1c"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "2",
+   "blok": 0,
+   "kolom": 1,
+   "kunci": "1a",
+   "e6": "1a",
+   "benar": true,
+   "keyakinan": 0.975,
+   "ragu": false,
+   "kandidat_3": [
+    "1a",
+    "1d",
+    "1g"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143029",
+   "shift": "2",
+   "blok": 0,
+   "kolom": 2,
+   "kunci": "7b",
+   "e6": "1b",
+   "benar": false,
+   "keyakinan": 0.546,
+   "ragu": true,
+   "kandidat_3": [
+    "1b",
+    "7b",
+    "4b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 1,
+   "kunci": "4i",
+   "e6": "4i",
+   "benar": true,
+   "keyakinan": 0.793,
+   "ragu": true,
+   "kandidat_3": [
+    "4i",
+    "4",
+    "4c"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 2,
+   "kunci": "7b",
+   "e6": "1b",
+   "benar": false,
+   "keyakinan": 0.738,
+   "ragu": true,
+   "kandidat_3": [
+    "1b",
+    "7b",
+    "5b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 3,
+   "kunci": "1a",
+   "e6": "1a",
+   "benar": true,
+   "keyakinan": 0.98,
+   "ragu": false,
+   "kandidat_3": [
+    "1a",
+    "1d",
+    "2a"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 4,
+   "kunci": "1b",
+   "e6": "1b",
+   "benar": true,
+   "keyakinan": 0.994,
+   "ragu": false,
+   "kandidat_3": [
+    "1b",
+    "1d",
+    "7b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 5,
+   "kunci": "1c",
+   "e6": "6",
+   "benar": false,
+   "keyakinan": 0.409,
+   "ragu": true,
+   "kandidat_3": [
+    "6",
+    "1d",
+    "1b"
+   ],
+   "benar_di_top3": false
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 6,
+   "kunci": "1d",
+   "e6": "1d",
+   "benar": true,
+   "keyakinan": 0.971,
+   "ragu": false,
+   "kandidat_3": [
+    "1d",
+    "2d",
+    "0"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.998,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.993,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.998,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "0f",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.98,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 1,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.989,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 1,
+   "kunci": "2a",
+   "e6": "2D",
+   "benar": false,
+   "keyakinan": 0.928,
+   "ragu": false,
+   "kandidat_3": [
+    "2d",
+    "2c",
+    "2"
+   ],
+   "benar_di_top3": false
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 2,
+   "kunci": "2b",
+   "e6": "2b",
+   "benar": true,
+   "keyakinan": 0.43,
+   "ragu": true,
+   "kandidat_3": [
+    "2b",
+    "4b",
+    "8b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 3,
+   "kunci": "2c",
+   "e6": "8C",
+   "benar": false,
+   "keyakinan": 0.329,
+   "ragu": true,
+   "kandidat_3": [
+    "8c",
+    "4",
+    "3c"
+   ],
+   "benar_di_top3": false
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 4,
+   "kunci": "2d",
+   "e6": "2d",
+   "benar": true,
+   "keyakinan": 0.965,
+   "ragu": false,
+   "kandidat_3": [
+    "2d",
+    "3d",
+    "1d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 5,
+   "kunci": "2e",
+   "e6": "2e",
+   "benar": true,
+   "keyakinan": 0.975,
+   "ragu": false,
+   "kandidat_3": [
+    "2e",
+    "2c",
+    "2a"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 6,
+   "kunci": "2F",
+   "e6": "2f",
+   "benar": true,
+   "keyakinan": 0.949,
+   "ragu": false,
+   "kandidat_3": [
+    "2f",
+    "2e",
+    "2d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 1,
+   "kunci": "3a",
+   "e6": "3a",
+   "benar": true,
+   "keyakinan": 0.996,
+   "ragu": false,
+   "kandidat_3": [
+    "3a",
+    "2a",
+    "3d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 2,
+   "kunci": "3b",
+   "e6": "3b",
+   "benar": true,
+   "keyakinan": 0.987,
+   "ragu": false,
+   "kandidat_3": [
+    "3b",
+    "3d",
+    "2b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 3,
+   "kunci": "3c",
+   "e6": "3d",
+   "benar": false,
+   "keyakinan": 0.544,
+   "ragu": true,
+   "kandidat_3": [
+    "3d",
+    "3k",
+    "3a"
+   ],
+   "benar_di_top3": false
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 4,
+   "kunci": "3d",
+   "e6": "3d",
+   "benar": true,
+   "keyakinan": 0.994,
+   "ragu": false,
+   "kandidat_3": [
+    "3d",
+    "2d",
+    "5d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 5,
+   "kunci": "3e",
+   "e6": "3e",
+   "benar": true,
+   "keyakinan": 0.98,
+   "ragu": false,
+   "kandidat_3": [
+    "3e",
+    "2e",
+    "3a"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.955,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.994,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "8"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.974,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.919,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "5"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 4,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.574,
+   "ragu": true,
+   "kandidat_3": [
+    "0",
+    "6",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.943,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.844,
+   "ragu": true,
+   "kandidat_3": [
+    "0",
+    "6",
+    "x"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.605,
+   "ragu": true,
+   "kandidat_3": [
+    "0",
+    "1a",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.92,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.85,
+   "ragu": true,
+   "kandidat_3": [
+    "0",
+    "4",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 4,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.88,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "5"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.716,
+   "ragu": true,
+   "kandidat_3": [
+    "0",
+    "4",
+    "1a"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 5,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.999,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "0d",
+    "8"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.97,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.88,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.996,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "5"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 4,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.753,
+   "ragu": true,
+   "kandidat_3": [
+    "0",
+    "4",
+    "5"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.999,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "8",
+    "0d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 6,
+   "kolom": 6,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.92,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "8"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 1,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.962,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 2,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.997,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "6"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 3,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.957,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "4",
+    "5"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 4,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.995,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "1",
+    "4"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 5,
+   "kunci": "0",
+   "e6": "0",
+   "benar": true,
+   "keyakinan": 0.993,
+   "ragu": false,
+   "kandidat_3": [
+    "0",
+    "6",
+    "8"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 6,
+   "kunci": "1a",
+   "e6": "1a",
+   "benar": true,
+   "keyakinan": 0.987,
+   "ragu": false,
+   "kandidat_3": [
+    "1a",
+    "1d",
+    "7a"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "2",
+   "blok": 0,
+   "kolom": 1,
+   "kunci": "1a",
+   "e6": "1a",
+   "benar": true,
+   "keyakinan": 0.978,
+   "ragu": false,
+   "kandidat_3": [
+    "1a",
+    "1d",
+    "1c"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143036",
+   "shift": "2",
+   "blok": 0,
+   "kolom": 2,
+   "kunci": "7b",
+   "e6": "1b",
+   "benar": false,
+   "keyakinan": 0.696,
+   "ragu": true,
+   "kandidat_3": [
+    "1b",
+    "4b",
+    "7b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143042",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 5,
+   "kunci": "6a",
+   "e6": "6a",
+   "benar": true,
+   "keyakinan": 0.928,
+   "ragu": false,
+   "kandidat_3": [
+    "6a",
+    "6d",
+    "5a"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143042",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 6,
+   "kunci": "5b",
+   "e6": "6b",
+   "benar": false,
+   "keyakinan": 0.531,
+   "ragu": true,
+   "kandidat_3": [
+    "6b",
+    "5b",
+    "8b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143042",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 2,
+   "kunci": "7a",
+   "e6": "7a",
+   "benar": true,
+   "keyakinan": 0.971,
+   "ragu": false,
+   "kandidat_3": [
+    "7a",
+    "7d",
+    "7"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143042",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 4,
+   "kunci": "2a",
+   "e6": "2a",
+   "benar": true,
+   "keyakinan": 0.781,
+   "ragu": true,
+   "kandidat_3": [
+    "2a",
+    "2d",
+    "2c"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143042",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 2,
+   "kunci": "2F",
+   "e6": "2f",
+   "benar": true,
+   "keyakinan": 0.997,
+   "ragu": false,
+   "kandidat_3": [
+    "2f",
+    "2d",
+    "2c"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143042",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 5,
+   "kunci": "3i",
+   "e6": "3i",
+   "benar": true,
+   "keyakinan": 0.983,
+   "ragu": false,
+   "kandidat_3": [
+    "3i",
+    "2i",
+    "5i"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143042",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 2,
+   "kunci": "3c",
+   "e6": "3C",
+   "benar": true,
+   "keyakinan": 0.962,
+   "ragu": false,
+   "kandidat_3": [
+    "3c",
+    "3g",
+    "3d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143042",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 6,
+   "kunci": "x",
+   "e6": "x",
+   "benar": true,
+   "keyakinan": 0.694,
+   "ragu": true,
+   "kandidat_3": [
+    "x",
+    "0",
+    "2"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143050",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 5,
+   "kunci": "6a",
+   "e6": "6a",
+   "benar": true,
+   "keyakinan": 0.948,
+   "ragu": false,
+   "kandidat_3": [
+    "6a",
+    "6d",
+    "8a"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143050",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 6,
+   "kunci": "5b",
+   "e6": "5b",
+   "benar": true,
+   "keyakinan": 0.648,
+   "ragu": true,
+   "kandidat_3": [
+    "5b",
+    "6b",
+    "8b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143050",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 2,
+   "kunci": "7a",
+   "e6": "7a",
+   "benar": true,
+   "keyakinan": 0.631,
+   "ragu": true,
+   "kandidat_3": [
+    "7a",
+    "7",
+    "7c"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143050",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 4,
+   "kunci": "2a",
+   "e6": "2a",
+   "benar": true,
+   "keyakinan": 0.867,
+   "ragu": false,
+   "kandidat_3": [
+    "2a",
+    "2d",
+    "2g"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143050",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 2,
+   "kunci": "2F",
+   "e6": "2f",
+   "benar": true,
+   "keyakinan": 0.999,
+   "ragu": false,
+   "kandidat_3": [
+    "2f",
+    "2d",
+    "2h"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143050",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 5,
+   "kunci": "3i",
+   "e6": "3i",
+   "benar": true,
+   "keyakinan": 0.993,
+   "ragu": false,
+   "kandidat_3": [
+    "3i",
+    "2i",
+    "1i"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143050",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 2,
+   "kunci": "3c",
+   "e6": "3C",
+   "benar": true,
+   "keyakinan": 0.95,
+   "ragu": false,
+   "kandidat_3": [
+    "3c",
+    "3g",
+    "3d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143050",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 6,
+   "kunci": "x",
+   "e6": "x",
+   "benar": true,
+   "keyakinan": 0.88,
+   "ragu": false,
+   "kandidat_3": [
+    "x",
+    "2",
+    "0"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143055",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 5,
+   "kunci": "6a",
+   "e6": "6a",
+   "benar": true,
+   "keyakinan": 0.945,
+   "ragu": false,
+   "kandidat_3": [
+    "6a",
+    "6d",
+    "8a"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143055",
+   "shift": "1",
+   "blok": 0,
+   "kolom": 6,
+   "kunci": "5b",
+   "e6": "5b",
+   "benar": true,
+   "keyakinan": 0.771,
+   "ragu": true,
+   "kandidat_3": [
+    "5b",
+    "6b",
+    "4b"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143055",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 2,
+   "kunci": "7a",
+   "e6": "7a",
+   "benar": true,
+   "keyakinan": 0.92,
+   "ragu": false,
+   "kandidat_3": [
+    "7a",
+    "7d",
+    "7"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143055",
+   "shift": "1",
+   "blok": 2,
+   "kolom": 4,
+   "kunci": "2a",
+   "e6": "2a",
+   "benar": true,
+   "keyakinan": 0.844,
+   "ragu": true,
+   "kandidat_3": [
+    "2a",
+    "2d",
+    "2g"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143055",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 2,
+   "kunci": "2F",
+   "e6": "2f",
+   "benar": true,
+   "keyakinan": 0.998,
+   "ragu": false,
+   "kandidat_3": [
+    "2f",
+    "2d",
+    "2k"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143055",
+   "shift": "1",
+   "blok": 3,
+   "kolom": 5,
+   "kunci": "3i",
+   "e6": "3i",
+   "benar": true,
+   "keyakinan": 0.99,
+   "ragu": false,
+   "kandidat_3": [
+    "3i",
+    "2i",
+    "5i"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143055",
+   "shift": "1",
+   "blok": 4,
+   "kolom": 2,
+   "kunci": "3c",
+   "e6": "3C",
+   "benar": true,
+   "keyakinan": 0.851,
+   "ragu": false,
+   "kandidat_3": [
+    "3c",
+    "3g",
+    "3d"
+   ],
+   "benar_di_top3": true
+  },
+  {
+   "foto": "IMG_20261011_143055",
+   "shift": "1",
+   "blok": 7,
+   "kolom": 6,
+   "kunci": "x",
+   "e6": "x",
+   "benar": true,
+   "keyakinan": 0.944,
+   "ragu": false,
+   "kandidat_3": [
+    "x",
+    "2",
+    "0"
+   ],
+   "benar_di_top3": true
+  }
+ ]
+}

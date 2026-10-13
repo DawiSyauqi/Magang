@@ -1,0 +1,287 @@
+{
+ "status": "success",
+ "data": {
+  "shift": "1",
+  "blocks": [
+   {
+    "block_idx": 0,
+    "cell_ink": [
+     0.22178819444444445,
+     0.3289930555555556,
+     0.1953125,
+     0.2035590277777778,
+     0.1484375,
+     0.18359375
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "kotak": [
+     "4h",
+     "7b",
+     "1a",
+     "1b",
+     "1c",
+     "1d"
+    ],
+    "raw_text": "4h 7b 1a 1b 1c 1d",
+    "n_kode_terbaca": 6,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 3.975,
+    "expected_jam_label": "07.00 - 08.00"
+   },
+   {
+    "block_idx": 1,
+    "cell_ink": [
+     0.1545138888888889,
+     0.10112847222222222,
+     0.13020833333333334,
+     0.5360243055555556,
+     0.13758680555555555,
+     0.10069444444444445
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0"
+    ],
+    "raw_text": "0 0 0 0 0 0",
+    "n_kode_terbaca": 6,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 1.933,
+    "expected_jam_label": "08.00 - 09.00"
+   },
+   {
+    "block_idx": 2,
+    "cell_ink": [
+     0.20182291666666666,
+     0.19444444444444445,
+     0.171875,
+     0.1970486111111111,
+     0.18880208333333334,
+     0.1558159722222222
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "kotak": [
+     "3D",
+     "1B",
+     "2C",
+     "3D",
+     "2C",
+     "2C"
+    ],
+    "raw_text": "3D 1B 2C 3D 2C 2C",
+    "n_kode_terbaca": 6,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 3.944,
+    "expected_jam_label": "09.00 - 10.00"
+   },
+   {
+    "block_idx": 3,
+    "cell_ink": [
+     0.21354166666666666,
+     0.2026909722222222,
+     0.1558159722222222,
+     0.22395833333333334,
+     0.1796875,
+     0.08984375
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "kotak": [
+     "3a",
+     "3b",
+     "3d",
+     "3d",
+     "3e",
+     "0"
+    ],
+    "raw_text": "3a 3b 3d 3d 3e 0",
+    "n_kode_terbaca": 6,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 3.944,
+    "expected_jam_label": "10.00 - 11.00"
+   },
+   {
+    "block_idx": 4,
+    "cell_ink": [
+     0.1171875,
+     0.1254340277777778,
+     0.1189236111111111,
+     0.11241319444444445,
+     0.1401909722222222,
+     0.13151041666666666
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0"
+    ],
+    "raw_text": "0 0 0 0 0 0",
+    "n_kode_terbaca": 6,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 2.115,
+    "expected_jam_label": "11.00 - 12.00"
+   },
+   {
+    "block_idx": 5,
+    "cell_ink": [
+     0.11979166666666667,
+     0.12456597222222222,
+     0.11675347222222222,
+     0.1189236111111111,
+     0.125,
+     0.11024305555555555
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0"
+    ],
+    "raw_text": "0 0 0 0 0 0",
+    "n_kode_terbaca": 6,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 2.133,
+    "expected_jam_label": "12.00 - 13.00"
+   },
+   {
+    "block_idx": 6,
+    "cell_ink": [
+     0.1423611111111111,
+     0.14322916666666666,
+     0.13932291666666666,
+     0.1293402777777778,
+     0.13194444444444445,
+     0.1423611111111111
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0"
+    ],
+    "raw_text": "0 0 0 0 0 0",
+    "n_kode_terbaca": 6,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 3.296,
+    "expected_jam_label": "13.00 - 14.00"
+   },
+   {
+    "block_idx": 7,
+    "cell_ink": [
+     0.11067708333333333,
+     0.1228298611111111,
+     0.1349826388888889,
+     0.1154513888888889,
+     0.1228298611111111,
+     0.1857638888888889
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "kotak": [
+     "1",
+     "0",
+     "0",
+     "0",
+     "1",
+     "0"
+    ],
+    "raw_text": "1 0 0 0 1 0",
+    "n_kode_terbaca": 6,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 2.68,
+    "expected_jam_label": "14.00 - 15.00"
+   }
+  ]
+ },
+ "meta": {
+  "reader": "trocr",
+  "trocr_model": "microsoft/trocr-small-handwritten",
+  "mode": "kandidat",
+  "huruf": "a-k",
+  "hapus_garis": true,
+  "padatkan": true,
+  "geometry_path": "fast",
+  "refine_quality": "good",
+  "geometry_seconds": 1.76,
+  "model_load_seconds": 5.99,
+  "n_model_calls": 8,
+  "model_seconds": 24.02,
+  "elapsed_seconds": 35.5
+ }
+}

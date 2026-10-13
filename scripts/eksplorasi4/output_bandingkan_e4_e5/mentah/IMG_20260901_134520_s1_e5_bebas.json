@@ -1,0 +1,286 @@
+{
+ "status": "success",
+ "data": {
+  "shift": "1",
+  "blocks": [
+   {
+    "block_idx": 0,
+    "cell_ink": [
+     0.2248263888888889,
+     0.3415798611111111,
+     0.19791666666666666,
+     0.2092013888888889,
+     0.14930555555555555,
+     0.18489583333333334
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "kotak": [
+     "will",
+     "go",
+     "in",
+     "be",
+     "well",
+     "to"
+    ],
+    "raw_text": "will go in be well to",
+    "n_kode_terbaca": 6,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 1.636,
+    "expected_jam_label": "07.00 - 08.00"
+   },
+   {
+    "block_idx": 1,
+    "cell_ink": [
+     0.1566840277777778,
+     0.10026041666666667,
+     0.1328125,
+     0.5355902777777778,
+     0.13671875,
+     0.0993923611111111
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0"
+    ],
+    "raw_text": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+    "n_kode_terbaca": 32,
+    "jumlah_cocok": false,
+    "skipped_model": false,
+    "elapsed_sec": 4.4,
+    "expected_jam_label": "08.00 - 09.00"
+   },
+   {
+    "block_idx": 2,
+    "cell_ink": [
+     0.2052951388888889,
+     0.19270833333333334,
+     0.17100694444444445,
+     0.1957465277777778,
+     0.1909722222222222,
+     0.1540798611111111
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "kotak": [
+     "10",
+     "lb/90",
+     "kg/cc.af.af.",
+     "?",
+     "?",
+     "?"
+    ],
+    "raw_text": "10 lb/90 kg/cc.af.af.",
+    "n_kode_terbaca": 3,
+    "jumlah_cocok": false,
+    "skipped_model": false,
+    "elapsed_sec": 2.168,
+    "expected_jam_label": "09.00 - 10.00"
+   },
+   {
+    "block_idx": 3,
+    "cell_ink": [
+     0.2170138888888889,
+     0.20399305555555555,
+     0.15321180555555555,
+     0.2243923611111111,
+     0.1814236111111111,
+     0.08723958333333333
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "kotak": [
+     "30",
+     "3b",
+     "34",
+     "3d",
+     "3e",
+     "0'"
+    ],
+    "raw_text": "30 3b 34 3d 3e 0'",
+    "n_kode_terbaca": 6,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 1.789,
+    "expected_jam_label": "10.00 - 11.00"
+   },
+   {
+    "block_idx": 4,
+    "cell_ink": [
+     0.1150173611111111,
+     0.12760416666666666,
+     0.1115451388888889,
+     0.12152777777777778,
+     0.1423611111111111,
+     0.12760416666666666
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "kotak": [
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0"
+    ],
+    "raw_text": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+    "n_kode_terbaca": 32,
+    "jumlah_cocok": false,
+    "skipped_model": false,
+    "elapsed_sec": 4.61,
+    "expected_jam_label": "11.00 - 12.00"
+   },
+   {
+    "block_idx": 5,
+    "cell_ink": [
+     0.12065972222222222,
+     0.1228298611111111,
+     0.11762152777777778,
+     0.11805555555555555,
+     0.125,
+     0.109375
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "kotak": [
+     "in",
+     "a",
+     "lot",
+     "to",
+     "be",
+     "?"
+    ],
+    "raw_text": "in a lot to be",
+    "n_kode_terbaca": 5,
+    "jumlah_cocok": false,
+    "skipped_model": false,
+    "elapsed_sec": 1.051,
+    "expected_jam_label": "12.00 - 13.00"
+   },
+   {
+    "block_idx": 6,
+    "cell_ink": [
+     0.13932291666666666,
+     0.1449652777777778,
+     0.13975694444444445,
+     0.1293402777777778,
+     0.1384548611111111,
+     0.1462673611111111
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "kotak": [
+     "10",
+     "10",
+     "10",
+     "lb",
+     "101",
+     "lb."
+    ],
+    "raw_text": "10 10 10 lb 101 lb.",
+    "n_kode_terbaca": 6,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 1.244,
+    "expected_jam_label": "13.00 - 14.00"
+   },
+   {
+    "block_idx": 7,
+    "cell_ink": [
+     0.11197916666666667,
+     0.12109375,
+     0.13411458333333334,
+     0.11588541666666667,
+     0.12022569444444445,
+     0.18446180555555555
+    ],
+    "cell_filled": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "kotak": [
+     "to",
+     "do",
+     "to",
+     "look",
+     "?",
+     "?"
+    ],
+    "raw_text": "to do to look",
+    "n_kode_terbaca": 4,
+    "jumlah_cocok": false,
+    "skipped_model": false,
+    "elapsed_sec": 1.683,
+    "expected_jam_label": "14.00 - 15.00"
+   }
+  ]
+ },
+ "meta": {
+  "reader": "trocr",
+  "trocr_model": "microsoft/trocr-small-handwritten",
+  "mode": "bebas",
+  "hapus_garis": true,
+  "padatkan": true,
+  "geometry_path": "fast",
+  "refine_quality": "good",
+  "geometry_seconds": 1.93,
+  "model_load_seconds": 5.92,
+  "n_model_calls": 8,
+  "model_seconds": 18.58,
+  "elapsed_seconds": 29.9
+ }
+}

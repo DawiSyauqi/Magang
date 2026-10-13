@@ -1,0 +1,9440 @@
+{
+ "ringkasan": {
+  "e1": {
+   "semua": "1009/1147 (88.0%)",
+   "semua_raw": [
+    1009,
+    1147
+   ],
+   "berisi": "163/301 (54.2%)",
+   "berisi_raw": [
+    163,
+    301
+   ],
+   "berisi_ci": "163/301 (54.2%)",
+   "berisi_ci_raw": [
+    163,
+    301
+   ],
+   "rata_waktu": "-"
+  },
+  "e2": {
+   "semua": "1097/1147 (95.6%)",
+   "semua_raw": [
+    1097,
+    1147
+   ],
+   "berisi": "251/301 (83.4%)",
+   "berisi_raw": [
+    251,
+    301
+   ],
+   "berisi_ci": "258/301 (85.7%)",
+   "berisi_ci_raw": [
+    258,
+    301
+   ],
+   "rata_waktu": "-"
+  },
+  "e4_kandidat": {
+   "semua": "1098/1147 (95.7%)",
+   "semua_raw": [
+    1098,
+    1147
+   ],
+   "berisi": "252/301 (83.7%)",
+   "berisi_raw": [
+    252,
+    301
+   ],
+   "berisi_ci": "274/301 (91.0%)",
+   "berisi_ci_raw": [
+    274,
+    301
+   ],
+   "rata_waktu": "23.4s"
+  },
+  "e5_kandidat": {
+   "semua": "1049/1147 (91.5%)",
+   "semua_raw": [
+    1049,
+    1147
+   ],
+   "berisi": "203/301 (67.4%)",
+   "berisi_raw": [
+    203,
+    301
+   ],
+   "berisi_ci": "224/301 (74.4%)",
+   "berisi_ci_raw": [
+    224,
+    301
+   ],
+   "rata_waktu": "20.5s"
+  }
+ },
+ "per_foto": [
+  {
+   "foto": "IMG_20260901_134505",
+   "shift": "1",
+   "e1_ollama_dtk": 148.3,
+   "e2_ollama_dtk": 80.4,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 55.9,
+   "e4_kandidat_geometri_dtk": 1.7,
+   "e4_kandidat_load_model_dtk": 7.44,
+   "e4_kandidat_baca_dtk": 37.76,
+   "e4_kandidat_panggilan": 48,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 39.2,
+   "e5_kandidat_geometri_dtk": 1.7,
+   "e5_kandidat_load_model_dtk": 6.1,
+   "e5_kandidat_baca_dtk": 22.82,
+   "e5_kandidat_panggilan": 8,
+   "e1_benar": "29/47",
+   "e1_berisi_benar": "29/47",
+   "e1_berisi_benar_ci": "29/47",
+   "e2_benar": "28/47",
+   "e2_berisi_benar": "28/47",
+   "e2_berisi_benar_ci": "33/47",
+   "e4_kandidat_benar": "41/47",
+   "e4_kandidat_berisi_benar": "41/47",
+   "e4_kandidat_berisi_benar_ci": "45/47",
+   "e5_kandidat_benar": "32/47",
+   "e5_kandidat_berisi_benar": "32/47",
+   "e5_kandidat_berisi_benar_ci": "34/47"
+  },
+  {
+   "foto": "IMG_20260901_134505",
+   "shift": "2",
+   "e1_ollama_dtk": 12.4,
+   "e2_ollama_dtk": 14.3,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 17.4,
+   "e4_kandidat_geometri_dtk": 1.59,
+   "e4_kandidat_load_model_dtk": 6.1,
+   "e4_kandidat_baca_dtk": 1.59,
+   "e4_kandidat_panggilan": 2,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 17.9,
+   "e5_kandidat_geometri_dtk": 1.55,
+   "e5_kandidat_load_model_dtk": 6.07,
+   "e5_kandidat_baca_dtk": 2.05,
+   "e5_kandidat_panggilan": 1,
+   "e1_benar": "47/48",
+   "e1_berisi_benar": "1/2",
+   "e1_berisi_benar_ci": "1/2",
+   "e2_benar": "48/48",
+   "e2_berisi_benar": "2/2",
+   "e2_berisi_benar_ci": "2/2",
+   "e4_kandidat_benar": "48/48",
+   "e4_kandidat_berisi_benar": "2/2",
+   "e4_kandidat_berisi_benar_ci": "2/2",
+   "e5_kandidat_benar": "47/48",
+   "e5_kandidat_berisi_benar": "1/2",
+   "e5_kandidat_berisi_benar_ci": "1/2"
+  },
+  {
+   "foto": "IMG_20260901_134510",
+   "shift": "1",
+   "e1_ollama_dtk": 152.8,
+   "e2_ollama_dtk": 74.9,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 51.2,
+   "e4_kandidat_geometri_dtk": 1.84,
+   "e4_kandidat_load_model_dtk": 5.94,
+   "e4_kandidat_baca_dtk": 35.01,
+   "e4_kandidat_panggilan": 48,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 38.9,
+   "e5_kandidat_geometri_dtk": 1.66,
+   "e5_kandidat_load_model_dtk": 5.99,
+   "e5_kandidat_baca_dtk": 22.87,
+   "e5_kandidat_panggilan": 8,
+   "e1_benar": "27/47",
+   "e1_berisi_benar": "27/47",
+   "e1_berisi_benar_ci": "27/47",
+   "e2_benar": "45/47",
+   "e2_berisi_benar": "45/47",
+   "e2_berisi_benar_ci": "45/47",
+   "e4_kandidat_benar": "41/47",
+   "e4_kandidat_berisi_benar": "41/47",
+   "e4_kandidat_berisi_benar_ci": "43/47",
+   "e5_kandidat_benar": "34/47",
+   "e5_kandidat_berisi_benar": "34/47",
+   "e5_kandidat_berisi_benar_ci": "37/47"
+  },
+  {
+   "foto": "IMG_20260901_134510",
+   "shift": "2",
+   "e1_ollama_dtk": 12.8,
+   "e2_ollama_dtk": 14.6,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 17.9,
+   "e4_kandidat_geometri_dtk": 1.66,
+   "e4_kandidat_load_model_dtk": 6.08,
+   "e4_kandidat_baca_dtk": 1.83,
+   "e4_kandidat_panggilan": 2,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 17.9,
+   "e5_kandidat_geometri_dtk": 1.63,
+   "e5_kandidat_load_model_dtk": 6.17,
+   "e5_kandidat_baca_dtk": 2.0,
+   "e5_kandidat_panggilan": 1,
+   "e1_benar": "47/48",
+   "e1_berisi_benar": "1/2",
+   "e1_berisi_benar_ci": "1/2",
+   "e2_benar": "48/48",
+   "e2_berisi_benar": "2/2",
+   "e2_berisi_benar_ci": "2/2",
+   "e4_kandidat_benar": "47/48",
+   "e4_kandidat_berisi_benar": "1/2",
+   "e4_kandidat_berisi_benar_ci": "1/2",
+   "e5_kandidat_benar": "48/48",
+   "e5_kandidat_berisi_benar": "2/2",
+   "e5_kandidat_berisi_benar_ci": "2/2"
+  },
+  {
+   "foto": "IMG_20260901_134514",
+   "shift": "1",
+   "e1_ollama_dtk": 153.5,
+   "e2_ollama_dtk": 78.5,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 55.1,
+   "e4_kandidat_geometri_dtk": 2.0,
+   "e4_kandidat_load_model_dtk": 6.25,
+   "e4_kandidat_baca_dtk": 38.75,
+   "e4_kandidat_panggilan": 48,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 40.2,
+   "e5_kandidat_geometri_dtk": 1.76,
+   "e5_kandidat_load_model_dtk": 5.99,
+   "e5_kandidat_baca_dtk": 24.02,
+   "e5_kandidat_panggilan": 8,
+   "e1_benar": "23/47",
+   "e1_berisi_benar": "23/47",
+   "e1_berisi_benar_ci": "23/47",
+   "e2_benar": "45/47",
+   "e2_berisi_benar": "45/47",
+   "e2_berisi_benar_ci": "45/47",
+   "e4_kandidat_benar": "41/47",
+   "e4_kandidat_berisi_benar": "41/47",
+   "e4_kandidat_berisi_benar_ci": "44/47",
+   "e5_kandidat_benar": "36/47",
+   "e5_kandidat_berisi_benar": "36/47",
+   "e5_kandidat_berisi_benar_ci": "37/47"
+  },
+  {
+   "foto": "IMG_20260901_134514",
+   "shift": "2",
+   "e1_ollama_dtk": 13.5,
+   "e2_ollama_dtk": 14.6,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 18.4,
+   "e4_kandidat_geometri_dtk": 2.09,
+   "e4_kandidat_load_model_dtk": 5.96,
+   "e4_kandidat_baca_dtk": 1.49,
+   "e4_kandidat_panggilan": 2,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 18.1,
+   "e5_kandidat_geometri_dtk": 1.71,
+   "e5_kandidat_load_model_dtk": 6.13,
+   "e5_kandidat_baca_dtk": 2.26,
+   "e5_kandidat_panggilan": 1,
+   "e1_benar": "47/48",
+   "e1_berisi_benar": "1/2",
+   "e1_berisi_benar_ci": "1/2",
+   "e2_benar": "48/48",
+   "e2_berisi_benar": "2/2",
+   "e2_berisi_benar_ci": "2/2",
+   "e4_kandidat_benar": "48/48",
+   "e4_kandidat_berisi_benar": "2/2",
+   "e4_kandidat_berisi_benar_ci": "2/2",
+   "e5_kandidat_benar": "48/48",
+   "e5_kandidat_berisi_benar": "2/2",
+   "e5_kandidat_berisi_benar_ci": "2/2"
+  },
+  {
+   "foto": "IMG_20260901_134520",
+   "shift": "1",
+   "e1_ollama_dtk": 153.0,
+   "e2_ollama_dtk": 86.0,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 52.3,
+   "e4_kandidat_geometri_dtk": 2.3,
+   "e4_kandidat_load_model_dtk": 6.32,
+   "e4_kandidat_baca_dtk": 35.87,
+   "e4_kandidat_panggilan": 48,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 41.2,
+   "e5_kandidat_geometri_dtk": 2.41,
+   "e5_kandidat_load_model_dtk": 6.51,
+   "e5_kandidat_baca_dtk": 23.86,
+   "e5_kandidat_panggilan": 8,
+   "e1_benar": "27/47",
+   "e1_berisi_benar": "27/47",
+   "e1_berisi_benar_ci": "27/47",
+   "e2_benar": "32/47",
+   "e2_berisi_benar": "32/47",
+   "e2_berisi_benar_ci": "33/47",
+   "e4_kandidat_benar": "41/47",
+   "e4_kandidat_berisi_benar": "41/47",
+   "e4_kandidat_berisi_benar_ci": "44/47",
+   "e5_kandidat_benar": "33/47",
+   "e5_kandidat_berisi_benar": "33/47",
+   "e5_kandidat_berisi_benar_ci": "34/47"
+  },
+  {
+   "foto": "IMG_20260901_134520",
+   "shift": "2",
+   "e1_ollama_dtk": 13.0,
+   "e2_ollama_dtk": 14.6,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 18.1,
+   "e4_kandidat_geometri_dtk": 2.35,
+   "e4_kandidat_load_model_dtk": 5.99,
+   "e4_kandidat_baca_dtk": 1.81,
+   "e4_kandidat_panggilan": 2,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 18.7,
+   "e5_kandidat_geometri_dtk": 2.25,
+   "e5_kandidat_load_model_dtk": 6.43,
+   "e5_kandidat_baca_dtk": 1.96,
+   "e5_kandidat_panggilan": 1,
+   "e1_benar": "47/48",
+   "e1_berisi_benar": "1/2",
+   "e1_berisi_benar_ci": "1/2",
+   "e2_benar": "48/48",
+   "e2_berisi_benar": "2/2",
+   "e2_berisi_benar_ci": "2/2",
+   "e4_kandidat_benar": "47/48",
+   "e4_kandidat_berisi_benar": "1/2",
+   "e4_kandidat_berisi_benar_ci": "1/2",
+   "e5_kandidat_benar": "48/48",
+   "e5_kandidat_berisi_benar": "2/2",
+   "e5_kandidat_berisi_benar_ci": "2/2"
+  },
+  {
+   "foto": "IMG_20260901_134523",
+   "shift": "1",
+   "e1_ollama_dtk": 153.3,
+   "e2_ollama_dtk": 79.9,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 56.7,
+   "e4_kandidat_geometri_dtk": 2.49,
+   "e4_kandidat_load_model_dtk": 6.11,
+   "e4_kandidat_baca_dtk": 39.73,
+   "e4_kandidat_panggilan": 48,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 39.7,
+   "e5_kandidat_geometri_dtk": 2.34,
+   "e5_kandidat_load_model_dtk": 6.03,
+   "e5_kandidat_baca_dtk": 23.31,
+   "e5_kandidat_panggilan": 8,
+   "e1_benar": "25/47",
+   "e1_berisi_benar": "25/47",
+   "e1_berisi_benar_ci": "25/47",
+   "e2_benar": "45/47",
+   "e2_berisi_benar": "45/47",
+   "e2_berisi_benar_ci": "46/47",
+   "e4_kandidat_benar": "42/47",
+   "e4_kandidat_berisi_benar": "42/47",
+   "e4_kandidat_berisi_benar_ci": "45/47",
+   "e5_kandidat_benar": "28/47",
+   "e5_kandidat_berisi_benar": "28/47",
+   "e5_kandidat_berisi_benar_ci": "33/47"
+  },
+  {
+   "foto": "IMG_20260901_134523",
+   "shift": "2",
+   "e1_ollama_dtk": 13.5,
+   "e2_ollama_dtk": 14.8,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 18.9,
+   "e4_kandidat_geometri_dtk": 2.6,
+   "e4_kandidat_load_model_dtk": 6.61,
+   "e4_kandidat_baca_dtk": 1.66,
+   "e4_kandidat_panggilan": 2,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 18.6,
+   "e5_kandidat_geometri_dtk": 2.47,
+   "e5_kandidat_load_model_dtk": 6.01,
+   "e5_kandidat_baca_dtk": 2.08,
+   "e5_kandidat_panggilan": 1,
+   "e1_benar": "47/48",
+   "e1_berisi_benar": "1/2",
+   "e1_berisi_benar_ci": "1/2",
+   "e2_benar": "48/48",
+   "e2_berisi_benar": "2/2",
+   "e2_berisi_benar_ci": "2/2",
+   "e4_kandidat_benar": "47/48",
+   "e4_kandidat_berisi_benar": "1/2",
+   "e4_kandidat_berisi_benar_ci": "1/2",
+   "e5_kandidat_benar": "48/48",
+   "e5_kandidat_berisi_benar": "2/2",
+   "e5_kandidat_berisi_benar_ci": "2/2"
+  },
+  {
+   "foto": "IMG_20260902_141208",
+   "shift": "1",
+   "e1_ollama_dtk": 31.5,
+   "e2_ollama_dtk": 47.5,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 22.5,
+   "e4_kandidat_geometri_dtk": 1.86,
+   "e4_kandidat_load_model_dtk": 6.44,
+   "e4_kandidat_baca_dtk": 6.53,
+   "e4_kandidat_panggilan": 8,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 23.0,
+   "e5_kandidat_geometri_dtk": 1.45,
+   "e5_kandidat_load_model_dtk": 6.07,
+   "e5_kandidat_baca_dtk": 6.86,
+   "e5_kandidat_panggilan": 5,
+   "e1_benar": "44/48",
+   "e1_berisi_benar": "4/8",
+   "e1_berisi_benar_ci": "4/8",
+   "e2_benar": "47/48",
+   "e2_berisi_benar": "7/8",
+   "e2_berisi_benar_ci": "7/8",
+   "e4_kandidat_benar": "46/48",
+   "e4_kandidat_berisi_benar": "6/8",
+   "e4_kandidat_berisi_benar_ci": "7/8",
+   "e5_kandidat_benar": "46/48",
+   "e5_kandidat_berisi_benar": "6/8",
+   "e5_kandidat_berisi_benar_ci": "6/8"
+  },
+  {
+   "foto": "IMG_20260902_141208",
+   "shift": "2",
+   "e1_ollama_dtk": 0.0,
+   "e2_ollama_dtk": 0,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 5.7,
+   "e4_kandidat_geometri_dtk": 1.67,
+   "e4_kandidat_load_model_dtk": 0.0,
+   "e4_kandidat_baca_dtk": 0.0,
+   "e4_kandidat_panggilan": 0,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 5.7,
+   "e5_kandidat_geometri_dtk": 1.7,
+   "e5_kandidat_load_model_dtk": 0.0,
+   "e5_kandidat_baca_dtk": 0.0,
+   "e5_kandidat_panggilan": 0,
+   "e1_benar": "48/48",
+   "e1_berisi_benar": "0/0",
+   "e1_berisi_benar_ci": "0/0",
+   "e2_benar": "48/48",
+   "e2_berisi_benar": "0/0",
+   "e2_berisi_benar_ci": "0/0",
+   "e4_kandidat_benar": "48/48",
+   "e4_kandidat_berisi_benar": "0/0",
+   "e4_kandidat_berisi_benar_ci": "0/0",
+   "e5_kandidat_benar": "48/48",
+   "e5_kandidat_berisi_benar": "0/0",
+   "e5_kandidat_berisi_benar_ci": "0/0"
+  },
+  {
+   "foto": "IMG_20260902_141212",
+   "shift": "1",
+   "e1_ollama_dtk": 30.7,
+   "e2_ollama_dtk": 46.6,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 22.4,
+   "e4_kandidat_geometri_dtk": 1.68,
+   "e4_kandidat_load_model_dtk": 6.33,
+   "e4_kandidat_baca_dtk": 6.37,
+   "e4_kandidat_panggilan": 8,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 23.2,
+   "e5_kandidat_geometri_dtk": 1.53,
+   "e5_kandidat_load_model_dtk": 5.98,
+   "e5_kandidat_baca_dtk": 7.18,
+   "e5_kandidat_panggilan": 5,
+   "e1_benar": "46/48",
+   "e1_berisi_benar": "6/8",
+   "e1_berisi_benar_ci": "6/8",
+   "e2_benar": "48/48",
+   "e2_berisi_benar": "8/8",
+   "e2_berisi_benar_ci": "8/8",
+   "e4_kandidat_benar": "46/48",
+   "e4_kandidat_berisi_benar": "6/8",
+   "e4_kandidat_berisi_benar_ci": "8/8",
+   "e5_kandidat_benar": "43/48",
+   "e5_kandidat_berisi_benar": "3/8",
+   "e5_kandidat_berisi_benar_ci": "7/8"
+  },
+  {
+   "foto": "IMG_20260902_141212",
+   "shift": "2",
+   "e1_ollama_dtk": 0.0,
+   "e2_ollama_dtk": 0,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 6.2,
+   "e4_kandidat_geometri_dtk": 2.01,
+   "e4_kandidat_load_model_dtk": 0.0,
+   "e4_kandidat_baca_dtk": 0.0,
+   "e4_kandidat_panggilan": 0,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 5.7,
+   "e5_kandidat_geometri_dtk": 1.73,
+   "e5_kandidat_load_model_dtk": 0.0,
+   "e5_kandidat_baca_dtk": 0.0,
+   "e5_kandidat_panggilan": 0,
+   "e1_benar": "48/48",
+   "e1_berisi_benar": "0/0",
+   "e1_berisi_benar_ci": "0/0",
+   "e2_benar": "48/48",
+   "e2_berisi_benar": "0/0",
+   "e2_berisi_benar_ci": "0/0",
+   "e4_kandidat_benar": "48/48",
+   "e4_kandidat_berisi_benar": "0/0",
+   "e4_kandidat_berisi_benar_ci": "0/0",
+   "e5_kandidat_benar": "48/48",
+   "e5_kandidat_berisi_benar": "0/0",
+   "e5_kandidat_berisi_benar_ci": "0/0"
+  },
+  {
+   "foto": "IMG_20260902_141217",
+   "shift": "1",
+   "e1_ollama_dtk": 31.5,
+   "e2_ollama_dtk": 46.8,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 22.4,
+   "e4_kandidat_geometri_dtk": 1.77,
+   "e4_kandidat_load_model_dtk": 6.4,
+   "e4_kandidat_baca_dtk": 6.46,
+   "e4_kandidat_panggilan": 8,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 23.4,
+   "e5_kandidat_geometri_dtk": 1.66,
+   "e5_kandidat_load_model_dtk": 6.07,
+   "e5_kandidat_baca_dtk": 7.13,
+   "e5_kandidat_panggilan": 5,
+   "e1_benar": "45/48",
+   "e1_berisi_benar": "5/8",
+   "e1_berisi_benar_ci": "5/8",
+   "e2_benar": "48/48",
+   "e2_berisi_benar": "8/8",
+   "e2_berisi_benar_ci": "8/8",
+   "e4_kandidat_benar": "47/48",
+   "e4_kandidat_berisi_benar": "7/8",
+   "e4_kandidat_berisi_benar_ci": "8/8",
+   "e5_kandidat_benar": "45/48",
+   "e5_kandidat_berisi_benar": "5/8",
+   "e5_kandidat_berisi_benar_ci": "6/8"
+  },
+  {
+   "foto": "IMG_20260902_141217",
+   "shift": "2",
+   "e1_ollama_dtk": 0.0,
+   "e2_ollama_dtk": 0,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 5.7,
+   "e4_kandidat_geometri_dtk": 1.88,
+   "e4_kandidat_load_model_dtk": 0.0,
+   "e4_kandidat_baca_dtk": 0.0,
+   "e4_kandidat_panggilan": 0,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 5.5,
+   "e5_kandidat_geometri_dtk": 1.63,
+   "e5_kandidat_load_model_dtk": 0.0,
+   "e5_kandidat_baca_dtk": 0.0,
+   "e5_kandidat_panggilan": 0,
+   "e1_benar": "48/48",
+   "e1_berisi_benar": "0/0",
+   "e1_berisi_benar_ci": "0/0",
+   "e2_benar": "48/48",
+   "e2_berisi_benar": "0/0",
+   "e2_berisi_benar_ci": "0/0",
+   "e4_kandidat_benar": "48/48",
+   "e4_kandidat_berisi_benar": "0/0",
+   "e4_kandidat_berisi_benar_ci": "0/0",
+   "e5_kandidat_benar": "48/48",
+   "e5_kandidat_berisi_benar": "0/0",
+   "e5_kandidat_berisi_benar_ci": "0/0"
+  },
+  {
+   "foto": "IMG_20260902_141223",
+   "shift": "1",
+   "e1_ollama_dtk": 30.6,
+   "e2_ollama_dtk": 47.8,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 21.9,
+   "e4_kandidat_geometri_dtk": 1.66,
+   "e4_kandidat_load_model_dtk": 6.01,
+   "e4_kandidat_baca_dtk": 6.35,
+   "e4_kandidat_panggilan": 8,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 23.7,
+   "e5_kandidat_geometri_dtk": 1.7,
+   "e5_kandidat_load_model_dtk": 6.44,
+   "e5_kandidat_baca_dtk": 7.09,
+   "e5_kandidat_panggilan": 5,
+   "e1_benar": "43/48",
+   "e1_berisi_benar": "3/8",
+   "e1_berisi_benar_ci": "3/8",
+   "e2_benar": "48/48",
+   "e2_berisi_benar": "8/8",
+   "e2_berisi_benar_ci": "8/8",
+   "e4_kandidat_benar": "46/48",
+   "e4_kandidat_berisi_benar": "6/8",
+   "e4_kandidat_berisi_benar_ci": "7/8",
+   "e5_kandidat_benar": "46/48",
+   "e5_kandidat_berisi_benar": "6/8",
+   "e5_kandidat_berisi_benar_ci": "7/8"
+  },
+  {
+   "foto": "IMG_20260902_141223",
+   "shift": "2",
+   "e1_ollama_dtk": 0.0,
+   "e2_ollama_dtk": 0,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 5.6,
+   "e4_kandidat_geometri_dtk": 1.68,
+   "e4_kandidat_load_model_dtk": 0.0,
+   "e4_kandidat_baca_dtk": 0.0,
+   "e4_kandidat_panggilan": 0,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 5.6,
+   "e5_kandidat_geometri_dtk": 1.64,
+   "e5_kandidat_load_model_dtk": 0.0,
+   "e5_kandidat_baca_dtk": 0.0,
+   "e5_kandidat_panggilan": 0,
+   "e1_benar": "48/48",
+   "e1_berisi_benar": "0/0",
+   "e1_berisi_benar_ci": "0/0",
+   "e2_benar": "48/48",
+   "e2_berisi_benar": "0/0",
+   "e2_berisi_benar_ci": "0/0",
+   "e4_kandidat_benar": "48/48",
+   "e4_kandidat_berisi_benar": "0/0",
+   "e4_kandidat_berisi_benar_ci": "0/0",
+   "e5_kandidat_benar": "48/48",
+   "e5_kandidat_berisi_benar": "0/0",
+   "e5_kandidat_berisi_benar_ci": "0/0"
+  },
+  {
+   "foto": "IMG_20260902_141238",
+   "shift": "1",
+   "e1_ollama_dtk": 31.1,
+   "e2_ollama_dtk": 53.4,
+   "e4_kandidat_status": "needs_manual_review",
+   "e4_kandidat_total_dtk": 22.9,
+   "e4_kandidat_geometri_dtk": 1.82,
+   "e4_kandidat_load_model_dtk": 6.27,
+   "e4_kandidat_baca_dtk": 7.01,
+   "e4_kandidat_panggilan": 8,
+   "e5_kandidat_status": "needs_manual_review",
+   "e5_kandidat_total_dtk": 22.0,
+   "e5_kandidat_geometri_dtk": 1.93,
+   "e5_kandidat_load_model_dtk": 5.97,
+   "e5_kandidat_baca_dtk": 6.43,
+   "e5_kandidat_panggilan": 5,
+   "e1_benar": "40/48",
+   "e1_berisi_benar": "0/8",
+   "e1_berisi_benar_ci": "0/8",
+   "e2_benar": "41/48",
+   "e2_berisi_benar": "1/8",
+   "e2_berisi_benar_ci": "1/8",
+   "e4_kandidat_benar": "40/48",
+   "e4_kandidat_berisi_benar": "0/8",
+   "e4_kandidat_berisi_benar_ci": "0/8",
+   "e5_kandidat_benar": "40/48",
+   "e5_kandidat_berisi_benar": "0/8",
+   "e5_kandidat_berisi_benar_ci": "0/8"
+  },
+  {
+   "foto": "IMG_20260902_141238",
+   "shift": "2",
+   "e1_ollama_dtk": 0.0,
+   "e2_ollama_dtk": 0,
+   "e4_kandidat_status": "needs_manual_review",
+   "e4_kandidat_total_dtk": 6.1,
+   "e4_kandidat_geometri_dtk": 1.78,
+   "e4_kandidat_load_model_dtk": 0.0,
+   "e4_kandidat_baca_dtk": 0.0,
+   "e4_kandidat_panggilan": 0,
+   "e5_kandidat_status": "needs_manual_review",
+   "e5_kandidat_total_dtk": 5.7,
+   "e5_kandidat_geometri_dtk": 1.82,
+   "e5_kandidat_load_model_dtk": 0.0,
+   "e5_kandidat_baca_dtk": 0.0,
+   "e5_kandidat_panggilan": 0,
+   "e1_benar": "48/48",
+   "e1_berisi_benar": "0/0",
+   "e1_berisi_benar_ci": "0/0",
+   "e2_benar": "48/48",
+   "e2_berisi_benar": "0/0",
+   "e2_berisi_benar_ci": "0/0",
+   "e4_kandidat_benar": "48/48",
+   "e4_kandidat_berisi_benar": "0/0",
+   "e4_kandidat_berisi_benar_ci": "0/0",
+   "e5_kandidat_benar": "48/48",
+   "e5_kandidat_berisi_benar": "0/0",
+   "e5_kandidat_berisi_benar_ci": "0/0"
+  },
+  {
+   "foto": "IMG_20260902_141316",
+   "shift": "1",
+   "e1_ollama_dtk": 30.8,
+   "e2_ollama_dtk": 46.2,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 22.8,
+   "e4_kandidat_geometri_dtk": 1.5,
+   "e4_kandidat_load_model_dtk": 6.06,
+   "e4_kandidat_baca_dtk": 7.1,
+   "e4_kandidat_panggilan": 8,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 22.7,
+   "e5_kandidat_geometri_dtk": 1.27,
+   "e5_kandidat_load_model_dtk": 6.06,
+   "e5_kandidat_baca_dtk": 6.94,
+   "e5_kandidat_panggilan": 5,
+   "e1_benar": "45/48",
+   "e1_berisi_benar": "5/8",
+   "e1_berisi_benar_ci": "5/8",
+   "e2_benar": "48/48",
+   "e2_berisi_benar": "8/8",
+   "e2_berisi_benar_ci": "8/8",
+   "e4_kandidat_benar": "47/48",
+   "e4_kandidat_berisi_benar": "7/8",
+   "e4_kandidat_berisi_benar_ci": "8/8",
+   "e5_kandidat_benar": "45/48",
+   "e5_kandidat_berisi_benar": "5/8",
+   "e5_kandidat_berisi_benar_ci": "7/8"
+  },
+  {
+   "foto": "IMG_20260902_141316",
+   "shift": "2",
+   "e1_ollama_dtk": 0.0,
+   "e2_ollama_dtk": 0,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 5.6,
+   "e4_kandidat_geometri_dtk": 1.53,
+   "e4_kandidat_load_model_dtk": 0.0,
+   "e4_kandidat_baca_dtk": 0.0,
+   "e4_kandidat_panggilan": 0,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 5.7,
+   "e5_kandidat_geometri_dtk": 1.49,
+   "e5_kandidat_load_model_dtk": 0.0,
+   "e5_kandidat_baca_dtk": 0.0,
+   "e5_kandidat_panggilan": 0,
+   "e1_benar": "48/48",
+   "e1_berisi_benar": "0/0",
+   "e1_berisi_benar_ci": "0/0",
+   "e2_benar": "48/48",
+   "e2_berisi_benar": "0/0",
+   "e2_berisi_benar_ci": "0/0",
+   "e4_kandidat_benar": "48/48",
+   "e4_kandidat_berisi_benar": "0/0",
+   "e4_kandidat_berisi_benar_ci": "0/0",
+   "e5_kandidat_benar": "48/48",
+   "e5_kandidat_berisi_benar": "0/0",
+   "e5_kandidat_berisi_benar_ci": "0/0"
+  },
+  {
+   "foto": "IMG_20260921_004756",
+   "shift": "1",
+   "e1_ollama_dtk": 30.7,
+   "e2_ollama_dtk": 46.0,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 23.6,
+   "e4_kandidat_geometri_dtk": 1.92,
+   "e4_kandidat_load_model_dtk": 7.08,
+   "e4_kandidat_baca_dtk": 6.6,
+   "e4_kandidat_panggilan": 8,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 23.2,
+   "e5_kandidat_geometri_dtk": 1.85,
+   "e5_kandidat_load_model_dtk": 5.95,
+   "e5_kandidat_baca_dtk": 7.2,
+   "e5_kandidat_panggilan": 5,
+   "e1_benar": "44/48",
+   "e1_berisi_benar": "4/8",
+   "e1_berisi_benar_ci": "4/8",
+   "e2_benar": "46/48",
+   "e2_berisi_benar": "6/8",
+   "e2_berisi_benar_ci": "6/8",
+   "e4_kandidat_benar": "47/48",
+   "e4_kandidat_berisi_benar": "7/8",
+   "e4_kandidat_berisi_benar_ci": "8/8",
+   "e5_kandidat_benar": "46/48",
+   "e5_kandidat_berisi_benar": "6/8",
+   "e5_kandidat_berisi_benar_ci": "7/8"
+  },
+  {
+   "foto": "IMG_20260921_004756",
+   "shift": "2",
+   "e1_ollama_dtk": 0.0,
+   "e2_ollama_dtk": 0,
+   "e4_kandidat_status": "success",
+   "e4_kandidat_total_dtk": 6.0,
+   "e4_kandidat_geometri_dtk": 1.9,
+   "e4_kandidat_load_model_dtk": 0.0,
+   "e4_kandidat_baca_dtk": 0.0,
+   "e4_kandidat_panggilan": 0,
+   "e5_kandidat_status": "success",
+   "e5_kandidat_total_dtk": 5.7,
+   "e5_kandidat_geometri_dtk": 1.82,
+   "e5_kandidat_load_model_dtk": 0.0,
+   "e5_kandidat_baca_dtk": 0.0,
+   "e5_kandidat_panggilan": 0,
+   "e1_benar": "48/48",
+   "e1_berisi_benar": "0/0",
+   "e1_berisi_benar_ci": "0/0",
+   "e2_benar": "48/48",
+   "e2_berisi_benar": "0/0",
+   "e2_berisi_benar_ci": "0/0",
+   "e4_kandidat_benar": "48/48",
+   "e4_kandidat_berisi_benar": "0/0",
+   "e4_kandidat_berisi_benar_ci": "0/0",
+   "e5_kandidat_benar": "48/48",
+   "e5_kandidat_berisi_benar": "0/0",
+   "e5_kandidat_berisi_benar_ci": "0/0"
+  }
+ ],
+ "per_blok": [
+  {
+   "foto": "IMG_20260901_134505",
+   "shift": "1",
+   "blok": 0,
+   "kunci": [
+    "4i",
+    "7b",
+    "1a",
+    "1b",
+    "1c",
+    "1d"
+   ],
+   "e1": [
+    "4i",
+    "0x",
+    "1a",
+    "1b",
+    "1c",
+    "1a"
+   ],
+   "e2": [
+    "41",
+    "7b",
+    "1a",
+    "1b",
+    "1L",
+    "12"
+   ],
+   "e4_kandidat": [
+    "4i",
+    "1b",
+    "1a",
+    "1b",
+    "1C",
+    "1d"
+   ],
+   "e5_kandidat": [
+    "4D",
+    "1D",
+    "1B",
+    "1D",
+    "1C",
+    "0D"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134505",
+   "shift": "1",
+   "blok": 1,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "SKIP",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "0",
+    "?",
+    "0",
+    "0x",
+    "0",
+    "0"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "x",
+    "0",
+    "0"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "x",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134505",
+   "shift": "1",
+   "blok": 2,
+   "kunci": [
+    "2a",
+    "2b",
+    "2c",
+    "2d",
+    "2e",
+    "2F"
+   ],
+   "e1": [
+    "20",
+    "x",
+    "2c",
+    "1l",
+    "2e",
+    "2F"
+   ],
+   "e2": [
+    "2A",
+    "2B",
+    "2C",
+    "2D",
+    "2E",
+    "2F"
+   ],
+   "e4_kandidat": [
+    "2D",
+    "2b",
+    "2C",
+    "2d",
+    "2e",
+    "2f"
+   ],
+   "e5_kandidat": [
+    "3D",
+    "1B",
+    "2C",
+    "3D",
+    "2C",
+    "2C"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134505",
+   "shift": "1",
+   "blok": 3,
+   "kunci": [
+    "3a",
+    "3b",
+    "3c",
+    "3d",
+    "3e",
+    "0"
+   ],
+   "e1": [
+    "3a",
+    "3b",
+    "3L",
+    "3d",
+    "3e",
+    "0"
+   ],
+   "e2": [
+    "3a",
+    "3b",
+    "3c",
+    "3d",
+    "3e",
+    "0"
+   ],
+   "e4_kandidat": [
+    "3a",
+    "3b",
+    "3C",
+    "3d",
+    "3e",
+    "0"
+   ],
+   "e5_kandidat": [
+    "3a",
+    "3b",
+    "3c",
+    "3d",
+    "3e",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134505",
+   "shift": "1",
+   "blok": 4,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "0",
+    "0",
+    "0",
+    "?",
+    "0",
+    "?"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134505",
+   "shift": "1",
+   "blok": 5,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "0x",
+    "0",
+    "0",
+    "?",
+    "0x",
+    "0"
+   ],
+   "e2": [
+    "x",
+    "x",
+    "x",
+    "x",
+    "x",
+    "x"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134505",
+   "shift": "1",
+   "blok": 6,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "0x",
+    "0",
+    "0",
+    "0",
+    "?",
+    "0x"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134505",
+   "shift": "1",
+   "blok": 7,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1a"
+   ],
+   "e1": [
+    "0a",
+    "0",
+    "0",
+    "0",
+    "?",
+    "1q"
+   ],
+   "e2": [
+    "00",
+    "00",
+    "00",
+    "00",
+    "00",
+    "1a"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1a"
+   ],
+   "e5_kandidat": [
+    "1",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134505",
+   "shift": "2",
+   "blok": 0,
+   "kunci": [
+    "1a",
+    "7b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    "1a",
+    "1b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    "1a",
+    "7b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    "1a",
+    "7b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    "1a",
+    "5b",
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134505",
+   "shift": "2",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134505",
+   "shift": "2",
+   "blok": 2,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134505",
+   "shift": "2",
+   "blok": 3,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134505",
+   "shift": "2",
+   "blok": 4,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134505",
+   "shift": "2",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134505",
+   "shift": "2",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134505",
+   "shift": "2",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134510",
+   "shift": "1",
+   "blok": 0,
+   "kunci": [
+    "4i",
+    "7b",
+    "1a",
+    "1b",
+    "1c",
+    "1d"
+   ],
+   "e1": [
+    "4i",
+    "0x",
+    "1a",
+    "1b",
+    "x",
+    "?"
+   ],
+   "e2": [
+    "41",
+    "7b",
+    "1a",
+    "1b",
+    "1c",
+    "1d"
+   ],
+   "e4_kandidat": [
+    "4i",
+    "1b",
+    "1a",
+    "1b",
+    "1C",
+    "1d"
+   ],
+   "e5_kandidat": [
+    "4H",
+    "7D",
+    "1A",
+    "1b",
+    "1C",
+    "1A"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134510",
+   "shift": "1",
+   "blok": 1,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "SKIP",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "0",
+    "0",
+    "0",
+    "?",
+    "0",
+    "0"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "x",
+    "0",
+    "0"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "x",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134510",
+   "shift": "1",
+   "blok": 2,
+   "kunci": [
+    "2a",
+    "2b",
+    "2c",
+    "2d",
+    "2e",
+    "2F"
+   ],
+   "e1": [
+    "10",
+    "x",
+    "2c",
+    "1a",
+    "2e",
+    "2F"
+   ],
+   "e2": [
+    "2U",
+    "2b",
+    "2c",
+    "2d",
+    "2e",
+    "2F"
+   ],
+   "e4_kandidat": [
+    "2D",
+    "2b",
+    "8C",
+    "2d",
+    "2e",
+    "2f"
+   ],
+   "e5_kandidat": [
+    "3D",
+    "2b",
+    "2C",
+    "2d",
+    "2C",
+    "2C"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134510",
+   "shift": "1",
+   "blok": 3,
+   "kunci": [
+    "3a",
+    "3b",
+    "3c",
+    "3d",
+    "3e",
+    "0"
+   ],
+   "e1": [
+    "3a",
+    "3b",
+    "?l",
+    "3d",
+    "3e",
+    "0"
+   ],
+   "e2": [
+    "3a",
+    "3b",
+    "3c",
+    "3d",
+    "3e",
+    "0"
+   ],
+   "e4_kandidat": [
+    "3a",
+    "3b",
+    "3d",
+    "3d",
+    "3e",
+    "0"
+   ],
+   "e5_kandidat": [
+    "3a",
+    "3b",
+    "3d",
+    "3d",
+    "3e",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134510",
+   "shift": "1",
+   "blok": 4,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "0",
+    "0",
+    "0x",
+    "?",
+    "0",
+    "0x"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134510",
+   "shift": "1",
+   "blok": 5,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "?",
+    "0x",
+    "0",
+    "?",
+    "?",
+    "0"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134510",
+   "shift": "1",
+   "blok": 6,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "0",
+    "0",
+    "0",
+    "0x",
+    "0",
+    "?"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134510",
+   "shift": "1",
+   "blok": 7,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1a"
+   ],
+   "e1": [
+    "?",
+    "0",
+    "0x",
+    "0",
+    "?",
+    "1q"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1a"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1a"
+   ],
+   "e5_kandidat": [
+    "1",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134510",
+   "shift": "2",
+   "blok": 0,
+   "kunci": [
+    "1a",
+    "7b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    "1a",
+    "1b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    "1a",
+    "7b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    "1a",
+    "1b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    "1a",
+    "7b",
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134510",
+   "shift": "2",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134510",
+   "shift": "2",
+   "blok": 2,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134510",
+   "shift": "2",
+   "blok": 3,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134510",
+   "shift": "2",
+   "blok": 4,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134510",
+   "shift": "2",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134510",
+   "shift": "2",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134510",
+   "shift": "2",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134514",
+   "shift": "1",
+   "blok": 0,
+   "kunci": [
+    "4i",
+    "7b",
+    "1a",
+    "1b",
+    "1c",
+    "1d"
+   ],
+   "e1": [
+    "x",
+    "0t",
+    "1a",
+    "1b",
+    "0x",
+    "1x"
+   ],
+   "e2": [
+    "41",
+    "7b",
+    "1a",
+    "1b",
+    "1c",
+    "1d"
+   ],
+   "e4_kandidat": [
+    "4i",
+    "1b",
+    "1a",
+    "1b",
+    "1C",
+    "1d"
+   ],
+   "e5_kandidat": [
+    "4h",
+    "7b",
+    "1a",
+    "1b",
+    "1c",
+    "1d"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134514",
+   "shift": "1",
+   "blok": 1,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "SKIP",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "0",
+    "0",
+    "0x",
+    "0x",
+    "0",
+    "01"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "x",
+    "0",
+    "0"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "x",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134514",
+   "shift": "1",
+   "blok": 2,
+   "kunci": [
+    "2a",
+    "2b",
+    "2c",
+    "2d",
+    "2e",
+    "2F"
+   ],
+   "e1": [
+    "20",
+    "x",
+    "0x",
+    "2a",
+    "2e",
+    "2F"
+   ],
+   "e2": [
+    "2U",
+    "2b",
+    "2c",
+    "2d",
+    "2e",
+    "2F"
+   ],
+   "e4_kandidat": [
+    "2D",
+    "2b",
+    "8C",
+    "2d",
+    "2e",
+    "2f"
+   ],
+   "e5_kandidat": [
+    "3D",
+    "1B",
+    "2C",
+    "3D",
+    "2C",
+    "2C"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134514",
+   "shift": "1",
+   "blok": 3,
+   "kunci": [
+    "3a",
+    "3b",
+    "3c",
+    "3d",
+    "3e",
+    "0"
+   ],
+   "e1": [
+    "3a",
+    "3b1",
+    "3L",
+    "?l",
+    "3e",
+    "0"
+   ],
+   "e2": [
+    "3a",
+    "3b",
+    "3c",
+    "3d",
+    "3e",
+    "0"
+   ],
+   "e4_kandidat": [
+    "3a",
+    "3b",
+    "3C",
+    "3d",
+    "3e",
+    "0"
+   ],
+   "e5_kandidat": [
+    "3a",
+    "3b",
+    "3d",
+    "3d",
+    "3e",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134514",
+   "shift": "1",
+   "blok": 4,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "0",
+    "0",
+    "?",
+    "?",
+    "0",
+    "?"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134514",
+   "shift": "1",
+   "blok": 5,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "0x",
+    "0x",
+    "0",
+    "0",
+    "0Q",
+    "0x"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134514",
+   "shift": "1",
+   "blok": 6,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "0x",
+    "0",
+    "0",
+    "?",
+    "0",
+    "0x"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134514",
+   "shift": "1",
+   "blok": 7,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1a"
+   ],
+   "e1": [
+    "?",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1a"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1a"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1a"
+   ],
+   "e5_kandidat": [
+    "1",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134514",
+   "shift": "2",
+   "blok": 0,
+   "kunci": [
+    "1a",
+    "7b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    "1a",
+    "1b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    "1a",
+    "7b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    "1a",
+    "7b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    "1a",
+    "7b",
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134514",
+   "shift": "2",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134514",
+   "shift": "2",
+   "blok": 2,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134514",
+   "shift": "2",
+   "blok": 3,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134514",
+   "shift": "2",
+   "blok": 4,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134514",
+   "shift": "2",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134514",
+   "shift": "2",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134514",
+   "shift": "2",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134520",
+   "shift": "1",
+   "blok": 0,
+   "kunci": [
+    "4i",
+    "7b",
+    "1a",
+    "1b",
+    "1c",
+    "1d"
+   ],
+   "e1": [
+    "x",
+    "0t",
+    "1a",
+    "1b",
+    "1c",
+    "x"
+   ],
+   "e2": [
+    "41",
+    "7b",
+    "1a",
+    "1b",
+    "1c",
+    "1d"
+   ],
+   "e4_kandidat": [
+    "4i",
+    "1b",
+    "1a",
+    "1b",
+    "1C",
+    "1d"
+   ],
+   "e5_kandidat": [
+    "4h",
+    "7b",
+    "1a",
+    "1b",
+    "1d",
+    "1d"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134520",
+   "shift": "1",
+   "blok": 1,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "SKIP",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "0",
+    "?",
+    "0",
+    "0x",
+    "0",
+    "0"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "x",
+    "0",
+    "0"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "4",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134520",
+   "shift": "1",
+   "blok": 2,
+   "kunci": [
+    "2a",
+    "2b",
+    "2c",
+    "2d",
+    "2e",
+    "2F"
+   ],
+   "e1": [
+    "20",
+    "x",
+    "?",
+    "1n",
+    "2e",
+    "2F"
+   ],
+   "e2": [
+    "20",
+    "2b",
+    "2c",
+    "2d",
+    "2e",
+    "2f"
+   ],
+   "e4_kandidat": [
+    "2D",
+    "2b",
+    "8C",
+    "2d",
+    "2e",
+    "2f"
+   ],
+   "e5_kandidat": [
+    "3D",
+    "2b",
+    "2C",
+    "2d",
+    "2C",
+    "2C"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134520",
+   "shift": "1",
+   "blok": 3,
+   "kunci": [
+    "3a",
+    "3b",
+    "3c",
+    "3d",
+    "3e",
+    "0"
+   ],
+   "e1": [
+    "3a",
+    "3b",
+    "3L",
+    "3d",
+    "3e",
+    "0"
+   ],
+   "e2": [
+    "3a",
+    "3b",
+    "3c",
+    "3d",
+    "3e",
+    "0"
+   ],
+   "e4_kandidat": [
+    "3a",
+    "3b",
+    "3C",
+    "3d",
+    "3e",
+    "0"
+   ],
+   "e5_kandidat": [
+    "3a",
+    "3b",
+    "3d",
+    "3d",
+    "3e",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134520",
+   "shift": "1",
+   "blok": 4,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "?",
+    "0",
+    "0",
+    "0x",
+    "0",
+    "?"
+   ],
+   "e2": [
+    "x",
+    "x",
+    "x",
+    "x",
+    "x",
+    "x"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134520",
+   "shift": "1",
+   "blok": 5,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "0x",
+    "?",
+    "0",
+    "0",
+    "0x",
+    "?"
+   ],
+   "e2": [
+    "x",
+    "x",
+    "x",
+    "x",
+    "x",
+    "x"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134520",
+   "shift": "1",
+   "blok": 6,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "0",
+    "0",
+    "0x",
+    "0",
+    "?",
+    "x"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "1a",
+    "1a",
+    "1",
+    "0",
+    "1a",
+    "1a"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134520",
+   "shift": "1",
+   "blok": 7,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1a"
+   ],
+   "e1": [
+    "?",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1a"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1a"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1a"
+   ],
+   "e5_kandidat": [
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134520",
+   "shift": "2",
+   "blok": 0,
+   "kunci": [
+    "1a",
+    "7b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    "1a",
+    "1b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    "1a",
+    "7b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    "1a",
+    "1b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    "1a",
+    "7b",
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134520",
+   "shift": "2",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134520",
+   "shift": "2",
+   "blok": 2,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134520",
+   "shift": "2",
+   "blok": 3,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134520",
+   "shift": "2",
+   "blok": 4,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134520",
+   "shift": "2",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134520",
+   "shift": "2",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134520",
+   "shift": "2",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134523",
+   "shift": "1",
+   "blok": 0,
+   "kunci": [
+    "4i",
+    "7b",
+    "1a",
+    "1b",
+    "1c",
+    "1d"
+   ],
+   "e1": [
+    "41",
+    "0t",
+    "1a",
+    "1b",
+    "?",
+    "x"
+   ],
+   "e2": [
+    "41",
+    "7b",
+    "1a",
+    "1b",
+    "1c",
+    "1d"
+   ],
+   "e4_kandidat": [
+    "4i",
+    "7b",
+    "1a",
+    "1b",
+    "1C",
+    "1d"
+   ],
+   "e5_kandidat": [
+    "4I",
+    "7D",
+    "1A",
+    "1B",
+    "1C",
+    "1A"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134523",
+   "shift": "1",
+   "blok": 1,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "SKIP",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "0",
+    "0",
+    "?",
+    "?",
+    "0",
+    "0"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "4g",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134523",
+   "shift": "1",
+   "blok": 2,
+   "kunci": [
+    "2a",
+    "2b",
+    "2c",
+    "2d",
+    "2e",
+    "2F"
+   ],
+   "e1": [
+    "20",
+    "x",
+    "x",
+    "1n",
+    "2e",
+    "2F"
+   ],
+   "e2": [
+    "2a",
+    "2b",
+    "2c",
+    "2d",
+    "2e",
+    "2f"
+   ],
+   "e4_kandidat": [
+    "2D",
+    "2b",
+    "8C",
+    "2d",
+    "2e",
+    "2f"
+   ],
+   "e5_kandidat": [
+    "3D",
+    "1B",
+    "2C",
+    "3D",
+    "2C",
+    "2C"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134523",
+   "shift": "1",
+   "blok": 3,
+   "kunci": [
+    "3a",
+    "3b",
+    "3c",
+    "3d",
+    "3e",
+    "0"
+   ],
+   "e1": [
+    "3a",
+    "3b",
+    "?l",
+    "?",
+    "3e",
+    "0"
+   ],
+   "e2": [
+    "3a",
+    "3b",
+    "3c",
+    "3d",
+    "3e",
+    "0"
+   ],
+   "e4_kandidat": [
+    "3a",
+    "3b",
+    "3C",
+    "3d",
+    "3e",
+    "0"
+   ],
+   "e5_kandidat": [
+    "3a",
+    "3b",
+    "3A",
+    "3d",
+    "3e",
+    "0I"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134523",
+   "shift": "1",
+   "blok": 4,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "0x",
+    "0",
+    "?",
+    "?",
+    "0",
+    "?"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134523",
+   "shift": "1",
+   "blok": 5,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "?",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134523",
+   "shift": "1",
+   "blok": 6,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e1": [
+    "0",
+    "0",
+    "?",
+    "0",
+    "?",
+    "?"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "e5_kandidat": [
+    "1a",
+    "1",
+    "0",
+    "1",
+    "0",
+    "1a"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134523",
+   "shift": "1",
+   "blok": 7,
+   "kunci": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1a"
+   ],
+   "e1": [
+    "?",
+    "0x",
+    "0",
+    "0",
+    "0x",
+    "1a"
+   ],
+   "e2": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1a"
+   ],
+   "e4_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1a"
+   ],
+   "e5_kandidat": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134523",
+   "shift": "2",
+   "blok": 0,
+   "kunci": [
+    "1a",
+    "7b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    "1a",
+    "1b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    "1a",
+    "7b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    "1a",
+    "1b",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    "1a",
+    "7b",
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134523",
+   "shift": "2",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134523",
+   "shift": "2",
+   "blok": 2,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134523",
+   "shift": "2",
+   "blok": 3,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134523",
+   "shift": "2",
+   "blok": 4,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134523",
+   "shift": "2",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134523",
+   "shift": "2",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260901_134523",
+   "shift": "2",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141208",
+   "shift": "1",
+   "blok": 0,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "1b"
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141208",
+   "shift": "1",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141208",
+   "shift": "1",
+   "blok": 2,
+   "kunci": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    "1a",
+    null,
+    "2q",
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "4",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141208",
+   "shift": "1",
+   "blok": 3,
+   "kunci": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e1": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e2": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141208",
+   "shift": "1",
+   "blok": 4,
+   "kunci": [
+    null,
+    "3c",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    "3c",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    "x",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "3C",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "3G",
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141208",
+   "shift": "1",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141208",
+   "shift": "1",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141208",
+   "shift": "1",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "?"
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141208",
+   "shift": "2",
+   "blok": 0,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141208",
+   "shift": "2",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141208",
+   "shift": "2",
+   "blok": 2,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141208",
+   "shift": "2",
+   "blok": 3,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141208",
+   "shift": "2",
+   "blok": 4,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141208",
+   "shift": "2",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141208",
+   "shift": "2",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141208",
+   "shift": "2",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141212",
+   "shift": "1",
+   "blok": 0,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "x"
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141212",
+   "shift": "1",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141212",
+   "shift": "1",
+   "blok": 2,
+   "kunci": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    "7a",
+    null,
+    "2q",
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "7A",
+    null,
+    "2A",
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141212",
+   "shift": "1",
+   "blok": 3,
+   "kunci": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e1": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e2": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "2f",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "2F",
+    null,
+    null,
+    "3I",
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141212",
+   "shift": "1",
+   "blok": 4,
+   "kunci": [
+    null,
+    "3c",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    "3c",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    "3c",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "3C",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "3C",
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141212",
+   "shift": "1",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141212",
+   "shift": "1",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141212",
+   "shift": "1",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141212",
+   "shift": "2",
+   "blok": 0,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141212",
+   "shift": "2",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141212",
+   "shift": "2",
+   "blok": 2,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141212",
+   "shift": "2",
+   "blok": 3,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141212",
+   "shift": "2",
+   "blok": 4,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141212",
+   "shift": "2",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141212",
+   "shift": "2",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141212",
+   "shift": "2",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141217",
+   "shift": "1",
+   "blok": 0,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    "ba",
+    "5b"
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141217",
+   "shift": "1",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141217",
+   "shift": "1",
+   "blok": 2,
+   "kunci": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    "7a",
+    null,
+    "2q",
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "7a",
+    null,
+    "2d",
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141217",
+   "shift": "1",
+   "blok": 3,
+   "kunci": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e1": [
+    null,
+    "2F",
+    null,
+    null,
+    "31",
+    null
+   ],
+   "e2": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141217",
+   "shift": "1",
+   "blok": 4,
+   "kunci": [
+    null,
+    "3c",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    "3c",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    "3c",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "3C",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "3C",
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141217",
+   "shift": "1",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141217",
+   "shift": "1",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141217",
+   "shift": "1",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141217",
+   "shift": "2",
+   "blok": 0,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141217",
+   "shift": "2",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141217",
+   "shift": "2",
+   "blok": 2,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141217",
+   "shift": "2",
+   "blok": 3,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141217",
+   "shift": "2",
+   "blok": 4,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141217",
+   "shift": "2",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141217",
+   "shift": "2",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141217",
+   "shift": "2",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141223",
+   "shift": "1",
+   "blok": 0,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "sb"
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141223",
+   "shift": "1",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141223",
+   "shift": "1",
+   "blok": 2,
+   "kunci": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    "7a",
+    null,
+    "2q",
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141223",
+   "shift": "1",
+   "blok": 3,
+   "kunci": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e1": [
+    null,
+    "1F",
+    null,
+    null,
+    "31",
+    null
+   ],
+   "e2": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141223",
+   "shift": "1",
+   "blok": 4,
+   "kunci": [
+    null,
+    "3c",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    "3c",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    "3c",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "3C",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "3C",
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141223",
+   "shift": "1",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141223",
+   "shift": "1",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141223",
+   "shift": "1",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "?"
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "4"
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "8"
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141223",
+   "shift": "2",
+   "blok": 0,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141223",
+   "shift": "2",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141223",
+   "shift": "2",
+   "blok": 2,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141223",
+   "shift": "2",
+   "blok": 3,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141223",
+   "shift": "2",
+   "blok": 4,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141223",
+   "shift": "2",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141223",
+   "shift": "2",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141223",
+   "shift": "2",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141238",
+   "shift": "1",
+   "blok": 0,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    "0x",
+    "?"
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    "x",
+    "x"
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    "x",
+    "0h"
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    "1A",
+    "1A"
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141238",
+   "shift": "1",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141238",
+   "shift": "1",
+   "blok": 2,
+   "kunci": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    "1x",
+    null,
+    "09x",
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    "x",
+    null,
+    "x",
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "4",
+    null,
+    "x",
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "4",
+    null,
+    "0",
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141238",
+   "shift": "1",
+   "blok": 3,
+   "kunci": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e1": [
+    null,
+    "8x",
+    null,
+    null,
+    "0x",
+    null
+   ],
+   "e2": [
+    null,
+    "x",
+    null,
+    null,
+    "x",
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "x",
+    null,
+    null,
+    "5F",
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "0",
+    null,
+    null,
+    "0",
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141238",
+   "shift": "1",
+   "blok": 4,
+   "kunci": [
+    null,
+    "3c",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    "36",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    "x",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "5G",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "4a",
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141238",
+   "shift": "1",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141238",
+   "shift": "1",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141238",
+   "shift": "1",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "?"
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "4"
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141238",
+   "shift": "2",
+   "blok": 0,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141238",
+   "shift": "2",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141238",
+   "shift": "2",
+   "blok": 2,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141238",
+   "shift": "2",
+   "blok": 3,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141238",
+   "shift": "2",
+   "blok": 4,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141238",
+   "shift": "2",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141238",
+   "shift": "2",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141238",
+   "shift": "2",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141316",
+   "shift": "1",
+   "blok": 0,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141316",
+   "shift": "1",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141316",
+   "shift": "1",
+   "blok": 2,
+   "kunci": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    "?",
+    null,
+    "29",
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "7a",
+    null,
+    "2A",
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141316",
+   "shift": "1",
+   "blok": 3,
+   "kunci": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e1": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e2": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141316",
+   "shift": "1",
+   "blok": 4,
+   "kunci": [
+    null,
+    "3c",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    "3c",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    "3c",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "3C",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "3C",
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141316",
+   "shift": "1",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141316",
+   "shift": "1",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141316",
+   "shift": "1",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "?"
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "0"
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141316",
+   "shift": "2",
+   "blok": 0,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141316",
+   "shift": "2",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141316",
+   "shift": "2",
+   "blok": 2,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141316",
+   "shift": "2",
+   "blok": 3,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141316",
+   "shift": "2",
+   "blok": 4,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141316",
+   "shift": "2",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141316",
+   "shift": "2",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260902_141316",
+   "shift": "2",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260921_004756",
+   "shift": "1",
+   "blok": 0,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    "ba",
+    "5b"
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    "5b",
+    "6a"
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    "6a",
+    "5b"
+   ]
+  },
+  {
+   "foto": "IMG_20260921_004756",
+   "shift": "1",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260921_004756",
+   "shift": "1",
+   "blok": 2,
+   "kunci": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    "7a",
+    null,
+    "2q",
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "7a",
+    null,
+    "2a",
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260921_004756",
+   "shift": "1",
+   "blok": 3,
+   "kunci": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e1": [
+    null,
+    "1F",
+    null,
+    null,
+    "31",
+    null
+   ],
+   "e2": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "2F",
+    null,
+    null,
+    "3i",
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260921_004756",
+   "shift": "1",
+   "blok": 4,
+   "kunci": [
+    null,
+    "3c",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    "3c",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    "3c",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    "3C",
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    "3C",
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260921_004756",
+   "shift": "1",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260921_004756",
+   "shift": "1",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260921_004756",
+   "shift": "1",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "x"
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "4"
+   ]
+  },
+  {
+   "foto": "IMG_20260921_004756",
+   "shift": "2",
+   "blok": 0,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260921_004756",
+   "shift": "2",
+   "blok": 1,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260921_004756",
+   "shift": "2",
+   "blok": 2,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260921_004756",
+   "shift": "2",
+   "blok": 3,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260921_004756",
+   "shift": "2",
+   "blok": 4,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260921_004756",
+   "shift": "2",
+   "blok": 5,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260921_004756",
+   "shift": "2",
+   "blok": 6,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "foto": "IMG_20260921_004756",
+   "shift": "2",
+   "blok": 7,
+   "kunci": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e1": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e2": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e4_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "e5_kandidat": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  }
+ ]
+}

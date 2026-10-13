@@ -1,0 +1,278 @@
+{
+ "status": "success",
+ "data": {
+  "shift": "1",
+  "blocks": [
+   {
+    "block_idx": 0,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.2599826388888889,
+     0.3072916666666667
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     true,
+     true
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     "6a",
+     "5b"
+    ],
+    "raw_text": "6a 5b",
+    "n_kode_terbaca": 2,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 1.981,
+    "expected_jam_label": "07.00 - 08.00"
+   },
+   {
+    "block_idx": 1,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "skipped_model": true,
+    "elapsed_sec": 0.0,
+    "expected_jam_label": "08.00 - 09.00"
+   },
+   {
+    "block_idx": 2,
+    "cell_ink": [
+     0.0,
+     0.3433159722222222,
+     0.0,
+     0.24739583333333334,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     true,
+     false,
+     true,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     "7A",
+     null,
+     "2A",
+     null,
+     null
+    ],
+    "raw_text": "7A 2A",
+    "n_kode_terbaca": 2,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 1.712,
+    "expected_jam_label": "09.00 - 10.00"
+   },
+   {
+    "block_idx": 3,
+    "cell_ink": [
+     0.0,
+     0.2339409722222222,
+     0.001736111111111111,
+     0.0,
+     0.18619791666666666,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     true,
+     false,
+     false,
+     true,
+     false
+    ],
+    "kotak": [
+     null,
+     "2F",
+     null,
+     null,
+     "3I",
+     null
+    ],
+    "raw_text": "2F 3I",
+    "n_kode_terbaca": 2,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 1.417,
+    "expected_jam_label": "10.00 - 11.00"
+   },
+   {
+    "block_idx": 4,
+    "cell_ink": [
+     0.0,
+     0.16536458333333334,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     true,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     "3C",
+     null,
+     null,
+     null,
+     null
+    ],
+    "raw_text": "3C",
+    "n_kode_terbaca": 1,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 0.982,
+    "expected_jam_label": "11.00 - 12.00"
+   },
+   {
+    "block_idx": 5,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "skipped_model": true,
+    "elapsed_sec": 0.0,
+    "expected_jam_label": "12.00 - 13.00"
+   },
+   {
+    "block_idx": 6,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "skipped_model": true,
+    "elapsed_sec": 0.0,
+    "expected_jam_label": "13.00 - 14.00"
+   },
+   {
+    "block_idx": 7,
+    "cell_ink": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.13194444444444445
+    ],
+    "cell_filled": [
+     false,
+     false,
+     false,
+     false,
+     false,
+     true
+    ],
+    "kotak": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     "0"
+    ],
+    "raw_text": "0",
+    "n_kode_terbaca": 1,
+    "jumlah_cocok": true,
+    "skipped_model": false,
+    "elapsed_sec": 1.084,
+    "expected_jam_label": "14.00 - 15.00"
+   }
+  ]
+ },
+ "meta": {
+  "reader": "trocr",
+  "trocr_model": "microsoft/trocr-small-handwritten",
+  "mode": "kandidat",
+  "huruf": "a-k",
+  "hapus_garis": true,
+  "padatkan": true,
+  "geometry_path": "fast",
+  "refine_quality": "good",
+  "geometry_seconds": 1.53,
+  "model_load_seconds": 5.98,
+  "n_model_calls": 5,
+  "model_seconds": 7.18,
+  "elapsed_seconds": 18.6
+ }
+}
