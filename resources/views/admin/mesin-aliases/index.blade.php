@@ -1,14 +1,51 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container py-3" style="max-width: 900px;">
-    <h4 class="mb-3">Koreksi Alias Mesin</h4>
-    <p class="text-muted small">
-        Daftar ini berisi hasil konfirmasi mesin dari fitur Baca Kertas (AI).
-        Kalau ada teks kertas yang ter-mapping ke kode mesin yang SALAH, ganti
-        di sini -- perubahan langsung berlaku untuk foto berikutnya dengan
-        teks yang sama.
-    </p>
+<div class="container py-4" style="max-width: 980px;">
+
+    {{-- Top Navigation Bar --}}
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">Administrator</span>
+                <span class="text-muted">/</span>
+                <span class="fw-semibold">Alias Mesin</span>
+            </div>
+            <h3 class="fw-bold mt-2 mb-1">Koreksi Alias Mesin</h3>
+            <p class="text-muted small mb-0">
+                Daftar hasil konfirmasi mesin dari fitur AI Baca Kertas. Koreksi pemetaan teks ke kode mesin resmi di sini.
+            </p>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            @include('layouts.partials._theme-toggle')
+            <a href="{{ route('admin.passwords.index') }}" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                Password Pengguna
+            </a>
+            <a href="{{ route('password.edit') }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 20h9"></path>
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                </svg>
+                Password Saya
+            </a>
+            <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Logout
+                </button>
+            </form>
+        </div>
+    </div>
 
     <table class="table table-bordered table-sm bg-white">
         <thead>

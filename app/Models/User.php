@@ -39,4 +39,12 @@ class User extends Authenticatable
     {
         return $this->PassWeb;
     }
+
+    /**
+     * Cek apakah user saat ini adalah Administrator (UserCode: AFSYAH).
+     */
+    public function isAdmin(): bool
+    {
+        return $this->UserCode === 'AFSYAH';
+    }
 }

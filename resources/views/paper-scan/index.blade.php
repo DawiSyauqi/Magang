@@ -1534,8 +1534,21 @@
 
     // ================== Simpan (REUSE persis logika lama) ==================
     el('saveAllBtn').addEventListener('click', async () => {
-        const tanggal = el('tanggalInput').value, speed = el('speedInput').value, nik = el('operatorSelect').value;
-        currentRows.forEach(r => { r.Tgl_Trs = tanggal; r.Speed_Mesin = speed; r.NIK = nik; });
+        const tanggal = el('tanggalInput').value,
+              speed = el('speedInput').value,
+              nik = el('operatorSelect').value,
+              shift = el('shiftSelectManual') ? el('shiftSelectManual').value : '',
+              mesin = el('mesinSelect') ? el('mesinSelect').value : '',
+              item = el('itemSelect') ? el('itemSelect').value : '';
+
+        currentRows.forEach(r => {
+            r.Tgl_Trs = tanggal;
+            r.Speed_Mesin = speed;
+            r.NIK = nik;
+            if (shift) r.ShiftCode = shift;
+            if (mesin) r.MesinCode = mesin;
+            if (item) r.ITEMNO = item;
+        });
 
         el('saveAllBtn').disabled = true;
         el('saveAllBtn').textContent = 'Menyimpan...';

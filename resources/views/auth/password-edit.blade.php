@@ -70,6 +70,12 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100 fw-semibold">Simpan Password</button>
+
+                <div class="mt-3 text-center">
+                    <a href="{{ auth()->user()->isAdmin() ? route('admin.mesin-aliases.index') : route('dashboard') }}" class="text-decoration-none small text-muted">
+                        ← Kembali ke {{ auth()->user()->isAdmin() ? 'Panel Admin' : 'Dashboard' }}
+                    </a>
+                </div>
             </form>
         </div>
     </div>

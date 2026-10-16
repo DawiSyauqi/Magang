@@ -7,12 +7,16 @@ use App\Http\Controllers\PaperScanController;
 use App\Http\Controllers\ReferensiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MesinAliasAdminController;
+use App\Http\Controllers\AdminPasswordController;
 use App\Http\Controllers\PaperScanEksplorasi2Controller;
 use App\Http\Controllers\PaperScanEksplorasi1Controller;
 use App\Http\Controllers\PaperScanEksplorasi3Controller;
 
 Route::get('/', function () {
-    return redirect()->route(auth()->check() ? 'dashboard' : 'login');
+    if (! auth()->check()) {
+        return redirect()->route('login');
+    }
+    return redirect()->route(auth()->user()->isAdmin() ? 'admin.mesin-aliases.index' : 'dashboard');
 });
 
 Route::middleware('guest')->group(function () {
@@ -94,14 +98,18 @@ Route::prefix('test/eksplorasi')->name('test.eksplorasi.')
             ->whereIn('versi', ['e4', 'e5', 'e6'])->name('analyze');
     });
 
-Route::middleware(['auth', 'menu.access'])->group(function () {
+// Rute untuk Seluruh Pengguna Terautentikasi (Shared Auth)
+Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
     // Set/ubah password bersifat OPSIONAL — bisa diakses kapan saja lewat menu,
     // tidak lagi dipaksa/redirect otomatis setelah login.
     Route::get('/password/edit', [PasswordController::class, 'edit'])->name('password.edit');
     Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
+});
 
+// Rute Khusus Petugas Produksi (UC-02 s.d. UC-09)
+Route::middleware(['auth', 'menu.access', 'production'])->group(function () {
     // Dashboard: lihat data (Tahap 2), Tambah Data (Tahap 4), Edit Data (Tahap 5).
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/dashboard', [DashboardController::class, 'store'])->name('dashboard.store');
@@ -154,9 +162,17 @@ Route::middleware(['auth', 'menu.access'])->group(function () {
 
     Route::post('/paper-scan/eksplorasi1/analyze', [PaperScanEksplorasi1Controller::class, 'analyze'])
         ->name('paper-scan.eksplorasi1.analyze');
+});
 
-    Route::prefix('admin/mesin-aliases')->name('admin.mesin-aliases.')->group(function () {
+// Rute Khusus Administrator (UC-10 & UC-11)
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('mesin-aliases')->name('mesin-aliases.')->group(function () {
         Route::get('/', [MesinAliasAdminController::class, 'index'])->name('index');
         Route::put('/{rawKey}', [MesinAliasAdminController::class, 'update'])->name('update');
+    });
+
+    Route::prefix('passwords')->name('passwords.')->group(function () {
+        Route::get('/', [AdminPasswordController::class, 'index'])->name('index');
+        Route::put('/{username}', [AdminPasswordController::class, 'update'])->name('update');
     });
 });

@@ -55,7 +55,9 @@ class LoginController extends Controller
             Auth::login($user);
             $request->session()->regenerate();
 
-            return redirect()->intended(route('dashboard'));
+            $targetRoute = $user->isAdmin() ? route('admin.mesin-aliases.index') : route('dashboard');
+
+            return redirect()->intended($targetRoute);
         }
 
         // --- Kasus normal: PassWeb sudah pernah diisi, password WAJIB cocok ---
@@ -82,7 +84,9 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard'));
+        $targetRoute = $user->isAdmin() ? route('admin.mesin-aliases.index') : route('dashboard');
+
+        return redirect()->intended($targetRoute);
     }
 
     /**

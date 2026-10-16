@@ -13,6 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'menu.access' => \App\Http\Middleware\EnsureMenuAccess::class,
+            'admin' => \App\Http\Middleware\EnsureAdmin::class,
+            'production' => \App\Http\Middleware\EnsureProductionStaff::class,
         ]);
         $middleware->trustProxies(at: '*');
     })

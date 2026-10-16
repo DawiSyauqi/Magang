@@ -18,7 +18,17 @@ class EnsureMenuAccess
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! Auth::check() || ! MenuAccess::isAllowed(Auth::user()->UserCode)) {
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $user = Auth::user();
+
+        if ($user->isAdmin()) {
+            return $next($request);
+        }
+
+        if (! MenuAccess::isAllowed($user->UserCode)) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();

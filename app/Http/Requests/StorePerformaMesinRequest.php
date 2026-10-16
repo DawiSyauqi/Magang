@@ -25,13 +25,18 @@ class StorePerformaMesinRequest extends FormRequest
             'mesin_code' => ['required', Rule::exists('MFRESMAS', 'RESRCENO')],
             'itemno' => [
                 function ($attribute, $value, $fail) {
-                    $mesinCode = $this->input('mesin_code');
-                    $hasAnyItem = $mesinCode
-                        ? \App\Models\ICItem::where('MESINNO', $mesinCode)->exists() // GANTI nama kolom relasi mesin<->item sesuai skema Anda -- lihat catatan di bawah
-                        : false;
+                    $mesinCode = (string) $this->input('mesin_code');
+                    $hasAnyItem = false;
+                    if ($mesinCode !== '') {
+                        try {
+                            $hasAnyItem = \App\Models\ItemLookup::forMesin($mesinCode)->isNotEmpty();
+                        } catch (\Throwable $e) {
+                            $hasAnyItem = false;
+                        }
+                    }
 
                     if (! $hasAnyItem) {
-                        return; // mesin ini memang tidak punya daftar item -- itemno BOLEH kosong
+                        return; // mesin ini memang tidak punya daftar item
                     }
 
                     if (blank($value)) {
@@ -39,7 +44,12 @@ class StorePerformaMesinRequest extends FormRequest
                         return;
                     }
 
-                    if (! \DB::table('ICITEM')->where('FMTITEMNO', $value)->exists()) {
+                    $existsInDb = \DB::table('ICITEM')
+                        ->where('FMTITEMNO', $value)
+                        ->orWhere('ITEMNO', $value)
+                        ->exists();
+
+                    if (! $existsInDb) {
                         $fail('Nomor Item yang dipilih tidak valid.');
                     }
                 },
@@ -63,7 +73,17 @@ class StorePerformaMesinRequest extends FormRequest
             ],
             'speed_mesin' => ['required', 'numeric', 'min:0'],
             'time_start' => ['required', 'date_format:H:i'],
-            'time_end' => ['required', 'date_format:H:i'],
+            'time_end' => [
+                'required',
+                'date_format:H:i',
+                function ($attribute, $value, $fail) {
+                    $shift = (string) $this->input('shift');
+                    $start = $this->input('time_start');
+                    if ($shift !== '3' && $start && $value && $start >= $value) {
+                        $fail('Waktu selesai harus lebih besar dari waktu mulai.');
+                    }
+                },
+            ],
             'problem_code' => [
                 'required',
                 function ($attribute, $value, $fail) {
@@ -98,5 +118,18 @@ class StorePerformaMesinRequest extends FormRequest
             'mesin_code.exists' => 'Mesin yang dipilih tidak valid.',
             'itemno.exists' => 'Nomor Item yang dipilih tidak valid.',
         ];
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($v) {
+            $shift = (string) $this->input('shift');
+            $start = $this->input('time_start');
+            $end = $this->input('time_end');
+
+            if ($shift !== '3' && $start && $end && $start >= $end) {
+                $v->errors()->add('time_end', 'Waktu selesai harus lebih besar dari waktu mulai.');
+            }
+        });
     }
 }
