@@ -1,0 +1,351 @@
+// =============================================================================
+// DRAFT2.SCSS — variasi desain 2, referensi images/reference/NexHome.
+// Navy gelap, sidebar ikon + label, kartu sangat membulat dengan gradasi
+// hangat (oranye / hijau), gauge, tile berwarna. Dark-first, ada versi terang.
+// Prefiks kelas: nx-
+// =============================================================================
+
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+
+$accent: #f28a2e;
+$primary: $accent;
+$success: #22c55e;
+$danger: #ef4444;
+$font-family-sans-serif: 'Inter', system-ui, -apple-system, sans-serif;
+$border-radius: .75rem;
+
+// Dark = tampilan utama (seperti referensi).
+:root,
+:root[data-theme="dark"] {
+    --bg: #0c111b;
+    --bg-glow-1: rgba(242, 138, 46, .10);
+    --bg-glow-2: rgba(45, 212, 191, .07);
+    --card: #151c2a;
+    --card-2: #1a2333;
+    --card-hover: #1f2a3d;
+    --line: rgba(255, 255, 255, .07);
+    --line-strong: rgba(255, 255, 255, .14);
+    --text: #eef2f8;
+    --muted: #8d99ab;
+    --subtle: #5d6a7e;
+
+    --accent: #{$accent};
+    --accent-2: #ffb15c;
+    --accent-soft: rgba(242, 138, 46, .16);
+    --green: #34d399;
+    --green-soft: rgba(52, 211, 153, .15);
+    --red: #f87171;
+    --red-soft: rgba(248, 113, 113, .15);
+
+    // Kartu bergradasi (seperti Air Quality / Temperature di referensi)
+    --grad-green: linear-gradient(160deg, #1d4a3a 0%, #17372f 45%, #142a26 100%);
+    --grad-orange: linear-gradient(160deg, #5a3417 0%, #3f2615 50%, #2a1c14 100%);
+    --grad-sky: linear-gradient(170deg, #1d2c4d 0%, #1a2440 55%, #2b2a3f 100%);
+
+    --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+    --r-card: 22px;
+    --r-tile: 18px;
+}
+
+:root[data-theme="light"] {
+    --bg: #f4efe8;
+    --bg-glow-1: rgba(242, 138, 46, .14);
+    --bg-glow-2: rgba(20, 184, 166, .08);
+    --card: #ffffff;
+    --card-2: #faf7f3;
+    --card-hover: #f5efe7;
+    --line: rgba(60, 40, 20, .08);
+    --line-strong: rgba(60, 40, 20, .16);
+    --text: #1f1a16;
+    --muted: #7a6e63;
+    --subtle: #a99d92;
+
+    --accent-soft: rgba(242, 138, 46, .14);
+    --green: #059669;
+    --green-soft: rgba(5, 150, 105, .12);
+    --red: #dc2626;
+    --red-soft: rgba(220, 38, 38, .1);
+
+    --grad-green: linear-gradient(160deg, #e3f6ec 0%, #d3efe1 100%);
+    --grad-orange: linear-gradient(160deg, #fde7d2 0%, #fbd9b8 100%);
+    --grad-sky: linear-gradient(170deg, #e4ecfb 0%, #f3e9e1 100%);
+
+    --shadow: 0 8px 24px rgba(80, 50, 20, .08);
+}
+
+@import 'bootstrap/scss/bootstrap';
+
+body {
+    background:
+        radial-gradient(900px 500px at 85% -10%, var(--bg-glow-1), transparent 60%),
+        radial-gradient(700px 500px at -10% 110%, var(--bg-glow-2), transparent 60%),
+        var(--bg);
+    background-attachment: fixed;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+}
+
+.num { font-variant-numeric: tabular-nums; }
+.nx-muted { color: var(--muted) !important; }
+.nx-subtle { color: var(--subtle) !important; }
+
+// -----------------------------------------------------------------------------
+// Shell
+// -----------------------------------------------------------------------------
+.nx-shell { display: flex; min-height: 100vh; gap: 0; }
+
+.nx-rail {
+    width: 96px; flex-shrink: 0;
+    position: sticky; top: 0; height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 1.25rem .75rem; gap: .5rem; z-index: 1040;
+}
+
+.nx-logo {
+    width: 48px; height: 48px; border-radius: 14px; margin-bottom: 1rem;
+    display: grid; place-items: center; font-size: 1.5rem;
+    color: var(--accent); border: 1.5px solid var(--accent-soft);
+}
+
+.nx-rail-item {
+    width: 72px; padding: .7rem .25rem .6rem; border-radius: 16px;
+    display: flex; flex-direction: column; align-items: center; gap: .35rem;
+    text-decoration: none; color: var(--muted); font-size: .7rem; font-weight: 500; text-align: center;
+    line-height: 1.15;
+    i { font-size: 1.25rem; }
+    &:hover { background: var(--card); color: var(--text); }
+    &.active {
+        background: linear-gradient(160deg, #f59e42, #d9661a);
+        color: #fff; box-shadow: 0 8px 20px rgba(242, 138, 46, .35);
+    }
+    &.disabled { opacity: .45; pointer-events: none; }
+}
+
+.nx-rail-sep { width: 32px; height: 1px; background: var(--line); margin: .35rem 0; }
+
+.nx-rail-quote {
+    margin-top: auto; font-family: Georgia, serif; font-style: italic; font-weight: 700;
+    color: var(--accent); font-size: .85rem; line-height: 1.15; text-align: center; opacity: .9;
+}
+
+.nx-main { flex: 1; min-width: 0; padding: 1.1rem 1.6rem 2.5rem .4rem; }
+
+.nx-topbar {
+    display: flex; align-items: center; gap: 1rem; margin-bottom: 1.1rem;
+    .nx-brand-name { font-size: 1.35rem; font-weight: 700; line-height: 1.1; }
+    .nx-brand-sub { font-size: .78rem; color: var(--muted); }
+}
+
+.nx-search {
+    flex: 1; max-width: 420px; margin: 0 auto;
+    display: flex; align-items: center; gap: .6rem;
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+    padding: .6rem 1rem; color: var(--subtle); font-size: .85rem;
+    input { background: transparent; border: 0; outline: 0; color: var(--text); flex: 1; min-width: 0; }
+}
+
+.nx-round-btn {
+    width: 42px; height: 42px; border-radius: 50%; position: relative;
+    display: inline-grid; place-items: center; flex-shrink: 0;
+    background: var(--card); border: 1px solid var(--line); color: var(--muted);
+    &:hover { color: var(--text); }
+    .nx-dot {
+        position: absolute; top: 6px; right: 7px; min-width: 16px; height: 16px; padding: 0 4px;
+        border-radius: 999px; background: var(--accent); color: #fff; font-size: .62rem; font-weight: 700;
+        display: grid; place-items: center;
+    }
+}
+
+.theme-toggle {
+    @extend .nx-round-btn;
+    .icon-moon { display: none; }
+}
+:root[data-theme="light"] .theme-toggle {
+    .icon-moon { display: inline; }
+    .icon-sun { display: none; }
+}
+
+.nx-profile {
+    display: flex; align-items: center; gap: .6rem; padding: .3rem .9rem .3rem .3rem;
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+    .nx-avatar {
+        width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center;
+        background: linear-gradient(160deg, #f59e42, #d9661a); color: #fff; font-weight: 700; font-size: .8rem;
+    }
+    .nx-profile-name { font-size: .82rem; font-weight: 600; line-height: 1.15; }
+    .nx-profile-role { font-size: .7rem; color: var(--muted); }
+}
+
+.nx-draft-note {
+    display: flex; flex-wrap: wrap; gap: .4rem 1rem; align-items: center;
+    font-size: .76rem; color: var(--accent-2); margin-bottom: 1rem;
+    background: var(--accent-soft); border-radius: 12px; padding: .45rem .9rem;
+    a { color: inherit; font-weight: 600; }
+}
+:root[data-theme="light"] .nx-draft-note { color: #b45309; }
+
+// -----------------------------------------------------------------------------
+// Kartu
+// -----------------------------------------------------------------------------
+.nx-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card);
+    box-shadow: var(--shadow); padding: 1.15rem 1.25rem; height: 100%;
+    display: flex; flex-direction: column; position: relative; overflow: hidden;
+}
+.nx-card.green { background: var(--grad-green); }
+.nx-card.orange { background: var(--grad-orange); }
+.nx-card.sky { background: var(--grad-sky); }
+
+.nx-card-title {
+    display: flex; align-items: center; gap: .55rem; font-size: .98rem; font-weight: 600;
+    i.lead { color: var(--accent); font-size: 1.1rem; }
+}
+.nx-card-sub { font-size: .76rem; color: var(--muted); }
+
+.nx-pill {
+    display: inline-flex; align-items: center; gap: .3rem;
+    font-size: .72rem; font-weight: 600; padding: .25rem .7rem; border-radius: 999px;
+    background: var(--card-2); color: var(--muted); border: 1px solid var(--line);
+    &.green { background: var(--green); color: #06281c; border: 0; }
+    &.orange { background: var(--accent); color: #fff; border: 0; }
+    &.up { background: var(--red-soft); color: var(--red); border: 0; }
+    &.down { background: var(--green-soft); color: var(--green); border: 0; }
+}
+
+.nx-chart { width: 100%; height: 280px; }
+
+// Tab periode (seperti "Living Room / Kitchen" di referensi)
+.nx-tabs {
+    display: inline-flex; flex-wrap: wrap; gap: .25rem; padding: .3rem;
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+    a {
+        font-size: .8rem; font-weight: 500; color: var(--muted); text-decoration: none;
+        padding: .42rem .95rem; border-radius: 999px; display: inline-flex; align-items: center; gap: .35rem;
+        &:hover { color: var(--text); }
+        &.active { background: linear-gradient(160deg, #f59e42, #d9661a); color: #fff; }
+    }
+}
+
+.nx-filterbar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin-bottom: 1.1rem;
+    .nx-chip {
+        input { display: none; }
+        label {
+            font-size: .78rem; font-weight: 500; padding: .45rem .85rem; border-radius: 999px; cursor: pointer;
+            background: var(--card); border: 1px solid var(--line); color: var(--muted);
+        }
+        input:checked + label { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+    }
+    .dropdown-toggle {
+        font-size: .78rem; border-radius: 999px; padding: .45rem .9rem;
+        background: var(--card); border: 1px solid var(--line); color: var(--muted);
+        &:hover, &.show { color: var(--text); }
+    }
+    .dropdown-menu {
+        background: var(--card); border: 1px solid var(--line-strong); border-radius: 14px; padding: .4rem;
+        max-height: 320px; overflow: auto; box-shadow: var(--shadow);
+    }
+    .form-check { padding: .3rem .5rem .3rem 2rem; margin: 0; border-radius: 8px; font-size: .82rem; color: var(--text); }
+    .form-check:hover { background: var(--card-hover); }
+    input[type=date] {
+        font-size: .78rem; border-radius: 999px; background: var(--card); border: 1px solid var(--line); color: var(--text);
+        padding: .4rem .8rem;
+    }
+}
+
+// Kartu "shift sekarang" (seperti kartu cuaca)
+.nx-now {
+    .nx-now-clock { font-size: 2.4rem; font-weight: 700; letter-spacing: -.03em; line-height: 1; }
+    .nx-now-shift { font-size: .85rem; color: var(--muted); }
+    .nx-now-art {
+        position: absolute; right: -10px; bottom: 54px; width: 150px; height: 70px; opacity: .55;
+        background:
+            radial-gradient(circle at 70% 35%, #f59e42 0 14px, transparent 15px),
+            linear-gradient(170deg, transparent 40%, rgba(80, 100, 150, .5) 41%, rgba(40, 50, 80, .7) 100%);
+        border-radius: 0 0 0 60px;
+    }
+    .nx-now-stats {
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-top: auto; padding-top: .9rem;
+        border-top: 1px solid var(--line);
+        div { display: flex; align-items: center; gap: .45rem; }
+        i {
+            width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+            background: var(--line); color: var(--text); font-size: .85rem; flex-shrink: 0;
+        }
+        small { display: block; font-size: .66rem; color: var(--muted); line-height: 1.1; }
+        strong { font-size: .86rem; }
+    }
+}
+
+// Tile mesin (seperti Lighting / Air Conditioner di referensi)
+.nx-tile {
+    border-radius: var(--r-tile); padding: .95rem 1rem; height: 100%;
+    border: 1px solid var(--line); position: relative; overflow: hidden;
+    display: flex; flex-direction: column; gap: .2rem; min-height: 132px;
+    .nx-tile-icon {
+        width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center;
+        background: rgba(255, 255, 255, .12); color: #fff; font-size: 1.05rem;
+    }
+    .nx-tile-name { font-size: .95rem; font-weight: 700; margin-top: auto; color: #fff; }
+    .nx-tile-sub { font-size: .72rem; color: rgba(255, 255, 255, .7); }
+    .nx-tile-foot { display: flex; justify-content: space-between; align-items: center; font-size: .74rem; color: rgba(255, 255, 255, .85); margin-top: .35rem; }
+    .nx-switch {
+        position: absolute; top: .95rem; right: 1rem; width: 38px; height: 22px; border-radius: 999px;
+        background: rgba(255, 255, 255, .85);
+        &::after { content: ''; position: absolute; top: 3px; right: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--sw, #f59e42); }
+    }
+    &.t1 { background: linear-gradient(160deg, #a2531b, #6b3514); --sw: #f59e42; }
+    &.t2 { background: linear-gradient(160deg, #0f5e66, #0d3d48); --sw: #2dd4bf; }
+    &.t3 { background: linear-gradient(160deg, #4b3a8f, #2c2560); --sw: #a78bfa; }
+    &.t4 { background: linear-gradient(160deg, #1f6e48, #154231); --sw: #34d399; }
+}
+
+// Status input
+.nx-status {
+    display: grid; grid-template-columns: minmax(64px, 1fr) repeat(3, 46px); gap: 5px 6px; align-items: center; font-size: .78rem;
+    .head { font-size: .66rem; color: var(--subtle); text-align: center; font-weight: 600; }
+    .mesin { font-weight: 600; }
+    .cell {
+        height: 26px; border-radius: 9px; display: grid; place-items: center;
+        font-size: .68rem; font-weight: 700; background: var(--card-2); color: var(--subtle);
+        &.ada { background: var(--accent-soft); color: var(--accent-2); }
+        &.tinggi { background: var(--red-soft); color: var(--red); }
+    }
+}
+:root[data-theme="light"] .nx-status .cell.ada { color: #c2410c; }
+
+// Tabel
+.nx-table {
+    width: 100%; font-size: .83rem;
+    th { font-size: .68rem; font-weight: 600; color: var(--subtle); text-transform: uppercase; letter-spacing: .05em; padding: .5rem .7rem; }
+    td { padding: .62rem .7rem; border-top: 1px solid var(--line); }
+    tbody tr:hover td { background: var(--card-hover); }
+}
+.nx-cat {
+    display: inline-flex; align-items: center; gap: .4rem; font-weight: 600; font-size: .78rem;
+    &::before { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--c); box-shadow: 0 0 8px var(--c); }
+}
+.nx-shift { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 8px; background: var(--card-2); font-size: .72rem; font-weight: 700; color: var(--muted); }
+
+.nx-foot {
+    display: flex; align-items: center; gap: .6rem; margin-top: 1.5rem; color: var(--muted); font-size: .76rem;
+    &::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+    i { color: var(--green); }
+}
+
+// Mobile
+.nx-rail-toggle { display: none; }
+@media (max-width: 991.98px) {
+    .nx-rail {
+        position: fixed; left: 0; top: 0; bottom: 0; background: var(--bg);
+        transform: translateX(-100%); transition: transform .2s; box-shadow: var(--shadow); overflow-y: auto;
+    }
+    .nx-shell.open .nx-rail { transform: none; }
+    .nx-rail-toggle { display: inline-grid; }
+    .nx-main { padding: 1rem; }
+    .nx-search { display: none; }
+    .nx-profile .nx-profile-text { display: none; }
+}

@@ -1,0 +1,291 @@
+// =============================================================================
+// DRAFT3.SCSS — variasi desain 3, referensi images/reference/Savance.
+// Glassmorphism: bingkai kaca besar di atas latar gradasi hangat
+// (cokelat-oranye ke ungu), sidebar hitam transparan, kartu KPI bergradasi,
+// bar gradasi oranye/lavender, line kuning. Dark-first, ada versi terang.
+// Prefiks kelas: sv-
+// =============================================================================
+
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+
+$accent: #f4a259;
+$primary: $accent;
+$font-family-sans-serif: 'Inter', system-ui, -apple-system, sans-serif;
+$border-radius: .75rem;
+
+:root,
+:root[data-theme="dark"] {
+    --backdrop:
+        radial-gradient(1100px 700px at 95% 0%, rgba(246, 178, 107, .75), transparent 60%),
+        radial-gradient(900px 700px at 50% 45%, rgba(138, 84, 48, .55), transparent 70%),
+        radial-gradient(900px 700px at 0% 100%, rgba(84, 70, 120, .7), transparent 60%),
+        linear-gradient(160deg, #3a2618 0%, #1f1714 50%, #2a2235 100%);
+    --frame: rgba(26, 18, 16, .55);
+    --frame-border: rgba(255, 255, 255, .16);
+    --side: rgba(8, 6, 6, .72);
+    --glass: rgba(255, 255, 255, .055);
+    --glass-2: rgba(255, 255, 255, .09);
+    --glass-border: rgba(255, 255, 255, .11);
+    --text: #f7f1ea;
+    --muted: rgba(247, 241, 234, .62);
+    --subtle: rgba(247, 241, 234, .38);
+
+    --accent: #{$accent};
+    --lavender: #b9b4f5;
+    --yellow: #f7d046;
+    --sky: #8ec5ff;
+    --red: #ff8a80;
+    --green: #8ee6b0;
+
+    --r-frame: 30px;
+    --r-card: 20px;
+}
+
+:root[data-theme="light"] {
+    --backdrop:
+        radial-gradient(1100px 700px at 95% 0%, rgba(255, 196, 130, .9), transparent 60%),
+        radial-gradient(900px 700px at 50% 45%, rgba(255, 220, 190, .7), transparent 70%),
+        radial-gradient(900px 700px at 0% 100%, rgba(196, 186, 240, .85), transparent 60%),
+        linear-gradient(160deg, #f6dcc4 0%, #f3e6dc 50%, #e4def5 100%);
+    --frame: rgba(255, 255, 255, .45);
+    --frame-border: rgba(255, 255, 255, .8);
+    --side: rgba(30, 22, 18, .86);
+    --glass: rgba(255, 255, 255, .55);
+    --glass-2: rgba(255, 255, 255, .75);
+    --glass-border: rgba(255, 255, 255, .9);
+    --text: #2a1f18;
+    --muted: rgba(42, 31, 24, .62);
+    --subtle: rgba(42, 31, 24, .4);
+    --lavender: #7d74e0;
+    --yellow: #d9a400;
+    --red: #d64545;
+    --green: #1f9d5c;
+}
+
+@import 'bootstrap/scss/bootstrap';
+
+body {
+    min-height: 100vh;
+    background: var(--backdrop);
+    background-attachment: fixed;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    padding: 28px;
+}
+
+.num { font-variant-numeric: tabular-nums; }
+.sv-muted { color: var(--muted) !important; }
+.sv-subtle { color: var(--subtle) !important; }
+
+// -----------------------------------------------------------------------------
+// Bingkai kaca besar
+// -----------------------------------------------------------------------------
+.sv-frame {
+    display: flex; min-height: calc(100vh - 56px);
+    background: var(--frame);
+    border: 1px solid var(--frame-border);
+    border-radius: var(--r-frame);
+    backdrop-filter: blur(28px) saturate(140%);
+    -webkit-backdrop-filter: blur(28px) saturate(140%);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .35);
+    overflow: hidden;
+}
+
+.sv-side {
+    width: 232px; flex-shrink: 0; background: var(--side); color: #f7f1ea;
+    padding: 1.6rem 1rem; display: flex; flex-direction: column; gap: .35rem;
+}
+
+.sv-brand {
+    display: flex; align-items: center; gap: .6rem; padding: 0 .6rem 1.6rem; font-weight: 700; font-size: 1.05rem;
+    .sv-brand-logo {
+        width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center;
+        background: linear-gradient(140deg, #f7c78a, #c9783a); color: #2a1a10; font-size: .95rem;
+    }
+}
+
+.sv-nav-label { font-size: .64rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(247, 241, 234, .38); padding: .9rem .75rem .3rem; }
+
+.sv-nav-item {
+    display: flex; align-items: center; gap: .7rem; padding: .6rem .8rem; border-radius: 12px;
+    color: rgba(247, 241, 234, .72); text-decoration: none; font-size: .86rem; font-weight: 500;
+    i { font-size: 1rem; }
+    &:hover { background: rgba(255, 255, 255, .07); color: #fff; }
+    &.active {
+        background: linear-gradient(120deg, #a8d4ff, #6fb2f0); color: #0d2238; font-weight: 600;
+        box-shadow: 0 8px 22px rgba(111, 178, 240, .35);
+    }
+    &.disabled { opacity: .45; pointer-events: none; }
+    .sv-soon { margin-left: auto; font-size: .6rem; opacity: .7; }
+}
+
+.sv-side-foot {
+    margin-top: auto; padding: .75rem; border-radius: 16px; background: rgba(255, 255, 255, .06);
+    font-size: .78rem; display: flex; align-items: center; gap: .6rem;
+    .sv-avatar {
+        width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: .78rem;
+        background: linear-gradient(140deg, #f7c78a, #c9783a); color: #2a1a10;
+    }
+    small { display: block; color: rgba(247, 241, 234, .55); font-size: .68rem; }
+}
+
+.sv-main { flex: 1; min-width: 0; padding: 1.6rem 1.9rem 2.2rem; }
+
+.sv-topbar {
+    display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: 1.4rem;
+    h1 { font-size: 1.55rem; font-weight: 700; margin: 0 auto 0 0; letter-spacing: -.01em; }
+}
+
+.sv-pill {
+    display: inline-flex; align-items: center; gap: .4rem; border-radius: 999px;
+    padding: .45rem 1rem; font-size: .78rem; font-weight: 500; text-decoration: none;
+    background: var(--glass); border: 1px solid var(--glass-border); color: var(--text);
+    &.cream { background: #f6dfc2; color: #3b2615; border-color: transparent; font-weight: 600; }
+    &.brown { background: #6b3f1d; color: #fde8cf; border-color: transparent; }
+    &.up { background: rgba(255, 138, 128, .18); color: var(--red); border-color: transparent; }
+    &.down { background: rgba(142, 230, 176, .16); color: var(--green); border-color: transparent; }
+    &.sm { padding: .2rem .6rem; font-size: .7rem; }
+}
+.sv-search { min-width: 240px; color: var(--muted); input { background: transparent; border: 0; outline: 0; color: var(--text); width: 100%; } }
+
+.sv-round {
+    width: 38px; height: 38px; border-radius: 50%; display: inline-grid; place-items: center;
+    background: var(--glass); border: 1px solid var(--glass-border); color: var(--text);
+}
+.theme-toggle {
+    @extend .sv-round;
+    .icon-moon { display: none; }
+}
+:root[data-theme="light"] .theme-toggle {
+    .icon-moon { display: inline; }
+    .icon-sun { display: none; }
+}
+
+.sv-note {
+    font-size: .74rem; color: var(--muted); margin: -.6rem 0 1.2rem; display: flex; flex-wrap: wrap; gap: .3rem 1rem;
+    a { color: var(--text); font-weight: 600; }
+}
+
+// -----------------------------------------------------------------------------
+// Kartu kaca
+// -----------------------------------------------------------------------------
+.sv-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--r-card);
+    padding: 1.15rem 1.25rem;
+    height: 100%; display: flex; flex-direction: column;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+.sv-card-title { font-size: .95rem; font-weight: 600; }
+.sv-card-sub { font-size: .74rem; color: var(--muted); }
+.sv-chart { width: 100%; height: 270px; }
+
+// Kartu KPI bergradasi (baris atas referensi)
+.sv-kpi {
+    border-radius: var(--r-card); padding: 1rem 1.1rem; height: 100%; color: #fff;
+    display: flex; flex-direction: column; gap: .2rem; position: relative; overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .18);
+    .sv-kpi-head { display: flex; align-items: center; gap: .55rem; font-size: .78rem; font-weight: 500; opacity: .92; white-space: nowrap; }
+    .sv-kpi-icon {
+        width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+        background: rgba(255, 255, 255, .25); font-size: .85rem;
+    }
+    .sv-kpi-value { font-size: 1.45rem; font-weight: 700; letter-spacing: -.02em; margin-top: .55rem; line-height: 1.15; }
+    .sv-kpi-value small { font-size: .78rem; font-weight: 500; opacity: .8; margin-left: .2rem; }
+    .sv-kpi-foot { display: flex; justify-content: space-between; align-items: center; font-size: .72rem; opacity: .9; margin-top: auto; padding-top: .4rem; }
+    .sv-kpi-delta { font-weight: 700; }
+    &.beige { background: linear-gradient(150deg, rgba(214, 186, 150, .85), rgba(150, 120, 92, .75)); }
+    &.purple { background: linear-gradient(150deg, #7b6cf6, #5b4bd8); }
+    &.sunset { background: linear-gradient(110deg, #c75b8f 0%, #e7746f 50%, #f2a65a 100%); }
+    &.orange { background: linear-gradient(150deg, #f7b267, #f08a4b); }
+    &.plum { background: linear-gradient(150deg, #9d5c8f, #6f3f73); }
+}
+
+// Kartu "Total downtime" besar
+.sv-hero-num {
+    font-size: 2.6rem; font-weight: 700; letter-spacing: -.03em; line-height: 1;
+    small { font-size: 1rem; font-weight: 500; color: var(--muted); }
+}
+.sv-play {
+    width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--glass-2); border: 1px solid var(--glass-border); font-size: 1.1rem;
+}
+
+// Daftar legenda di samping chart (seperti Income / Homes di referensi)
+.sv-legend-list {
+    display: flex; flex-direction: column; gap: .55rem; font-size: .8rem;
+    .row-item { display: flex; align-items: center; gap: .5rem; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c); box-shadow: 0 0 10px var(--c); flex-shrink: 0; }
+    .val { margin-left: auto; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .bar { height: 6px; border-radius: 99px; background: var(--glass-2); overflow: hidden; margin-top: .2rem; }
+    .bar > span { display: block; height: 100%; border-radius: 99px; background: var(--c); }
+}
+
+// Filter
+.sv-filter {
+    display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-bottom: 1.3rem;
+    .form-select, input[type=date] {
+        width: auto; font-size: .78rem; border-radius: 999px; padding-top: .4rem; padding-bottom: .4rem;
+        background-color: var(--glass); border: 1px solid var(--glass-border); color: var(--text);
+    }
+    .form-select option { color: #222; }
+    .sv-chip {
+        input { display: none; }
+        label { font-size: .76rem; padding: .4rem .85rem; border-radius: 999px; cursor: pointer; background: var(--glass); border: 1px solid var(--glass-border); color: var(--muted); }
+        input:checked + label { background: #f6dfc2; color: #3b2615; border-color: transparent; font-weight: 600; }
+    }
+    .dropdown-toggle { @extend .sv-pill; }
+    .dropdown-menu {
+        background: rgba(30, 22, 18, .92); border: 1px solid rgba(255, 255, 255, .14); border-radius: 14px;
+        padding: .4rem; max-height: 320px; overflow: auto; backdrop-filter: blur(16px);
+    }
+    .form-check { padding: .3rem .5rem .3rem 2rem; margin: 0; border-radius: 8px; font-size: .8rem; color: #f7f1ea; }
+    .form-check:hover { background: rgba(255, 255, 255, .08); }
+}
+
+// Status input
+.sv-status {
+    display: grid; grid-template-columns: minmax(64px, 1fr) repeat(3, 46px); gap: 5px 6px; align-items: center; font-size: .78rem;
+    .head { font-size: .66rem; color: var(--subtle); text-align: center; font-weight: 600; }
+    .mesin { font-weight: 600; }
+    .cell {
+        height: 25px; border-radius: 99px; display: grid; place-items: center; font-size: .68rem; font-weight: 700;
+        background: var(--glass); color: var(--subtle);
+        &.ada { background: rgba(185, 180, 245, .25); color: var(--lavender); }
+        &.tinggi { background: rgba(244, 162, 89, .3); color: var(--accent); }
+    }
+}
+:root[data-theme="light"] .sv-status .cell.tinggi { color: #b45309; }
+
+// Tabel
+.sv-table {
+    width: 100%; font-size: .82rem; color: var(--text);
+    th { font-size: .66rem; font-weight: 600; color: var(--subtle); text-transform: uppercase; letter-spacing: .06em; padding: .5rem .7rem; }
+    td { padding: .6rem .7rem; border-top: 1px solid var(--glass-border); }
+    td.num { white-space: nowrap; }
+    tbody tr:hover td { background: var(--glass); }
+}
+.sv-cat {
+    display: inline-flex; align-items: center; gap: .4rem; font-weight: 600; font-size: .78rem;
+    &::before { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
+}
+
+// Mobile
+.sv-side-toggle { display: none; }
+@media (max-width: 991.98px) {
+    body { padding: 10px; }
+    .sv-frame { border-radius: 20px; }
+    .sv-side {
+        position: fixed; left: 0; top: 0; bottom: 0; z-index: 1050; min-height: 100vh;
+        transform: translateX(-100%); transition: transform .2s;
+    }
+    .sv-frame.open .sv-side { transform: none; }
+    .sv-side-toggle { display: inline-grid; }
+    .sv-main { padding: 1rem; }
+    .sv-search { display: none !important; }
+}

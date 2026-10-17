@@ -98,6 +98,27 @@ Route::prefix('test/eksplorasi')->name('test.eksplorasi.')
             ->whereIn('versi', ['e4', 'e5', 'e6'])->name('analyze');
     });
 
+// DRAFT desain & fitur baru (perencanaan/perencanaan.md) — TANPA login & TANPA database,
+// memakai data dummy. Hanya aktif bila APP_DEBUG=true atau DRAFT_ENABLED=true.
+if (config('produksi.draft_enabled')) {
+    Route::prefix('draft')->name('draft.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Draft\DraftController::class, 'index'])->name('index');
+        Route::get('/ringkasan', [\App\Http\Controllers\Draft\DraftController::class, 'ringkasan'])->name('ringkasan');
+        Route::get('/mesin', [\App\Http\Controllers\Draft\DraftController::class, 'mesin'])->name('mesin');
+        Route::get('/mesin/{kode}', [\App\Http\Controllers\Draft\DraftController::class, 'mesinProfil'])->name('mesin.profil');
+        Route::get('/masalah', [\App\Http\Controllers\Draft\DraftController::class, 'masalah'])->name('masalah');
+        Route::get('/waktu', [\App\Http\Controllers\Draft\DraftController::class, 'waktu'])->name('waktu');
+        Route::get('/produk', [\App\Http\Controllers\Draft\DraftController::class, 'produk'])->name('produk');
+        Route::get('/operator', [\App\Http\Controllers\Draft\DraftController::class, 'operator'])->name('operator');
+        Route::get('/data', [\App\Http\Controllers\Draft\DraftController::class, 'data'])->name('data');
+        Route::get('/data/export', [\App\Http\Controllers\Draft\DraftController::class, 'exportData'])->name('data.export');
+    });
+    // Variasi desain dari referensi images/reference (data sama dengan /draft).
+    Route::get('/draft2/ringkasan', [\App\Http\Controllers\Draft\DraftController::class, 'ringkasan2'])->name('draft2.ringkasan');
+    Route::get('/draft3/ringkasan', [\App\Http\Controllers\Draft\DraftController::class, 'ringkasan3'])->name('draft3.ringkasan');
+    Route::get('/draft4/ringkasan', [\App\Http\Controllers\Draft\DraftController::class, 'ringkasan4'])->name('draft4.ringkasan');
+}
+
 // Rute untuk Seluruh Pengguna Terautentikasi (Shared Auth)
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
