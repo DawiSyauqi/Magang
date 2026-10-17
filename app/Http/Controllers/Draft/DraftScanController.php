@@ -96,6 +96,11 @@ class DraftScanController extends Controller
         $daftar = array_map(fn ($s) => $layanan->majukanContoh($s), ScanStore::make()->daftar(self::PETUGAS_CONTOH, 30, now('Asia/Jakarta')->subDays(2)));
         $berjalan = array_values(array_filter($daftar, fn ($s) => in_array($s['status'], ['menunggu', 'diproses'], true)));
         $baru = array_values(array_filter($daftar, fn ($s) => in_array($s['status'], ['selesai', 'perlu_foto_ulang', 'gagal'], true) && empty($s['diberitahu'])));
+        if ($berjalan) {
+            // Layanan bisa mati di tengah antrian (ditutup paksa, PC restart):
+            // nyalakan lagi dari polling supaya foto tidak menunggu selamanya.
+            $layanan->pastikanBerjalan();
+        }
 
         return response()->json([
             'berjalan' => count($berjalan),

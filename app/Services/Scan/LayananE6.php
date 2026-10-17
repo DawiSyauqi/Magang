@@ -72,11 +72,15 @@ class LayananE6
             '--root', $this->store->root(),
             '--idle-menit', (string) $e6['idle_menit'],
             '--device', $e6['device'],
+            '--trocr-model', $e6['trocr_model'],
             '--log', storage_path('logs/layanan-e6.log'), // Python menulis log sendiri
         ];
         $nul = PHP_OS_FAMILY === 'Windows' ? 'NUL' : '/dev/null';
         $deskriptor = [0 => ['file', $nul, 'r'], 1 => ['file', $nul, 'a'], 2 => ['file', $nul, 'a']];
         $env = getenv() + ['PYTHONIOENCODING' => 'utf-8', 'PYTHONUTF8' => '1'];
+        if (is_dir($e6['trocr_model'])) { // model lokal: jangan coba menghubungi internet
+            $env += ['HF_HUB_OFFLINE' => '1', 'TRANSFORMERS_OFFLINE' => '1'];
+        }
 
         if (PHP_OS_FAMILY === 'Windows') {
             // Start-Process (ShellExecute) membuat proses yang TIDAK mewarisi handle

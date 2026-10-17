@@ -48,8 +48,16 @@ return [
         //          untuk komputer yang belum punya lingkungan Python E6 lengkap.
         'mode' => env('E6_MODE', 'python'),
         // Default: venv E6 (transformers 4.x — kode E6 belum cocok dengan transformers 5.x).
-        'python' => env('E6_PYTHON_BIN', env('EKSPLORASI_PYTHON_BIN',
-            is_file(base_path('scripts/eksplorasi4/.venv/Scripts/python.exe')) ? base_path('scripts/eksplorasi4/.venv/Scripts/python.exe') : 'python')),
+        // scripts/eksplorasi6/.venv = hasil deploy/e6/pasang-e6.ps1 (PC produksi);
+        // scripts/eksplorasi4/.venv = venv pengembangan di laptop.
+        'python' => env('E6_PYTHON_BIN', env('EKSPLORASI_PYTHON_BIN', collect([
+            base_path('scripts/eksplorasi6/.venv/Scripts/python.exe'),
+            base_path('scripts/eksplorasi4/.venv/Scripts/python.exe'),
+        ])->first(fn ($p) => is_file($p), 'python'))),
+        // Folder model lokal (deploy/e6) dipakai bila ada -> tanpa internet;
+        // bila tidak ada, model diambil dari cache Hugging Face pengguna.
+        'trocr_model' => env('E6_TROCR_MODEL', is_dir(base_path('scripts/eksplorasi6/model/trocr-small-handwritten'))
+            ? base_path('scripts/eksplorasi6/model/trocr-small-handwritten') : 'microsoft/trocr-small-handwritten'),
         'skrip_layanan' => base_path('scripts/eksplorasi6/layanan_e6.py'),
         'folder' => storage_path('app/scan-history'),
         // Layanan berhenti sendiri setelah sekian menit tanpa antrian (hemat RAM);
