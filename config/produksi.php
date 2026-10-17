@@ -39,4 +39,31 @@ return [
     // Halaman /draft (tanpa login & tanpa database, data dummy) hanya aktif
     // bila APP_DEBUG=true atau DRAFT_ENABLED=true. Matikan di produksi.
     'draft_enabled' => (bool) env('DRAFT_ENABLED', env('APP_DEBUG', false)),
+
+    // AI Baca Kertas — Eksplorasi 6 (K7). Riwayat scan disimpan sebagai FILE
+    // (bukan tabel database — K3) di storage/app/scan-history/<YYYY-MM>/<id>/.
+    'e6' => [
+        // python = layanan scripts/eksplorasi6/layanan_e6.py sungguhan membaca foto;
+        // contoh = memutar ulang hasil E6 tersimpan (scripts/eksplorasi6/output_e6)
+        //          untuk komputer yang belum punya lingkungan Python E6 lengkap.
+        'mode' => env('E6_MODE', 'python'),
+        // Default: venv E6 (transformers 4.x — kode E6 belum cocok dengan transformers 5.x).
+        'python' => env('E6_PYTHON_BIN', env('EKSPLORASI_PYTHON_BIN',
+            is_file(base_path('scripts/eksplorasi4/.venv/Scripts/python.exe')) ? base_path('scripts/eksplorasi4/.venv/Scripts/python.exe') : 'python')),
+        'skrip_layanan' => base_path('scripts/eksplorasi6/layanan_e6.py'),
+        'folder' => storage_path('app/scan-history'),
+        // Layanan berhenti sendiri setelah sekian menit tanpa antrian (hemat RAM);
+        // 0 = selalu hidup (disarankan di server produksi, lewat Task Scheduler).
+        'idle_menit' => (int) env('E6_IDLE_MENIT', 30),
+        'device' => env('E6_DEVICE', 'auto'), // auto | cpu | cuda
+        // Retensi (perintah `php artisan scan:bersihkan`, terjadwal harian):
+        // foto dihapus setelah sekian hari, hasil bacaan + koreksi tetap disimpan
+        // lebih lama untuk Statistik AI dan bahan melatih ulang model.
+        'retensi_foto_hari' => (int) env('E6_RETENSI_FOTO_HARI', 90),
+        'retensi_data_hari' => (int) env('E6_RETENSI_DATA_HARI', 365),
+        // Mode contoh: lama "proses" pura-pura (detik) supaya alur latar belakang terasa.
+        'contoh_detik' => 8,
+        'contoh_folder' => base_path('scripts/eksplorasi6/output_e6'),
+        'contoh_foto' => base_path('fullimg'),
+    ],
 ];

@@ -94,6 +94,32 @@ class DummyDowntimeSource implements DowntimeSource
         return array_map(fn ($k) => $k[0], self::KATEGORI);
     }
 
+    /** NIK => nama, untuk pilihan operator di layar tinjauan scan (draft). */
+    public function operatorList(): array
+    {
+        return self::OPERATOR;
+    }
+
+    /** ITEMNO => nama, untuk pilihan produk di layar tinjauan scan (draft). */
+    public function itemList(): array
+    {
+        return self::ITEM;
+    }
+
+    /**
+     * Pengganti lookup MFPROBLEMD untuk draft: ProblemCode "D03" + ProblemCodeD "02"
+     * → teks detail. Detail di luar daftar contoh tetap dianggap ada ("sub-poin b").
+     */
+    public function problemDesc(string $problemCode, string $problemCodeD): ?string
+    {
+        if (! isset(self::KATEGORI[$problemCode])) {
+            return null;
+        }
+        $nomor = (int) $problemCodeD;
+
+        return self::KATEGORI[$problemCode][4][$nomor - 1] ?? self::KATEGORI[$problemCode][0].' – sub-poin '.chr(ord('a') + $nomor - 1);
+    }
+
     private function untukTanggal(string $tanggal): array
     {
         if (isset($this->cache[$tanggal])) {

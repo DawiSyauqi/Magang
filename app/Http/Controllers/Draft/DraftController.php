@@ -10,6 +10,8 @@ use App\Services\Analytics\Sources\DummyAdminData;
 use App\Services\Analytics\Sources\DummyDowntimeSource;
 use App\Services\Audit\AuditLog;
 use App\Services\Pengaturan\PengaturanStore;
+use App\Services\Scan\ScanStatistik;
+use App\Services\Scan\ScanStore;
 use App\Support\ExcelXml;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -353,10 +355,21 @@ class DraftController extends Controller
             return response()->view('draft.admin.statistik-ai', ['isAdmin' => false], 403);
         }
         [$periode, $dari, $sampai] = $this->rentang($request);
+        $contoh = new DummyAdminData(new DummyDowntimeSource());
+
+        // Riwayat scan ASLI (Tambah Data E6) dipakai bila sudah ada; data contoh hanya
+        // cadangan selama riwayat kosong, atau bila diminta (?sumber=contoh).
+        [$scan, $ulang] = ScanStatistik::dariRiwayat(ScanStore::make(), $dari, $sampai);
+        $adaAsli = $scan->isNotEmpty() || $ulang->isNotEmpty();
+        $sumber = $adaAsli && $request->input('sumber') !== 'contoh' ? 'asli' : 'contoh';
 
         return view('draft.admin.statistik-ai', [
             'isAdmin' => true,
-            'data' => (new DummyAdminData(new DummyDowntimeSource()))->statistikAi($dari, $sampai),
+            'data' => $sumber === 'asli'
+                ? ScanStatistik::agregasi($scan, $ulang, $dari, $sampai, $contoh->porsiAi($dari, $sampai), 'tanggal_scan')
+                : $contoh->statistikAi($dari, $sampai),
+            'sumber' => $sumber,
+            'adaAsli' => $adaAsli,
             'filter' => ['periode' => $periode, 'dari' => $dari->toDateString(), 'sampai' => $sampai->toDateString()],
             'opsiPeriode' => self::PERIODE,
         ]);

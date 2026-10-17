@@ -1,6 +1,6 @@
 # Perencanaan Pengembangan Sistem — Downtime Mesin + AI Baca Kertas
 
-Disusun 16 Oktober 2026. Dokumen ini masih rencana (belum ada kode yang diubah). Keputusan K1–K6 sudah dijawab pada 16 Oktober 2026 dan dimasukkan ke rencana ini (ringkasan di bagian 6). K7 dibahas nanti.
+Disusun 16 Oktober 2026. Dokumen ini masih rencana (belum ada kode yang diubah). Keputusan K1–K6 sudah dijawab pada 16 Oktober 2026 dan K7 pada 17 Oktober 2026 (ringkasan di bagian 6).
 
 **Prinsip yang berlaku (hasil keputusan):**
 
@@ -349,11 +349,11 @@ Simpan  POST /paper-scan/store (endpoint yang sudah ada)
 
 | Fase                                | Isi                                                                                                                                                          | Hasil                    |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------ |
-| **Fase 0 — Persiapan**       | ✅ K1–K6 dan 6.2 dijawab. Sisa: K7 (E6)                                                                                                                     | Arah jelas               |
+| **Fase 0 — Persiapan**       | ✅ K1–K7 dan 6.2 dijawab                                                                                                                     | Arah jelas               |
 | **Fase 1 — Desain**          | Mockup HTML Ringkasan gaya 3.1 (light & dark) → revisi → token & komponen baru (layout, sidebar, kartu KPI, kartu chart, tabel, filter)                   | Design system siap       |
 | **Fase 2 — Analitik inti**   | `config/produksi.php`, service analitik + endpoint JSON, ECharts, halaman **Ringkasan** (KPI + R1–R7), filter global, hak akses baru (admin + petugas), Data Downtime yang ditingkatkan + export Excel | Sistem informasi versi 1 |
 | **Fase 3 — Analitik lanjut** | Halaman Mesin (+ profil & Gantt), Masalah, Waktu & Shift, Produk/Item, Operator (khusus admin)                                                              | Analitik lengkap         |
-| **Fase 4 — Eksplorasi 6**    | Menunggu K7. E6-1 (validasi) → layanan Python → service + adapter → proses latar belakang berbasis file → layar tinjauan → uji lapangan                | 1 foto, tanpa klik       |
+| **Fase 4 — Eksplorasi 6**    | Draft jadi (17-10-2026). E6-1 (validasi) → layanan Python → service + adapter → proses latar belakang berbasis file → layar tinjauan → uji lapangan                | 1 foto, tanpa klik       |
 | **Fase 5 — Pelengkap**       | Laporan PDF/Excel, target & ambang (file pengaturan), validasi data, audit log (file), statistik AI (file), keamanan rute test, mode TV/PWA                  | Siap produksi            |
 | **Ditunda (butuh DB)**        | Peran Supervisor, kelola master, notifikasi ber-database/email                                                                                               | —                        |
 
@@ -400,7 +400,7 @@ File per variasi: `resources/views/draft{2,3}/`, `resources/css/draft{2,3}.scss`
 | Data Downtime (`/draft/data`): filter global + pencarian + sumber + operator (admin), urut per kolom, 10/25/50/100 baris, panel detail, export CSV (`;` + BOM, bisa dibuka Excel), admin baca-saja | ✅ siap dievaluasi (17-10-2026) |
 | Laporan (`/draft/laporan`): harian/per shift & bulanan siap cetak A4 (catatan otomatis berbasis aturan, timeline, tabel, kolom tanda tangan), Simpan PDF lewat cetak browser, Excel multi-sheet tanpa library (`App\Support\ExcelXml`, format XML Spreadsheet 2003) | ✅ siap dievaluasi (17-10-2026) |
 | Menu admin (`/draft/admin/...`, petugas → 403): **Pengaturan** target per shift (default + per mesin) di `storage/app/pengaturan.json` → dipakai Ringkasan (garis target, ambang status input); **Audit Log** dari `storage/logs/audit/*.jsonl` (`App\Services\Audit\AuditLog`, entri asli + contoh); **Statistik AI** (data contoh meniru E6; sumber asli nanti `scan-history`) | ✅ siap dievaluasi (17-10-2026) |
-| Tambah Data E6 + layar tinjauan | belum (menunggu K7) |
+| Tambah Data E6 (`/draft/tambah`, `/draft/scan`, `/draft/scan/{id}`): foto dari kamera HP / kamera komputer / file (maks. 10) → antrian file `storage/app/scan-history/` → layanan Python `scripts/eksplorasi6/layanan_e6.py` (model dimuat sekali, tanpa paket tambahan, dinyalakan otomatis) → pemberitahuan **"Selesai diproses"** di semua halaman → layar tinjauan (crop field & kotak, kotak ragu + 3 kandidat, pratinjau kejadian via `GridTimeMerger` lama) → simpan ke `final.json` + audit. Mode `E6_MODE=contoh` memutar ulang hasil E6 tersimpan untuk foto `fullimg`. Statistik AI memakai riwayat asli bila ada. Retensi: `php artisan scan:bersihkan` (foto 90 hari, data 365 hari) | ✅ siap dievaluasi (17-10-2026). Mode python teruji di laptop: hasil identik dengan output E6 tersimpan (96/96 kotak), ±18–21 dtk/foto di CPU setelah model dimuat. Butuh venv `scripts/eksplorasi4/.venv` (transformers 4.57, `--system-site-packages`) — kode E6 belum cocok dengan transformers 5.x — plus `sentencepiece` |
 
 **Saat database sudah tersambung (alur promosi draft → asli):**
 1. Buat `SqlDowntimeSource` (implementasi interface yang sama).
@@ -422,7 +422,7 @@ File per variasi: `resources/views/draft{2,3}/`, `resources/css/draft{2,3}.scss`
 | K4 | **480 menit**; shift 1 07–15, shift 2 15–23, shift 3 23–07 | Rumus Downtime %, jadwal di 1.2, `config/produksi.php` |
 | K5 | Analitik operator **hanya admin** | Halaman & filter Operator khusus admin |
 | K6 | Ikuti rekomendasi 3.1 dulu (bisa berubah nanti) | Mockup 1 gaya; gaya terpusat di token + tema chart |
-| K7 | **Dibahas nanti** | Fase 4 menunggu |
+| K7 | **Dijawab 17-10-2026**: mulai sekarang di draft; uji pakai foto `fullimg` (validasi foto baru di akhir); alur lama (Ollama) **diganti**, tidak dipakai lagi; server produksi Windows, i7-4790 + RTX 3060, boleh dipasang Python + torch; foto dari HP, kamera komputer, atau file; proses di latar belakang dengan pemberitahuan "Selesai diproses". Rekomendasi yang dipakai: layanan Python berbasis folder antrian (bukan FastAPI, tanpa port & paket tambahan); riwayat scan sebagai file dengan retensi foto 90 hari / data 365 hari | Fase 4 berjalan |
 
 ### 6.2 Pertanyaan lanjutan (dijawab 16 Oktober 2026)
 

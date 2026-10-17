@@ -23,7 +23,18 @@
 
         <div class="dx-note mb-3">
             <i class="bi bi-info-circle"></i>
-            <span><strong>Data contoh.</strong> Di aplikasi asli, angka ini dihitung dari riwayat scan (<code>storage/app/scan-history/</code>: foto, hasil AI, dan koreksi petugas; saran 2.6). Angka contoh meniru hasil uji Eksplorasi 6: ±20% kotak ditandai ragu, waktu proses ±41–77 detik per foto.</span>
+            @if ($sumber === 'asli')
+                <span><strong>Data asli</strong> dari riwayat scan Tambah Data (<code>storage/app/scan-history/</code>: hasil AI dibanding koreksi petugas), per tanggal scan. Porsi input lewat AI masih dari data contoh.
+                    <a href="{{ request()->fullUrlWithQuery(['sumber' => 'contoh']) }}">Lihat data contoh</a></span>
+            @else
+                <span><strong>Data contoh</strong> meniru hasil uji Eksplorasi 6 (±20% kotak ditandai ragu, ±41–77 detik per foto).
+                    @if ($adaAsli)
+                        <a href="{{ request()->fullUrlWithQuery(['sumber' => null]) }}">Lihat data asli</a>
+                    @else
+                        Berganti otomatis ke data asli setelah ada scan yang disimpan lewat <em>Tambah Data</em>.
+                    @endif
+                </span>
+            @endif
         </div>
 
         <div class="row g-3 mb-3">

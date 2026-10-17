@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Draft') · Downtime Mesin</title>
     <link rel="icon" type="image/png" href="{{ asset('icons/favicon-32.png') }}">
 
@@ -29,7 +30,8 @@
         ]],
         ['Data', [
             ['draft.data', 'bi-table', 'Data Downtime', true],
-            $peran === 'petugas' ? [null, 'bi-camera', 'Tambah Data', false] : null,
+            $peran === 'petugas' ? ['draft.tambah', 'bi-camera', 'Tambah Data', true] : null,
+            ['draft.scan', 'bi-hourglass-split', $peran === 'admin' ? 'Riwayat Scan' : 'Antrian Scan', true],
             ['draft.laporan', 'bi-file-earmark-bar-graph', 'Laporan', true],
         ]],
     ];
@@ -122,6 +124,12 @@
         });
     })();
 </script>
+@if ($peran === 'petugas')
+    {{-- Pemberitahuan "Selesai diproses" untuk foto yang dibaca AI di latar belakang --}}
+    <div class="sc-toast-wrap" id="scToast" aria-live="polite"
+         data-status-url="{{ route('draft.scan.status') }}" data-antrian-url="{{ route('draft.scan') }}"></div>
+    @vite('resources/js/draft/scan-notif.js')
+@endif
 @stack('scripts')
 </body>
 </html>

@@ -121,6 +121,20 @@ if (config('produksi.draft_enabled')) {
         Route::get('/admin/statistik-ai', [\App\Http\Controllers\Draft\DraftController::class, 'adminStatistikAi'])->name('admin.ai');
         Route::get('/data', [\App\Http\Controllers\Draft\DraftController::class, 'data'])->name('data');
         Route::get('/data/export', [\App\Http\Controllers\Draft\DraftController::class, 'exportData'])->name('data.export');
+
+        // Tambah Data dengan AI Baca Kertas — Eksplorasi 6 (foto dibaca sungguhan, hasil ke file).
+        Route::controller(\App\Http\Controllers\Draft\DraftScanController::class)->group(function () {
+            Route::get('/tambah', 'tambah')->name('tambah');
+            Route::post('/tambah', 'unggah')->name('tambah.unggah');
+            Route::get('/scan', 'antrian')->name('scan');
+            Route::get('/scan/status', 'status')->name('scan.status');
+            Route::get('/scan/{id}', 'tinjau')->name('scan.tinjau');
+            Route::post('/scan/{id}/pratinjau', 'pratinjau')->name('scan.pratinjau');
+            Route::post('/scan/{id}/simpan', 'simpan')->name('scan.simpan');
+            Route::post('/scan/{id}/ulang', 'ulang')->name('scan.ulang');
+            Route::post('/scan/{id}/diberitahu', 'diberitahu')->name('scan.diberitahu');
+            Route::get('/scan/{id}/berkas/{nama}', 'berkas')->name('scan.berkas');
+        });
     });
     // Variasi desain dari referensi images/reference (data sama dengan /draft).
     Route::get('/draft2/ringkasan', [\App\Http\Controllers\Draft\DraftController::class, 'ringkasan2'])->name('draft2.ringkasan');

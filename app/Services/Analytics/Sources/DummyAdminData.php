@@ -2,6 +2,7 @@
 
 namespace App\Services\Analytics\Sources;
 
+use App\Services\Scan\ScanStatistik;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -9,9 +10,9 @@ use Illuminate\Support\Collection;
  * Data CONTOH untuk menu admin di /draft:
  *  - auditContoh() : entri audit log turunan dari data dummy (input/ubah oleh
  *                    petugas, reset password, konfirmasi alias, login).
- *  - statistikAi() : statistik AI Baca Kertas. Di aplikasi asli dihitung dari
- *                    file riwayat scan storage/app/scan-history/ (saran 2.6),
- *                    yang belum ada; angka di sini meniru hasil uji E6
+ *  - statistikAi() : statistik AI Baca Kertas contoh, dipakai selama riwayat
+ *                    scan asli (storage/app/scan-history, ScanStatistik) masih
+ *                    kosong; angka meniru hasil uji E6
  *                    (±20% kotak ragu, waktu proses ±41–77 dtk per foto).
  * Semua deterministik (hash dari No_Trs / tanggal).
  */
@@ -81,38 +82,14 @@ class DummyAdminData
                 ];
             })->values();
 
-        $total = fn (string $k) => (int) $scan->sum($k);
-        $perHari = [];
-        for ($d = $dari->copy(); $d->lte($sampai); $d->addDay()) {
-            $g = $scan->where('tanggal', $d->toDateString());
-            $perHari[] = [
-                'tanggal' => $d->toDateString(), 'scan' => $g->count(),
-                'ragu' => $g->sum('kotak') ? round($g->sum('ragu') / $g->sum('kotak') * 100, 1) : null,
-                'koreksi' => $g->sum('kotak') ? round($g->sum('koreksi') / $g->sum('kotak') * 100, 1) : null,
-            ];
-        }
+        return ScanStatistik::agregasi($scan, $scan->where('ulang', 1), $dari, $sampai, $this->porsiAi($dari, $sampai));
+    }
 
-        $semuaInput = $this->source->rows($dari, $sampai)->count();
+    /** % catatan downtime periode ini yang berasal dari AI (data contoh). */
+    public function porsiAi(Carbon $dari, Carbon $sampai): float
+    {
+        $rows = $this->source->rows($dari, $sampai);
 
-        return [
-            'ringkas' => [
-                'scan' => $scan->count(),
-                'kotak' => $total('kotak'),
-                'ragu_persen' => $total('kotak') ? round($total('ragu') / $total('kotak') * 100, 1) : 0,
-                'koreksi_persen' => $total('kotak') ? round($total('koreksi') / $total('kotak') * 100, 1) : 0,
-                'akurasi_awal' => $total('kotak') ? round(100 - $total('koreksi') / $total('kotak') * 100, 1) : 0,
-                'detik_median' => $scan->count() ? $scan->pluck('detik')->sort()->values()->get(intdiv($scan->count(), 2)) : 0,
-                'ulang' => $total('ulang'),
-                'porsi_ai' => $semuaInput ? round($this->source->rows($dari, $sampai)->where('Sumber', 'ai')->count() / $semuaInput * 100, 1) : 0,
-            ],
-            'per_hari' => $perHari,
-            'per_petugas' => $scan->groupBy('petugas')->map(fn ($g, $p) => [
-                'petugas' => $p, 'scan' => $g->count(), 'kotak' => (int) $g->sum('kotak'),
-                'koreksi_persen' => $g->sum('kotak') ? round($g->sum('koreksi') / $g->sum('kotak') * 100, 1) : 0,
-                'ulang' => (int) $g->sum('ulang'),
-            ])->sortKeys()->values()->all(),
-            'detik' => $scan->pluck('detik')->countBy(fn ($s) => intdiv($s, 5) * 5)->sortKeys()->all(),
-            'terbaru' => $scan->sortByDesc('waktu')->take(10)->values()->all(),
-        ];
+        return $rows->count() ? round($rows->where('Sumber', 'ai')->count() / $rows->count() * 100, 1) : 0;
     }
 }

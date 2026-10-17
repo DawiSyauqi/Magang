@@ -18,7 +18,8 @@
             ['draft.admin.ai', 'bi-robot', 'Statistik AI (admin)', 'Jumlah scan, % kotak ragu, % dikoreksi petugas, waktu proses, foto diulang; per hari & per petugas (Fase 5, data contoh).', true],
             ['draft.admin.audit', 'bi-journal-text', 'Audit Log (admin)', 'Siapa tambah/ubah/hapus apa dan kapan, dari file storage/logs/audit (Fase 5).', true],
             ['draft.admin.pengaturan', 'bi-sliders', 'Pengaturan (admin)', 'Target downtime per shift (default & per mesin), disimpan di storage/app/pengaturan.json; dipakai Ringkasan (Fase 5).', true],
-            [null, 'bi-camera', 'Tambah Data (E6)', 'Satu foto seluruh halaman + layar tinjauan kotak ragu (Fase 4, menunggu K7).', false],
+            ['draft.tambah', 'bi-camera', 'Tambah Data (E6)', 'Foto formulir utuh dari kamera HP/komputer/file → dibaca AI E6 di latar belakang → notifikasi "Selesai diproses" → layar tinjauan kotak ragu (Fase 4).', true],
+            ['draft.scan', 'bi-hourglass-split', 'Antrian Scan (E6)', 'Status foto yang dikirim, foto ulang, proses ulang; riwayat di storage/app/scan-history (Fase 4).', true],
         ];
     @endphp
 

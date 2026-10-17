@@ -167,6 +167,73 @@ def read_fields(kanvas, layout, fr, save_dir=None, stem="foto"):
     return out
 
 
+def baca_foto(image_path, ref, reader_factory, shift_paksa=None, baris="bertinta",
+              save_dir=None, stem="foto", trocr_model=DEFAULT_MODEL):
+    """Baca 1 foto -> envelope dict (status success / needs_manual_review /
+    needs_retake). reader_factory() dipanggil SETELAH geometri lolos, jadi
+    foto yg harus diulang tidak memicu pemuatan model; layanan_e6.py memberi
+    factory yg mengembalikan reader yg SAMA terus (model dimuat sekali)."""
+    t_all = time.time()
+    t0 = time.time()
+    foto = imread_exif_safe(image_path)
+    reg = daftarkan(foto, ref)
+    geo = {k: v for k, v in reg.items() if k != "H"}
+    if reg["status"] != "success":
+        return {"status": "needs_retake", "reason": reg["reason"], "meta": {"geometri": geo}}
+    kanvas = ke_kanvas(foto, reg["H"])
+    rows = {s: grid_lost_time(kanvas, s, ref["layout"]) for s in ("1", "2", "3")}
+    t_geo = time.time() - t0
+    if save_dir is not None:
+        cv2.imwrite(str(Path(save_dir) / f"{stem}_kanvas.jpg"), cv2.resize(kanvas, None, fx=0.5, fy=0.5))
+
+    reader = reader_factory()
+    fr = FieldReader(reader)
+    t0 = time.time()
+    fields = read_fields(kanvas, ref["layout"], fr, save_dir, stem)
+    t_field = time.time() - t0
+
+    shift_header = fields["shift"].get("nilai")
+    shift = shift_paksa or shift_header
+    if baris == "shift":
+        target = [shift] if shift else []
+    else:
+        target = [s for s in ("1", "2", "3")
+                  if rows[s].get("cell_ink") and max(rows[s]["cell_ink"]) >= INK_EMPTY_THRESHOLD]
+        if shift and shift not in target:
+            target.insert(0, shift)
+
+    lost, n_calls, t_model = {}, 0, 0.0
+    for s in target:
+        det = rows[s]
+        entry = {"status": det["status"], "reason": det.get("reason"),
+                 "refine_quality": det.get("refine", {}).get("quality")}
+        if det.get("cell_ink"):
+            blocks, n, tm = read_row(kanvas, det, reader, s, save_dir, stem)
+            entry["blocks"] = blocks
+            n_calls += n
+            t_model += tm
+        lost[s] = entry
+
+    n_ragu = sum(c["ragu"] for e in lost.values() for b in e.get("blocks", []) for c in b["calls"])
+    status = "success"
+    if any(e["status"] != "success" for e in lost.values()):
+        status = "needs_manual_review"
+    return {
+        "status": status,
+        "data": {
+            "header": fields, "shift_header": shift_header, "shift_dipakai": shift,
+            "lost_time": lost, "n_kotak_ragu": n_ragu,
+        },
+        "meta": {
+            "metode": "eksplorasi6_fullpage_trocr", "trocr_model": trocr_model,
+            "ambang_ragu": AMBANG_RAGU, "geometri": geo,
+            "geometry_seconds": round(t_geo, 2), "model_load_seconds": round(reader.load_seconds, 2),
+            "field_seconds": round(t_field, 2), "n_model_calls": n_calls,
+            "model_seconds": round(t_model, 2), "total_seconds": round(time.time() - t_all, 2),
+        },
+    }
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--image", required=True)
@@ -179,7 +246,6 @@ def main():
     ap.add_argument("--save-crops", default=None)
     args = ap.parse_args()
 
-    t_all = time.time()
     stem = Path(args.image).name.split(".")[0]
     save_dir = None
     if args.save_crops:
@@ -187,65 +253,8 @@ def main():
         save_dir.mkdir(parents=True, exist_ok=True)
     try:
         ref = load_referensi(args.ref_dir)
-        t0 = time.time()
-        foto = imread_exif_safe(args.image)
-        reg = daftarkan(foto, ref)
-        geo = {k: v for k, v in reg.items() if k != "H"}
-        if reg["status"] != "success":
-            _stdout_print(json.dumps({"status": "needs_retake", "reason": reg["reason"], "meta": {"geometri": geo}}))
-            return
-        kanvas = ke_kanvas(foto, reg["H"])
-        rows = {s: grid_lost_time(kanvas, s, ref["layout"]) for s in ("1", "2", "3")}
-        t_geo = time.time() - t0
-        if save_dir is not None:
-            cv2.imwrite(str(save_dir / f"{stem}_kanvas.jpg"), cv2.resize(kanvas, None, fx=0.5, fy=0.5))
-
-        reader = TrOCRReader(args.trocr_model, num_threads=args.threads)
-        fr = FieldReader(reader)
-        t0 = time.time()
-        fields = read_fields(kanvas, ref["layout"], fr, save_dir, stem)
-        t_field = time.time() - t0
-
-        shift_header = fields["shift"].get("nilai")
-        shift = args.shift or shift_header
-        if args.baris == "shift":
-            target = [shift] if shift else []
-        else:
-            target = [s for s in ("1", "2", "3")
-                      if rows[s].get("cell_ink") and max(rows[s]["cell_ink"]) >= INK_EMPTY_THRESHOLD]
-            if shift and shift not in target:
-                target.insert(0, shift)
-
-        lost, n_calls, t_model = {}, 0, 0.0
-        for s in target:
-            det = rows[s]
-            entry = {"status": det["status"], "reason": det.get("reason"),
-                     "refine_quality": det.get("refine", {}).get("quality")}
-            if det.get("cell_ink"):
-                blocks, n, tm = read_row(kanvas, det, reader, s, save_dir, stem)
-                entry["blocks"] = blocks
-                n_calls += n
-                t_model += tm
-            lost[s] = entry
-
-        n_ragu = sum(c["ragu"] for e in lost.values() for b in e.get("blocks", []) for c in b["calls"])
-        status = "success"
-        if any(e["status"] != "success" for e in lost.values()):
-            status = "needs_manual_review"
-        env = {
-            "status": status,
-            "data": {
-                "header": fields, "shift_header": shift_header, "shift_dipakai": shift,
-                "lost_time": lost, "n_kotak_ragu": n_ragu,
-            },
-            "meta": {
-                "metode": "eksplorasi6_fullpage_trocr", "trocr_model": args.trocr_model,
-                "ambang_ragu": AMBANG_RAGU, "geometri": geo,
-                "geometry_seconds": round(t_geo, 2), "model_load_seconds": round(reader.load_seconds, 2),
-                "field_seconds": round(t_field, 2), "n_model_calls": n_calls,
-                "model_seconds": round(t_model, 2), "total_seconds": round(time.time() - t_all, 2),
-            },
-        }
+        env = baca_foto(args.image, ref, lambda: TrOCRReader(args.trocr_model, num_threads=args.threads),
+                        args.shift, args.baris, save_dir, stem, args.trocr_model)
         _stdout_print(json.dumps(env, ensure_ascii=False))
     except Exception as e:  # envelope tetap 1 baris JSON
         import traceback
