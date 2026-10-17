@@ -30,15 +30,16 @@
         ['Data', [
             ['draft.data', 'bi-table', 'Data Downtime', true],
             $peran === 'petugas' ? [null, 'bi-camera', 'Tambah Data', false] : null,
-            [null, 'bi-file-earmark-bar-graph', 'Laporan', false],
+            ['draft.laporan', 'bi-file-earmark-bar-graph', 'Laporan', true],
         ]],
     ];
     if ($peran === 'admin') {
         $menu[] = ['Admin', [
             [null, 'bi-tags', 'Alias Mesin', false],
             [null, 'bi-key', 'Password Pengguna', false],
-            [null, 'bi-robot', 'Statistik AI', false],
-            [null, 'bi-journal-text', 'Audit Log', false],
+            ['draft.admin.ai', 'bi-robot', 'Statistik AI', true],
+            ['draft.admin.audit', 'bi-journal-text', 'Audit Log', true],
+            ['draft.admin.pengaturan', 'bi-sliders', 'Pengaturan', true],
         ]];
     }
 @endphp

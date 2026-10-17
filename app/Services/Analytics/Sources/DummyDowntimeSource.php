@@ -172,18 +172,19 @@ class DummyDowntimeSource implements DowntimeSource
 
         // Field tambahan untuk halaman Data Downtime. Diturunkan dari hash No_Trs
         // (bukan PRNG) supaya angka-angka yang sudah ada di Ringkasan tidak bergeser.
-        // Jam lokal pabrik (WIB): kejadian yang belum selesai/terjadi tidak dibuat,
-        // dan waktu input tidak boleh di masa depan.
+        // Jam lokal pabrik (WIB). Catatan baru "ada" setelah petugas menginputnya,
+        // jadi kejadian yang waktu input-nya masih di masa depan belum dimunculkan.
         $sekarang = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i');
-        $rows = array_values(array_filter($rows, fn ($r) => $r->Time_End <= $sekarang));
 
         foreach ($rows as $r) {
             $h = crc32($r->No_Trs);
             $r->Sumber = $h % 10 < 4 ? 'ai' : 'manual';          // ±40% dari AI Baca Kertas
-            $r->CrtDate = min($sekarang, Carbon::parse($r->Time_End)->addMinutes(20 + $h % 600)->format('Y-m-d H:i'));
-            $r->UpdId = $h % 13 === 0 ? self::PETUGAS[$h % count(self::PETUGAS)] : null;
-            $r->UpdDate = $r->UpdId ? min($sekarang, Carbon::parse($r->CrtDate)->addMinutes(30 + $h % 300)->format('Y-m-d H:i')) : null;
+            $r->CrtDate = Carbon::parse($r->Time_End)->addMinutes(20 + $h % 600)->format('Y-m-d H:i');
+            $ubah = $h % 13 === 0 ? Carbon::parse($r->CrtDate)->addMinutes(30 + $h % 300)->format('Y-m-d H:i') : null;
+            $r->UpdId = $ubah && $ubah <= $sekarang ? self::PETUGAS[$h % count(self::PETUGAS)] : null;
+            $r->UpdDate = $r->UpdId ? $ubah : null;
         }
+        $rows = array_values(array_filter($rows, fn ($r) => $r->CrtDate <= $sekarang));
 
         usort($rows, fn ($a, $b) => strcmp($a->Time_Start, $b->Time_Start));
 

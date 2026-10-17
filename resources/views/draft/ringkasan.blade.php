@@ -103,7 +103,7 @@
         <div class="col-12 col-xl-8">
             <div class="dx-card">
                 <div class="dx-card-head">
-                    <div><h3>Tren downtime harian</h3><div class="dx-card-sub">Total menit per tanggal (Tgl_Trs) dan jumlah kejadian · garis putus = rata-rata</div></div>
+                    <div><h3>Tren downtime harian</h3><div class="dx-card-sub">Total menit per tanggal (Tgl_Trs) dan jumlah kejadian · garis putus = rata-rata{{ $target['aktif'] ? ' · garis merah = target' : '' }}</div></div>
                 </div>
                 <div class="dx-card-body"><div class="dx-chart" id="chartTren"></div></div>
             </div>
@@ -156,7 +156,8 @@
                         @foreach ($data['status_input']['grid'] as $m)
                             <div class="mesin" title="{{ $m['nama'] }}">{{ $m['kode'] }}</div>
                             @foreach ($m['shift'] as $s => $c)
-                                <div class="cell {{ $c['kejadian'] ? ($c['menit'] >= 60 ? 'tinggi' : 'ada') : '' }}"
+                                @php $batas = $target['per_mesin'][$m['kode']] ?? 60; @endphp
+                                <div class="cell {{ $c['kejadian'] ? ($c['menit'] > $batas ? 'tinggi' : 'ada') : '' }}"
                                      title="Shift {{ $s }}: {{ $c['kejadian'] ? $c['kejadian'].' kejadian, '.$c['menit'].' menit' : 'belum ada data' }}">
                                     {{ $c['kejadian'] ? $c['menit'] : '·' }}
                                 </div>
@@ -165,7 +166,7 @@
                     </div>
                     <div class="dx-legend-inline mt-3">
                         <span><span class="dx-cat" style="--c: var(--accent)">ada data (menit)</span></span>
-                        <span><span class="dx-cat" style="--c: var(--up)">≥ 60 menit</span></span>
+                        <span><span class="dx-cat" style="--c: var(--up)">{{ $target['aktif'] ? 'melebihi target' : '> 60 menit' }}</span></span>
                         <span>· belum ada data (tanpa masalah atau belum diinput)</span>
                     </div>
                     <div class="dx-kpi-note mt-1">Shift 3 dicatat sesuai tanggal input.</div>
@@ -208,7 +209,8 @@
         </div>
     </div>
 
-    <script type="application/json" id="ringkasanData">@json($data)</script>
+    @php $payload = $data + ['target' => $target]; @endphp
+    <script type="application/json" id="ringkasanData">@json($payload)</script>
 @endsection
 
 @push('scripts')

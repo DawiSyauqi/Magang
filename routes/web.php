@@ -110,6 +110,15 @@ if (config('produksi.draft_enabled')) {
         Route::get('/waktu', [\App\Http\Controllers\Draft\DraftController::class, 'waktu'])->name('waktu');
         Route::get('/produk', [\App\Http\Controllers\Draft\DraftController::class, 'produk'])->name('produk');
         Route::get('/operator', [\App\Http\Controllers\Draft\DraftController::class, 'operator'])->name('operator');
+        Route::get('/laporan', [\App\Http\Controllers\Draft\DraftController::class, 'laporan'])->name('laporan');
+        Route::get('/laporan/harian', [\App\Http\Controllers\Draft\DraftController::class, 'laporanHarian'])->name('laporan.harian');
+        Route::get('/laporan/bulanan', [\App\Http\Controllers\Draft\DraftController::class, 'laporanBulanan'])->name('laporan.bulanan');
+        Route::get('/laporan/{jenis}/excel', [\App\Http\Controllers\Draft\DraftController::class, 'laporanExcel'])
+            ->whereIn('jenis', ['harian', 'bulanan'])->name('laporan.excel');
+        Route::get('/admin/pengaturan', [\App\Http\Controllers\Draft\DraftController::class, 'adminPengaturan'])->name('admin.pengaturan');
+        Route::post('/admin/pengaturan', [\App\Http\Controllers\Draft\DraftController::class, 'adminPengaturanSimpan'])->name('admin.pengaturan.simpan');
+        Route::get('/admin/audit', [\App\Http\Controllers\Draft\DraftController::class, 'adminAudit'])->name('admin.audit');
+        Route::get('/admin/statistik-ai', [\App\Http\Controllers\Draft\DraftController::class, 'adminStatistikAi'])->name('admin.ai');
         Route::get('/data', [\App\Http\Controllers\Draft\DraftController::class, 'data'])->name('data');
         Route::get('/data/export', [\App\Http\Controllers\Draft\DraftController::class, 'exportData'])->name('data.export');
     });

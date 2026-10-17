@@ -52,7 +52,7 @@ mount(document.getElementById('chartTren'), (t) => ({
     dataZoom: data.tren.tanggal.length > 45 ? [{ type: 'slider', height: 18, bottom: 6, borderColor: t.border }] : [],
     xAxis: { type: 'category', data: data.tren.tanggal.map(labelTanggal), ...axisStyle(t), splitLine: { show: false } },
     yAxis: [
-        { type: 'value', name: 'menit', nameTextStyle: { color: t.subtle, fontSize: 10, align: 'left' }, ...axisStyle(t) },
+        { type: 'value', name: 'menit', nameTextStyle: { color: t.subtle, fontSize: 10, align: 'left' }, ...axisStyle(t), max: (v) => Math.ceil(Math.max(v.max, data.target?.harian || 0) * 1.08 / 100) * 100 },
         { type: 'value', ...axisStyle(t), splitLine: { show: false } },
     ],
     series: [
@@ -64,7 +64,11 @@ mount(document.getElementById('chartTren'), (t) => ({
                 silent: true, symbol: 'none',
                 lineStyle: { color: t.muted, type: 'dashed', width: 1 },
                 label: { color: t.muted, fontSize: 10, formatter: () => `rata-rata ${fmtMenit(Math.round(data.tren.rata))}`, position: 'insideEndTop' },
-                data: [{ yAxis: data.tren.rata }],
+                data: [
+                    { yAxis: data.tren.rata },
+                    // Garis target hanya muncul bila admin mengaktifkan target (Pengaturan).
+                    ...(data.target?.harian ? [{ yAxis: data.target.harian, lineStyle: { color: t.up, type: 'solid', width: 1.5 }, label: { formatter: `target ${fmtMenit(data.target.harian)}`, color: t.up, position: 'insideStartTop' } }] : []),
+                ],
             },
         },
         {

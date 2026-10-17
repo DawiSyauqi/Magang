@@ -14,6 +14,10 @@
             ['draft.produk', 'bi-box-seam', 'Produk / Item', 'Downtime per item, matriks item × kategori, speed mesin vs downtime (Fase 3).', true],
             ['draft.operator', 'bi-people', 'Operator (admin)', 'Downtime per operator dinormalisasi per shift, kategori per operator, aktivitas input petugas. Buka dengan ?peran=admin (Fase 3).', true],
             ['draft.data', 'bi-table', 'Data Downtime', 'Tabel dengan filter lengkap, pencarian, urutan kolom, panel detail, dan export CSV/Excel (Fase 2).', true],
+            ['draft.laporan', 'bi-file-earmark-bar-graph', 'Laporan', 'Laporan harian/shift & bulanan siap cetak (A4), simpan PDF, Excel multi-sheet, catatan otomatis (Fase 5).', true],
+            ['draft.admin.ai', 'bi-robot', 'Statistik AI (admin)', 'Jumlah scan, % kotak ragu, % dikoreksi petugas, waktu proses, foto diulang; per hari & per petugas (Fase 5, data contoh).', true],
+            ['draft.admin.audit', 'bi-journal-text', 'Audit Log (admin)', 'Siapa tambah/ubah/hapus apa dan kapan, dari file storage/logs/audit (Fase 5).', true],
+            ['draft.admin.pengaturan', 'bi-sliders', 'Pengaturan (admin)', 'Target downtime per shift (default & per mesin), disimpan di storage/app/pengaturan.json; dipakai Ringkasan (Fase 5).', true],
             [null, 'bi-camera', 'Tambah Data (E6)', 'Satu foto seluruh halaman + layar tinjauan kotak ragu (Fase 4, menunggu K7).', false],
         ];
     @endphp

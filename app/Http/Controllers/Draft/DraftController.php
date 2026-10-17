@@ -5,7 +5,12 @@ namespace App\Http\Controllers\Draft;
 use App\Http\Controllers\Controller;
 use App\Services\Analytics\DowntimeAnalytics;
 use App\Services\Analytics\DowntimeListing;
+use App\Services\Analytics\LaporanBuilder;
+use App\Services\Analytics\Sources\DummyAdminData;
 use App\Services\Analytics\Sources\DummyDowntimeSource;
+use App\Services\Audit\AuditLog;
+use App\Services\Pengaturan\PengaturanStore;
+use App\Support\ExcelXml;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -73,9 +78,17 @@ class DraftController extends Controller
         $analytics = new DowntimeAnalytics($source);
         [$filter, $dari, $sampai] = $this->filterGlobal($request, $source);
 
+        $store = PengaturanStore::make();
+        $kodeMesin = $filter['mesin'] ?: array_keys($source->mesin());
+
         return view($view, [
             'data' => $analytics->ringkasan($dari, $sampai, $filter),
             'filter' => $filter,
+            'target' => [
+                'aktif' => $store->target()['aktif'],
+                'harian' => $store->targetHarian($kodeMesin, count($filter['shift']) ?: 3),
+                'per_mesin' => collect($kodeMesin)->mapWithKeys(fn ($k) => [$k => $store->targetShift($k)])->all(),
+            ],
         ] + $this->opsiFilter($source));
     }
 
@@ -145,6 +158,208 @@ class DraftController extends Controller
             'data' => $isAdmin ? (new DowntimeAnalytics($source))->analisisOperator($dari, $sampai, $filter) : null,
             'filter' => $filter,
         ] + $this->opsiFilter($source), $isAdmin ? 200 : 403);
+    }
+
+    // ------------------------------------------------------------------
+    // Laporan (perencanaan.md 1.10) — siap cetak / simpan PDF dari browser,
+    // dan Excel multi-sheet (App\Support\ExcelXml, tanpa library).
+    // ------------------------------------------------------------------
+
+    public function laporan()
+    {
+        $bulan = collect(range(0, 11))->mapWithKeys(function ($i) {
+            $b = Carbon::today()->startOfMonth()->subMonthsNoOverflow($i);
+
+            return [$b->format('Y-m') => $b->translatedFormat('F Y')];
+        });
+
+        return view('draft.laporan', ['opsiBulan' => $bulan]);
+    }
+
+    public function laporanHarian(Request $request)
+    {
+        [$tanggal, $shift] = $this->paramHarian($request);
+
+        return view('draft.laporan-harian', ['lap' => (new LaporanBuilder(new DummyDowntimeSource()))->harian($tanggal, $shift)]);
+    }
+
+    public function laporanBulanan(Request $request)
+    {
+        return view('draft.laporan-bulanan', ['lap' => (new LaporanBuilder(new DummyDowntimeSource()))->bulanan($this->paramBulan($request))]);
+    }
+
+    /** Excel multi-sheet untuk laporan harian atau bulanan. */
+    public function laporanExcel(Request $request, string $jenis)
+    {
+        $builder = new LaporanBuilder(new DummyDowntimeSource());
+        $isAdmin = $request->input('peran') === 'admin';
+        $lap = $jenis === 'bulanan'
+            ? $builder->bulanan($this->paramBulan($request))
+            : $builder->harian(...$this->paramHarian($request));
+        $nk = collect($lap['meta_kategori'])->pluck('nama', 'kode');
+        $k = $lap['kpi'];
+
+        $x = new ExcelXml();
+        $x->sheet('Ringkasan', array_merge(
+            [[$lap['judul']], [$lap['periode_label']], [''], ['Indikator', 'Nilai', 'Pembanding', 'Perubahan (%)']],
+            [
+                ['Total downtime (menit)', $k['total'], $k['total_lalu'], $k['total_ubah']],
+                ['Jumlah kejadian', $k['kejadian'], $k['kejadian_lalu'], $k['kejadian_ubah']],
+                ['Rata-rata per kejadian (menit)', $k['rata'], null, $k['rata_ubah']],
+                ['Mesin terlibat', $k['mesin'], null, null],
+                ['Availability (%)', $k['availability'], null, null],
+                [''],
+                ['Catatan otomatis'],
+            ],
+            array_map(fn ($c) => [$c], $lap['catatan'])
+        ), 0, [220, 90, 90, 90]);
+
+        $x->sheet('Per Mesin', array_merge(
+            [['Kode', 'Nama Mesin', 'Downtime (menit)', 'Kejadian', 'Rata-rata (menit)', 'Downtime %', 'Kategori Dominan']],
+            array_map(fn ($m) => [$m['kode'], $m['nama'], $m['menit'], $m['kejadian'], $m['rata'], $m['persen'], $m['dominan'] ? $m['dominan'].' '.$nk[$m['dominan']] : ''], $lap['mesin'])
+        ), 1, [60, 140, 100, 70, 100, 80, 160]);
+
+        $x->sheet('Per Kategori', array_merge(
+            [['Kode', 'Kategori', 'Downtime (menit)', 'Porsi (%)', 'Kumulatif (%)', 'Kejadian', 'Perubahan (%)']],
+            array_map(fn ($c) => [$c['kode'], $c['nama'], $c['menit'], $c['persen'], $c['kumulatif'], $c['kejadian'], $c['perubahan']], $lap['kategori'])
+        ), 1, [50, 160, 100, 70, 80, 70, 90]);
+
+        $x->sheet('Per Shift', array_merge(
+            [['Shift', 'Jam', 'Downtime (menit)', 'Kejadian', 'Rata-rata (menit)', 'Perubahan (%)']],
+            array_map(fn ($s) => [$s['shift'], $s['jam'], $s['menit'], $s['kejadian'], $s['rata'], $s['perubahan']], $lap['per_shift'])
+        ), 1, [50, 90, 100, 70, 100, 90]);
+
+        if ($jenis === 'bulanan') {
+            $x->sheet('Masalah Berulang', array_merge(
+                [['Mesin', 'Kategori', 'Masalah', 'Maks. dalam 7 hari', 'Total kejadian', 'Total menit', 'Terakhir']],
+                array_map(fn ($b) => [$b['mesin'], $b['kategori'], $b['detail'], $b['dalam_7_hari'], $b['kejadian'], $b['menit'], $b['terakhir']], $lap['berulang'])
+            ), 1, [60, 60, 160, 100, 90, 80, 100]);
+        }
+
+        $kepala = ['No_Trs', 'Tgl_Trs', 'Shift', 'Mulai', 'Selesai', 'Menit', 'Mesin', 'Kategori', 'Detail', 'Item', 'Sumber'];
+        if ($isAdmin) {
+            $kepala[] = 'Operator'; // data per operator hanya untuk admin (K5)
+        }
+        $x->sheet('Data Kejadian', array_merge([$kepala], array_map(function ($r) use ($isAdmin) {
+            $b = [$r->No_Trs, $r->Tgl_Trs, $r->ShiftCode, substr($r->Time_Start, 11, 5), substr($r->Time_End, 11, 5), (int) $r->Time_Total,
+                $r->MesinCode, $r->ProblemCode, $r->Problem_Desc, $r->ITEMNO, $r->Sumber === 'ai' ? 'AI' : 'Manual'];
+            if ($isAdmin) {
+                $b[] = $r->OperatorName;
+            }
+
+            return $b;
+        }, $lap['kejadian'])), 1, [90, 70, 40, 50, 50, 50, 50, 60, 150, 70, 60, 120]);
+
+        $nama = $jenis === 'bulanan'
+            ? 'laporan_bulanan_'.$lap['bulan'].'.xls'
+            : 'laporan_harian_'.$lap['tanggal'].($lap['shift'] ? '_shift'.$lap['shift'] : '').'.xls';
+
+        return response($x->toString(), 200, $x->headers($nama));
+    }
+
+    /** @return array{0: Carbon, 1: ?string} */
+    private function paramHarian(Request $request): array
+    {
+        $t = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $request->input('tanggal')) ? Carbon::parse($request->input('tanggal')) : Carbon::today();
+        if ($t->gt(Carbon::today())) {
+            $t = Carbon::today();
+        }
+        $shift = in_array($request->input('shift'), ['1', '2', '3'], true) ? $request->input('shift') : null;
+
+        return [$t, $shift];
+    }
+
+    private function paramBulan(Request $request): Carbon
+    {
+        $b = preg_match('/^\d{4}-\d{2}$/', (string) $request->input('bulan')) ? Carbon::parse($request->input('bulan').'-01') : Carbon::today()->startOfMonth();
+
+        return $b->gt(Carbon::today()) ? Carbon::today()->startOfMonth() : $b;
+    }
+
+    // ------------------------------------------------------------------
+    // Menu admin (khusus AFSYAH) — versi berbasis file, tanpa database (K3).
+    // Di draft, peran disimulasikan dengan ?peran=admin; petugas → 403.
+    // ------------------------------------------------------------------
+
+    public function adminPengaturan(Request $request)
+    {
+        $isAdmin = $request->input('peran') === 'admin';
+
+        return response()->view('draft.admin.pengaturan', [
+            'isAdmin' => $isAdmin,
+            'pengaturan' => PengaturanStore::make()->all(),
+            'opsiMesin' => (new DummyDowntimeSource())->mesin(),
+        ], $isAdmin ? 200 : 403);
+    }
+
+    public function adminPengaturanSimpan(Request $request)
+    {
+        abort_unless($request->input('peran') === 'admin', 403, 'Khusus admin.');
+        $mesin = array_keys((new DummyDowntimeSource())->mesin());
+        $data = $request->validate([
+            'aktif' => ['nullable', 'boolean'],
+            'default_per_shift' => ['required', 'integer', 'min:0', 'max:480'],
+            'per_mesin' => ['array'],
+            'per_mesin.*' => ['nullable', 'integer', 'min:0', 'max:480'],
+        ], [], ['default_per_shift' => 'target default', 'per_mesin.*' => 'target mesin']);
+
+        $perMesin = array_intersect_key($data['per_mesin'] ?? [], array_flip($mesin));
+        [$lama, $baru] = PengaturanStore::make()->simpanTarget((bool) ($data['aktif'] ?? false), (int) $data['default_per_shift'], $perMesin, 'AFSYAH');
+        AuditLog::make()->catat('pengaturan.target', 'AFSYAH', 'target', $lama, $baru, $request->ip());
+
+        return redirect()->route('draft.admin.pengaturan', ['peran' => 'admin'])->with('status', 'Pengaturan target disimpan.');
+    }
+
+    public function adminAudit(Request $request)
+    {
+        $isAdmin = $request->input('peran') === 'admin';
+        if (! $isAdmin) {
+            return response()->view('draft.admin.audit', ['isAdmin' => false], 403);
+        }
+
+        [$periode, $dari, $sampai] = $this->rentang($request);
+        // Entri asli (dari file) + entri contoh turunan data dummy.
+        $asli = AuditLog::make()->baca($dari, $sampai);
+        $semua = $asli->concat((new DummyAdminData(new DummyDowntimeSource()))->auditContoh($dari, $sampai))->sortByDesc('waktu')->values();
+
+        $oleh = (string) $request->input('oleh', '');
+        $aksi = array_key_exists($request->input('aksi'), AuditLog::AKSI) ? $request->input('aksi') : '';
+        $q = mb_strtolower(trim((string) $request->input('q', '')));
+        $tersaring = $semua
+            ->when($oleh !== '', fn ($c) => $c->where('oleh', $oleh))
+            ->when($aksi !== '', fn ($c) => $c->where('aksi', $aksi))
+            ->when($q !== '', fn ($c) => $c->filter(fn ($e) => str_contains(mb_strtolower(($e['objek'] ?? '').' '.json_encode($e['baru'] ?? '')), $q)))
+            ->values();
+
+        $halaman = max(1, (int) $request->input('page', 1));
+        $paginator = new LengthAwarePaginator($tersaring->forPage($halaman, 50)->values(), $tersaring->count(), 50, $halaman,
+            ['path' => $request->url(), 'query' => $request->query()]);
+
+        return view('draft.admin.audit', [
+            'isAdmin' => true,
+            'entri' => $paginator,
+            'jumlahAsli' => $asli->count(),
+            'opsiOleh' => $semua->pluck('oleh')->unique()->sort()->values(),
+            'perAksi' => $tersaring->countBy('aksi')->sortDesc(),
+            'filter' => ['periode' => $periode, 'dari' => $dari->toDateString(), 'sampai' => $sampai->toDateString(), 'oleh' => $oleh, 'aksi' => $aksi, 'q' => $q],
+            'opsiPeriode' => self::PERIODE,
+        ]);
+    }
+
+    public function adminStatistikAi(Request $request)
+    {
+        $isAdmin = $request->input('peran') === 'admin';
+        if (! $isAdmin) {
+            return response()->view('draft.admin.statistik-ai', ['isAdmin' => false], 403);
+        }
+        [$periode, $dari, $sampai] = $this->rentang($request);
+
+        return view('draft.admin.statistik-ai', [
+            'isAdmin' => true,
+            'data' => (new DummyAdminData(new DummyDowntimeSource()))->statistikAi($dari, $sampai),
+            'filter' => ['periode' => $periode, 'dari' => $dari->toDateString(), 'sampai' => $sampai->toDateString()],
+            'opsiPeriode' => self::PERIODE,
+        ]);
     }
 
     /** Profil satu mesin: KPI, tren, Pareto detail, timeline 07:00→07:00, riwayat. */

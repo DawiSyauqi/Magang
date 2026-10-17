@@ -398,6 +398,8 @@ File per variasi: `resources/views/draft{2,3}/`, `resources/css/draft{2,3}.scss`
 | Produk / Item (`/draft/produk`): I1 tabel per item (porsi, rata-rata, masalah dominan, mesin, speed, vs lalu), I2 matriks item × kategori, I3 speed vs downtime per rentang 100 m/mnt + boxplot speed per mesin | ✅ siap dievaluasi (17-10-2026) |
 | Operator (`/draft/operator`, **khusus admin**, petugas → 403): label "bukan penilaian kinerja", O1 menit per shift tercatat + ringkasan, O2 komposisi kategori (100%), O3 aktivitas input petugas (jumlah, % AI, median jeda input, jeda > 8 jam, pernah diubah) | ✅ siap dievaluasi (17-10-2026) |
 | Data Downtime (`/draft/data`): filter global + pencarian + sumber + operator (admin), urut per kolom, 10/25/50/100 baris, panel detail, export CSV (`;` + BOM, bisa dibuka Excel), admin baca-saja | ✅ siap dievaluasi (17-10-2026) |
+| Laporan (`/draft/laporan`): harian/per shift & bulanan siap cetak A4 (catatan otomatis berbasis aturan, timeline, tabel, kolom tanda tangan), Simpan PDF lewat cetak browser, Excel multi-sheet tanpa library (`App\Support\ExcelXml`, format XML Spreadsheet 2003) | ✅ siap dievaluasi (17-10-2026) |
+| Menu admin (`/draft/admin/...`, petugas → 403): **Pengaturan** target per shift (default + per mesin) di `storage/app/pengaturan.json` → dipakai Ringkasan (garis target, ambang status input); **Audit Log** dari `storage/logs/audit/*.jsonl` (`App\Services\Audit\AuditLog`, entri asli + contoh); **Statistik AI** (data contoh meniru E6; sumber asli nanti `scan-history`) | ✅ siap dievaluasi (17-10-2026) |
 | Tambah Data E6 + layar tinjauan | belum (menunggu K7) |
 
 **Saat database sudah tersambung (alur promosi draft → asli):**
