@@ -36,4 +36,25 @@ class AppPanelController extends PanelController
     {
         return '';
     }
+
+    /**
+     * Halaman Tambah Data (petugas): tombol isi form manual + daftar yang
+     * sudah diinput hari ini (bisa diubah/dihapus). Setelah simpan kembali ke
+     * sini dengan form tertutup. Nanti E6 (foto formulir) ditambahkan di sini.
+     */
+    public function tambah(Request $request)
+    {
+        $hariIni = now('Asia/Jakarta')->startOfDay();
+        $kode = $this->pengguna($request);
+        // Shift 3 bisa bertanggal kemarin/hari ini (6.2) → ambil 2 hari, saring yang DIINPUT hari ini.
+        $hari = $this->source()->rows($hariIni->copy()->subDay(), $hariIni)
+            ->filter(fn ($r) => str_starts_with((string) $r->CrtDate, $hariIni->toDateString()))
+            ->sortByDesc('CrtDate')->values();
+
+        return $this->tampil('tambah', [
+            'milikSaya' => $hari->where('CrtId', $kode)->values(),
+            'jumlahSemua' => $hari->count(),
+            'kategoriWarna' => config('produksi.warna_kategori'),
+        ]);
+    }
 }

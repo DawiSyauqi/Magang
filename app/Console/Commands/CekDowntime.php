@@ -196,12 +196,12 @@ class CekDowntime extends Command
         $admin = $user->isAdmin();
         $this->info_('Peran', $admin ? 'admin' : 'petugas produksi');
         $tgl = Carbon::today()->toDateString();
-        $halaman = ['/ringkasan', '/mesin', '/masalah', '/waktu', '/produk', '/data', '/data?tambah=1', '/data/export', '/pemeriksaan',
-            '/laporan', '/laporan/harian', '/laporan/bulanan', '/laporan/harian/excel?tanggal='.$tgl, '/tv', '/pemberitahuan', '/cari?q=a',
+        $halaman = ['/ringkasan', '/mesin', '/masalah', '/waktu', '/produk', '/data', '/data/export', '/pemeriksaan',
+            '/laporan', '/laporan/harian', '/laporan/bulanan', '/laporan/harian/excel?tanggal='.$tgl, '/live', '/pemberitahuan', '/cari?q=a',
             '/password/edit', '/ringkasan?periode=bulan_lalu', '/data?periode=7_hari&per=100'];
         $halaman = array_merge($halaman, $admin
             ? ['/operator', '/admin/pengaturan', '/admin/audit', '/admin/statistik-ai', '/admin/mesin-aliases', '/admin/passwords']
-            : ['/referensi/mesin', '/referensi/problem-kategori']);
+            : ['/tambah', '/referensi/mesin', '/referensi/problem-kategori']);
         $mesin = array_key_first((new SqlDowntimeSource())->mesin());
         if ($mesin) {
             $halaman[] = '/mesin/'.rawurlencode($mesin);

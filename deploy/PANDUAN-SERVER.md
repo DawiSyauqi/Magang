@@ -86,7 +86,7 @@ sehingga perbaikannya bisa dikerjakan di laptop.
 1. Buka `http://<alamat-server>/` dan login sebagai petugas. Anda akan diarahkan ke **Ringkasan**.
 2. **Data Downtime → Tambah Data**: simpan 1 catatan uji, ubah, lalu hapus. Ketiganya tercatat di Audit Log.
 3. Login sebagai **AFSYAH**: menu Operator & Admin muncul, dan tombol tambah/ubah/hapus tidak ada (admin hanya melihat).
-4. Buka `/tv` di layar ruang produksi (login dengan akun petugas).
+4. Buka **Live** (`/live`) di layar TV ruang produksi (login dengan akun petugas).
 
 ## Bila ada masalah
 

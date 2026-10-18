@@ -66,6 +66,18 @@ export const fmtMenit = (m) => {
     return j ? `${j} j ${m % 60} m` : `${m} m`;
 };
 
+// Garis prioritas Pareto (%), diatur admin di Pengaturan (default 80 = aturan 80/20).
+export const ambangPareto = () => Number(document.querySelector('meta[name="pareto-ambang"]')?.content) || 80;
+
+// Gradasi besaran untuk SEMUA heatmap/kalender/matriks: sedikit = biru, sedang =
+// ungu, banyak = merah (keputusan evaluasi 19-10-2026). Dark mode: dasar redup.
+export const skalaPanas = (t) => (t.dark
+    ? ['#1c2433', '#1d4ed8', '#7c3aed', '#dc2626', '#fca5a5']
+    : ['#e0ecff', '#60a5fa', '#8b5cf6', '#ef4444', '#991b1b']);
+
+// Warna shift 1/2/3 (selaras dengan skala di atas).
+export const warnaShift = (t) => (t.dark ? ['#60a5fa', '#a78bfa', '#f87171'] : ['#3b82f6', '#8b5cf6', '#ef4444']);
+
 export const fmtAngka = (n) => Number(n).toLocaleString('id-ID');
 
 /**

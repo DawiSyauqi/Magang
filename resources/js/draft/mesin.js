@@ -1,7 +1,7 @@
 // =============================================================================
 // mesin.js — chart halaman Analisis Mesin (perencanaan.md 1.4: M2, M3, M4)
 // =============================================================================
-import { echarts, mount, base, axisStyle, fmtMenit } from './chart-theme';
+import { echarts, mount, base, axisStyle, fmtMenit, skalaPanas } from './chart-theme';
 import { ScatterChart, TreemapChart } from 'echarts/charts';
 import { MarkAreaComponent } from 'echarts/components';
 
@@ -50,8 +50,8 @@ mount(document.getElementById('chartSebaran'), (t) => {
 // ---------------------------------------------------------------- M2 treemap kelompok
 mount(document.getElementById('chartKelompok'), (t) => {
     const total = data.kelompok.reduce((a, k) => a + k.value, 0) || 1;
-    // Gradasi oranye per kelompok (paling besar = paling pekat).
-    const palet = t.dark ? ['#c2410c', '#ea580c', '#fb923c', '#fdba74', '#fed7aa'] : ['#9a3412', '#c2410c', '#ea580c', '#fb923c', '#fdba74'];
+    // Gradasi per kelompok: paling besar = merah, paling kecil = biru (skala sama dengan heatmap).
+    const palet = skalaPanas(t).slice(1).reverse();
     return {
         ...base(t),
         tooltip: {

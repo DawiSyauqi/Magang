@@ -7,6 +7,7 @@
     <title>@yield('title')</title>
     <link rel="icon" type="image/png" href="{{ asset('icons/favicon-32.png') }}">
     {{-- Selalu tema terang (tidak memuat theme.js) supaya hasil cetak konsisten. --}}
+    <meta name="pareto-ambang" content="{{ $ambangPareto }}">
     @vite(['resources/css/draft.scss'])
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>

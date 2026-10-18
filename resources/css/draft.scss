@@ -1068,3 +1068,30 @@ body.tv { background: var(--bg); color: var(--text); font-size: clamp(14px, 1.05
     flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; position: relative;
     .dx-brand-logo { width: 48px; height: 48px; border-radius: 13px; display: grid; place-items: center; background: var(--accent); color: #fff; font-size: 1.3rem; }
 }
+
+// Tambah Data: pilihan cara input + tombol "sekarang" di form
+.dx-tambah-pilih {
+    flex-direction: row; align-items: center; gap: 1rem; padding: 1.1rem 1.25rem; text-align: left;
+    border: 1px solid var(--border); color: var(--text); cursor: pointer; height: auto;
+    > i:first-child { width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px; display: grid; place-items: center; background: var(--accent); color: #fff; font-size: 1.25rem; }
+    span { display: flex; flex-direction: column; gap: .2rem; }
+    strong { font-size: 1rem; }
+    small { color: var(--text-muted); font-size: .8rem; }
+    &:hover { border-color: var(--accent); }
+    &.nonaktif { cursor: not-allowed; opacity: .65; > i:first-child { background: var(--surface-hover); color: var(--text-muted); } &:hover { border-color: var(--border); } }
+}
+.dx-jam-kini {
+    border: 0; background: none; padding: 0; font-size: .72rem; font-weight: 600; color: var(--accent-text);
+    &:hover { text-decoration: underline; }
+}
+
+// Live: penanda siaran & tombol kembali
+.tv-live {
+    display: inline-flex; align-items: center; gap: .35em; vertical-align: .25em; margin-right: .3em;
+    font-size: .42em; font-weight: 800; letter-spacing: .08em; padding: .25em .6em; border-radius: 999px;
+    background: var(--up); color: #fff;
+    i { width: .55em; height: .55em; border-radius: 50%; background: #fff; animation: tv-kedip 1.4s ease-in-out infinite; }
+}
+@keyframes tv-kedip { 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { .tv-live i { animation: none; } }
+.tv-kembali { flex-shrink: 0; }

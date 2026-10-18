@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Logika SEMUA halaman sistem informasi (Ringkasan, Analisis, Data, Pemeriksaan,
- * Laporan, Layar TV, menu admin, pemberitahuan, pencarian), dipakai bersama oleh:
+ * Laporan, Live, menu admin, pemberitahuan, pencarian), dipakai bersama oleh:
  *  - Draft\DraftController : /draft — tanpa login, data contoh, peran ?peran=admin
  *  - AppPanelController     : aplikasi asli — login, database (SqlDowntimeSource)
  * Keduanya merender view yang SAMA di resources/views/panel; yang berbeda hanya
@@ -88,7 +88,7 @@ abstract class PanelController extends Controller
     /** Tujuan menu "Tambah Data": [nama rute tanpa awalan, parameter]. */
     protected function ruteTambah(): array
     {
-        return ['data', ['tambah' => 1]];
+        return ['tambah', []];
     }
 
     protected function tampil(string $view, array $data = [], int $status = 200)
@@ -345,11 +345,18 @@ abstract class PanelController extends Controller
             'default_per_shift' => ['required', 'integer', 'min:0', 'max:480'],
             'per_mesin' => ['array'],
             'per_mesin.*' => ['nullable', 'integer', 'min:0', 'max:480'],
-        ], [], ['default_per_shift' => 'target default', 'per_mesin.*' => 'target mesin']);
+            'pareto_ambang' => ['required', 'integer', 'min:50', 'max:95'],
+        ], [], ['default_per_shift' => 'target default', 'per_mesin.*' => 'target mesin', 'pareto_ambang' => 'garis Pareto']);
 
         $perMesin = array_intersect_key($data['per_mesin'] ?? [], array_flip($mesin));
         [$lama, $baru] = PengaturanStore::make()->simpanTarget((bool) ($data['aktif'] ?? false), (int) $data['default_per_shift'], $perMesin, $this->pengguna($request));
-        AuditLog::make()->catat('pengaturan.target', $this->pengguna($request), 'target', $lama, $baru, $request->ip());
+        if ($lama != $baru) {
+            AuditLog::make()->catat('pengaturan.target', $this->pengguna($request), 'target', $lama, $baru, $request->ip());
+        }
+        [$lamaP, $baruP] = PengaturanStore::make()->simpanPareto((int) $data['pareto_ambang'], $this->pengguna($request));
+        if ($lamaP != $baruP) {
+            AuditLog::make()->catat('pengaturan.pareto', $this->pengguna($request), 'pareto', $lamaP, $baruP, $request->ip());
+        }
 
         return redirect()->route($this->rp().'admin.pengaturan', $this->peranQ($request))->with('status', 'Pengaturan target disimpan dan tercatat di Audit Log.');
     }
@@ -469,7 +476,7 @@ abstract class PanelController extends Controller
     }
 
     /**
-     * Mode layar TV / andon (saran 2.11): 24 jam terakhir s.d. sekarang, huruf
+     * Live / andon (saran 2.11, dulu "Layar TV"): 24 jam terakhir s.d. sekarang, huruf
      * besar, tanpa menu, memuat ulang sendiri tiap 60 detik.
      *
      * Berbeda dengan halaman analisis (yang memakai Tgl_Trs, aturan 6.2), layar

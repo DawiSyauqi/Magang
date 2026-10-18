@@ -16,6 +16,7 @@ use RuntimeException;
  *     "default_per_shift": 60,          // menit downtime maksimal per mesin per shift
  *     "per_mesin": {"DD16": 90}         // pengecualian per mesin (opsional)
  *   },
+ *   "pareto": {"ambang": 80},          // garis prioritas di grafik Pareto (%)
  *   "diubah_oleh": "AFSYAH",
  *   "diubah_pada": "2026-10-17 15:00"
  * }
@@ -27,6 +28,7 @@ class PengaturanStore
 {
     private const DEFAULT = [
         'target' => ['aktif' => false, 'default_per_shift' => 60, 'per_mesin' => []],
+        'pareto' => ['ambang' => 80],
         'diubah_oleh' => null,
         'diubah_pada' => null,
     ];
@@ -53,6 +55,15 @@ class PengaturanStore
     public function target(): array
     {
         return $this->all()['target'];
+    }
+
+    /**
+     * Garis prioritas grafik Pareto (%). Standar aturan 80/20 = 80; admin bisa
+     * mengubahnya (50–95) di Pengaturan. Dipakai grafik Pareto & kalimat "Intinya".
+     */
+    public function paretoAmbang(): int
+    {
+        return max(50, min(95, (int) $this->all()['pareto']['ambang']));
     }
 
     /** Target menit downtime per shift untuk satu mesin, atau null bila target nonaktif. */
@@ -84,6 +95,30 @@ class PengaturanStore
      */
     public function simpanTarget(bool $aktif, int $defaultPerShift, array $perMesin, string $oleh): array
     {
+        return $this->ubah('target', [
+            'aktif' => $aktif,
+            'default_per_shift' => max(0, $defaultPerShift),
+            'per_mesin' => array_map('intval', array_filter($perMesin, fn ($v) => $v !== null && $v !== '')),
+        ], $oleh);
+    }
+
+    /**
+     * Simpan ambang Pareto. Mengembalikan [lama, baru] untuk audit log.
+     *
+     * @return array{0: array, 1: array}
+     */
+    public function simpanPareto(int $ambang, string $oleh): array
+    {
+        return $this->ubah('pareto', ['ambang' => max(50, min(95, $ambang))], $oleh);
+    }
+
+    /**
+     * Ganti satu bagian pengaturan di dalam flock (baca-ubah-tulis).
+     *
+     * @return array{0: array, 1: array} [lama, baru]
+     */
+    private function ubah(string $bagian, array $nilai, string $oleh): array
+    {
         $dir = dirname($this->filePath);
         if (! is_dir($dir) && ! mkdir($dir, 0755, true) && ! is_dir($dir)) {
             throw new RuntimeException("Tidak bisa membuat folder: {$dir}");
@@ -101,13 +136,8 @@ class PengaturanStore
             $isi = stream_get_contents($handle);
             $data = $isi ? (json_decode($isi, true) ?: []) : [];
             $data = array_replace_recursive(self::DEFAULT, $data);
-            $lama = $data['target'];
-
-            $data['target'] = [
-                'aktif' => $aktif,
-                'default_per_shift' => max(0, $defaultPerShift),
-                'per_mesin' => array_map('intval', array_filter($perMesin, fn ($v) => $v !== null && $v !== '')),
-            ];
+            $lama = $data[$bagian];
+            $data[$bagian] = $nilai;
             $data['diubah_oleh'] = $oleh;
             $data['diubah_pada'] = now('Asia/Jakarta')->format('Y-m-d H:i');
 
@@ -120,6 +150,6 @@ class PengaturanStore
             fclose($handle);
         }
 
-        return [$lama, $data['target']];
+        return [$lama, $data[$bagian]];
     }
 }

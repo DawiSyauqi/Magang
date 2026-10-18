@@ -27,6 +27,9 @@
             </div>
 
             <div class="modal-body">
+                @unless ($isEdit)
+                    <div class="dx-note py-2 mb-3 small js-prefill-info" hidden><i class="bi bi-magic"></i><span>Terisi otomatis: tanggal & shift dari jam komputer<span class="js-prefill-terakhir">, mesin/operator/speed/item dari isian terakhir Anda</span>. Periksa sebelum menyimpan.</span></div>
+                @endunless
                 @if ($showErrors && $errors->any())
                     <div class="alert alert-danger py-2 small">
                         @if ($temuan)
@@ -54,7 +57,7 @@
                         <div class="col-6 col-md-4">
                             <label class="form-label">Shift</label>
                             @php $shiftVal = (string) $val('shift', '1'); @endphp
-                            <select class="form-select {{ $err('shift') }}" name="shift" required>
+                            <select class="form-select js-shift {{ $err('shift') }}" name="shift" required>
                                 @foreach (config('produksi.shift') as $s => $j)
                                     <option value="{{ $s }}" @selected($shiftVal === (string) $s)>Shift {{ $s }} ({{ $j['mulai'] }}–{{ $j['selesai'] }})</option>
                                 @endforeach
@@ -86,12 +89,12 @@
                         </div>
 
                         <div class="col-4">
-                            <label class="form-label">Jam mulai</label>
-                            <input type="time" class="form-control js-time-start {{ $err('time_start') }}" name="time_start" value="{{ $val('time_start') }}" required>
+                            <label class="form-label d-flex justify-content-between">Jam mulai <button type="button" class="dx-jam-kini" data-jam-kini=".js-time-start" title="Isi jam sekarang (dibulatkan ke 10 menit)">sekarang</button></label>
+                            <input type="time" class="form-control js-time-start {{ $err('time_start') }}" name="time_start" value="{{ $val('time_start') }}" step="600" required>
                         </div>
                         <div class="col-4">
-                            <label class="form-label">Jam selesai</label>
-                            <input type="time" class="form-control js-time-end {{ $err('time_end') }}" name="time_end" value="{{ $val('time_end') }}" required>
+                            <label class="form-label d-flex justify-content-between">Jam selesai <button type="button" class="dx-jam-kini" data-jam-kini=".js-time-end" title="Isi jam sekarang (dibulatkan ke 10 menit)">sekarang</button></label>
+                            <input type="time" class="form-control js-time-end {{ $err('time_end') }}" name="time_end" value="{{ $val('time_end') }}" step="600" required>
                         </div>
                         <div class="col-4">
                             <label class="form-label">Durasi</label>

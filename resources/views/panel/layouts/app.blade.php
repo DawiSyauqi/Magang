@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="pareto-ambang" content="{{ $ambangPareto }}">
     <title>@yield('title', 'Downtime') · {{ $modeDraft ? 'Draft · ' : '' }}Downtime Mesin</title>
     <link rel="icon" type="image/png" href="{{ asset('icons/favicon-32.png') }}">
     {{-- PWA (saran 2.12): bisa dipasang di HP/PC seperti aplikasi; sw.js sama untuk draft & asli --}}
@@ -21,11 +22,10 @@
 <body>
 @php
     // Menu sesuai hak akses (perencanaan.md 1.1, K2/K5). [rute tanpa awalan, ikon, teks, parameter]
-    $tambah = $modeDraft ? ['tambah', []] : ['data', ['tambah' => 1]];
     $menu = [
         ['Utama', [
             ['ringkasan', 'bi-grid-1x2', 'Ringkasan'],
-            ['tv', 'bi-tv', 'Layar TV'],
+            ['live', 'bi-broadcast', 'Live'],
         ]],
         ['Analisis', [
             ['mesin', 'bi-cpu', 'Mesin'],
@@ -37,7 +37,7 @@
         ['Data', [
             ['data', 'bi-table', 'Data Downtime'],
             ['pemeriksaan', 'bi-clipboard-check', 'Pemeriksaan Data'],
-            $isAdmin ? null : [$tambah[0], 'bi-plus-circle', 'Tambah Data', $tambah[1]],
+            $isAdmin ? null : ['tambah', 'bi-plus-circle', 'Tambah Data'],
             $modeDraft ? ['scan', 'bi-hourglass-split', $isAdmin ? 'Riwayat Scan' : 'Antrian Scan'] : null,
             ['laporan', 'bi-file-earmark-bar-graph', 'Laporan'],
         ]],

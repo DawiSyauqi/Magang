@@ -64,7 +64,7 @@
                 <div class="dx-card-body">
                     <div class="table-responsive">
                         <table class="dx-table">
-                            <thead><tr><th>Item</th><th>Downtime</th><th class="text-end">Porsi</th><th class="text-end">Kejadian</th><th class="text-end">Rata-rata</th><th>Masalah dominan</th><th>Mesin</th><th class="text-end">Speed rata-rata</th><th class="text-end">vs lalu</th></tr></thead>
+                            <thead><tr><th>Item</th><th>Downtime</th><th class="text-end">Porsi</th><th class="text-end">Kejadian</th><th class="text-end">Rata-rata</th><th>Masalah dominan</th><th>Mesin</th><th class="text-end">Speed rata-rata</th><th class="text-end" title="Perubahan dibanding periode sebelumnya dengan panjang sama">vs periode lalu</th></tr></thead>
                             <tbody>
                                 @forelse ($item as $i)
                                     <tr>
@@ -91,6 +91,7 @@
                             </tbody>
                         </table>
                     </div>
+                    @include('panel.partials._vs-lalu', ['periode' => $data['periode']])
                 </div>
             </div>
         </div>

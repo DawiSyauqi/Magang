@@ -128,7 +128,8 @@ if (config('produksi.draft_enabled')) {
         Route::get('/pemeriksaan', [\App\Http\Controllers\Draft\DraftController::class, 'pemeriksaan'])->name('pemeriksaan');
         Route::get('/pemberitahuan', [\App\Http\Controllers\Draft\DraftController::class, 'pemberitahuan'])->name('pemberitahuan');
         Route::get('/cari', [\App\Http\Controllers\Draft\DraftController::class, 'cari'])->name('cari');
-        Route::get('/tv', [\App\Http\Controllers\Draft\DraftController::class, 'tv'])->name('tv');
+        Route::get('/live', [\App\Http\Controllers\Draft\DraftController::class, 'tv'])->name('live');
+        Route::redirect('/tv', '/draft/live');
 
         // Tambah Data dengan AI Baca Kertas — Eksplorasi 6 (foto dibaca sungguhan, hasil ke file).
         Route::controller(\App\Http\Controllers\Draft\DraftScanController::class)->group(function () {
@@ -179,7 +180,9 @@ Route::middleware(['auth', 'menu.access', 'panel:app'])->controller(AppPanelCont
     Route::get('/laporan/{jenis}/excel', 'laporanExcel')->whereIn('jenis', ['harian', 'bulanan'])->name('laporan.excel');
     Route::get('/pemberitahuan', 'pemberitahuan')->name('pemberitahuan');
     Route::get('/cari', 'cari')->name('cari');
-    Route::get('/tv', 'tv')->name('tv');
+    // Live (dulu "Layar TV"): 24 jam terakhir, muat ulang tiap 1 menit. /tv lama dialihkan.
+    Route::get('/live', 'tv')->name('live');
+    Route::redirect('/tv', '/live');
 
     // Khusus admin AFSYAH (K5 & menu admin).
     Route::middleware('admin')->group(function () {
@@ -190,6 +193,10 @@ Route::middleware(['auth', 'menu.access', 'panel:app'])->controller(AppPanelCont
         Route::get('/admin/statistik-ai', 'adminStatistikAi')->name('admin.ai');
     });
 });
+
+// Halaman Tambah Data (petugas): form manual + input hari ini; nanti juga foto formulir (E6).
+Route::middleware(['auth', 'menu.access', 'production', 'panel:app'])
+    ->get('/tambah', [AppPanelController::class, 'tambah'])->name('tambah');
 
 // Input data downtime — khusus petugas produksi (admin tidak menginput, middleware production).
 Route::middleware(['auth', 'menu.access', 'production'])->group(function () {

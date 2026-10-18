@@ -3,6 +3,7 @@
 namespace App\Services\Analytics;
 
 use App\Services\Analytics\Contracts\DowntimeSource;
+use App\Services\Pengaturan\PengaturanStore;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -211,9 +212,10 @@ class LaporanBuilder
         }
 
         if ($kat = $c['kategori']->first()) {
-            $top = $c['kategori']->takeWhile(fn ($x) => $x['kumulatif'] - $x['persen'] < 80);
+            $ambang = PengaturanStore::make()->paretoAmbang();
+            $top = $c['kategori']->takeWhile(fn ($x) => $x['kumulatif'] - $x['persen'] < $ambang);
             $hasil[] = 'Penyebab utama: '.$kat['kode'].' '.$kat['nama'].' ('.$pct($kat['persen']).').'
-                .($top->count() > 1 ? ' Sebanyak '.$top->count().' kategori ('.$top->pluck('kode')->implode(', ').') menyumbang sekitar 80% waktu berhenti.' : '');
+                .($top->count() > 1 ? ' Sebanyak '.$top->count().' kategori ('.$top->pluck('kode')->implode(', ').') menyumbang sekitar '.$ambang.'% waktu berhenti.' : '');
         }
 
         $naik = $c['kategori']->filter(fn ($x) => ($x['perubahan'] ?? null) !== null && $x['perubahan'] >= 20)->sortByDesc('perubahan')->first();

@@ -25,6 +25,7 @@ class AuditLog
         'password.reset' => 'Reset password pengguna',
         'alias.konfirmasi' => 'Konfirmasi alias mesin',
         'pengaturan.target' => 'Ubah target downtime',
+        'pengaturan.pareto' => 'Ubah garis Pareto',
         'login' => 'Login',
     ];
 

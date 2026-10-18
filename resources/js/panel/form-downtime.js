@@ -14,6 +14,28 @@ function isiPilihan(select, items, placeholder) {
     if (awal) select.value = awal;
 }
 
+// Isian terakhir petugas (per browser) untuk mengisi form Tambah berikutnya.
+const KUNCI_TERAKHIR = 'dx-input-terakhir';
+const bacaTerakhir = () => { try { return JSON.parse(localStorage.getItem(KUNCI_TERAKHIR) || 'null'); } catch (e) { return null; } };
+const simpanTerakhir = (v) => { try { localStorage.setItem(KUNCI_TERAKHIR, JSON.stringify(v)); } catch (e) { /* mode privat */ } };
+
+// Shift dari jam komputer sesuai jadwal config('produksi.shift'): mulai <= jam < selesai (shift 3 melewati tengah malam).
+function shiftSekarang(jadwal, d = new Date()) {
+    const m = d.getHours() * 60 + d.getMinutes();
+    const ke = (s) => { const [h, mm] = s.split(':').map(Number); return h * 60 + mm; };
+    for (const [s, j] of Object.entries(jadwal)) {
+        const a = ke(j.mulai);
+        const b = ke(j.selesai);
+        if (a < b ? m >= a && m < b : m >= a || m < b) return s;
+    }
+    return '1';
+}
+const tanggalHariIni = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const jamKini = (d = new Date()) => {
+    const m = Math.floor((d.getHours() * 60 + d.getMinutes()) / 10) * 10; // formulir memakai kotak 10 menit
+    return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+};
+
 const ambil = (url) => fetch(url, { headers: { Accept: 'application/json' } }).then((r) => (r.ok ? r.json() : Promise.reject(r.status)));
 
 function siapkanModal(modalEl, url) {
@@ -128,6 +150,12 @@ function siapkanModal(modalEl, url) {
     selesai.addEventListener('change', hitung);
     hitung();
 
+    modalEl.querySelectorAll('[data-jam-kini]').forEach((b) => b.addEventListener('click', () => {
+        const el = q(b.dataset.jamKini);
+        el.value = jamKini();
+        el.dispatchEvent(new Event('change'));
+    }));
+
     return Promise.all([muatMesin, muatKategori]);
 }
 
@@ -137,6 +165,46 @@ if (root) {
     const ubah = document.getElementById('modalUbahData');
     const siapTambah = siapkanModal(tambah, url);
     const siapUbah = siapkanModal(ubah, url);
+    const jadwal = JSON.parse(root.dataset.shift || '{}');
+
+    // Form Tambah selalu dibuka kosong lalu diisi otomatis (kecuali setelah gagal validasi,
+    // saat isian sebelumnya dipertahankan).
+    let pertahankan = root.dataset.buka === 'tambah';
+    tambah.addEventListener('show.bs.modal', () => {
+        if (pertahankan) { pertahankan = false; return; }
+        const form = tambah.querySelector('form');
+        const q = (s) => tambah.querySelector(s);
+        form.reset();
+        ['.js-mesin-nama', '.js-operator-nama', '.js-item-nama'].forEach((s) => { q(s).textContent = ''; });
+        q('[name="tgl_trs"]').value = tanggalHariIni();
+        q('.js-shift').value = shiftSekarang(jadwal);
+        q('.js-total-durasi').textContent = '0 menit';
+        const t = bacaTerakhir();
+        q('.js-prefill-terakhir').hidden = !t;
+        q('.js-prefill-info').hidden = false;
+        siapTambah.then(() => {
+            const m = q('.js-mesin-select');
+            q('.js-item-select').dataset.initial = t?.itemno || '';
+            m.value = t?.mesin_code || '';
+            m.dispatchEvent(new Event('change'));
+            q('.js-problem-kategori').value = '';
+            q('.js-problem-kategori').dispatchEvent(new Event('change'));
+            if (t) {
+                q('.js-nik-input').value = t.nik || '';
+                q('.js-operator-nama').textContent = t.operator_nama || '';
+                q('[name="speed_mesin"]').value = t.speed_mesin || '';
+            }
+        });
+    });
+    // Ingat isian yang biasanya sama antar-kejadian (mesin, operator, speed, item).
+    tambah.querySelector('form').addEventListener('submit', () => {
+        const q = (s) => tambah.querySelector(s);
+        simpanTerakhir({
+            mesin_code: q('.js-mesin-select').value, itemno: q('.js-item-select').value,
+            nik: q('.js-nik-input').value, operator_nama: q('.js-operator-nama').textContent,
+            speed_mesin: q('[name="speed_mesin"]').value,
+        });
+    });
 
     document.querySelectorAll('[data-aksi-tambah]').forEach((b) => b.addEventListener('click', (e) => {
         e.stopPropagation();

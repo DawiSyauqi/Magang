@@ -64,7 +64,7 @@
         <section class="lap-section">
             <h2>Pareto kategori</h2>
             <div data-chart="pareto" style="height: 190px"></div>
-            <div class="lap-muted" style="font-size: 7.5pt; margin-top: 1mm">Batang = menit per kategori · garis = persentase kumulatif (dijumlah dari kiri sampai 100%) · kategori di kiri garis 80% = prioritas.</div>
+            <div class="lap-muted" style="font-size: 7.5pt; margin-top: 1mm">Batang = menit per kategori · garis = persentase kumulatif (dijumlah dari kiri sampai 100%) · kategori di kiri garis {{ $ambangPareto }}% = prioritas.</div>
         </section>
     </div>
 
@@ -88,7 +88,7 @@
         <section class="lap-section">
             <h2>Per kategori</h2>
             <table class="lap-table">
-                <thead><tr><th>Kategori</th><th class="r">Downtime</th><th class="r">Porsi</th><th class="r">Kum.</th><th class="r">vs lalu</th></tr></thead>
+                <thead><tr><th>Kategori</th><th class="r">Downtime</th><th class="r">Porsi</th><th class="r">Kum.</th><th class="r" title="Dibanding periode yang sama bulan lalu">vs bln lalu</th></tr></thead>
                 <tbody>
                     @foreach ($lap['kategori'] as $c)
                         <tr><td><i class="lap-dot" style="background: {{ $c['warna'] }}"></i><b>{{ $c['kode'] }}</b> {{ $c['nama'] }}</td><td class="r">{{ $jamMenit($c['menit']) }}</td><td class="r">{{ $angka($c['persen'], 1) }}%</td><td class="r">{{ $angka($c['kumulatif'], 1) }}%</td><td class="r">{!! $ubah($c['perubahan']) !!}</td></tr>

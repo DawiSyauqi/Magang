@@ -7,6 +7,9 @@ import { BarChart, LineChart, CustomChart } from 'echarts/charts';
 import { GridComponent, MarkAreaComponent, MarkLineComponent } from 'echarts/components';
 import { SVGRenderer } from 'echarts/renderers';
 
+// Garis prioritas Pareto (%) yang diatur admin (default 80).
+const ambangPareto = () => Number(document.querySelector('meta[name="pareto-ambang"]')?.content) || 80;
+
 echarts.use([BarChart, LineChart, CustomChart, GridComponent, MarkAreaComponent, MarkLineComponent, SVGRenderer]);
 
 const data = JSON.parse(document.getElementById('lapData').textContent);
@@ -74,7 +77,7 @@ if (data.jenis === 'bulanan') {
             { type: 'bar', barMaxWidth: 22, data: data.kategori.map((k) => ({ value: k.menit, itemStyle: { color: k.warna, borderRadius: [2, 2, 0, 0] } })) },
             {
                 type: 'line', yAxisIndex: 1, data: data.kategori.map((k) => k.kumulatif), symbolSize: 4, lineStyle: { color: C.text, width: 1 }, itemStyle: { color: C.text },
-                markLine: { silent: true, symbol: 'none', lineStyle: { color: '#dc2626', type: 'dashed' }, label: { ...font, color: '#dc2626', position: 'insideEndTop', formatter: '80%' }, data: [{ yAxis: 80 }] },
+                markLine: { silent: true, symbol: 'none', lineStyle: { color: '#dc2626', type: 'dashed' }, label: { ...font, color: '#dc2626', position: 'insideEndTop', formatter: ambangPareto() + '%' }, data: [{ yAxis: ambangPareto() }] },
             },
         ],
     });

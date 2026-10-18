@@ -17,8 +17,8 @@
         { "src": "/icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
     ],
     "shortcuts": [
-        { "name": "Tambah Data", "short_name": "Tambah", "url": "/data?tambah=1", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+        { "name": "Tambah Data", "short_name": "Tambah", "url": "/tambah", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
         { "name": "Data Downtime", "short_name": "Data", "url": "/data", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
-        { "name": "Layar TV", "short_name": "Layar TV", "url": "/tv", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+        { "name": "Live (24 jam terakhir)", "short_name": "Live", "url": "/live", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
     ]
 }

@@ -19,6 +19,6 @@
     "shortcuts": [
         { "name": "Tambah Data (foto formulir)", "short_name": "Tambah Data", "url": "/draft/tambah", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
         { "name": "Data Downtime", "short_name": "Data", "url": "/draft/data", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
-        { "name": "Layar TV", "short_name": "Layar TV", "url": "/draft/tv", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+        { "name": "Live (24 jam terakhir)", "short_name": "Live", "url": "/draft/live", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
     ]
 }

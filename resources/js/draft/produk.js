@@ -1,7 +1,7 @@
 // =============================================================================
 // produk.js — chart halaman Produk / Item (perencanaan.md 1.8: I2, I3)
 // =============================================================================
-import { echarts, mount, base, axisStyle, fmtMenit } from './chart-theme';
+import { echarts, mount, base, axisStyle, fmtMenit, skalaPanas } from './chart-theme';
 import { BoxplotChart } from 'echarts/charts';
 
 echarts.use([BoxplotChart]);
@@ -9,7 +9,6 @@ echarts.use([BoxplotChart]);
 const data = JSON.parse(document.getElementById('produkData').textContent);
 const namaKat = Object.fromEntries(data.kategori.map((k) => [k.kode, k.nama]));
 const namaItem = Object.fromEntries(data.item.map((i) => [i.kode, i.nama]));
-const skalaOranye = (t) => (t.dark ? ['#211f1d', '#5a2a0c', '#c2410c', '#fb923c', '#fde68a'] : ['#f5f3f0', '#fed7aa', '#fb923c', '#ea580c', '#9a3412']);
 
 // ---------------------------------------------------------------- I2 matriks item × kategori
 mount(document.getElementById('chartMatriks'), (t) => {
@@ -22,7 +21,7 @@ mount(document.getElementById('chartMatriks'), (t) => {
         yAxis: { type: 'category', data: m.item, inverse: true, ...axisStyle(t), splitLine: { show: false }, axisLabel: { color: t.text, fontWeight: 600, fontSize: 11 } },
         visualMap: {
             min: 0, max: Math.max(1, m.maks), orient: 'horizontal', left: 'center', bottom: 0, itemWidth: 10, itemHeight: 140,
-            text: ['lama', 'sebentar'], textStyle: { color: t.muted, fontSize: 10 }, inRange: { color: skalaOranye(t) },
+            text: ['lama', 'sebentar'], textStyle: { color: t.muted, fontSize: 10 }, inRange: { color: skalaPanas(t) },
         },
         series: [{
             type: 'heatmap', data: m.data,

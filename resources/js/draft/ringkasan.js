@@ -2,7 +2,7 @@
 // ringkasan.js — chart halaman Ringkasan (perencanaan.md 1.3, R1–R5 + sparkline)
 // Data dari <script id="ringkasanData"> (hasil DowntimeAnalytics::ringkasan).
 // =============================================================================
-import { mount, base, axisStyle, fmtMenit, fmtAngka } from './chart-theme';
+import { mount, base, axisStyle, fmtMenit, fmtAngka, skalaPanas, warnaShift as paletShift, ambangPareto } from './chart-theme';
 
 const data = JSON.parse(document.getElementById('ringkasanData').textContent);
 const warna = Object.fromEntries(data.kategori.map((k) => [k.kode, k.warna]));
@@ -82,7 +82,7 @@ mount(document.getElementById('chartTren'), (t) => ({
 // ---------------------------------------------------------------- R4 shift
 mount(document.getElementById('chartShift'), (t) => {
     // Satu keluarga oranye, dibedakan terang-gelapnya.
-    const warnaShift = t.dark ? ['#fdba74', '#fb923c', '#c2410c'] : ['#fdba74', '#ea580c', '#9a3412'];
+    const warnaShift = paletShift(t);
     const total = data.per_shift.reduce((a, s) => a + s.menit, 0);
     return {
         ...base(t),
@@ -148,7 +148,7 @@ mount(document.getElementById('chartPareto'), (t) => ({
             symbol: 'circle', symbolSize: 6, lineStyle: { color: t.text, width: 1.5 }, itemStyle: { color: t.text },
             markLine: {
                 silent: true, symbol: 'none', lineStyle: { color: t.up, type: 'dashed' },
-                label: { formatter: '80%', color: t.up, fontSize: 10, position: 'insideEndTop' }, data: [{ yAxis: 80 }],
+                label: { formatter: ambangPareto() + '%', color: t.up, fontSize: 10, position: 'insideEndTop' }, data: [{ yAxis: ambangPareto() }],
             },
         },
     ],
@@ -210,7 +210,7 @@ mount(document.getElementById('chartHeatmap'), (t) => {
             min: 0, max: Math.max(1, data.heatmap.maks), calculable: false, orient: 'horizontal', left: 'center', bottom: 0,
             itemWidth: 10, itemHeight: 140, textStyle: { color: t.muted, fontSize: 10 },
             text: ['banyak', 'sedikit'],
-            inRange: { color: t.dark ? ['#211f1d', '#5a2a0c', '#c2410c', '#fb923c', '#fde68a'] : ['#f5f3f0', '#fed7aa', '#fb923c', '#ea580c', '#9a3412'] },
+            inRange: { color: skalaPanas(t) },
         },
         series: [{
             type: 'heatmap', data: data.heatmap.data,

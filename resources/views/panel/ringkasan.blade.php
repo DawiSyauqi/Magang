@@ -134,7 +134,7 @@
         <div class="col-12 col-md-6 col-xl-5">
             <div class="dx-card">
                 <div class="dx-card-head">
-                    <div><h3>Pareto kategori masalah</h3><div class="dx-card-sub">Batang = menit per kategori · garis = persentase kumulatif (dijumlah dari kiri, selalu naik sampai 100%) · kategori di kiri garis 80% = prioritas perbaikan</div></div>
+                    <div><h3>Pareto kategori masalah</h3><div class="dx-card-sub">Batang = menit per kategori · garis = persentase kumulatif (dijumlah dari kiri, selalu naik sampai 100%) · kategori di kiri garis {{ $ambangPareto }}% = prioritas perbaikan</div></div>
                 </div>
                 <div class="dx-card-body"><div class="dx-chart" id="chartPareto"></div></div>
             </div>

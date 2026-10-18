@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 @php
-    // Layar TV default gelap (lebih nyaman dilihat dari jauh & hemat layar); ?tema=light untuk terang.
+    // Live default gelap (lebih nyaman dilihat dari jauh & hemat layar); ?tema=light untuk terang.
     $tema = request('tema') === 'light' ? 'light' : 'dark';
     $jm = function (int $m) {
         $j = intdiv($m, 60);
@@ -15,7 +15,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="refresh" content="60">
-    <title>Layar TV · Downtime Mesin</title>
+    <title>Live · Downtime Mesin</title>
     <link rel="icon" type="image/png" href="{{ asset('icons/favicon-32.png') }}">
     @vite(['resources/css/draft.scss'])
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -23,14 +23,15 @@
 <body class="tv">
 <div class="tv-wrap">
     <header class="tv-head">
+        <a href="{{ route($rp.'ringkasan', $peranQ) }}" class="dx-icon-btn tv-kembali" title="Kembali ke Ringkasan" aria-label="Kembali ke Ringkasan"><i class="bi bi-arrow-left"></i></a>
         <div class="dx-brand-logo"><i class="bi bi-gear-wide-connected"></i></div>
         <div class="me-auto">
-            <div class="tv-judul">Downtime 24 jam terakhir</div>
-            <div class="tv-sub">{{ $mulai->translatedFormat('D d M H:i') }} → sekarang ({{ $sekarang->translatedFormat('D d M') }}) · <span class="tv-draft">DATA CONTOH</span></div>
+            <div class="tv-judul"><span class="tv-live"><i></i>LIVE</span> Downtime 24 jam terakhir</div>
+            <div class="tv-sub">{{ $mulai->translatedFormat('D d M H:i') }} → sekarang ({{ $sekarang->translatedFormat('D d M') }})@if ($modeDraft) · <span class="tv-draft">DATA CONTOH</span>@endif</div>
         </div>
         <div class="tv-jam">
             <div class="num" id="tvJam">{{ $sekarang->format('H:i') }}</div>
-            <div class="tv-sub">diperbarui {{ $sekarang->format('H:i:s') }} · otomatis tiap 1 menit</div>
+            <div class="tv-sub">diperbarui {{ $sekarang->format('H:i:s') }} · otomatis tiap 1 menit · data baru tampil begitu petugas menyimpannya</div>
         </div>
         <button type="button" class="dx-icon-btn" id="tvFull" title="Layar penuh" aria-label="Layar penuh"><i class="bi bi-arrows-fullscreen"></i></button>
     </header>

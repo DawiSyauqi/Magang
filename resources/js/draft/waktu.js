@@ -1,7 +1,7 @@
 // =============================================================================
 // waktu.js — chart halaman Waktu & Shift (perencanaan.md 1.6: W1–W6)
 // =============================================================================
-import { echarts, mount, base, axisStyle, fmtMenit } from './chart-theme';
+import { echarts, mount, base, axisStyle, fmtMenit, skalaPanas, warnaShift } from './chart-theme';
 import { CustomChart } from 'echarts/charts';
 import { CalendarComponent, MarkAreaComponent } from 'echarts/components';
 
@@ -14,8 +14,6 @@ const hariId = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 const bulanId = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 const tgl = (iso) => new Date(iso + 'T00:00:00');
 const labelTgl = (iso) => `${tgl(iso).getDate()}/${tgl(iso).getMonth() + 1}`;
-const skalaOranye = (t) => (t.dark ? ['#211f1d', '#5a2a0c', '#c2410c', '#fb923c', '#fde68a'] : ['#f5f3f0', '#fed7aa', '#fb923c', '#ea580c', '#9a3412']);
-const warnaShift = (t) => (t.dark ? ['#fdba74', '#fb923c', '#c2410c'] : ['#fdba74', '#ea580c', '#9a3412']);
 
 // ---------------------------------------------------------------- W1 kalender
 mount(document.getElementById('chartKalender'), (t) => {
@@ -31,7 +29,7 @@ mount(document.getElementById('chartKalender'), (t) => {
         },
         visualMap: {
             min: 0, max: maks, dimension: 1, orient: 'horizontal', right: 0, top: 0, itemWidth: 10, itemHeight: 120,
-            text: ['lama', 'sebentar'], textStyle: { color: t.muted, fontSize: 10 }, inRange: { color: skalaOranye(t) },
+            text: ['lama', 'sebentar'], textStyle: { color: t.muted, fontSize: 10 }, inRange: { color: skalaPanas(t) },
         },
         calendar: {
             range: [data.periode.dari, data.periode.sampai],
@@ -60,7 +58,7 @@ mount(document.getElementById('chartHeatmap'), (t) => {
         yAxis: { type: 'category', data: data.heatmap.hari, inverse: true, ...axisStyle(t), splitLine: { show: false } },
         visualMap: {
             min: 0, max: Math.max(1, data.heatmap.maks), orient: 'horizontal', left: 'center', bottom: 0, itemWidth: 10, itemHeight: 140,
-            text: ['banyak', 'sedikit'], textStyle: { color: t.muted, fontSize: 10 }, inRange: { color: skalaOranye(t) },
+            text: ['banyak', 'sedikit'], textStyle: { color: t.muted, fontSize: 10 }, inRange: { color: skalaPanas(t) },
         },
         series: [{ type: 'heatmap', data: data.heatmap.data, itemStyle: { borderColor: t.surface, borderWidth: 2, borderRadius: 4 } }],
     };
@@ -78,7 +76,7 @@ mount(document.getElementById('chartDow'), (t) => {
         yAxis: { type: 'category', data: nama, inverse: true, ...axisStyle(t), splitLine: { show: false }, axisLabel: { color: t.text, fontWeight: 600, fontSize: 11 } },
         series: [{
             type: 'bar', barWidth: 16,
-            data: data.rata_dow.map((v) => ({ value: v, itemStyle: { color: v === maks && v > 0 ? t.accent : (t.dark ? '#5a2a0c' : '#fed7aa'), borderRadius: [0, 6, 6, 0] } })),
+            data: data.rata_dow.map((v) => ({ value: v, itemStyle: { color: v === maks && v > 0 ? skalaPanas(t)[3] : skalaPanas(t)[1], borderRadius: [0, 6, 6, 0] } })),
             label: { show: true, position: 'right', color: t.muted, fontSize: 11, formatter: (p) => fmtMenit(p.value) },
         }],
     };

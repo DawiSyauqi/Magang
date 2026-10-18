@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\Pengaturan\PengaturanStore;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
@@ -49,6 +50,8 @@ class SetPanelMode
             'isAdmin' => $isAdmin,
             'peranQ' => $draft && $isAdmin ? ['peran' => 'admin'] : [],
             'pengguna' => $pengguna,
+            // Garis prioritas Pareto (%) yang diatur admin; JS membacanya dari <meta name="pareto-ambang">.
+            'ambangPareto' => PengaturanStore::make()->paretoAmbang(),
         ]);
 
         return $next($request);

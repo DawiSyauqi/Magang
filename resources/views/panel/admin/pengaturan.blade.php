@@ -37,6 +37,14 @@
                             </div>
                             <div class="dx-card-sub mb-3">Berlaku untuk semua mesin, kecuali yang diisi khusus di samping. Contoh: 60 menit = 12,5% dari 480 menit.</div>
 
+                            <hr class="my-3">
+                            <label class="fw-semibold mb-1" for="pareto_ambang">Garis prioritas Pareto</label>
+                            <div class="input-group mb-1" style="max-width: 220px">
+                                <input type="number" class="form-control" id="pareto_ambang" name="pareto_ambang" min="50" max="95" step="5" value="{{ old('pareto_ambang', $ambangPareto) }}">
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <div class="dx-card-sub mb-3">Kategori yang dijumlah dari kiri sampai mencapai persen ini dianggap <strong>prioritas perbaikan</strong> (garis putus merah di grafik Pareto & kalimat "Intinya"). Standar umum aturan 80/20 = <strong>80%</strong>; kecilkan (mis. 70%) bila ingin fokus ke lebih sedikit kategori.</div>
+
                             <div class="dx-kpi-note">
                                 Terakhir diubah:
                                 {{ $pengaturan['diubah_pada'] ? $pengaturan['diubah_oleh'].' · '.\Carbon\Carbon::parse($pengaturan['diubah_pada'])->translatedFormat('d M Y H:i') : 'belum pernah' }}

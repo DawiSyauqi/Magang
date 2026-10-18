@@ -55,7 +55,7 @@
                 <div class="dx-card-head">
                     <div>
                         <h3 id="paretoJudul">Pareto kategori masalah</h3>
-                        <div class="dx-card-sub" id="paretoSub">Batang = menit per kategori · garis = persentase kumulatif (dijumlah dari kiri, selalu naik sampai 100%) · kategori di kiri garis 80% = prioritas · klik batang untuk detail</div>
+                        <div class="dx-card-sub" id="paretoSub">Batang = menit per kategori · garis = persentase kumulatif (dijumlah dari kiri, selalu naik sampai 100%) · kategori di kiri garis {{ $ambangPareto }}% = prioritas · klik batang untuk detail</div>
                     </div>
                     <button type="button" class="btn btn-sm btn-outline-secondary d-none" id="paretoKembali"><i class="bi bi-arrow-left"></i> Semua kategori</button>
                 </div>
@@ -77,14 +77,14 @@
                 <div class="dx-card-body">
                     <div class="table-responsive">
                         <table class="dx-table">
-                            <thead><tr><th>Kategori</th><th class="text-end">Downtime</th><th class="text-end">Porsi</th><th class="text-end">Kumulatif</th><th class="text-end">Kejadian</th><th>Mesin terbanyak</th><th>3 detail teratas</th><th class="text-end">vs lalu</th></tr></thead>
+                            <thead><tr><th>Kategori</th><th class="text-end">Downtime</th><th class="text-end">Porsi</th><th class="text-end">Kumulatif</th><th class="text-end">Kejadian</th><th>Mesin terbanyak</th><th>3 detail teratas</th><th class="text-end" title="Perubahan dibanding periode sebelumnya dengan panjang sama">vs periode lalu</th></tr></thead>
                             <tbody>
                                 @forelse ($data['kategori'] as $k)
                                     <tr>
                                         <td class="text-nowrap"><span class="dx-cat" style="--c: {{ $k['warna'] }}"><strong>{{ $k['kode'] }}</strong></span> {{ $k['nama'] }}</td>
                                         <td class="num text-end fw-semibold text-nowrap">{{ $jamMenit($k['menit']) }}</td>
                                         <td class="num text-end">{{ number_format($k['persen'], 1, ',', '.') }}%</td>
-                                        <td class="num text-end {{ $k['kumulatif'] - $k['persen'] < 80 ? 'fw-semibold' : 'text-muted-x' }}">{{ number_format($k['kumulatif'], 1, ',', '.') }}%</td>
+                                        <td class="num text-end {{ $k['kumulatif'] - $k['persen'] < $ambangPareto ? 'fw-semibold' : 'text-muted-x' }}">{{ number_format($k['kumulatif'], 1, ',', '.') }}%</td>
                                         <td class="num text-end">{{ $k['kejadian'] }}</td>
                                         <td>@if ($k['mesin_terbanyak'])<a href="{{ $profil($k['mesin_terbanyak']) }}" class="dx-link-mesin"><strong>{{ $k['mesin_terbanyak'] }}</strong></a>@endif</td>
                                         <td class="small text-muted-x">{{ collect($k['detail'])->take(3)->map(fn ($d) => $d['detail'].' ('.$d['kejadian'].'×)')->implode(' · ') }}</td>
@@ -96,7 +96,8 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="dx-kpi-note mt-2">Tebal = kategori yang masuk 80% pertama (prinsip Pareto: sedikit penyebab menyumbang sebagian besar waktu berhenti).</div>
+                    <div class="dx-kpi-note mt-2">Tebal = kategori yang masuk {{ $ambangPareto }}% pertama (prinsip Pareto: sedikit penyebab menyumbang sebagian besar waktu berhenti).</div>
+                    @include('panel.partials._vs-lalu', ['periode' => $data['periode']])
                 </div>
             </div>
         </div>

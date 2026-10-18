@@ -78,7 +78,7 @@
                                     <th class="text-end"><a href="#" class="dx-sort" data-sort="persen">Downtime % <i class="bi bi-arrow-down-up"></i></a></th>
                                     <th>Masalah dominan</th>
                                     <th>Tren</th>
-                                    <th class="text-end"><a href="#" class="dx-sort" data-sort="perubahan">vs lalu <i class="bi bi-arrow-down-up"></i></a></th>
+                                    <th class="text-end"><a href="#" class="dx-sort" data-sort="perubahan" title="Perubahan dibanding periode sebelumnya dengan panjang sama">vs periode lalu <i class="bi bi-arrow-down-up"></i></a></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -109,6 +109,7 @@
                         </table>
                     </div>
                     <div class="dx-kpi-note mt-2">Downtime % = menit downtime ÷ (3 shift × 480 menit × {{ $data['periode']['jumlah_hari'] }} hari) per mesin.</div>
+                    @include('panel.partials._vs-lalu', ['periode' => $data['periode']])
                 </div>
             </div>
         </div>

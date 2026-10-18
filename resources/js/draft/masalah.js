@@ -1,7 +1,7 @@
 // =============================================================================
 // masalah.js — chart halaman Analisis Masalah (perencanaan.md 1.5: P1–P5)
 // =============================================================================
-import { echarts, mount, base, axisStyle, fmtMenit, tokens } from './chart-theme';
+import { echarts, mount, base, axisStyle, fmtMenit, tokens, skalaPanas, ambangPareto } from './chart-theme';
 import { SunburstChart, BoxplotChart } from 'echarts/charts';
 
 echarts.use([SunburstChart, BoxplotChart]);
@@ -55,7 +55,7 @@ function opsiPareto(t) {
             {
                 name: 'Kumulatif % (s.d. 100%)', type: 'line', yAxisIndex: 1, data: kumulatif, symbol: 'circle', symbolSize: 6,
                 lineStyle: { color: t.text, width: 1.5 }, itemStyle: { color: t.text },
-                markLine: { silent: true, symbol: 'none', lineStyle: { color: t.up, type: 'dashed' }, label: { formatter: '80%', color: t.up, fontSize: 10, position: 'insideEndTop' }, data: [{ yAxis: 80 }] },
+                markLine: { silent: true, symbol: 'none', lineStyle: { color: t.up, type: 'dashed' }, label: { formatter: ambangPareto() + '%', color: t.up, fontSize: 10, position: 'insideEndTop' }, data: [{ yAxis: ambangPareto() }] },
             },
         ],
     };
@@ -67,7 +67,7 @@ function gambarPareto() {
     document.getElementById('paretoJudul').textContent = k ? `Detail masalah ${k.kode} · ${k.nama}` : 'Pareto kategori masalah';
     document.getElementById('paretoSub').textContent = k
         ? `${k.detail.length} detail masalah · ${fmtMenit(k.menit)} total`
-        : 'Batang = menit per kategori · garis = persentase kumulatif (dijumlah dari kiri, selalu naik sampai 100%) · kategori di kiri garis 80% = prioritas · klik batang untuk detail';
+        : `Batang = menit per kategori · garis = persentase kumulatif (dijumlah dari kiri, selalu naik sampai 100%) · kategori di kiri garis ${ambangPareto()}% = prioritas · klik batang untuk detail`;
     document.getElementById('paretoKembali').classList.toggle('d-none', !k);
     pareto.setOption(opsiPareto(tokens()), true);
 }
@@ -134,7 +134,7 @@ mount(document.getElementById('chartMatriks'), (t) => {
         visualMap: {
             min: 0, max: Math.max(1, m.maks), orient: 'horizontal', left: 'center', bottom: 0, itemWidth: 10, itemHeight: 140,
             text: ['lama', 'sebentar'], textStyle: { color: t.muted, fontSize: 10 },
-            inRange: { color: t.dark ? ['#211f1d', '#5a2a0c', '#c2410c', '#fb923c', '#fde68a'] : ['#f5f3f0', '#fed7aa', '#fb923c', '#ea580c', '#9a3412'] },
+            inRange: { color: skalaPanas(t) },
         },
         series: [{
             type: 'heatmap', data: m.data,
