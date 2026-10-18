@@ -25,7 +25,7 @@ mount(document.getElementById('chartMatriks'), (t) => {
         },
         series: [{
             type: 'heatmap', data: m.data,
-            label: { show: true, color: t.text, fontSize: 10, formatter: (p) => (p.value[2] >= 60 ? Math.round(p.value[2] / 60) + 'j' : '') },
+            label: { show: true, color: '#111827', textBorderColor: 'rgba(255,255,255,.75)', textBorderWidth: 2, fontSize: 10, formatter: (p) => (p.value[2] >= 60 ? Math.round(p.value[2] / 60) + 'j' : '') },
             itemStyle: { borderColor: t.surface, borderWidth: 2, borderRadius: 4 },
         }],
     };

@@ -1069,6 +1069,15 @@ body.tv { background: var(--bg); color: var(--text); font-size: clamp(14px, 1.05
     .dx-brand-logo { width: 48px; height: 48px; border-radius: 13px; display: grid; place-items: center; background: var(--accent); color: #fff; font-size: 1.3rem; }
 }
 
+// Perpindahan halaman halus (View Transitions antar-halaman, Chrome/Edge 126+):
+// sidebar diberi nama sendiri sehingga tetap diam, hanya konten yang berganti.
+@view-transition { navigation: auto; }
+.dx-sidebar { view-transition-name: dx-sidebar; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .16s; }
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
+
 // Tambah Data: pilihan cara input + tombol "sekarang" di form
 .dx-tambah-pilih {
     flex-direction: row; align-items: center; gap: 1rem; padding: 1.1rem 1.25rem; text-align: left;

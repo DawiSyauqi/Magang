@@ -76,7 +76,7 @@ mount(document.getElementById('chartDow'), (t) => {
         yAxis: { type: 'category', data: nama, inverse: true, ...axisStyle(t), splitLine: { show: false }, axisLabel: { color: t.text, fontWeight: 600, fontSize: 11 } },
         series: [{
             type: 'bar', barWidth: 16,
-            data: data.rata_dow.map((v) => ({ value: v, itemStyle: { color: v === maks && v > 0 ? skalaPanas(t)[3] : skalaPanas(t)[1], borderRadius: [0, 6, 6, 0] } })),
+            data: data.rata_dow.map((v) => ({ value: v, itemStyle: { color: v === maks && v > 0 ? skalaPanas(t)[4] : skalaPanas(t)[1], borderRadius: [0, 6, 6, 0] } })),
             label: { show: true, position: 'right', color: t.muted, fontSize: 11, formatter: (p) => fmtMenit(p.value) },
         }],
     };

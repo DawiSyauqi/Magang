@@ -65,7 +65,7 @@
             </div>
         </div>
 
-        <nav class="d-flex flex-column gap-1 overflow-auto">
+        <nav class="d-flex flex-column gap-1 overflow-auto" id="dxNav">
             @foreach ($menu as [$label, $items])
                 <div class="dx-nav-label">{{ $label }}</div>
                 @foreach (array_filter($items) as $m)
@@ -77,6 +77,14 @@
                 @endforeach
             @endforeach
         </nav>
+        <script>
+            // Pindah halaman memuat ulang seluruh halaman; posisi gulir menu dikembalikan supaya sidebar terasa diam.
+            (function () {
+                var nav = document.getElementById('dxNav');
+                try { nav.scrollTop = +sessionStorage.getItem('dx-nav-gulir') || 0; } catch (e) {}
+                addEventListener('pagehide', function () { try { sessionStorage.setItem('dx-nav-gulir', nav.scrollTop); } catch (e) {} });
+            })();
+        </script>
 
         <div class="dx-sidebar-footer">
             {{-- Muncul hanya bila browser menawarkan pemasangan (HTTPS/localhost, belum terpasang) --}}
@@ -218,6 +226,10 @@
          data-status-url="{{ route('draft.scan.status') }}" data-antrian-url="{{ route('draft.scan') }}"></div>
     @vite('resources/js/draft/scan-notif.js')
 @endif
+{{-- Prefetch halaman menu saat kursor/jari mendekat (Chrome/Edge), supaya perpindahan terasa instan. --}}
+<script type="speculationrules">
+    {"prefetch": [{"source": "document", "where": {"selector_matches": ".dx-nav-item"}, "eagerness": "moderate"}]}
+</script>
 @stack('scripts')
 </body>
 </html>
