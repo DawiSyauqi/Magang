@@ -21,6 +21,8 @@ Isi folder `deploy\e6\`:
 | `cek_e6.py` | Uji lingkungan: versi paket, GPU, model, lalu baca 1 foto contoh (harus 96/96 kotak) |
 | `jalankan-layanan-e6.cmd` | Menjalankan layanan E6 yang selalu hidup |
 | `daftar-tugas-e6.ps1` | Mendaftarkan `jalankan-layanan-e6.cmd` ke Task Scheduler |
+| `uji_alur.php` | Uji ujung ke ujung lewat Laravel dan layanan, tanpa web server dan database |
+| `PROMPT-AGENT.md` | Prompt siap pakai untuk AI agent yang mengerjakan pemasangan ini secara otomatis |
 
 ---
 
@@ -121,6 +123,18 @@ Pilihan lain:
 - `-Hapus`: menghapus tugas.
 
 ## 4. Uji dari aplikasi
+
+Uji tanpa browser, tanpa halaman /draft, dan tanpa database:
+
+```powershell
+php deploy\e6\uji_alur.php
+```
+
+Skrip ini membuat 1 scan uji, menunggu layanan memprosesnya, mencocokkan hasilnya
+dengan hasil acuan, lalu menghapus scan uji itu lagi. Uji dianggap lolos bila outputnya
+`LOLOS` dan `idle_menit 0`, yang berarti foto diproses oleh layanan Task Scheduler.
+
+Uji dari browser:
 
 1. Buka `http://<alamat-server>/draft/tambah` (atau halaman Tambah Data asli setelah migrasi).
 2. Kirim foto dari folder `fullimg`. Halaman Layanan AI harus menunjukkan
