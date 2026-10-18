@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Services\Audit\AuditLog;
 use App\Services\Scan\E6ResultAdapter;
 use App\Services\Scan\LayananE6;
+use App\Services\Scan\PencocokHeader;
 use App\Services\Scan\ScanStore;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -67,6 +69,12 @@ abstract class ScanController extends Controller
     protected function peranQ(Request $request): array
     {
         return [];
+    }
+
+    /** Pencocok tulisan mesin/operator (asli: memakai & menambah alias mesin). */
+    protected function pencocok(): PencocokHeader
+    {
+        return new PencocokHeader();
     }
 
     protected function tampil(string $view, array $data = [], int $status = 200)
@@ -194,16 +202,20 @@ abstract class ScanController extends Controller
         $final = $store->final($id);
 
         $awal = null;
-        $mesinAwal = null;
+        $usulan = ['mesin' => null, 'operator' => null];
         if ($tinjauan) {
             $h = $tinjauan['header'];
-            $mesinAwal = $final['header']['mesin'] ?? E6ResultAdapter::cocokkanMesin($h['mesin']['ai'], array_keys($this->opsiMesin()));
+            $pencocok = $this->pencocok();
+            $usulan['mesin'] = $pencocok->mesin($h['mesin']['ai'], $this->opsiMesin());
+            $usulan['operator'] = $pencocok->operator($h['operator']['ai'] ?? null, $this->opsiOperator());
+            $mesinAwal = $final['header']['mesin'] ?? $usulan['mesin']['kode'];
             $size = $h['size']['ai'] ? (float) preg_replace('/[^0-9.]/', '', str_replace(',', '.', $h['size']['ai'])) : null;
             $awal = $final['header'] ?? [
                 'tanggal' => E6ResultAdapter::tanggalIso($h['tanggal']['ai'], $h['tanggal']['iso']),
                 'mesin' => $mesinAwal,
                 'shift' => $h['shift']['ai'],
-                'nik' => null, // operator tidak andal (E6: 3/7) → selalu dipilih petugas
+                // Nama operator kurang andal (E6: 3/7) → hanya usulan yang cukup mirip yang dipilihkan; tetap wajib diperiksa.
+                'nik' => $usulan['operator']['yakin'] ? $usulan['operator']['nik'] : null,
                 'speed' => $h['speed']['ai'],
                 'itemno' => $size ? $this->cocokkanItem($this->opsiItem($mesinAwal), $size) : null,
             ];
@@ -214,6 +226,7 @@ abstract class ScanController extends Controller
             'tinjauan' => $tinjauan,
             'final' => $final,
             'awal' => $awal,
+            'usulan' => $usulan,
             'opsiMesin' => $this->opsiMesin(),
             'opsiOperator' => $this->opsiOperator(),
             'opsiItem' => $this->opsiItem($awal['mesin'] ?? null),
@@ -268,6 +281,13 @@ abstract class ScanController extends Controller
         [$pesan, $noTrs] = $hasil;
 
         $tinjauan = $adapter->untukTinjauan($store->hasilAi($id));
+        // Petugas memastikan mesin: ingat tulisan di kertas → kode mesin sebagai alias
+        // (pengganti konfirmasi alias alur lama), supaya lembar berikutnya langsung cocok.
+        $tulisanMesin = $tinjauan['header']['mesin']['ai'] ?? null;
+        if ($header['mesin'] && $this->pencocok()->ingat($tulisanMesin, $header['mesin'])) {
+            AuditLog::make()->catat('alias.konfirmasi', $this->petugas($request), trim((string) $tulisanMesin), null, ['resrceno' => $header['mesin'], 'dari' => 'scan '.$id], $request->ip());
+            $pesan .= ' Tulisan mesin "'.trim((string) $tulisanMesin).'" kini dikenali sebagai '.$header['mesin'].'.';
+        }
         $koreksi = $adapter->koreksi($tinjauan, $grid);
         $waktu = now('Asia/Jakarta');
         $store->simpanFinal($id, [

@@ -1094,6 +1094,9 @@ body.tv { background: var(--bg); color: var(--text); font-size: clamp(14px, 1.05
     &:hover { text-decoration: underline; }
 }
 
+// Tinjau scan: usulan pencocokan mesin/operator
+.sc-usulan { color: var(--accent-text); font-weight: 600; &.ok { color: var(--down); } }
+
 // Live: penanda siaran & tombol kembali
 .tv-live {
     display: inline-flex; align-items: center; gap: .35em; vertical-align: .25em; margin-right: .3em;

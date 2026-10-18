@@ -53,6 +53,11 @@ class AppScanController extends ScanController
         return 'tambah.foto';
     }
 
+    protected function pencocok(): \App\Services\Scan\PencocokHeader
+    {
+        return new \App\Services\Scan\PencocokHeader(app(\App\Services\PaperExtraction\MesinAliasStore::class));
+    }
+
     protected function opsiMesin(): array
     {
         return $this->sumber()->mesin();

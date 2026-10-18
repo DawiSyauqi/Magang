@@ -125,7 +125,16 @@
                                                 <option value="{{ $kode }}" @selected(old('header.mesin', $awal['mesin']) === $kode)>{{ $kode }} · {{ $nama }}</option>
                                             @endforeach
                                         </select>
-                                        <div class="sc-ai">AI membaca: {{ $h['ai'] ?? '–' }}{{ $awal['mesin'] ? '' : ' (tidak cocok dengan daftar mesin)' }}</div>
+                                        @php $um = $usulan['mesin']; @endphp
+                                        <div class="sc-ai">
+                                            AI membaca: <strong>{{ $h['ai'] ?? '–' }}</strong>
+                                            @if ($um['sumber'] === 'alias') · <span class="sc-usulan ok"><i class="bi bi-bookmark-check"></i> dari alias tersimpan</span>
+                                            @elseif ($um['sumber'] === 'kode') · cocok dengan kode mesin
+                                            @elseif ($um['sumber'] === 'mirip') · <span class="sc-usulan"><i class="bi bi-magic"></i> usulan dari kemiripan {{ number_format($um['skor'], 0) }}%, periksa</span>
+                                            @else · tidak cocok dengan daftar mesin, pilih manual
+                                            @endif
+                                            @if ($bisaUbah && ! $modeDraft && ($h['ai'] ?? null))<br><span class="text-muted-x">Bila Anda memilih mesin lain, tulisan ini diingat sebagai alias untuk lembar berikutnya.</span>@endif
+                                        </div>
                                         @break
                                     @case('shift')
                                         <select class="form-select" id="h_shift" name="header[shift]" @disabled(! $bisaUbah)>
@@ -142,7 +151,14 @@
                                                 <option value="{{ $nik }}" @selected(old('header.nik', $awal['nik']) === (string) $nik)>{{ $nama }} ({{ $nik }})</option>
                                             @endforeach
                                         </select>
-                                        <div class="sc-ai">AI membaca: {{ $h['ai'] ?? '–' }} · nama sering keliru, pilih manual</div>
+                                        @php $uo = $usulan['operator']; @endphp
+                                        <div class="sc-ai">
+                                            AI membaca: <strong>{{ $h['ai'] ?? '–' }}</strong>
+                                            @if ($uo['nik'] && $uo['yakin']) · <span class="sc-usulan"><i class="bi bi-magic"></i> usulan: {{ $uo['nama'] }} (kemiripan {{ number_format($uo['skor'], 0) }}%), periksa</span>
+                                            @elseif ($uo['nik']) · mungkin {{ $uo['nama'] }} (kemiripan {{ number_format($uo['skor'], 0) }}%), pilih manual
+                                            @else · nama sering keliru, pilih manual
+                                            @endif
+                                        </div>
                                         @break
                                     @case('size')
                                         <select class="form-select" id="h_size" name="header[itemno]" @disabled(! $bisaUbah)
