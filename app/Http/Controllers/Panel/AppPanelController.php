@@ -55,6 +55,7 @@ class AppPanelController extends PanelController
             'milikSaya' => $hari->where('CrtId', $kode)->values(),
             'jumlahSemua' => $hari->count(),
             'kategoriWarna' => config('produksi.warna_kategori'),
+            'antrian' => array_slice(\App\Services\Scan\ScanStore::make()->daftar($kode, 5, now('Asia/Jakarta')->subDays(7)), 0, 5),
         ]);
     }
 }

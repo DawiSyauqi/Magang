@@ -7,11 +7,11 @@
 @endsection
 
 @section('topbar-actions')
-    <a href="{{ route('draft.scan', $isAdmin ? ['peran' => 'admin'] : []) }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i> Antrian</a>
+    <a href="{{ route($rp.'scan', $peranQ) }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i> Antrian</a>
 @endsection
 
 @php
-    $berkas = fn (string $nama) => route('draft.scan.berkas', [$status['id'], $nama]);
+    $berkas = fn (string $nama) => route($rp.'scan.berkas', [$status['id'], $nama]);
     $bisaUbah = ! $isAdmin && $status['status'] === 'selesai';
     $label = ['tanggal' => 'Tanggal', 'mesin' => 'Mesin', 'shift' => 'Shift', 'operator' => 'Operator', 'size' => 'Size', 'speed' => 'Speed'];
 @endphp
@@ -44,9 +44,9 @@
                         @endif
                         @unless ($isAdmin)
                             <div class="d-flex flex-wrap gap-2">
-                                <a href="{{ route('draft.tambah') }}" class="btn btn-primary"><i class="bi bi-camera me-1"></i> Foto ulang</a>
+                                <a href="{{ route($ruteFoto) }}" class="btn btn-primary"><i class="bi bi-camera me-1"></i> Foto ulang</a>
                                 @if ($status['status'] === 'gagal' && empty($status['foto_dihapus']))
-                                    <form method="POST" action="{{ route('draft.scan.ulang', $status['id']) }}">@csrf<button class="btn btn-outline-secondary"><i class="bi bi-arrow-repeat me-1"></i> Proses ulang</button></form>
+                                    <form method="POST" action="{{ route($rp.'scan.ulang', $status['id']) }}">@csrf<button class="btn btn-outline-secondary"><i class="bi bi-arrow-repeat me-1"></i> Proses ulang</button></form>
                                 @endif
                             </div>
                         @endunless
@@ -61,14 +61,22 @@
         <div class="alert alert-danger">Hasil AI untuk scan ini tidak ditemukan.</div>
     @else
         @if ($errors->any())
-            <div class="alert alert-danger py-2">{{ $errors->first() }}</div>
+            <div class="alert alert-danger py-2">
+                @if ($temuan)
+                    <div class="fw-semibold mb-1"><i class="bi bi-clipboard-x me-1"></i>Pemeriksaan otomatis menemukan masalah dengan data yang sudah ada:</div>
+                    <ul class="mb-1 ps-3 small">@foreach ($temuan as $t)<li><strong>{{ $t['judul'] }}</strong>: {{ $t['pesan'] }}</li>@endforeach</ul>
+                    <div class="small">Bila yakin lembar ini belum pernah diinput, centang <strong>"Saya sudah memeriksa, tetap simpan"</strong> di bawah lalu simpan lagi.</div>
+                @else
+                    {{ $errors->first() }}
+                @endif
+            </div>
         @endif
         @if ($status['status'] === 'disimpan')
-            <div class="dx-note mb-3"><i class="bi bi-check-circle"></i><span>Sudah disimpan {{ \Carbon\Carbon::parse($final['disimpan_pada'])->translatedFormat('d M Y H:i') }} oleh {{ $final['disimpan_oleh'] }} · {{ $final['koreksi']['dikoreksi'] }} kotak dikoreksi dari hasil AI. Tampilan hanya-baca.</span></div>
+            <div class="dx-note mb-3"><i class="bi bi-check-circle"></i><span>Sudah disimpan {{ \Carbon\Carbon::parse($final['disimpan_pada'])->translatedFormat('d M Y H:i') }} oleh {{ $final['disimpan_oleh'] }} · {{ $final['koreksi']['dikoreksi'] }} kotak dikoreksi dari hasil AI. @if (! empty($final['no_trs'])) Nomor: <span class="num">{{ implode(', ', $final['no_trs']) }}</span>. @endif Tampilan hanya-baca.</span></div>
         @endif
 
-        <form method="POST" action="{{ route('draft.scan.simpan', $status['id']) }}" id="formTinjau"
-              data-pratinjau-url="{{ route('draft.scan.pratinjau', $status['id']) }}"
+        <form method="POST" action="{{ route($rp.'scan.simpan', $status['id']) }}" id="formTinjau"
+              data-pratinjau-url="{{ route($rp.'scan.pratinjau', $status['id']) }}"
               data-warna='@json(config('produksi.warna_kategori'))' data-kategori='@json($kategori)'
               data-bisa-ubah="{{ $bisaUbah ? 1 : 0 }}" @if ($final) data-final='@json($final['rows'])' @endif>
             @csrf
@@ -77,7 +85,7 @@
             {{-- Ringkasan hasil AI --}}
             <div class="dx-card mb-3">
                 <div class="dx-card-body py-3 sc-ringkas">
-                    @include('draft.scan._status', ['s' => $status])
+                    @include('panel.scan._status', ['s' => $status])
                     <span><i class="bi bi-cpu me-1 text-muted-x"></i>Dibaca dalam <strong class="num">{{ number_format($tinjauan['meta']['total_seconds'] ?? 0, 0) }} dtk</strong>{{ ($tinjauan['meta']['device'] ?? '') === 'contoh' ? ' (hasil E6 tersimpan)' : ' di '.strtoupper($tinjauan['meta']['device'] ?? 'cpu') }}</span>
                     <span><strong class="num">{{ $tinjauan['n_berisi'] }}</strong> kotak berisi</span>
                     <span><strong class="num" style="color: var(--accent-text)">{{ $tinjauan['n_ragu'] }}</strong> kotak ragu</span>
@@ -137,7 +145,8 @@
                                         <div class="sc-ai">AI membaca: {{ $h['ai'] ?? '–' }} · nama sering keliru, pilih manual</div>
                                         @break
                                     @case('size')
-                                        <select class="form-select" id="h_size" name="header[itemno]" @disabled(! $bisaUbah)>
+                                        <select class="form-select" id="h_size" name="header[itemno]" @disabled(! $bisaUbah)
+                                                @unless ($modeDraft) data-item-url="{{ route('referensi.item') }}" @endunless>
                                             <option value="">Produk (opsional)…</option>
                                             @foreach ($opsiItem as $kode => $nama)
                                                 <option value="{{ $kode }}" @selected(old('header.itemno', $awal['itemno']) === $kode)>{{ $nama }} ({{ $kode }})</option>
@@ -238,6 +247,9 @@
                 <div class="sc-aksi">
                     <span class="small"><strong class="num" id="sisaRagu">–</strong> kotak ragu belum dicek</span>
                     <span class="small text-muted-x"><span class="num" id="ringkasBaris">–</span></span>
+                    @if ($temuan)
+                        <label class="form-check small mb-0"><input class="form-check-input" type="checkbox" name="abaikan_validasi" value="1"> Saya sudah memeriksa, tetap simpan</label>
+                    @endif
                     <button class="btn btn-primary ms-auto" id="btnSimpan"><i class="bi bi-check-lg me-1"></i> Simpan</button>
                 </div>
             @endif

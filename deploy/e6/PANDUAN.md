@@ -136,7 +136,7 @@ dengan hasil acuan, lalu menghapus scan uji itu lagi. Uji dianggap lolos bila ou
 
 Uji dari browser:
 
-1. Buka `http://<alamat-server>/draft/tambah` (atau halaman Tambah Data asli setelah migrasi).
+1. Login sebagai petugas, buka **Tambah Data → Foto formulir** (`http://<alamat-server>/tambah/foto`).
 2. Kirim foto dari folder `fullimg`. Halaman Layanan AI harus menunjukkan
    **Siap · CUDA**, dan pemberitahuan **"Selesai diproses"** muncul beberapa detik kemudian.
 3. Coba juga dari HP lewat Wi-Fi kantor dengan tombol **Kamera HP**.

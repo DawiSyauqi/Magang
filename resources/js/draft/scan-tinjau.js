@@ -19,6 +19,25 @@ zoom.addEventListener('click', () => zoom.classList.remove('buka'));
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') zoom.classList.remove('buka'); });
 
 const form = document.getElementById('formTinjau');
+
+// Aplikasi asli: daftar item bergantung mesin (MFBOM/MFBMOP) → muat ulang saat mesin diganti.
+(() => {
+    const item = document.getElementById('h_size');
+    const mesin = document.getElementById('h_mesin');
+    if (!item || !mesin || !item.dataset.itemUrl) return;
+    mesin.addEventListener('change', () => {
+        const awal = item.value;
+        item.replaceChildren(new Option('Memuat…', ''));
+        fetch(item.dataset.itemUrl + '?mesin=' + encodeURIComponent(mesin.value), { headers: { Accept: 'application/json' } })
+            .then((r) => (r.ok ? r.json() : []))
+            .then((d) => {
+                item.replaceChildren(new Option(d.length ? 'Produk…' : 'Mesin ini tidak punya daftar item', ''));
+                d.forEach((i) => item.append(new Option(i.nama + ' (' + i.kode + ')', i.kode)));
+                item.value = d.some((i) => i.kode === awal) ? awal : '';
+                item.dispatchEvent(new Event('change'));
+            });
+    });
+})();
 if (form) {
     const bisaUbah = form.dataset.bisaUbah === '1';
     const warna = JSON.parse(form.dataset.warna || '{}');

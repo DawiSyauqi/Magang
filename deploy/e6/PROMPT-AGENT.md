@@ -111,9 +111,11 @@ karena model sudah dimuat.
   tanpa login. Bila tidak diizinkan, lewati dan tulis di laporan.
 
 ### 6. Uji dari browser (opsional, butuh pengguna)
-Halaman /draft sengaja mati di produksi. Jangan diaktifkan. Bila halaman Tambah
-Data asli sudah tersedia, minta pengguna mencoba kirim 1 foto dari HP lewat
-intranet. Bila belum, lewati langkah ini.
+Halaman /draft sengaja mati di produksi. Jangan diaktifkan. Minta pengguna login
+sebagai petugas, buka Tambah Data → Foto formulir (/tambah/foto), kirim 1 foto dari
+HP lewat intranet, tunggu pemberitahuan "Selesai diproses", lalu tinjau. Menyimpan
+hasil tinjauan menulis ke MFDOWNTIME, jadi biarkan PENGGUNA yang memutuskan
+menyimpan (kamu tidak menulis ke database).
 
 ## Laporan akhir
 Tulis laporan ringkas dalam bahasa Indonesia, berisi:

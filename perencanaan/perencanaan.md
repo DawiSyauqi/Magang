@@ -423,6 +423,9 @@ File per variasi: `resources/views/draft{2,3}/`, `resources/css/draft{2,3}.scss`
 | Uji di server | `php artisan downtime:cek [--user=]`: konfigurasi, koneksi, tabel & kolom, volume per tahun, kecepatan 30/365 hari, semua perhitungan, semua halaman; laporan ke `storage/logs/cek-downtime-*.txt` |
 | Belum | Uji nyata di PC server (database); Tambah Data E6 di aplikasi asli (akhir) |
 
+
+**Tahap 2 (19-10-2026): Tambah Data E6 di aplikasi asli + pensiun alur Ollama.** Logika scan bersama di `Panel\ScanController` (Draft\DraftScanController = data contoh, simpan ke file; Panel\AppScanController = master dari database, simpan ke MFDOWNTIME). View `resources/views/panel/scan/*`. Rute asli: `/tambah` (pilih form manual / foto + input hari ini), `/tambah/foto`, `/scan`, `/scan/{id}`. Simpan: aturan `StorePerformaMesinRequest` per baris + pemeriksaan otomatis 2.7 (bisa "tetap simpan") + satu transaksi `generateNoTrs` + Audit Log `scan.simpan`; No_Trs dicatat di `storage/app/scan-history/no-trs-ai.json` sehingga kolom Sumber = AI. Daftar item di tinjauan dimuat ulang per mesin (MFBOM/MFBMOP). Alur Ollama (paper scan lama, eksplorasi 1–3 di aplikasi, `config/paper_reader.php`) dihapus; skrip riset `scripts/` tetap. E6-9 ✅.
+
 ---
 
 ## 6. Keputusan

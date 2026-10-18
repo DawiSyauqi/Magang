@@ -199,6 +199,44 @@ class ScanStore
 
     // ------------------------------------------------------------------
 
+    /**
+     * Catat No_Trs yang dibuat dari AI Baca Kertas (tabel MFDOWNTIME tidak punya
+     * kolom sumber — K3), di <root>/no-trs-ai.json, dengan flock supaya dua
+     * simpan bersamaan tidak saling menimpa.
+     *
+     * @param  string[]  $noTrs
+     */
+    public function catatNoTrsAi(array $noTrs): void
+    {
+        if (! $noTrs) {
+            return;
+        }
+        if (! is_dir($this->root)) {
+            mkdir($this->root, 0755, true);
+        }
+        $h = fopen($this->root.'/no-trs-ai.json', 'c+');
+        try {
+            flock($h, LOCK_EX);
+            $isi = json_decode((string) stream_get_contents($h), true) ?: [];
+            $isi = array_values(array_unique(array_merge($isi, $noTrs)));
+            ftruncate($h, 0);
+            rewind($h);
+            fwrite($h, json_encode($isi));
+            fflush($h);
+            flock($h, LOCK_UN);
+        } finally {
+            fclose($h);
+        }
+    }
+
+    /** No_Trs => true untuk semua catatan yang berasal dari AI Baca Kertas. */
+    public function noTrsAi(): array
+    {
+        $isi = $this->bacaJson($this->root.'/no-trs-ai.json');
+
+        return $isi ? array_fill_keys($isi, true) : [];
+    }
+
     protected function bacaJson(string $path): ?array
     {
         if (! is_file($path)) {

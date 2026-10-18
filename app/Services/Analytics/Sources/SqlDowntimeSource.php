@@ -93,6 +93,27 @@ class SqlDowntimeSource implements DowntimeSource
             ->mapWithKeys(fn ($p) => [$p->kode => $p->nama ?: $p->kode])->all());
     }
 
+    /** NIK => nama operator (TMMESINOP), untuk pilihan operator di tinjauan scan. */
+    public function operatorList(): array
+    {
+        return $this->operator();
+    }
+
+    /** ITEMNO => nama item yang terdaftar untuk satu mesin (MFBOM + MFBMOP + ICITEM). */
+    public function itemList(?string $mesin = null): array
+    {
+        return $mesin ? collect(\App\Models\ItemLookup::forMesin($mesin))->mapWithKeys(fn ($i) => [$i->ITEMNO => $i->ITEMDESC])->all() : [];
+    }
+
+    /** Teks detail masalah dari MFPROBLEMD (ProblemCode + ProblemCodeD), untuk hasil AI. */
+    public function problemDesc(string $problemCode, string $problemCodeD): ?string
+    {
+        static $memo = [];
+
+        return $memo[$problemCode.'|'.$problemCodeD] ??= \App\Models\ProblemDetailMaster::where('ProblemCode', $problemCode)
+            ->where('ProblemCodeD', $problemCodeD)->selectRaw('RTRIM(ProblemDescD) as d')->value('d');
+    }
+
     /** Hapus cache data downtime (dipanggil setiap tambah/ubah/hapus). */
     public static function bersihkanCache(): void
     {
@@ -130,8 +151,9 @@ class SqlDowntimeSource implements DowntimeSource
         $kategori = $this->kategori();
         $operator = $this->operator();
         $item = $this->namaItem($hasil->pluck('ITEMNO')->filter()->unique()->values()->all());
+        $ai = \App\Services\Scan\ScanStore::make()->noTrsAi();
 
-        return $hasil->map(function ($r) use ($mesin, $kategori, $operator, $item) {
+        return $hasil->map(function ($r) use ($mesin, $kategori, $operator, $item, $ai) {
             $tgl = substr((string) $r->Tgl_Trs, 0, 10);
             $mulai = $r->Time_Start ? substr((string) $r->Time_Start, 0, 16) : $tgl.' 00:00';
             $total = (int) round((float) $r->Time_Total);
@@ -157,9 +179,9 @@ class SqlDowntimeSource implements DowntimeSource
                 'CrtDate' => $r->CrtDate ? substr((string) $r->CrtDate, 0, 16) : $mulai,
                 'UpdId' => $r->UpdId ? trim((string) $r->UpdId) : null,
                 'UpdDate' => $r->UpdDate ? substr((string) $r->UpdDate, 0, 16) : null,
-                // Kolom sumber tidak ada di MFDOWNTIME; diisi 'ai' setelah Tambah Data
-                // E6 tersambung (riwayat scan menyimpan No_Trs yang dibuatnya).
-                'Sumber' => 'manual',
+                // Kolom sumber tidak ada di MFDOWNTIME (K3): No_Trs hasil Tambah Data E6
+                // dicatat di storage/app/scan-history/no-trs-ai.json.
+                'Sumber' => isset($ai[trim((string) $r->No_Trs)]) ? 'ai' : 'manual',
             ];
         });
     }

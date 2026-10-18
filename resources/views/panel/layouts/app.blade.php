@@ -38,7 +38,7 @@
             ['data', 'bi-table', 'Data Downtime'],
             ['pemeriksaan', 'bi-clipboard-check', 'Pemeriksaan Data'],
             $isAdmin ? null : ['tambah', 'bi-plus-circle', 'Tambah Data'],
-            $modeDraft ? ['scan', 'bi-hourglass-split', $isAdmin ? 'Riwayat Scan' : 'Antrian Scan'] : null,
+            ['scan', 'bi-hourglass-split', $isAdmin ? 'Riwayat Scan' : 'Antrian Scan'],
             ['laporan', 'bi-file-earmark-bar-graph', 'Laporan'],
         ]],
     ];
@@ -220,10 +220,10 @@
     })();
 </script>
 @vite(['resources/js/draft/pemberitahuan.js', 'resources/js/draft/cari.js'])
-@if ($modeDraft && ! $isAdmin)
-    {{-- Pemberitahuan "Selesai diproses" untuk foto yang dibaca AI di latar belakang (E6, draft) --}}
+@if (! $isAdmin)
+    {{-- Pemberitahuan "Selesai diproses" untuk foto yang dibaca AI di latar belakang (E6) --}}
     <div class="sc-toast-wrap" id="scToast" aria-live="polite"
-         data-status-url="{{ route('draft.scan.status') }}" data-antrian-url="{{ route('draft.scan') }}"></div>
+         data-status-url="{{ route($rp.'scan.status') }}" data-antrian-url="{{ route($rp.'scan') }}"></div>
     @vite('resources/js/draft/scan-notif.js')
 @endif
 {{-- Prefetch halaman menu saat kursor/jari mendekat (Chrome/Edge), supaya perpindahan terasa instan. --}}

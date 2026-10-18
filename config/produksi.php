@@ -53,10 +53,6 @@ return [
     // hanya aktif bila RUTE_UJI=true — default ikut APP_DEBUG, jadi MATI di produksi.
     'rute_uji' => (bool) env('RUTE_UJI', env('APP_DEBUG', false)),
 
-    // Paper scan lama (Ollama, 3 klik titik) diganti AI Baca Kertas E6 (K7) dan
-    // disembunyikan sampai E6 dipasang di aplikasi asli.
-    'paper_scan_lama' => (bool) env('PAPER_SCAN_LAMA', false),
-
     // Halaman /draft (tanpa login & tanpa database, data dummy) hanya aktif
     // bila APP_DEBUG=true atau DRAFT_ENABLED=true. Matikan di produksi.
     'draft_enabled' => (bool) env('DRAFT_ENABLED', env('APP_DEBUG', false)),

@@ -21,13 +21,14 @@
             </button>
         </div>
         <div class="col-12 col-md-6">
-            <div class="dx-card dx-tambah-pilih nonaktif" aria-disabled="true" title="Dikerjakan setelah AI Baca Kertas (Eksplorasi 6) dipasang">
+            <a href="{{ route('tambah.foto') }}" class="dx-card dx-tambah-pilih text-decoration-none">
                 <i class="bi bi-camera"></i>
                 <span>
-                    <strong>Foto formulir <span class="dx-badge-soon">segera</span></strong>
-                    <small>Foto lembar Lost time → dibaca AI → Anda tinjau sebelum disimpan.</small>
+                    <strong>Foto formulir (AI Baca Kertas)</strong>
+                    <small>Foto lembar Lost time dari HP/kamera/file → dibaca AI di latar belakang → Anda tinjau sebelum disimpan.</small>
                 </span>
-            </div>
+                <i class="bi bi-chevron-right ms-auto"></i>
+            </a>
         </div>
     </div>
 
@@ -69,6 +70,26 @@
             </div>
         </div>
     </div>
+
+    @if ($antrian)
+        <div class="dx-card mt-3">
+            <div class="dx-card-head">
+                <div><h3>Foto terakhir</h3><div class="dx-card-sub">Foto formulir yang Anda kirim ke AI Baca Kertas</div></div>
+                <a href="{{ route('scan') }}" class="btn btn-sm btn-link text-decoration-none">Antrian scan <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <div class="dx-card-body">
+                @foreach ($antrian as $s)
+                    <div class="d-flex align-items-center gap-2 py-1">
+                        <span class="num small text-muted-x">{{ \Carbon\Carbon::parse($s['dibuat'])->translatedFormat('d M H:i') }}</span>
+                        @include('panel.scan._status', ['s' => $s])
+                        @if (in_array($s['status'], ['selesai', 'disimpan', 'perlu_foto_ulang', 'gagal'], true))
+                            <a href="{{ route('scan.tinjau', $s['id']) }}" class="ms-auto small">{{ $s['status'] === 'selesai' ? 'Tinjau' : 'Buka' }}</a>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
 
     @include('panel.partials._form-downtime-modal')
 @endsection

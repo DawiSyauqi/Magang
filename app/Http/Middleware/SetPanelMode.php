@@ -52,6 +52,8 @@ class SetPanelMode
             'pengguna' => $pengguna,
             // Garis prioritas Pareto (%) yang diatur admin; JS membacanya dari <meta name="pareto-ambang">.
             'ambangPareto' => PengaturanStore::make()->paretoAmbang(),
+            // Halaman unggah foto formulir (AI Baca Kertas E6).
+            'ruteFoto' => $draft ? 'draft.tambah' : 'tambah.foto',
         ]);
 
         return $next($request);

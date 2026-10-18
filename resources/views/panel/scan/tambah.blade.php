@@ -10,7 +10,7 @@
             <i class="bi bi-person-badge fs-1" style="color: var(--accent)"></i>
             <h3 class="fs-5 fw-bold mt-3">Khusus petugas produksi</h3>
             <p class="text-muted-x mb-4">Admin tidak menginput data downtime (di aplikasi asli admin dialihkan dari halaman ini). Admin bisa memantau semua scan di Riwayat Scan dan Statistik AI.</p>
-            <a href="{{ route('draft.scan', ['peran' => 'admin']) }}" class="btn btn-primary"><i class="bi bi-hourglass-split me-1"></i> Riwayat Scan</a>
+            <a href="{{ route($rp.'scan', $peranQ) }}" class="btn btn-primary"><i class="bi bi-hourglass-split me-1"></i> Riwayat Scan</a>
         </div>
     @else
         @if ($errors->any())
@@ -19,7 +19,7 @@
 
         <div class="row g-3 align-items-start">
             <div class="col-12 col-xl-8">
-                <form method="POST" action="{{ route('draft.tambah.unggah') }}" enctype="multipart/form-data" id="formUnggah" class="dx-card sc-drop" style="height: auto">
+                <form method="POST" action="{{ route($rp.'tambah.unggah') }}" enctype="multipart/form-data" id="formUnggah" class="dx-card sc-drop" style="height: auto">
                     @csrf
                     <input type="hidden" name="sumber" id="sumber" value="file">
                     <input type="file" name="foto[]" id="fotoKirim" accept="image/*" multiple hidden>
@@ -99,14 +99,14 @@
                 </div>
 
                 <div class="dx-card">
-                    <div class="dx-card-head"><div><h3>Antrian terakhir</h3></div><a href="{{ route('draft.scan') }}" class="small">Semua</a></div>
+                    <div class="dx-card-head"><div><h3>Antrian terakhir</h3></div><a href="{{ route($rp.'scan') }}" class="small">Semua</a></div>
                     <div class="dx-card-body">
                         @forelse ($antrian as $s)
                             <div class="d-flex align-items-center gap-2 py-1">
                                 <span class="num small text-muted-x">{{ \Carbon\Carbon::parse($s['dibuat'])->translatedFormat('d M H:i') }}</span>
-                                @include('draft.scan._status', ['s' => $s])
+                                @include('panel.scan._status', ['s' => $s])
                                 @if (in_array($s['status'], ['selesai', 'disimpan', 'perlu_foto_ulang', 'gagal'], true))
-                                    <a href="{{ route('draft.scan.tinjau', $s['id']) }}" class="ms-auto small">Buka</a>
+                                    <a href="{{ route($rp.'scan.tinjau', $s['id']) }}" class="ms-auto small">Buka</a>
                                 @endif
                             </div>
                         @empty

@@ -117,6 +117,16 @@ class CekDowntime extends Command
 
             return $n > 150 ? "peringatan: {$n} mesin — bila banyak yang bukan mesin produksi, isi MESIN_AKTIF_HARI=90 di .env" : ($n ? true : 'MFRESMAS kosong');
         });
+        $this->cek('Mesin yang punya catatan downtime', function () use ($dt) {
+            $hasil = [];
+            foreach ([90, 180, 365] as $h) {
+                $n = DB::selectOne("SELECT COUNT(DISTINCT MesinCode) AS n FROM {$dt} WHERE Tgl_Trs >= ?", [now()->subDays($h)->toDateString()])->n;
+                $hasil[] = "{$h} hari: {$n}";
+            }
+            $this->info_('Mesin aktif', implode(' · ', $hasil).' (bandingkan dengan jumlah MFRESMAS di atas untuk memilih MESIN_AKTIF_HARI)');
+
+            return true;
+        });
         $this->cek('Kategori masalah (MFPROBLEM)', fn () => count($src->kategori()) ? true : 'MFPROBLEM kosong');
 
         $this->bagian('4. Kecepatan query (SqlDowntimeSource)');

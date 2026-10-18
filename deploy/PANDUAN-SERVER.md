@@ -34,7 +34,6 @@ APP_DEBUG=false          # pesan error lengkap tidak boleh terlihat pengguna
 # Keamanan (perencanaan 2.15)
 RUTE_UJI=false           # /test/* dan /preview/* (tanpa login) mati
 DRAFT_ENABLED=false      # /draft (data contoh, tanpa login) mati
-PAPER_SCAN_LAMA=false    # paper scan Ollama lama disembunyikan (diganti E6 nanti)
 
 # Data besar
 CACHE_STORE=file

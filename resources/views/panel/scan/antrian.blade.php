@@ -6,7 +6,7 @@
 
 @section('topbar-actions')
     @unless ($isAdmin)
-        <a href="{{ route('draft.tambah') }}" class="btn btn-primary btn-sm"><i class="bi bi-camera me-1"></i> Tambah Data</a>
+        <a href="{{ route($ruteFoto) }}" class="btn btn-primary btn-sm"><i class="bi bi-camera me-1"></i> Tambah Data</a>
     @endunless
 @endsection
 
@@ -47,7 +47,7 @@
                                 <td class="small text-truncate" style="max-width: 220px" title="{{ $s['nama_asli'] }}">{{ $s['nama_asli'] }} <span class="text-muted-x">· {{ number_format($s['ukuran_kb'] / 1024, 1, ',', '.') }} MB</span></td>
                                 <td class="small text-nowrap">{{ $sumberFoto[$s['sumber_foto']] ?? $s['sumber_foto'] }}</td>
                                 <td>
-                                    @include('draft.scan._status', ['s' => $s])
+                                    @include('panel.scan._status', ['s' => $s])
                                     @if (! empty($s['pesan']) && in_array($s['status'], ['gagal', 'perlu_foto_ulang'], true))
                                         <div class="dx-kpi-note text-truncate" style="max-width: 300px" title="{{ $s['pesan'] }}">{{ $s['status'] === 'gagal' ? 'Kendala sistem — coba proses ulang' : \App\Services\Scan\LayananE6::pesan($s) }}</div>
                                     @endif
@@ -59,14 +59,14 @@
                                 <td class="num text-end text-nowrap">{{ isset($s['detik_proses']) ? number_format($s['detik_proses'], 0).' dtk' : '–' }}</td>
                                 <td class="text-end text-nowrap">
                                     @if ($s['status'] === 'selesai' && ! $isAdmin)
-                                        <a href="{{ route('draft.scan.tinjau', $s['id']) }}" class="btn btn-primary btn-sm">Tinjau</a>
+                                        <a href="{{ route($rp.'scan.tinjau', $s['id']) }}" class="btn btn-primary btn-sm">Tinjau</a>
                                     @elseif (in_array($s['status'], ['selesai', 'disimpan'], true))
-                                        <a href="{{ route('draft.scan.tinjau', ['id' => $s['id'], 'peran' => $isAdmin ? 'admin' : null]) }}" class="btn btn-outline-secondary btn-sm">Lihat</a>
+                                        <a href="{{ route($rp.'scan.tinjau', ['id' => $s['id']] + $peranQ) }}" class="btn btn-outline-secondary btn-sm">Lihat</a>
                                     @elseif ($s['status'] === 'perlu_foto_ulang' && ! $isAdmin)
-                                        <a href="{{ route('draft.scan.tinjau', $s['id']) }}" class="btn btn-outline-secondary btn-sm">Detail</a>
-                                        <a href="{{ route('draft.tambah') }}" class="btn btn-primary btn-sm"><i class="bi bi-camera"></i> Foto ulang</a>
+                                        <a href="{{ route($rp.'scan.tinjau', $s['id']) }}" class="btn btn-outline-secondary btn-sm">Detail</a>
+                                        <a href="{{ route($ruteFoto) }}" class="btn btn-primary btn-sm"><i class="bi bi-camera"></i> Foto ulang</a>
                                     @elseif ($s['status'] === 'gagal' && ! $isAdmin && empty($s['foto_dihapus']))
-                                        <form method="POST" action="{{ route('draft.scan.ulang', $s['id']) }}" class="d-inline">@csrf
+                                        <form method="POST" action="{{ route($rp.'scan.ulang', $s['id']) }}" class="d-inline">@csrf
                                             <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-repeat"></i> Proses ulang</button>
                                         </form>
                                     @endif
@@ -74,7 +74,7 @@
                             </tr>
                         @empty
                             <tr><td colspan="8" class="text-center text-muted-x py-4">
-                                Belum ada foto. @unless ($isAdmin)<a href="{{ route('draft.tambah') }}">Tambah Data</a> untuk mulai.@endunless
+                                Belum ada foto. @unless ($isAdmin)<a href="{{ route($ruteFoto) }}">Tambah Data</a> untuk mulai.@endunless
                             </td></tr>
                         @endforelse
                     </tbody>
