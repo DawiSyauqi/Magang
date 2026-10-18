@@ -22,3 +22,6 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Laporan hasil agent di PC server (tidak di-commit)
+/deploy/LAPORAN-SERVER-*.md
