@@ -25,8 +25,8 @@ class EnsureProductionStaff
                 ], 403);
             }
 
-            return redirect()->route('admin.mesin-aliases.index')
-                ->with('status', 'Akun Administrator hanya memiliki akses ke Kelola Alias Mesin dan Atur Password.');
+            return redirect()->route('ringkasan')
+                ->with('status', 'Akun Administrator tidak menginput data produksi; data bisa dilihat di Data Downtime (baca saja).');
         }
 
         return $next($request);

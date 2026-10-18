@@ -1,4 +1,4 @@
-@extends('draft.layouts.app')
+@extends('panel.layouts.app')
 
 @section('title', 'Produk / Item')
 @section('page-title', 'Produk / Item')
@@ -22,12 +22,12 @@
     };
     $naik = $item->filter(fn ($i) => $i['perubahan'] !== null)->sortByDesc('perubahan')->first();
     $maksMenit = max(1, $item->max('menit'));
-    $profil = fn ($kode) => route('draft.mesin.profil', ['kode' => $kode] + request()->except(['mesin']));
+    $profil = fn ($kode) => route($rp.'mesin.profil', ['kode' => $kode] + request()->except(['mesin']));
     $rentangTerburuk = collect($data['speed_rentang'])->sortByDesc('rata')->first();
 @endphp
 
 @section('content')
-    @include('draft.partials._filter', ['route' => 'draft.produk', 'info' => $item->count().' item'])
+    @include('panel.partials._filter', ['route' => $rp.'produk', 'info' => $item->count().' item'])
 
     <div class="row g-3 mb-3">
         <div class="col-6 col-xl-3">
@@ -119,7 +119,7 @@
         </div>
     </div>
 
-    @php $payload = $data + ['url_profil' => route('draft.mesin.profil', ['kode' => '__KODE__'] + request()->except(['mesin']))]; @endphp
+    @php $payload = $data + ['url_profil' => route($rp.'mesin.profil', ['kode' => '__KODE__'] + request()->except(['mesin']))]; @endphp
     <script type="application/json" id="produkData">@json($payload)</script>
 @endsection
 

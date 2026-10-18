@@ -1,4 +1,4 @@
-@extends('draft.layouts.app')
+@extends('panel.layouts.app')
 
 @section('title', 'Tambah Data')
 @section('page-title', 'Tambah Data')

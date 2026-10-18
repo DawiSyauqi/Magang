@@ -1,8 +1,8 @@
-@extends('draft.layouts.app')
+@extends('panel.layouts.app')
 
 @section('title', $data['mesin']['kode'].' · Profil Mesin')
 @section('page-title')
-    <a href="{{ route('draft.mesin', request()->query()) }}" class="dx-back" title="Kembali ke Analisis Mesin"><i class="bi bi-arrow-left"></i></a>
+    <a href="{{ route($rp.'mesin', request()->query()) }}" class="dx-back" title="Kembali ke Analisis Mesin"><i class="bi bi-arrow-left"></i></a>
     {{ $data['mesin']['kode'] }} <span class="text-muted-x fw-normal">· {{ $data['mesin']['nama'] }}</span>
 @endsection
 @section('page-sub')
@@ -13,7 +13,6 @@
     $kpi = $data['kpi'];
     $warna = collect($data['kategori'])->pluck('warna', 'kode');
     $namaKat = collect($data['kategori'])->pluck('nama', 'kode');
-    $isAdmin = request('peran') === 'admin';
     $kode = $data['mesin']['kode'];
     $jamMenit = function (int $m) {
         $j = intdiv($m, 60);
@@ -28,13 +27,13 @@
 @endphp
 
 @section('topbar-actions')
-    <a href="{{ route('draft.data', ['mesin' => [$kode]] + request()->except(['mesin'])) }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+    <a href="{{ route($rp.'data', ['mesin' => [$kode]] + request()->except(['mesin'])) }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
         <i class="bi bi-table"></i> <span class="d-none d-md-inline">Semua catatan mesin ini</span>
     </a>
 @endsection
 
 @section('content')
-    @include('draft.partials._filter', ['route' => 'draft.mesin.profil', 'routeParams' => ['kode' => $kode], 'tanpaMesin' => true,
+    @include('panel.partials._filter', ['route' => $rp.'mesin.profil', 'routeParams' => ['kode' => $kode], 'tanpaMesin' => true,
         'info' => number_format($data['jumlah_baris'], 0, ',', '.').' kejadian'])
 
     {{-- KPI mesin --}}
@@ -172,7 +171,7 @@
             <div class="dx-card">
                 <div class="dx-card-head">
                     <div><h3>Riwayat kejadian</h3><div class="dx-card-sub">10 kejadian terakhir mesin ini</div></div>
-                    <a href="{{ route('draft.data', ['mesin' => [$kode]] + request()->except(['mesin'])) }}" class="btn btn-sm btn-link text-decoration-none">Lihat semua <i class="bi bi-arrow-right"></i></a>
+                    <a href="{{ route($rp.'data', ['mesin' => [$kode]] + request()->except(['mesin'])) }}" class="btn btn-sm btn-link text-decoration-none">Lihat semua <i class="bi bi-arrow-right"></i></a>
                 </div>
                 <div class="dx-card-body">
                     <div class="table-responsive">

@@ -1,4 +1,4 @@
-@extends('draft.layouts.app')
+@extends('panel.layouts.app')
 
 @section('title', 'Statistik AI')
 @section('page-title', 'Statistik AI Baca Kertas')
@@ -6,12 +6,12 @@
 
 @section('content')
     @if (! $isAdmin)
-        @include('draft.partials._khusus-admin', ['alasan' => 'Statistik AI dipakai admin untuk memantau kualitas model.'])
+        @include('panel.partials._khusus-admin', ['alasan' => 'Statistik AI dipakai admin untuk memantau kualitas model.'])
     @else
         @php $r = $data['ringkas']; @endphp
 
         <form method="GET" class="dx-filter">
-            <input type="hidden" name="peran" value="admin">
+            @if ($peranQ)<input type="hidden" name="peran" value="admin">@endif
             <select name="periode" class="form-select" aria-label="Periode" onchange="this.form.submit()">
                 @foreach ($opsiPeriode as $k => $label)
                     @continue($k === 'kustom')

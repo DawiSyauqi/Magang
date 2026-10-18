@@ -1,37 +1,24 @@
 {
-    "name": "Input Performa Mesin",
-    "short_name": "PerformaMesin",
-    "description": "Catat performa mesin langsung dari lapangan.",
+    "name": "OptiGear · Downtime Mesin",
+    "short_name": "Downtime",
+    "description": "Catat dan pantau downtime mesin, analisis penyebab, dan laporan produksi.",
+    "id": "/",
     "start_url": "/",
     "scope": "/",
     "display": "standalone",
-    "background_color": "#FAF6F1",
-    "theme_color": "#2E2B27",
-    "orientation": "portrait-primary",
+    "background_color": "#fafaf9",
+    "theme_color": "#ea580c",
+    "orientation": "any",
+    "lang": "id",
     "icons": [
-        {
-            "src": "/icons/icon-192.png",
-            "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "any"
-        },
-        {
-            "src": "/icons/icon-512.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "any"
-        },
-        {
-            "src": "/icons/icon-192-maskable.png",
-            "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "maskable"
-        },
-        {
-            "src": "/icons/icon-512-maskable.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "maskable"
-        }
+        { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+        { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+        { "src": "/icons/icon-192-maskable.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+        { "src": "/icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    ],
+    "shortcuts": [
+        { "name": "Tambah Data", "short_name": "Tambah", "url": "/data?tambah=1", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+        { "name": "Data Downtime", "short_name": "Data", "url": "/data", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+        { "name": "Layar TV", "short_name": "Layar TV", "url": "/tv", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
     ]
 }

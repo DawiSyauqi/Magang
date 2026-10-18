@@ -1,4 +1,4 @@
-@extends('draft.layouts.app')
+@extends('panel.layouts.app')
 
 @section('title', 'Data Downtime')
 @section('page-title', 'Data Downtime')
@@ -8,7 +8,6 @@
 @endsection
 
 @php
-    $isAdmin = request('peran') === 'admin';
     $warna = $kategoriWarna;
     $jamMenit = function (int $m) {
         $j = intdiv($m, 60);
@@ -26,18 +25,18 @@
 @endphp
 
 @section('topbar-actions')
-    <a href="{{ route('draft.data.export', request()->except('page')) }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1" title="Unduh sesuai filter & urutan saat ini">
+    <a href="{{ route($rp.'data.export', request()->except('page')) }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1" title="Unduh sesuai filter & urutan saat ini">
         <i class="bi bi-file-earmark-spreadsheet"></i> <span class="d-none d-md-inline">Export CSV</span>
     </a>
     @unless ($isAdmin)
-        <button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1" data-draft-aksi="Tambah Data">
+        <button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1" {!! $modeDraft ? 'data-draft-aksi="Tambah Data"' : 'data-aksi-tambah' !!}>
             <i class="bi bi-plus-lg"></i> <span class="d-none d-md-inline">Tambah Data</span>
         </button>
     @endunless
 @endsection
 
 @section('content')
-    @include('draft.partials._filter', ['route' => 'draft.data'])
+    @include('panel.partials._filter', ['route' => $rp.'data'])
 
     {{-- ================= Ringkasan hasil filter ================= --}}
     <div class="row g-3 mb-3">
@@ -65,7 +64,7 @@
                 @else
                     <a href="{{ request()->fullUrlWithQuery(['periksa' => 1, 'page' => null]) }}">Tampilkan yang bermasalah saja</a>
                 @endif
-                · <a href="{{ route('draft.pemeriksaan', request()->only(['periode', 'dari', 'sampai', 'shift', 'mesin', 'kategori', 'peran'])) }}">Rincian pemeriksaan</a>
+                · <a href="{{ route($rp.'pemeriksaan', request()->only(['periode', 'dari', 'sampai', 'shift', 'mesin', 'kategori', 'peran'])) }}">Rincian pemeriksaan</a>
             </span>
         </div>
     @endif
@@ -165,8 +164,8 @@
                                 </td>
                                 @unless ($isAdmin)
                                     <td class="text-end text-nowrap">
-                                        <button type="button" class="dx-row-btn" data-draft-aksi="Ubah {{ $r->No_Trs }}" title="Ubah"><i class="bi bi-pencil-square"></i></button>
-                                        <button type="button" class="dx-row-btn danger" data-draft-aksi="Hapus {{ $r->No_Trs }}" title="Hapus"><i class="bi bi-trash3"></i></button>
+                                        <button type="button" class="dx-row-btn" {!! $modeDraft ? 'data-draft-aksi="Ubah '.e($r->No_Trs).'"' : 'data-aksi-ubah="'.e($r->No_Trs).'"' !!} title="Ubah"><i class="bi bi-pencil-square"></i></button>
+                                        <button type="button" class="dx-row-btn danger" {!! $modeDraft ? 'data-draft-aksi="Hapus '.e($r->No_Trs).'"' : 'data-aksi-hapus="'.e($r->No_Trs).'"' !!} title="Hapus"><i class="bi bi-trash3"></i></button>
                                     </td>
                                 @endunless
                             </tr>
@@ -201,8 +200,8 @@
             <dl class="dx-dl" id="panelIsi"></dl>
             @unless ($isAdmin)
                 <div class="d-flex gap-2 mt-3">
-                    <button type="button" class="btn btn-primary flex-fill" data-draft-aksi="Ubah"><i class="bi bi-pencil-square me-1"></i>Ubah</button>
-                    <button type="button" class="btn btn-outline-danger flex-fill" data-draft-aksi="Hapus"><i class="bi bi-trash3 me-1"></i>Hapus</button>
+                    <button type="button" class="btn btn-primary flex-fill" {!! $modeDraft ? 'data-draft-aksi="Ubah"' : 'data-aksi-ubah=""' !!}><i class="bi bi-pencil-square me-1"></i>Ubah</button>
+                    <button type="button" class="btn btn-outline-danger flex-fill" {!! $modeDraft ? 'data-draft-aksi="Hapus"' : 'data-aksi-hapus=""' !!}><i class="bi bi-trash3 me-1"></i>Hapus</button>
                 </div>
             @endunless
         </div>
@@ -216,6 +215,34 @@
             </div>
         </div>
     </div>
+    @if (! $modeDraft && ! $isAdmin)
+        @php
+            $buka = in_array(old('_form'), ['tambah', 'edit'], true) && $errors->any() ? old('_form') : (request()->boolean('tambah') ? 'tambah' : '');
+            $urlForm = [
+                'mesin' => route('referensi.mesin'), 'operator' => route('referensi.operator'), 'kategori' => route('referensi.problem-kategori'),
+                'detail' => route('referensi.problem-detail'), 'item' => route('referensi.item'), 'hapus' => url('/dashboard'),
+            ];
+        @endphp
+        <div id="formDowntime" hidden data-buka="{{ $buka }}" data-url="{{ json_encode($urlForm) }}"></div>
+        @include('panel.partials._form-downtime', ['modalId' => 'modalTambahData', 'mode' => 'tambah'])
+        @include('panel.partials._form-downtime', ['modalId' => 'modalUbahData', 'mode' => 'edit'])
+
+        <div class="modal fade dx-modal" id="modalHapusData" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-sm">
+                <div class="modal-content text-center p-4">
+                    <div class="dx-hapus-ikon"><i class="bi bi-trash3"></i></div>
+                    <h2 class="fs-5 fw-bold mb-2">Hapus data?</h2>
+                    <p class="text-muted-x small mb-4">Data <strong class="num js-hapus-notrs">ini</strong> akan dihapus permanen dari database (tercatat di Audit Log).</p>
+                    <form id="formHapusData" method="POST" action="#" class="d-flex gap-2">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" class="btn btn-outline-secondary flex-fill" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger flex-fill">Ya, hapus</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endif
 @endsection
 
 @push('scripts')
@@ -245,7 +272,7 @@
                 tr.addEventListener('keydown', function (e) { if (e.key === 'Enter') bukaDetail(tr); });
             });
 
-            document.querySelectorAll('[data-draft-aksi]').forEach(function (b) {
+            document.querySelectorAll('[data-draft-aksi]').forEach(function (b) { // hanya ada di draft
                 b.addEventListener('click', function (e) {
                     e.stopPropagation();
                     document.getElementById('toastDraftTeks').textContent =
@@ -255,4 +282,7 @@
             });
         });
     </script>
+    @if (! $modeDraft && ! $isAdmin)
+        @vite('resources/js/panel/form-downtime.js')
+    @endif
 @endpush

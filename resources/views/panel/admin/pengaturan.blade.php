@@ -1,4 +1,4 @@
-@extends('draft.layouts.app')
+@extends('panel.layouts.app')
 
 @section('title', 'Pengaturan')
 @section('page-title', 'Pengaturan')
@@ -6,20 +6,17 @@
 
 @section('content')
     @if (! $isAdmin)
-        @include('draft.partials._khusus-admin', ['alasan' => 'Pengaturan target memengaruhi tampilan semua pengguna.'])
+        @include('panel.partials._khusus-admin', ['alasan' => 'Pengaturan target memengaruhi tampilan semua pengguna.'])
     @else
         @php $t = $pengaturan['target']; @endphp
 
-        @if (session('status'))
-            <div class="dx-note mb-3"><i class="bi bi-check-circle"></i><span>{{ session('status') }} Tercatat di Audit Log.</span></div>
-        @endif
         @if ($errors->any())
             <div class="alert alert-danger py-2">{{ $errors->first() }}</div>
         @endif
 
-        <form method="POST" action="{{ route('draft.admin.pengaturan.simpan') }}">
+        <form method="POST" action="{{ route($rp.'admin.pengaturan.simpan') }}">
             @csrf
-            <input type="hidden" name="peran" value="admin">
+            @if ($peranQ)<input type="hidden" name="peran" value="admin">@endif
 
             <div class="row g-3">
                 <div class="col-12 col-xl-5">
@@ -69,7 +66,7 @@
                 </div>
 
                 <div class="col-12 d-flex gap-2 justify-content-end">
-                    <a href="{{ route('draft.ringkasan', ['peran' => 'admin']) }}" class="btn btn-outline-secondary">Lihat Ringkasan</a>
+                    <a href="{{ route($rp.'ringkasan', $peranQ) }}" class="btn btn-outline-secondary">Lihat Ringkasan</a>
                     <button class="btn btn-primary"><i class="bi bi-check-lg me-1"></i> Simpan pengaturan</button>
                 </div>
 

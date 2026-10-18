@@ -3,84 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePerformaMesinRequest;
+use App\Services\Analytics\Sources\SqlDowntimeSource;
+use App\Services\Analytics\ValidasiDowntime;
+use App\Services\Audit\AuditLog;
 use App\Models\OperatorMaster;
 use App\Models\PerformaMesin;
 use App\Models\ProblemDetailMaster;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Simpan / ubah / hapus data downtime (MFDOWNTIME) dari form di halaman Data
+ * Downtime. Tabel lama /dashboard sudah digantikan halaman Data Downtime.
+ * Setiap perubahan: diperiksa otomatis (saran 2.7), dicatat di Audit Log,
+ * dan cache analitik dibuang supaya chart langsung memakai data terbaru.
+ */
 class DashboardController extends Controller
 {
-    /**
-     * Tampilkan Dashboard: tabel/card riwayat data performa mesin,
-     * difilter per hari (default) atau per bulan, milik petugas yang login.
-     *
-     * FR-02, FR-07.
-     */
-    public function index(Request $request)
-    {
-        $tanggal = $request->input('tanggal', now()->format('Y-m-d'));
-        $satuBulan = $request->boolean('satu_bulan');
-
-        $tanggalCarbon = Carbon::parse($tanggal);
-
-        // Ambil nama tabel transaksi langsung dari Model (termasuk prefix
-        // database-nya) — supaya tidak perlu hardcode ulang nama tabel di sini.
-        $performaTable = (new PerformaMesin())->getTable();
-
-        $query = DB::table("{$performaTable} as T")
-            ->leftJoin('MFRESMAS as M', 'M.RESRCENO', '=', 'T.MesinCode')
-            ->select([
-                'T.No_Trs',
-                'T.Tgl_Trs',
-                'T.ShiftCode',
-                'T.Time_Start',
-                'T.Time_End',
-                'T.Time_Total',
-                'T.MesinCode',
-                DB::raw('RTRIM(M.[DESC]) as MesinName'), // FIX: MFRESMAS.DESC ber-tipe CHAR (padding spasi)
-            ]);
-
-        // Keputusan: Dashboard menampilkan SEMUA data performa mesin,
-        // tidak dibatasi hanya milik petugas yang sedang login.
-        // (Sebelumnya sempat difilter via CrtId = UserCode, tapi itu
-        // dihapus sesuai keputusan ini.)
-
-        if ($satuBulan) {
-            $query->whereYear('T.Tgl_Trs', $tanggalCarbon->year)
-                ->whereMonth('T.Tgl_Trs', $tanggalCarbon->month);
-        } else {
-            $query->whereDate('T.Tgl_Trs', $tanggalCarbon->toDateString());
-        }
-
-        $query->orderByDesc('T.Tgl_Trs')->orderByDesc('T.Time_Start');
-
-        $rows = $query->paginate(10)->withQueryString();
-
-        // Format tiap baris jadi bentuk siap-tampil (dipakai sama-sama oleh
-        // tabel Desktop maupun card list Mobile di view).
-        $rows->getCollection()->transform(function ($row) {
-            return (object) [
-                'no_trs' => $row->No_Trs,
-                'tgl' => Carbon::parse($row->Tgl_Trs)->format('d M Y'),
-                'shift' => $row->ShiftCode,
-                'start' => $row->Time_Start ? Carbon::parse($row->Time_Start)->format('H:i') : '-',
-                'end' => $row->Time_End ? Carbon::parse($row->Time_End)->format('H:i') : '-',
-                'total' => (int) $row->Time_Total,
-                'mesin' => $row->MesinCode,
-                'nama' => $row->MesinName ?? '-',
-            ];
-        });
-
-        return view('dashboard.index', [
-            'rows' => $rows,
-            'filterTanggal' => $tanggalCarbon->format('Y-m-d'),
-            'filterSatuBulan' => $satuBulan,
-        ]);
-    }
-
     /**
      * Simpan data baru dari Modal "Tambah Data" (FR-03, FR-04, FR-06, FR-09, FR-10).
      */
@@ -93,6 +35,10 @@ class DashboardController extends Controller
 
         // No_Trs di-generate berdasarkan TANGGAL TRANSAKSI yang diisi user
         // di form (bukan tanggal sistem hari ini) — lihat PerformaMesin::generateNoTrs().
+        if ($tolak = $this->cekOtomatis($request, $validated, $tglTrs, $timeStart, $timeEnd, $totalMenit)) {
+            return $tolak;
+        }
+
         $noTrs = PerformaMesin::generateNoTrs($tglTrs);
 
         PerformaMesin::create([
@@ -112,6 +58,9 @@ class DashboardController extends Controller
             'CrtId' => Auth::user()->UserCode,
             'CrtDate' => now(),
         ]);
+
+        AuditLog::make()->catat('data.tambah', Auth::user()->UserCode, $noTrs, null, $this->ringkas($validated, $timeStart, $timeEnd), $request->ip());
+        SqlDowntimeSource::bersihkanCache();
 
         return redirect()->back()->with('status', "Data {$noTrs} berhasil disimpan.");
     }
@@ -195,6 +144,17 @@ class DashboardController extends Controller
         $tglTrs = Carbon::parse($validated['tgl_trs'])->startOfDay();
         [$timeStart, $timeEnd, $totalMenit] = $this->hitungWaktu($tglTrs, $validated['time_start'], $validated['time_end']);
 
+        if ($tolak = $this->cekOtomatis($request, $validated, $tglTrs, $timeStart, $timeEnd, $totalMenit, $noTrs)) {
+            return $tolak;
+        }
+
+        $lama = [
+            'tanggal' => optional($performaMesin->Tgl_Trs)->format('Y-m-d'), 'shift' => trim((string) $performaMesin->ShiftCode),
+            'mesin' => trim((string) $performaMesin->MesinCode),
+            'jam' => optional($performaMesin->Time_Start)->format('H:i').'–'.optional($performaMesin->Time_End)->format('H:i'),
+            'kategori' => trim((string) $performaMesin->ProblemCode), 'masalah' => trim((string) $performaMesin->Problem_Desc),
+        ];
+
         $performaMesin->update([
             'Tgl_Trs' => $tglTrs,
             'ShiftCode' => $validated['shift'],
@@ -211,6 +171,9 @@ class DashboardController extends Controller
             'UpdDate' => now(),
         ]);
 
+        AuditLog::make()->catat('data.ubah', Auth::user()->UserCode, $noTrs, $lama, $this->ringkas($validated, $timeStart, $timeEnd), $request->ip());
+        SqlDowntimeSource::bersihkanCache();
+
         return redirect()->back()->with('status', "Data {$noTrs} berhasil diperbarui.");
     }
 
@@ -218,12 +181,62 @@ class DashboardController extends Controller
      * Hapus data (FR-13). Hard delete sesuai keputusan PRD Bab 10 — tabel
      * MFDOWNTIME existing tidak punya kolom status/flag penanda hapus.
      */
-    public function destroy(string $noTrs)
+    public function destroy(Request $request, string $noTrs)
     {
         $performa = PerformaMesin::findOrFail($noTrs);
+        $lama = [
+            'tanggal' => optional($performa->Tgl_Trs)->format('Y-m-d'), 'shift' => trim((string) $performa->ShiftCode),
+            'mesin' => trim((string) $performa->MesinCode),
+            'jam' => optional($performa->Time_Start)->format('H:i').'–'.optional($performa->Time_End)->format('H:i'),
+            'menit' => (int) $performa->Time_Total, 'kategori' => trim((string) $performa->ProblemCode),
+            'masalah' => trim((string) $performa->Problem_Desc),
+        ];
         $performa->delete();
+        AuditLog::make()->catat('data.hapus', Auth::user()->UserCode, $noTrs, $lama, null, $request->ip());
+        SqlDowntimeSource::bersihkanCache();
 
         return redirect()->back()->with('status', "Data {$noTrs} berhasil dihapus.");
+    }
+
+    /**
+     * Pemeriksaan otomatis (saran 2.7) sebelum simpan: catatan sama persis,
+     * jam bertumpuk, atau total shift > 480 menit dengan data yang sudah ada di
+     * mesin + tanggal + shift yang sama. Petugas bisa tetap menyimpan setelah
+     * mencentang "Saya sudah memeriksa" (abaikan_validasi).
+     */
+    private function cekOtomatis(Request $request, array $v, Carbon $tglTrs, Carbon $timeStart, Carbon $timeEnd, int $totalMenit, ?string $kecuali = null): ?RedirectResponse
+    {
+        if ($request->boolean('abaikan_validasi')) {
+            return null;
+        }
+
+        $baru = (object) [
+            'No_Trs' => null, 'Tgl_Trs' => $tglTrs->toDateString(), 'ShiftCode' => (string) $v['shift'],
+            'Time_Start' => $timeStart->format('Y-m-d H:i'), 'Time_End' => $timeEnd->format('Y-m-d H:i'), 'Time_Total' => $totalMenit,
+            'MesinCode' => $v['mesin_code'], 'MesinName' => $v['mesin_code'],
+            'ProblemCode' => $v['problem_code'], 'Problem_Desc' => $v['problem_desc'],
+        ];
+        $ada = (new SqlDowntimeSource())
+            ->rows($tglTrs, $tglTrs, ['mesin' => [$v['mesin_code']], 'shift' => [(string) $v['shift']]])
+            ->reject(fn ($r) => $r->No_Trs === $kecuali)->values();
+
+        $temuan = collect((new ValidasiDowntime())->periksaBaru([$baru], $ada))
+            ->whereIn('jenis', ['duplikat', 'tumpang_tindih', 'melebihi_shift', 'masa_depan'])->values()->all();
+        if (! $temuan) {
+            return null;
+        }
+
+        return back()->withInput()->with('validasi_temuan', $temuan)
+            ->withErrors(['validasi' => count($temuan).' masalah ditemukan pemeriksaan otomatis.']);
+    }
+
+    /** Ringkasan isian untuk audit log. */
+    private function ringkas(array $v, Carbon $timeStart, Carbon $timeEnd): array
+    {
+        return [
+            'tanggal' => Carbon::parse($v['tgl_trs'])->format('Y-m-d'), 'shift' => (string) $v['shift'], 'mesin' => $v['mesin_code'],
+            'jam' => $timeStart->format('H:i').'–'.$timeEnd->format('H:i'), 'kategori' => $v['problem_code'], 'masalah' => $v['problem_desc'],
+        ];
     }
 
     /**

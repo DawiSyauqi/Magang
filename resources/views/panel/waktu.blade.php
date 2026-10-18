@@ -1,4 +1,4 @@
-@extends('draft.layouts.app')
+@extends('panel.layouts.app')
 
 @section('title', 'Waktu & Shift')
 @section('page-title', 'Waktu & Shift')
@@ -21,11 +21,11 @@
     };
     $tl = $data['timeline'];
     $ikonShift = ['1' => 'bi-sun', '2' => 'bi-sunset', '3' => 'bi-moon-stars'];
-    $profil = fn ($kode) => route('draft.mesin.profil', ['kode' => $kode] + request()->except(['mesin', 'tanggal']));
+    $profil = fn ($kode) => route($rp.'mesin.profil', ['kode' => $kode] + request()->except(['mesin', 'tanggal']));
 @endphp
 
 @section('content')
-    @include('draft.partials._filter', ['route' => 'draft.waktu', 'info' => $data['periode']['jumlah_hari'].' hari'])
+    @include('panel.partials._filter', ['route' => $rp.'waktu', 'info' => $data['periode']['jumlah_hari'].' hari'])
 
     <div class="row g-3 mb-3">
         <div class="col-6 col-xl-3">
@@ -136,7 +136,7 @@
                             @endforeach
                             @php
                                 $idx = array_search($tl['tanggal'], $tl['tanggal_ada']);
-                                $keTgl = fn ($t) => route('draft.waktu', request()->except(['tanggal']) + ['tanggal' => $t]).'#timeline';
+                                $keTgl = fn ($t) => route($rp.'waktu', request()->except(['tanggal']) + ['tanggal' => $t]).'#timeline';
                             @endphp
                             <a class="btn btn-sm btn-outline-secondary {{ $idx === 0 ? 'disabled' : '' }}" href="{{ $idx > 0 ? $keTgl($tl['tanggal_ada'][$idx - 1]) : '#' }}" title="Tanggal sebelumnya"><i class="bi bi-chevron-left"></i></a>
                             <select name="tanggal" class="form-select form-select-sm w-auto" onchange="this.form.submit()" aria-label="Pilih tanggal">
@@ -163,8 +163,8 @@
 
     @php
         $payload = $data + [
-            'url_tanggal' => route('draft.waktu', request()->except(['tanggal']) + ['tanggal' => '__TGL__']).'#timeline',
-            'url_profil' => route('draft.mesin.profil', ['kode' => '__KODE__'] + request()->except(['mesin', 'tanggal'])),
+            'url_tanggal' => route($rp.'waktu', request()->except(['tanggal']) + ['tanggal' => '__TGL__']).'#timeline',
+            'url_profil' => route($rp.'mesin.profil', ['kode' => '__KODE__'] + request()->except(['mesin', 'tanggal'])),
         ];
     @endphp
     <script type="application/json" id="waktuData">@json($payload)</script>

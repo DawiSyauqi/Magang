@@ -1,4 +1,4 @@
-@extends('draft.layouts.app')
+@extends('panel.layouts.app')
 
 @section('title', 'Analisis Masalah')
 @section('page-title', 'Analisis Masalah')
@@ -18,11 +18,11 @@
         return '<span class="dx-delta '.($p > 0 ? 'up' : 'down').'" title="dibanding periode sebelumnya"><i class="bi bi-arrow-'.($p > 0 ? 'up' : 'down').'-short"></i>'.number_format(abs($p), 1, ',', '.').'%</span>';
     };
     $naik = $data['kategori_naik'];
-    $profil = fn ($kode) => route('draft.mesin.profil', ['kode' => $kode] + request()->except(['mesin', 'ulang']));
+    $profil = fn ($kode) => route($rp.'mesin.profil', ['kode' => $kode] + request()->except(['mesin', 'ulang']));
 @endphp
 
 @section('content')
-    @include('draft.partials._filter', ['route' => 'draft.masalah', 'info' => number_format($data['kejadian'], 0, ',', '.').' kejadian'])
+    @include('panel.partials._filter', ['route' => $rp.'masalah', 'info' => number_format($data['kejadian'], 0, ',', '.').' kejadian'])
 
     <div class="row g-3 mb-3">
         <div class="col-6 col-xl-3">
@@ -175,7 +175,7 @@
         </div>
     </div>
 
-    <script type="application/json" id="masalahData">@json($data + ['url_profil' => route('draft.mesin.profil', ['kode' => '__KODE__'] + request()->except(['mesin', 'ulang']))])</script>
+    <script type="application/json" id="masalahData">@json($data + ['url_profil' => route($rp.'mesin.profil', ['kode' => '__KODE__'] + request()->except(['mesin', 'ulang']))])</script>
 @endsection
 
 @push('scripts')

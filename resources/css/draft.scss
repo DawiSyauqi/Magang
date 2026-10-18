@@ -1024,3 +1024,47 @@ body.tv { background: var(--bg); color: var(--text); font-size: clamp(14px, 1.05
     &:hover { border-style: solid; }
     &[hidden] { display: none; }
 }
+
+// -----------------------------------------------------------------------------
+// 22. Form tambah/ubah data downtime (aplikasi asli)
+// -----------------------------------------------------------------------------
+.dx-modal {
+    .modal-content { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); }
+    .modal-header, .modal-footer { border-color: var(--border); }
+    .form-label { font-size: .8rem; font-weight: 600; color: var(--text-muted); margin-bottom: .3rem; }
+    .form-text { font-size: .75rem; min-height: 1em; }
+}
+.dx-saran {
+    position: absolute; left: calc(var(--bs-gutter-x) * .5); right: calc(var(--bs-gutter-x) * .5); z-index: 5;
+    max-height: 220px; overflow-y: auto; margin-top: 2px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+    button { display: block; width: 100%; text-align: left; padding: .45rem .75rem; border: 0; background: none; color: var(--text); font-size: .85rem; }
+    button:hover, button:focus { background: var(--surface-hover); }
+}
+.dx-durasi {
+    height: 38px; display: flex; align-items: center; padding: 0 .75rem; font-weight: 700;
+    border-radius: var(--r-sm); background: var(--accent-soft); color: var(--accent-text);
+}
+.dx-hapus-ikon {
+    width: 52px; height: 52px; margin: 0 auto 1rem; border-radius: 50%; display: grid; place-items: center;
+    background: var(--up-soft); color: var(--up); font-size: 1.3rem;
+}
+
+// -----------------------------------------------------------------------------
+// 23. Halaman login
+// -----------------------------------------------------------------------------
+.dx-auth { min-height: 100vh; display: flex; background: var(--bg); }
+.dx-auth-panel {
+    width: 44%; flex-direction: column; justify-content: center; gap: 1rem; padding: 3.5rem;
+    background: linear-gradient(160deg, #1c1917 0%, #292524 55%, #431407 100%); color: #fafaf9; position: relative;
+    .dx-brand-logo { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; background: var(--accent); color: #fff; font-size: 1.5rem; }
+    h1 { font-size: 2.2rem; font-weight: 800; margin: .5rem 0 0; }
+    p { color: #d6d3d1; max-width: 420px; margin: 0; }
+    ul { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: .6rem; color: #e7e5e4; font-size: .92rem;
+        i { color: #fb923c; margin-right: .5rem; } }
+}
+.dx-auth-foot { position: absolute; bottom: 1.5rem; left: 3.5rem; font-size: .75rem; color: #a8a29e; }
+.dx-auth-form {
+    flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; position: relative;
+    .dx-brand-logo { width: 48px; height: 48px; border-radius: 13px; display: grid; place-items: center; background: var(--accent); color: #fff; font-size: 1.3rem; }
+}

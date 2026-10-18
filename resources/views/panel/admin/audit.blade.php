@@ -1,4 +1,4 @@
-@extends('draft.layouts.app')
+@extends('panel.layouts.app')
 
 @section('title', 'Audit Log')
 @section('page-title', 'Audit Log')
@@ -19,10 +19,10 @@
 
 @section('content')
     @if (! $isAdmin)
-        @include('draft.partials._khusus-admin', ['alasan' => 'Audit log berisi jejak aktivitas semua pengguna.'])
+        @include('panel.partials._khusus-admin', ['alasan' => 'Audit log berisi jejak aktivitas semua pengguna.'])
     @else
         <form method="GET" class="dx-filter">
-            <input type="hidden" name="peran" value="admin">
+            @if ($peranQ)<input type="hidden" name="peran" value="admin">@endif
             <select name="periode" class="form-select" aria-label="Periode" onchange="this.form.submit()">
                 @foreach ($opsiPeriode as $k => $label)
                     @continue($k === 'kustom')
@@ -46,10 +46,12 @@
             <span class="ms-auto dx-active-filters num">{{ number_format($entri->total(), 0, ',', '.') }} entri</span>
         </form>
 
+        @if ($modeDraft)
         <div class="dx-note mb-3">
             <i class="bi bi-info-circle"></i>
-            <span>Entri bertanda <span class="dx-src">contoh</span> dibuat dari data dummy. Entri <span class="dx-src ai">asli</span> ({{ $jumlahAsli }}) benar-benar tercatat di file, misalnya saat Anda menyimpan <a href="{{ route('draft.admin.pengaturan', ['peran' => 'admin']) }}">Pengaturan</a>.</span>
+            <span>Entri bertanda <span class="dx-src">contoh</span> dibuat dari data dummy. Entri <span class="dx-src ai">asli</span> ({{ $jumlahAsli }}) benar-benar tercatat di file, misalnya saat Anda menyimpan <a href="{{ route($rp.'admin.pengaturan', $peranQ) }}">Pengaturan</a>.</span>
         </div>
+        @endif
 
         <div class="d-flex flex-wrap gap-2 mb-3">
             @foreach ($perAksi as $aksi => $n)

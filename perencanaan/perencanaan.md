@@ -409,6 +409,20 @@ File per variasi: `resources/views/draft{2,3}/`, `resources/css/draft{2,3}.scss`
 3. Gabungkan token `draft.scss` ke `_tokens.scss` (atau jadikan `draft.scss` sebagai `app.scss` baru).
 4. Hapus rute `/draft` atau biarkan mati lewat `DRAFT_ENABLED=false`.
 
+
+**Promosi draft → aplikasi asli, tahap 1 (18-10-2026).** Keputusan: semua halaman (termasuk lama) memakai desain baru; Tambah Data sementara hanya input manual (paper scan Ollama disembunyikan, `PAPER_SCAN_LAMA=false`); `/draft` tetap ada tetapi mati di produksi; keamanan 2.15 dikerjakan sekalian. Pengembangan di laptop, PC server hanya pull + dependency + `php artisan downtime:cek` (`deploy/PANDUAN-SERVER.md`).
+
+| Bagian | Isi |
+|---|---|
+| Satu set view | `resources/views/panel/*` dipakai `/draft` (Draft\DraftController, data contoh) dan aplikasi asli (Panel\AppPanelController, database). Logika bersama di `Panel\PanelController`; middleware `panel:draft|app` membagikan `$rp`, `$isAdmin`, `$modeDraft`, `$peranQ`, `$pengguna` |
+| Data asli | `Sources\SqlDowntimeSource`: query MFDOWNTIME berbatas rentang `Tgl_Trs` (tanpa fungsi di WHERE), nama dari peta master yang di-cache (MFRESMAS, MFPROBLEM, TMMESINOP, ICITEM sebagian), hasil per rentang+filter di-cache `DOWNTIME_CACHE_MENIT`, dibuang saat tambah/ubah/hapus. `MESIN_AKTIF_HARI` bila MFRESMAS berisi resource non-mesin |
+| Rute asli | `/ringkasan`, `/mesin`, `/masalah`, `/waktu`, `/produk`, `/data`, `/pemeriksaan`, `/laporan`, `/tv`, `/cari`, `/pemberitahuan` (auth + menu.access); `/operator`, `/admin/{pengaturan,audit,statistik-ai}` + admin; `/` → Ringkasan; `/dashboard` → Data Downtime; login admin & petugas → Ringkasan |
+| Input | Data Downtime: modal Tambah/Ubah + konfirmasi Hapus (endpoint `dashboard.*` lama, `StorePerformaMesinRequest` lama) + pemeriksaan otomatis 2.7 sebelum simpan (bisa "tetap simpan") + Audit Log (`data.tambah/ubah/hapus`) |
+| Halaman lama | Login, Atur Password, Alias Mesin, Password Pengguna pindah ke desain baru; view dashboard lama dihapus; audit `login`, `password.reset`, `alias.konfirmasi` |
+| Keamanan 2.15 | `/test/*` & `/preview/*` hanya bila `RUTE_UJI=true` (default ikut APP_DEBUG); batas login 5×/menit per username+IP; header keamanan (X-Frame-Options, nosniff, Referrer-Policy) |
+| Uji di server | `php artisan downtime:cek [--user=]`: konfigurasi, koneksi, tabel & kolom, volume per tahun, kecepatan 30/365 hari, semua perhitungan, semua halaman; laporan ke `storage/logs/cek-downtime-*.txt` |
+| Belum | Uji nyata di PC server (database); Tambah Data E6 di aplikasi asli (akhir) |
+
 ---
 
 ## 6. Keputusan

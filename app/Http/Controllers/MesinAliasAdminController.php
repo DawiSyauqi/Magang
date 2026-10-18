@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Audit\AuditLog;
 use App\Services\PaperExtraction\MesinAliasStore;
 use App\Services\PaperExtraction\Repositories\EloquentMesinCandidateProvider;
 use Illuminate\Http\JsonResponse;
@@ -37,7 +38,10 @@ class MesinAliasAdminController extends Controller
     {
         $request->validate(['resrceno' => 'required|string']);
 
+        $lama = $this->aliasStore->getAll()[$rawKey]['resrceno'] ?? null;
         $this->aliasStore->put($rawKey, $request->input('resrceno'));
+        AuditLog::make()->catat('alias.konfirmasi', trim((string) $request->user()->UserCode), $rawKey,
+            $lama ? ['resrceno' => $lama] : null, ['resrceno' => $request->input('resrceno')], $request->ip());
 
         return response()->json(['status' => 'ok']);
     }

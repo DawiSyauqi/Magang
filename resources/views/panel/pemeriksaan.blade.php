@@ -1,4 +1,4 @@
-@extends('draft.layouts.app')
+@extends('panel.layouts.app')
 
 @section('title', 'Pemeriksaan Data')
 @section('page-title', 'Pemeriksaan Data')
@@ -8,18 +8,16 @@
 @endsection
 
 @php
-    $isAdmin = request('peran') === 'admin';
-    $peranQ = $isAdmin ? ['peran' => 'admin'] : [];
     $terlibat = count($ringkas['no_trs']);
     // Tautan ke Data Downtime yang langsung menyaring catatan ini.
-    $keData = fn (array $t, ?string $noTrs = null) => route('draft.data', $peranQ + [
+    $keData = fn (array $t, ?string $noTrs = null) => route($rp.'data', $peranQ + [
         'periode' => 'kustom', 'dari' => $t['tanggal'], 'sampai' => $t['tanggal'],
         'mesin' => [$t['mesin']], 'q' => $noTrs,
     ]);
 @endphp
 
 @section('content')
-    @include('draft.partials._filter', ['route' => 'draft.pemeriksaan', 'info' => number_format($ringkas['baris'], 0, ',', '.').' catatan diperiksa'])
+    @include('panel.partials._filter', ['route' => $rp.'pemeriksaan', 'info' => number_format($ringkas['baris'], 0, ',', '.').' catatan diperiksa'])
 
     <div class="row g-3 mb-3">
         <div class="col-6 col-lg-3">
@@ -98,7 +96,7 @@
             @if ($isAdmin)
                 Admin hanya melihat. Perbaikan dilakukan petugas produksi di Data Downtime.
             @else
-                Perbaiki lewat <a href="{{ route('draft.data', ['periksa' => 1] + request()->only(['periode', 'dari', 'sampai', 'shift', 'mesin', 'kategori'])) }}">Data Downtime → hanya catatan bermasalah</a> (ubah atau hapus salah satunya).
+                Perbaiki lewat <a href="{{ route($rp.'data', ['periksa' => 1] + request()->only(['periode', 'dari', 'sampai', 'shift', 'mesin', 'kategori'])) }}">Data Downtime → hanya catatan bermasalah</a> (ubah atau hapus salah satunya).
             @endif
             Di halaman asli, aturan yang sama juga dicek saat data baru disimpan, jadi kesalahan dicegah sejak input.
         </span>

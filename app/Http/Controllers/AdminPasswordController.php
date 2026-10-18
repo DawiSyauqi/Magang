@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\Audit\AuditLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
@@ -52,6 +53,7 @@ class AdminPasswordController extends Controller
 
         $user->PassWeb = Hash::make($validated['password']);
         $user->save();
+        AuditLog::make()->catat('password.reset', trim((string) $request->user()->UserCode), trim((string) $user->UserName), null, ['catatan' => 'password diatur admin'], $request->ip());
 
         $displayName = $user->UserAlias ?: $user->UserName;
 

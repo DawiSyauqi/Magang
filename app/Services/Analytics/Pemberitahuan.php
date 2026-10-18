@@ -24,7 +24,7 @@ class Pemberitahuan
     }
 
     /**
-     * @param  callable(string $route, array $params): string  $url  pembuat URL (draft / halaman asli)
+     * @param  callable(string $route, array $params): string  $url  pembuat URL dari nama rute TANPA awalan (draft./asli)
      * @return array<int, array{id: string, jenis: string, tingkat: string, ikon: string, judul: string, pesan: string, url: string, waktu: string}>
      */
     public function daftar(bool $isAdmin, callable $url, ?Carbon $sekarang = null): array
@@ -70,7 +70,7 @@ class Pemberitahuan
                 'jenis' => 'input', 'tingkat' => $isAdmin ? 'info' : 'peringatan', 'ikon' => 'bi-clipboard-plus',
                 'judul' => $label.': '.count($belum).' dari '.count($mesin).' mesin belum ada catatan',
                 'pesan' => $daftar.'. '.($isAdmin ? 'Informasi untuk admin — input dilakukan petugas.' : 'Abaikan bila mesin tersebut memang tanpa downtime.'),
-                'url' => $url('draft.ringkasan', ['periode' => 'kustom', 'dari' => $tanggal->toDateString(), 'sampai' => $sampai->toDateString()]),
+                'url' => $url('ringkasan', ['periode' => 'kustom', 'dari' => $tanggal->toDateString(), 'sampai' => $sampai->toDateString()]),
                 'waktu' => $selesai->format('Y-m-d H:i'),
             ];
         }
@@ -102,7 +102,7 @@ class Pemberitahuan
                 'jenis' => 'target', 'tingkat' => 'galat', 'ikon' => 'bi-speedometer',
                 'judul' => $mesin->count().' mesin melewati target di shift '.$shift.' '.$tgl->translatedFormat('D, d M'),
                 'pesan' => $mesin->take(5)->map(fn ($m) => $m['kode'].' '.$m['menit'].'/'.$m['target'].' mnt')->implode(' · '),
-                'url' => $url('draft.ringkasan', ['periode' => 'kustom', 'dari' => $tanggal, 'sampai' => $tanggal, 'shift' => [$shift]]),
+                'url' => $url('ringkasan', ['periode' => 'kustom', 'dari' => $tanggal, 'sampai' => $tanggal, 'shift' => [$shift]]),
                 'waktu' => $tgl->copy()->setTimeFromTimeString(config("produksi.shift.$shift.mulai"))->format('Y-m-d H:i'),
             ];
         }
@@ -128,7 +128,7 @@ class Pemberitahuan
             'judul' => $hasil->count().' masalah berulang (≥ '.$min.'× dalam 7 hari)',
             'pesan' => $hasil->take(4)->map(fn ($g) => $g->first()->MesinCode.' "'.$g->first()->Problem_Desc.'" '.$g->count().'×')->implode(' · ')
                 .($hasil->count() > 4 ? ' · +'.($hasil->count() - 4).' lainnya' : '').'. Perbaikan kemungkinan belum tuntas.',
-            'url' => $url('draft.masalah', ['periode' => '7_hari']).'#berulang',
+            'url' => $url('masalah', ['periode' => '7_hari']).'#berulang',
             'waktu' => substr($hasil->map(fn ($g) => $g->max('Time_Start'))->max(), 0, 16),
         ]];
     }
@@ -147,7 +147,7 @@ class Pemberitahuan
             'jenis' => 'validasi', 'tingkat' => $r['galat'] ? 'galat' : 'peringatan', 'ikon' => 'bi-clipboard-x',
             'judul' => count($r['no_trs']).' catatan 7 hari terakhir perlu diperiksa',
             'pesan' => collect($r['per_jenis'])->where('jumlah', '>', 0)->map(fn ($j) => $j['judul'].' '.$j['jumlah'])->implode(' · '),
-            'url' => $url('draft.pemeriksaan', ['periode' => '7_hari']),
+            'url' => $url('pemeriksaan', ['periode' => '7_hari']),
             'waktu' => $sekarang->format('Y-m-d H:i'),
         ]];
     }

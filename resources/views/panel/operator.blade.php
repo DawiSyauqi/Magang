@@ -1,4 +1,4 @@
-@extends('draft.layouts.app')
+@extends('panel.layouts.app')
 
 @section('title', 'Operator')
 @section('page-title', 'Analisis Operator')
@@ -25,7 +25,7 @@
             <i class="bi bi-shield-lock fs-1" style="color: var(--accent)"></i>
             <h3 class="fs-5 fw-bold mt-3">Halaman khusus admin</h3>
             <p class="text-muted-x mb-4">Analisis per operator berisi data karyawan, sehingga hanya bisa dilihat oleh admin (keputusan K5). Di halaman asli, petugas produksi mendapat respons <strong>403</strong>.</p>
-            <a href="{{ route('draft.operator', request()->query() + ['peran' => 'admin']) }}" class="btn btn-primary"><i class="bi bi-eye me-1"></i> Lihat sebagai admin (simulasi draft)</a>
+            <a href="{{ route($rp.'operator', request()->query() + ['peran' => 'admin']) }}" class="btn btn-primary"><i class="bi bi-eye me-1"></i> Lihat sebagai admin (simulasi draft)</a>
         </div>
     @else
         @php
@@ -35,7 +35,7 @@
             $maksPerShift = max(1, $op->max('per_shift'));
         @endphp
 
-        @include('draft.partials._filter', ['route' => 'draft.operator', 'info' => $op->count().' operator'])
+        @include('panel.partials._filter', ['route' => $rp.'operator', 'info' => $op->count().' operator'])
 
         <div class="dx-note mb-3">
             <i class="bi bi-info-circle"></i>

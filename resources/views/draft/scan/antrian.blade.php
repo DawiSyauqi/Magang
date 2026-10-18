@@ -1,4 +1,4 @@
-@extends('draft.layouts.app')
+@extends('panel.layouts.app')
 
 @section('title', $isAdmin ? 'Riwayat Scan' : 'Antrian Scan')
 @section('page-title', $isAdmin ? 'Riwayat Scan' : 'Antrian Scan')
@@ -11,9 +11,6 @@
 @endsection
 
 @section('content')
-    @if (session('status'))
-        <div class="dx-note mb-3"><i class="bi bi-check-circle"></i><span>{{ session('status') }}</span></div>
-    @endif
     @if (session('gagal_layanan'))
         <div class="alert alert-danger py-2">{{ session('gagal_layanan') }}</div>
     @endif

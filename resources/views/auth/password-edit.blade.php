@@ -1,83 +1,44 @@
-@extends('layouts.app')
+@extends('panel.layouts.app')
 
-@section('title', ($hasPassword ? 'Ubah Password' : 'Buat Password') . ' — Input Performa Mesin')
+@section('title', $hasPassword ? 'Ubah Password' : 'Buat Password')
+@section('page-title', $hasPassword ? 'Ubah Password' : 'Buat Password')
+@section('page-sub', 'Password akun Anda untuk aplikasi ini')
 
 @section('content')
-<div class="d-flex flex-column align-items-center justify-content-center p-4 position-relative"
-     style="min-height: 100vh; background-color: var(--bg);">
-
-    {{-- Theme toggle (pojok kanan atas) --}}
-    <div class="position-absolute" style="top: 1.25rem; right: 1.25rem;">
-        @include('layouts.partials._theme-toggle')
-    </div>
-
-    <div class="w-100" style="max-width: 420px;">
-
-        <div class="text-center mb-4">
-            <div class="dt-auth-mark mb-3" style="margin-left:auto;margin-right:auto;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="11" width="18" height="11" rx="2"></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
-            </div>
-            <h1 class="h4 fw-bold mb-1">{{ $hasPassword ? 'Ubah Password' : 'Buat Password Baru' }}</h1>
-            <p class="text-muted small">
-                @if ($hasPassword)
-                    Masukkan password lama Anda, lalu buat password baru.
-                @else
-                    Ini pertama kalinya Anda masuk. Silakan buat password untuk akun Anda.
-                @endif
-            </p>
-        </div>
-
-        <div class="card glass p-4">
-
-            @if (session('status'))
-                <div class="alert alert-success mb-3">
-                    {{ session('status') }}
-                </div>
+    <div class="dx-card p-4" style="max-width: 460px; height: auto">
+        <p class="text-muted-x small">
+            @if ($hasPassword)
+                Masukkan password lama, lalu buat password baru (minimal 8 karakter).
+            @else
+                Akun Anda belum punya password. Buat sekarang supaya akun tidak bisa dipakai orang lain.
             @endif
+        </p>
 
-            @if ($errors->any())
-                <div class="alert alert-danger mb-3">
-                    {{ $errors->first() }}
-                </div>
-            @endif
+        @if ($errors->any())
+            <div class="alert alert-danger py-2 small">{{ $errors->first() }}</div>
+        @endif
 
-            <form method="POST" action="{{ url('/password') }}">
-                @csrf
-                @method('PUT')
-
-                @if ($hasPassword)
-                    <div class="mb-3">
-                        <label for="current_password" class="form-label">Password Lama</label>
-                        <input type="password"
-                               class="form-control @error('current_password') is-invalid @enderror"
-                               id="current_password" name="current_password" required>
-                    </div>
-                @endif
-
+        <form method="POST" action="{{ route('password.update') }}">
+            @csrf
+            @method('PUT')
+            @if ($hasPassword)
                 <div class="mb-3">
-                    <label for="password" class="form-label">Password Baru</label>
-                    <input type="password" class="form-control @error('password') is-invalid @enderror"
-                           id="password" name="password" minlength="8" required>
+                    <label for="current_password" class="form-label small fw-semibold">Password lama</label>
+                    <input type="password" class="form-control @error('current_password') is-invalid @enderror" id="current_password" name="current_password" autocomplete="current-password" required>
                 </div>
-
-                <div class="mb-4">
-                    <label for="password_confirmation" class="form-label">Konfirmasi Password Baru</label>
-                    <input type="password" class="form-control"
-                           id="password_confirmation" name="password_confirmation" minlength="8" required>
-                </div>
-
-                <button type="submit" class="btn btn-primary w-100 fw-semibold">Simpan Password</button>
-
-                <div class="mt-3 text-center">
-                    <a href="{{ auth()->user()->isAdmin() ? route('admin.mesin-aliases.index') : route('dashboard') }}" class="text-decoration-none small text-muted">
-                        ← Kembali ke {{ auth()->user()->isAdmin() ? 'Panel Admin' : 'Dashboard' }}
-                    </a>
-                </div>
-            </form>
-        </div>
+            @endif
+            <div class="mb-3">
+                <label for="password" class="form-label small fw-semibold">Password baru</label>
+                <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" minlength="8" autocomplete="new-password" required>
+            </div>
+            <div class="mb-4">
+                <label for="password_confirmation" class="form-label small fw-semibold">Ulangi password baru</label>
+                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" minlength="8" autocomplete="new-password" required>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ route('ringkasan') }}" class="btn btn-outline-secondary">Batal</a>
+                <button type="submit" class="btn btn-primary flex-fill fw-semibold">Simpan password</button>
+            </div>
+        </form>
     </div>
-</div>
 @endsection

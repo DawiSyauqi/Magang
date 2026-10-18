@@ -1,4 +1,4 @@
-@extends('draft.layouts.app')
+@extends('panel.layouts.app')
 
 @section('title', 'Daftar Draft')
 @section('page-title', 'Daftar Draft')

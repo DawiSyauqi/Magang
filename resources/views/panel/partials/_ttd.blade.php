@@ -3,7 +3,7 @@
     <div>
         <span>Dibuat oleh</span>
         <div class="lap-ttd-space"></div>
-        <strong>{{ request('peran') === 'admin' ? 'AFSYAH' : '( Petugas Produksi )' }}</strong>
+        <strong>{{ $modeDraft ? ($isAdmin ? 'AFSYAH' : '( Petugas Produksi )') : $pengguna['nama'] }}</strong>
     </div>
     <div>
         <span>Diperiksa oleh</span>

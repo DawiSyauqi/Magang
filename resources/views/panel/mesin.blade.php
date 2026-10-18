@@ -1,4 +1,4 @@
-@extends('draft.layouts.app')
+@extends('panel.layouts.app')
 
 @section('title', 'Analisis Mesin')
 @section('page-title', 'Analisis Mesin')
@@ -10,7 +10,6 @@
 @php
     $warna = collect($data['kategori'])->pluck('warna', 'kode');
     $namaKat = collect($data['kategori'])->pluck('nama', 'kode');
-    $isAdmin = request('peran') === 'admin';
     $ranking = collect($data['ranking']);
     $maksMenit = max(1, $ranking->max('menit'));
     $jamMenit = function (int $m) {
@@ -31,11 +30,11 @@
         foreach ($v as $i => $y) $pts[] = round($i / ($n - 1) * 100, 1).','.round(28 - $y / $maks * 26, 1);
         return '<svg class="dx-svgspark" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><polyline points="'.implode(' ', $pts).'"/></svg>';
     };
-    $profil = fn ($kode) => route('draft.mesin.profil', ['kode' => $kode] + request()->except(['mesin', 'banding']));
+    $profil = fn ($kode) => route($rp.'mesin.profil', ['kode' => $kode] + request()->except(['mesin', 'banding']));
 @endphp
 
 @section('content')
-    @include('draft.partials._filter', ['route' => 'draft.mesin', 'info' => $ranking->count().' mesin'])
+    @include('panel.partials._filter', ['route' => $rp.'mesin', 'info' => $ranking->count().' mesin'])
 
     <div class="row g-3">
         {{-- M3 sebaran --}}
@@ -140,7 +139,7 @@
         </div>
     </div>
 
-    <script type="application/json" id="mesinData">@json($data + ['url_profil' => route('draft.mesin.profil', ['kode' => '__KODE__'] + request()->except(['mesin', 'banding']))])</script>
+    <script type="application/json" id="mesinData">@json($data + ['url_profil' => route($rp.'mesin.profil', ['kode' => '__KODE__'] + request()->except(['mesin', 'banding']))])</script>
 @endsection
 
 @push('scripts')

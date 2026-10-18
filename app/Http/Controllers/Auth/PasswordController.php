@@ -50,6 +50,6 @@ class PasswordController extends Controller
         $user->PassWeb = Hash::make($validated['password']);
         $user->save();
 
-        return redirect()->route('dashboard')->with('status', 'Password berhasil disimpan.');
+        return redirect()->route('ringkasan')->with('status', 'Password berhasil disimpan.');
     }
 }

@@ -15,8 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'menu.access' => \App\Http\Middleware\EnsureMenuAccess::class,
             'admin' => \App\Http\Middleware\EnsureAdmin::class,
             'production' => \App\Http\Middleware\EnsureProductionStaff::class,
+            'panel' => \App\Http\Middleware\SetPanelMode::class,
         ]);
         $middleware->trustProxies(at: '*');
+        $middleware->web(append: [\App\Http\Middleware\SecurityHeaders::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

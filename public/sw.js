@@ -1,5 +1,5 @@
 /**
- * Service worker MINIMAL untuk Input Performa Mesin.
+ * Service worker MINIMAL untuk aplikasi Downtime Mesin (draft & asli).
  *
  * PENTING: aplikasi ini SENGAJA bukan offline-first — sesuai NFR di PRD,
  * aplikasi butuh koneksi live ke server intranet perusahaan untuk baca &
@@ -13,7 +13,7 @@
  * fresh dari server, bukan dari cache.
  */
 
-const CACHE_NAME = 'performa-mesin-shell-v1';
+const CACHE_NAME = 'downtime-shell-v2';
 const OFFLINE_URL = '/offline.html';
 
 const PRECACHE_ASSETS = [

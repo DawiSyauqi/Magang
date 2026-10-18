@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\MenuAccess;
 use App\Models\User;
+use App\Services\Audit\AuditLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -54,8 +55,9 @@ class LoginController extends Controller
 
             Auth::login($user);
             $request->session()->regenerate();
+            AuditLog::make()->catat('login', trim((string) $user->UserCode), null, null, null, $request->ip());
 
-            $targetRoute = $user->isAdmin() ? route('admin.mesin-aliases.index') : route('dashboard');
+            $targetRoute = route('ringkasan');
 
             return redirect()->intended($targetRoute);
         }
@@ -83,8 +85,9 @@ class LoginController extends Controller
         }
 
         $request->session()->regenerate();
+        AuditLog::make()->catat('login', trim((string) $user->UserCode), null, null, null, $request->ip());
 
-        $targetRoute = $user->isAdmin() ? route('admin.mesin-aliases.index') : route('dashboard');
+        $targetRoute = route('ringkasan');
 
         return redirect()->intended($targetRoute);
     }

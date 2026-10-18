@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Draft') · Downtime Mesin</title>
+    <title>@yield('title', 'Downtime') · {{ $modeDraft ? 'Draft · ' : '' }}Downtime Mesin</title>
     <link rel="icon" type="image/png" href="{{ asset('icons/favicon-32.png') }}">
-    {{-- PWA (saran 2.12): bisa dipasang di HP/PC seperti aplikasi; sw.js sama dengan aplikasi asli --}}
-    <link rel="manifest" href="{{ asset('manifest-draft.json') }}">
+    {{-- PWA (saran 2.12): bisa dipasang di HP/PC seperti aplikasi; sw.js sama untuk draft & asli --}}
+    <link rel="manifest" href="{{ asset($modeDraft ? 'manifest-draft.json' : 'manifest.json') }}">
     <meta name="theme-color" content="#ea580c">
     <link rel="apple-touch-icon" href="{{ asset('icons/apple-touch-icon.png') }}">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -20,38 +20,39 @@
 </head>
 <body>
 @php
-    // Simulasi peran untuk evaluasi hak akses (K2/K5): ?peran=admin
-    $peran = request('peran') === 'admin' ? 'admin' : 'petugas';
-    $q = fn (array $extra = []) => http_build_query(array_filter(['peran' => $peran === 'admin' ? 'admin' : null] + $extra));
+    // Menu sesuai hak akses (perencanaan.md 1.1, K2/K5). [rute tanpa awalan, ikon, teks, parameter]
+    $tambah = $modeDraft ? ['tambah', []] : ['data', ['tambah' => 1]];
     $menu = [
         ['Utama', [
-            ['draft.ringkasan', 'bi-grid-1x2', 'Ringkasan', true],
-            ['draft.tv', 'bi-tv', 'Layar TV', true],
+            ['ringkasan', 'bi-grid-1x2', 'Ringkasan'],
+            ['tv', 'bi-tv', 'Layar TV'],
         ]],
         ['Analisis', [
-            ['draft.mesin', 'bi-cpu', 'Mesin', true],
-            ['draft.masalah', 'bi-exclamation-triangle', 'Masalah', true],
-            ['draft.waktu', 'bi-clock-history', 'Waktu & Shift', true],
-            ['draft.produk', 'bi-box-seam', 'Produk / Item', true],
-            $peran === 'admin' ? ['draft.operator', 'bi-people', 'Operator', true] : null,
+            ['mesin', 'bi-cpu', 'Mesin'],
+            ['masalah', 'bi-exclamation-triangle', 'Masalah'],
+            ['waktu', 'bi-clock-history', 'Waktu & Shift'],
+            ['produk', 'bi-box-seam', 'Produk / Item'],
+            $isAdmin ? ['operator', 'bi-people', 'Operator'] : null,
         ]],
         ['Data', [
-            ['draft.data', 'bi-table', 'Data Downtime', true],
-            ['draft.pemeriksaan', 'bi-clipboard-check', 'Pemeriksaan Data', true],
-            $peran === 'petugas' ? ['draft.tambah', 'bi-camera', 'Tambah Data', true] : null,
-            ['draft.scan', 'bi-hourglass-split', $peran === 'admin' ? 'Riwayat Scan' : 'Antrian Scan', true],
-            ['draft.laporan', 'bi-file-earmark-bar-graph', 'Laporan', true],
+            ['data', 'bi-table', 'Data Downtime'],
+            ['pemeriksaan', 'bi-clipboard-check', 'Pemeriksaan Data'],
+            $isAdmin ? null : [$tambah[0], 'bi-plus-circle', 'Tambah Data', $tambah[1]],
+            $modeDraft ? ['scan', 'bi-hourglass-split', $isAdmin ? 'Riwayat Scan' : 'Antrian Scan'] : null,
+            ['laporan', 'bi-file-earmark-bar-graph', 'Laporan'],
         ]],
     ];
-    if ($peran === 'admin') {
+    if ($isAdmin) {
         $menu[] = ['Admin', [
-            [null, 'bi-tags', 'Alias Mesin', false],
-            [null, 'bi-key', 'Password Pengguna', false],
-            ['draft.admin.ai', 'bi-robot', 'Statistik AI', true],
-            ['draft.admin.audit', 'bi-journal-text', 'Audit Log', true],
-            ['draft.admin.pengaturan', 'bi-sliders', 'Pengaturan', true],
+            $modeDraft ? null : ['admin.mesin-aliases.index', 'bi-tags', 'Alias Mesin'],
+            $modeDraft ? null : ['admin.passwords.index', 'bi-key', 'Password Pengguna'],
+            ['admin.ai', 'bi-robot', 'Statistik AI'],
+            ['admin.audit', 'bi-journal-text', 'Audit Log'],
+            ['admin.pengaturan', 'bi-sliders', 'Pengaturan'],
         ]];
     }
+    // "Tambah Data" (data?tambah=1) tidak ikut menandai menu Data Downtime aktif.
+    $aktif = fn (string $r, array $p) => request()->routeIs($rp.$r, $rp.$r.'.*') && ($p ? request()->has(array_key_first($p)) : ! request()->has('tambah'));
 @endphp
 
 <div class="dx-shell" id="dxShell">
@@ -67,11 +68,11 @@
         <nav class="d-flex flex-column gap-1 overflow-auto">
             @foreach ($menu as [$label, $items])
                 <div class="dx-nav-label">{{ $label }}</div>
-                @foreach (array_filter($items) as [$route, $icon, $text, $ready])
-                    <a href="{{ $ready ? route($route).($q() ? '?'.$q() : '') : '#' }}"
-                       class="dx-nav-item {{ $ready && request()->routeIs($route, $route.'.*') ? 'active' : '' }} {{ $ready ? '' : 'disabled' }}">
+                @foreach (array_filter($items) as $m)
+                    @php [$r, $icon, $text] = $m; $p = $m[3] ?? []; @endphp
+                    <a href="{{ route($rp.$r, $p + $peranQ) }}"
+                       class="dx-nav-item {{ $aktif($r, $p) ? 'active' : '' }}">
                         <i class="bi {{ $icon }}"></i> {{ $text }}
-                        @unless ($ready)<span class="dx-badge-soon">segera</span>@endunless
                     </a>
                 @endforeach
             @endforeach
@@ -84,29 +85,48 @@
                 <span><strong>Pasang aplikasi</strong><small>Buka dari layar utama HP/PC, tanpa bilah browser</small></span>
             </button>
             <div class="dx-user">
-                <div class="dx-avatar">{{ $peran === 'admin' ? 'AF' : 'PR' }}</div>
+                <div class="dx-avatar">{{ $pengguna['inisial'] }}</div>
                 <div class="flex-grow-1 min-w-0">
-                    <div class="dx-user-name">{{ $peran === 'admin' ? 'AFSYAH' : 'Petugas Produksi' }}</div>
-                    <div class="dx-user-role">{{ $peran === 'admin' ? 'Administrator' : 'Produksi' }} · contoh</div>
+                    <div class="dx-user-name text-truncate" title="{{ $pengguna['nama'] }}">{{ $pengguna['nama'] }}</div>
+                    <div class="dx-user-role">{{ $pengguna['peran'] }}</div>
                 </div>
-                <i class="bi bi-box-arrow-right text-subtle-x" title="Logout (nonaktif di draft)"></i>
+                @if ($modeDraft)
+                    <i class="bi bi-box-arrow-right text-subtle-x" title="Logout (nonaktif di draft)"></i>
+                @else
+                    <div class="dropdown dropup">
+                        <button type="button" class="dx-row-btn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menu akun" title="Akun"><i class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><span class="dropdown-item-text small text-muted-x">{{ $pengguna['kode'] }}</span></li>
+                            <li><a class="dropdown-item" href="{{ route('password.edit') }}"><i class="bi bi-key me-2"></i>Atur password</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i>Keluar</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                @endif
             </div>
         </div>
     </aside>
     <div class="dx-backdrop" data-sidebar-close></div>
 
     <div class="dx-main">
-        <div class="dx-draft-banner">
-            <i class="bi bi-cone-striped"></i>
-            <span><strong>DRAFT</strong>: tanpa login dan database. Semua angka, mesin, dan nama adalah <strong>data contoh</strong>.</span>
-            <span class="ms-auto d-flex gap-3">
-                <span>Lihat sebagai:
-                    <a href="?{{ http_build_query(request()->except('peran')) }}" class="{{ $peran === 'petugas' ? 'text-decoration-underline' : 'text-decoration-none' }}">Petugas</a> ·
-                    <a href="?{{ http_build_query(request()->except('peran') + ['peran' => 'admin']) }}" class="{{ $peran === 'admin' ? 'text-decoration-underline' : 'text-decoration-none' }}">Admin</a>
+        @if ($modeDraft)
+            <div class="dx-draft-banner">
+                <i class="bi bi-cone-striped"></i>
+                <span><strong>DRAFT</strong>: tanpa login dan database. Semua angka, mesin, dan nama adalah <strong>data contoh</strong>.</span>
+                <span class="ms-auto d-flex gap-3">
+                    <span>Lihat sebagai:
+                        <a href="?{{ http_build_query(request()->except('peran')) }}" class="{{ $isAdmin ? 'text-decoration-none' : 'text-decoration-underline' }}">Petugas</a> ·
+                        <a href="?{{ http_build_query(request()->except('peran') + ['peran' => 'admin']) }}" class="{{ $isAdmin ? 'text-decoration-underline' : 'text-decoration-none' }}">Admin</a>
+                    </span>
+                    <a href="{{ route('draft.index') }}">Daftar draft</a>
                 </span>
-                <a href="{{ route('draft.index') }}">Daftar draft</a>
-            </span>
-        </div>
+            </div>
+        @endif
 
         <header class="dx-topbar">
             <button type="button" class="dx-icon-btn dx-sidebar-toggle" data-sidebar-open aria-label="Buka menu">
@@ -117,18 +137,18 @@
                 <div class="dx-topbar-sub">@yield('page-sub')</div>
             </div>
             {{-- Pencarian global (saran 2.13): "/" atau Ctrl+K --}}
-            <div class="dx-cari" id="dxCari" data-url="{{ route('draft.cari', $peran === 'admin' ? ['peran' => 'admin'] : []) }}">
+            <div class="dx-cari" id="dxCari" data-url="{{ route($rp.'cari', $peranQ) }}">
                 <button type="button" class="dx-icon-btn dx-cari-buka" data-cari-buka aria-label="Cari" title="Cari (/)"><i class="bi bi-search"></i></button>
                 <div class="dx-cari-kotak" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-owns="dxCariHasil">
                     <i class="bi bi-search"></i>
-                    <input type="search" class="form-control" placeholder="Cari No_Trs, mesin, masalah, item{{ $peran === 'admin' ? ', operator' : '' }}…" autocomplete="off" aria-label="Pencarian global" aria-controls="dxCariHasil" data-cari-input>
+                    <input type="search" class="form-control" placeholder="Cari No_Trs, mesin, masalah, item{{ $isAdmin ? ', operator' : '' }}…" autocomplete="off" aria-label="Pencarian global" aria-controls="dxCariHasil" data-cari-input>
                     <kbd class="d-none d-lg-inline">/</kbd>
                     <div class="dx-cari-hasil" id="dxCariHasil" role="listbox" hidden></div>
                 </div>
             </div>
             @yield('topbar-actions')
             {{-- Pemberitahuan (2.3 pengingat input, 2.7 pemeriksaan data, 2.8 target & masalah berulang) --}}
-            <div class="dropdown dx-notif" id="dxNotif" data-url="{{ route('draft.pemberitahuan', $peran === 'admin' ? ['peran' => 'admin'] : []) }}">
+            <div class="dropdown dx-notif" id="dxNotif" data-url="{{ route($rp.'pemberitahuan', $peranQ) }}">
                 <button type="button" class="dx-icon-btn position-relative" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" aria-label="Pemberitahuan" title="Pemberitahuan">
                     <i class="bi bi-bell"></i><span class="dx-notif-badge num" data-notif-badge hidden></span>
                 </button>
@@ -145,6 +165,12 @@
         </header>
 
         <main class="dx-content">
+            @if (session('status'))
+                <div class="alert alert-success alert-dismissible fade show py-2" role="status">
+                    <i class="bi bi-check-circle me-1"></i>{{ session('status') }}
+                    <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Tutup"></button>
+                </div>
+            @endif
             @yield('content')
         </main>
     </div>
@@ -186,8 +212,8 @@
     })();
 </script>
 @vite(['resources/js/draft/pemberitahuan.js', 'resources/js/draft/cari.js'])
-@if ($peran === 'petugas')
-    {{-- Pemberitahuan "Selesai diproses" untuk foto yang dibaca AI di latar belakang --}}
+@if ($modeDraft && ! $isAdmin)
+    {{-- Pemberitahuan "Selesai diproses" untuk foto yang dibaca AI di latar belakang (E6, draft) --}}
     <div class="sc-toast-wrap" id="scToast" aria-live="polite"
          data-status-url="{{ route('draft.scan.status') }}" data-antrian-url="{{ route('draft.scan') }}"></div>
     @vite('resources/js/draft/scan-notif.js')

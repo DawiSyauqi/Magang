@@ -21,6 +21,15 @@ return [
         '3' => ['mulai' => '23:00', 'selesai' => '07:00'],
     ],
 
+    // Hasil query MFDOWNTIME per rentang+filter di-cache sekian menit (data
+    // bertahun-tahun); cache otomatis dibuang saat ada tambah/ubah/hapus.
+    'cache_menit' => (int) env('DOWNTIME_CACHE_MENIT', 10),
+
+    // Daftar mesin = semua MFRESMAS (keputusan 6.2). Bila MFRESMAS ternyata
+    // berisi banyak resource yang bukan mesin produksi, isi N > 0 supaya hanya
+    // mesin yang punya catatan downtime dalam N hari terakhir yang dihitung.
+    'mesin_aktif_hari' => (int) env('MESIN_AKTIF_HARI', 0),
+
     // Pengingat input (saran 2.3): shift dianggap "seharusnya sudah diinput"
     // sekian menit setelah shift selesai.
     'pengingat_input_menit' => (int) env('PENGINGAT_INPUT_MENIT', 60),
@@ -39,6 +48,14 @@ return [
         'D06' => '#06b6d4',
         'D07' => '#64748b',
     ],
+
+    // Keamanan (saran 2.15): rute uji/preview tanpa login (/test/*, /preview/*)
+    // hanya aktif bila RUTE_UJI=true — default ikut APP_DEBUG, jadi MATI di produksi.
+    'rute_uji' => (bool) env('RUTE_UJI', env('APP_DEBUG', false)),
+
+    // Paper scan lama (Ollama, 3 klik titik) diganti AI Baca Kertas E6 (K7) dan
+    // disembunyikan sampai E6 dipasang di aplikasi asli.
+    'paper_scan_lama' => (bool) env('PAPER_SCAN_LAMA', false),
 
     // Halaman /draft (tanpa login & tanpa database, data dummy) hanya aktif
     // bila APP_DEBUG=true atau DRAFT_ENABLED=true. Matikan di produksi.

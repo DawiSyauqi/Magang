@@ -1,10 +1,9 @@
-@extends('draft.layouts.cetak')
+@extends('panel.layouts.cetak')
 
 @php
     $k = $lap['kpi'];
     $warna = collect($lap['meta_kategori'])->pluck('warna', 'kode');
     $namaKat = collect($lap['meta_kategori'])->pluck('nama', 'kode');
-    $isAdmin = request('peran') === 'admin';
     $jamMenit = function (int $m) {
         $j = intdiv($m, 60);
         return $j ? number_format($j, 0, ',', '.').' j '.($m % 60).' m' : $m.' m';
@@ -27,7 +26,7 @@
 
 @section('toolbar')
     <form method="GET" class="d-flex gap-2 align-items-center">
-        @if ($isAdmin)<input type="hidden" name="peran" value="admin">@endif
+        @if ($peranQ)<input type="hidden" name="peran" value="admin">@endif
         <select name="bulan" class="form-select form-select-sm" onchange="this.form.submit()">
             @foreach ($opsiBulan as $kb => $label)
                 <option value="{{ $kb }}" @selected($lap['bulan'] === $kb)>{{ $label }}</option>
@@ -36,7 +35,7 @@
     </form>
 @endsection
 @section('toolbar-kanan')
-    <a href="{{ route('draft.laporan.excel', ['jenis' => 'bulanan', 'bulan' => $lap['bulan']] + request()->only('peran')) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-file-earmark-spreadsheet me-1"></i> Excel</a>
+    <a href="{{ route($rp.'laporan.excel', ['jenis' => 'bulanan', 'bulan' => $lap['bulan']] + request()->only('peran')) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-file-earmark-spreadsheet me-1"></i> Excel</a>
 @endsection
 
 @section('content')
@@ -124,7 +123,7 @@
         <p class="lap-muted mt-1" style="font-size: 8pt">Daftar kejadian lengkap ({{ $angka(count($lap['kejadian'])) }} baris) tersedia di file Excel, sheet "Data Kejadian".</p>
     </section>
 
-    @include('draft.partials._ttd')
+    @include('panel.partials._ttd')
 
     @php $payload = ['jenis' => 'bulanan', 'tren' => $lap['tren'], 'kategori' => $lap['kategori']]; @endphp
     <script type="application/json" id="lapData">@json($payload)</script>

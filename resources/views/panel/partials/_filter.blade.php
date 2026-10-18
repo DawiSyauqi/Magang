@@ -8,7 +8,6 @@
     baris dipertahankan lewat input tersembunyi.
 --}}
 @php
-    $isAdmin = request('peran') === 'admin';
     $warnaKat = config('produksi.warna_kategori');
     $tabel = array_key_exists('q', $filter);
     $routeParams = $routeParams ?? [];
@@ -17,7 +16,7 @@
         || ($tabel && ($filter['q'] !== '' || $filter['operator'] !== '' || $filter['sumber'] !== ''));
 @endphp
 <form method="GET" action="{{ route($route, $routeParams) }}" class="dx-filter">
-    @if ($isAdmin)<input type="hidden" name="peran" value="admin">@endif
+    @if ($peranQ)<input type="hidden" name="peran" value="admin">@endif
     @if ($tabel)
         <input type="hidden" name="sort" value="{{ $filter['sort'] }}">
         <input type="hidden" name="arah" value="{{ $filter['arah'] }}">
@@ -95,7 +94,7 @@
 
     <button type="submit" class="btn btn-primary"><i class="bi bi-funnel me-1"></i>Terapkan</button>
     @if ($adaFilter)
-        <a href="{{ route($route, $routeParams + ($isAdmin ? ['peran' => 'admin'] : [])) }}" class="btn btn-link text-muted-x text-decoration-none">Reset</a>
+        <a href="{{ route($route, $routeParams + $peranQ) }}" class="btn btn-link text-muted-x text-decoration-none">Reset</a>
     @endif
     @isset($info)<span class="ms-auto dx-active-filters num">{{ $info }}</span>@endisset
 </form>

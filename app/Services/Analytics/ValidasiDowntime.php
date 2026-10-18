@@ -136,8 +136,10 @@ class ValidasiDowntime
                 'Time_Total '.(int) $r->Time_Total.' menit, padahal jam '.$this->jam($r).' = '.$durasiJam.' menit.');
         }
 
+        // Shift 3: Tgl_Trs = tanggal input (6.2), jadi kejadian 23:xx yang diinput pagi
+        // hari tercatat "nanti malam" — cukup tanggalnya yang tidak boleh lewat hari ini.
         $mulai = Carbon::parse($r->Time_Start, 'Asia/Jakarta');
-        if ($r->Tgl_Trs > $sekarang->toDateString() || $mulai->gt($sekarang)) {
+        if ($r->Tgl_Trs > $sekarang->toDateString() || ((string) $r->ShiftCode !== '3' && $mulai->gt($sekarang))) {
             $hasil[] = $this->temuan('masa_depan', $r, [$r->No_Trs],
                 'Tanggal '.Carbon::parse($r->Tgl_Trs)->translatedFormat('d M Y').' jam '.substr($r->Time_Start, 11, 5).' belum terjadi (sekarang '.$sekarang->translatedFormat('d M Y H:i').').');
         }

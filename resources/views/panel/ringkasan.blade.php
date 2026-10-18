@@ -1,4 +1,4 @@
-@extends('draft.layouts.app')
+@extends('panel.layouts.app')
 
 @section('title', 'Ringkasan')
 @section('page-title', 'Ringkasan Downtime')
@@ -10,9 +10,9 @@
 @endsection
 
 @section('topbar-actions')
-    <button type="button" class="btn btn-sm btn-outline-secondary d-none d-md-inline-flex align-items-center gap-1" disabled title="Fase 5">
+    <a href="{{ route($rp.'data.export', request()->query()) }}" class="btn btn-sm btn-outline-secondary d-none d-md-inline-flex align-items-center gap-1" title="Unduh data periode & filter ini (CSV, bisa dibuka Excel)">
         <i class="bi bi-download"></i> Export
-    </button>
+    </a>
 @endsection
 
 @php
@@ -34,12 +34,11 @@
         return '<span class="dx-delta '.$cls.'" title="dibanding periode sebelumnya"><i class="bi '.$ico.'"></i>'.number_format(abs($p), 1, ',', '.').'%</span>';
     };
 
-    $isAdmin = request('peran') === 'admin';
 @endphp
 
 @section('content')
     {{-- ================= Filter global ================= --}}
-    @include('draft.partials._filter', ['route' => 'draft.ringkasan', 'info' => number_format($data['jumlah_baris'], 0, ',', '.').' kejadian'])
+    @include('panel.partials._filter', ['route' => $rp.'ringkasan', 'info' => number_format($data['jumlah_baris'], 0, ',', '.').' kejadian'])
 
     {{-- ================= Intinya (insight otomatis, saran 2.14) ================= --}}
     @if ($insight)
@@ -193,7 +192,7 @@
             <div class="dx-card">
                 <div class="dx-card-head">
                     <div><h3>Kejadian terbaru</h3><div class="dx-card-sub">8 kejadian terakhir pada periode & filter ini</div></div>
-                    <a href="{{ route('draft.data', request()->query()) }}" class="btn btn-sm btn-link text-decoration-none">Lihat semua <i class="bi bi-arrow-right"></i></a>
+                    <a href="{{ route($rp.'data', request()->query()) }}" class="btn btn-sm btn-link text-decoration-none">Lihat semua <i class="bi bi-arrow-right"></i></a>
                 </div>
                 <div class="dx-card-body">
                     <div class="table-responsive">

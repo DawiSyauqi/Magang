@@ -12,7 +12,7 @@
 </head>
 <body class="lap-body">
     <div class="lap-toolbar no-print">
-        <a href="{{ route('draft.laporan', request()->only('peran')) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i> Laporan</a>
+        <a href="{{ route($rp.'laporan', request()->only('peran')) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i> Laporan</a>
         <div class="d-flex flex-wrap gap-2 align-items-center">@yield('toolbar')</div>
         <div class="d-flex gap-2">
             @yield('toolbar-kanan')

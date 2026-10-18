@@ -1,10 +1,9 @@
-@extends('draft.layouts.cetak')
+@extends('panel.layouts.cetak')
 
 @php
     $k = $lap['kpi'];
     $warna = collect($lap['meta_kategori'])->pluck('warna', 'kode');
     $namaKat = collect($lap['meta_kategori'])->pluck('nama', 'kode');
-    $isAdmin = request('peran') === 'admin';
     $jamMenit = function (int $m) {
         $j = intdiv($m, 60);
         return $j ? $j.' j '.($m % 60).' m' : $m.' m';
@@ -23,7 +22,7 @@
 
 @section('toolbar')
     <form method="GET" class="d-flex gap-2 align-items-center">
-        @if ($isAdmin)<input type="hidden" name="peran" value="admin">@endif
+        @if ($peranQ)<input type="hidden" name="peran" value="admin">@endif
         <input type="date" name="tanggal" value="{{ $lap['tanggal'] }}" max="{{ now()->toDateString() }}" class="form-control form-control-sm" onchange="this.form.submit()">
         <select name="shift" class="form-select form-select-sm" onchange="this.form.submit()">
             <option value="">Semua shift</option>
@@ -34,7 +33,7 @@
     </form>
 @endsection
 @section('toolbar-kanan')
-    <a href="{{ route('draft.laporan.excel', ['jenis' => 'harian', 'tanggal' => $lap['tanggal'], 'shift' => $lap['shift']] + request()->only('peran')) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-file-earmark-spreadsheet me-1"></i> Excel</a>
+    <a href="{{ route($rp.'laporan.excel', ['jenis' => 'harian', 'tanggal' => $lap['tanggal'], 'shift' => $lap['shift']] + request()->only('peran')) }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-file-earmark-spreadsheet me-1"></i> Excel</a>
 @endsection
 
 @section('content')
@@ -129,7 +128,7 @@
         </table>
     </section>
 
-    @include('draft.partials._ttd')
+    @include('panel.partials._ttd')
 
     @php $payload = ['jenis' => 'harian', 'timeline' => $lap['timeline'], 'warna' => $warna, 'nama' => $namaKat]; @endphp
     <script type="application/json" id="lapData">@json($payload)</script>
