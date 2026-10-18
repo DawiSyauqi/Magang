@@ -55,7 +55,7 @@
                 <div class="dx-card-head">
                     <div>
                         <h3 id="paretoJudul">Pareto kategori masalah</h3>
-                        <div class="dx-card-sub" id="paretoSub">Klik batang untuk melihat detail masalah di kategori itu · garis 80% = prioritas</div>
+                        <div class="dx-card-sub" id="paretoSub">Batang = menit per kategori · garis = persentase kumulatif (dijumlah dari kiri, selalu naik sampai 100%) · kategori di kiri garis 80% = prioritas · klik batang untuk detail</div>
                     </div>
                     <button type="button" class="btn btn-sm btn-outline-secondary d-none" id="paretoKembali"><i class="bi bi-arrow-left"></i> Semua kategori</button>
                 </div>

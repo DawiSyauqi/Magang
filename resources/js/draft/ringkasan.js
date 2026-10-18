@@ -121,11 +121,18 @@ mount(document.getElementById('chartPareto'), (t) => ({
         ...base(t).tooltip,
         trigger: 'axis',
         formatter: (p) => {
-            const k = data.pareto[p[0].dataIndex];
-            return `<b>${k.kode} · ${k.nama}</b><br>${fmtMenit(k.menit)} · ${k.kejadian} kejadian<br>Kumulatif: <b>${k.kumulatif}%</b>`;
+            const i = p[0].dataIndex;
+            const k = data.pareto[i];
+            const total = data.pareto.reduce((a, x) => a + x.menit, 0) || 1;
+            const porsi = (k.menit / total * 100).toFixed(1);
+            const kode = data.pareto.slice(0, i + 1).map((x) => x.kode);
+            const jumlah = kode.length > 3 ? `${kode.length} kategori teratas` : kode.join(' + ');
+            return `<b>${k.kode} · ${k.nama}</b><br>${fmtMenit(k.menit)} · ${k.kejadian} kejadian · <b>${porsi}%</b> dari total`
+                + `<br><span style="opacity:.75">Garis (kumulatif):</span> ${jumlah} = <b>${k.kumulatif}%</b> dari total downtime`;
         },
     },
-    grid: { left: 8, right: 8, top: 24, bottom: 8, containLabel: true },
+    legend: { top: 0, right: 0, itemWidth: 12, itemHeight: 8, textStyle: { color: t.muted, fontSize: 11 } },
+    grid: { left: 8, right: 8, top: 34, bottom: 8, containLabel: true },
     xAxis: { type: 'category', data: data.pareto.map((k) => k.kode), ...axisStyle(t), splitLine: { show: false } },
     yAxis: [
         { type: 'value', name: 'menit', nameTextStyle: { color: t.subtle, fontSize: 10, align: 'left' }, ...axisStyle(t) },
@@ -133,11 +140,11 @@ mount(document.getElementById('chartPareto'), (t) => ({
     ],
     series: [
         {
-            type: 'bar', barMaxWidth: 36,
+            name: 'Menit per kategori', type: 'bar', barMaxWidth: 36, itemStyle: { color: t.muted },
             data: data.pareto.map((k) => ({ value: k.menit, itemStyle: { color: warna[k.kode], borderRadius: [5, 5, 0, 0] } })),
         },
         {
-            type: 'line', yAxisIndex: 1, data: data.pareto.map((k) => k.kumulatif), smooth: false,
+            name: 'Kumulatif % (s.d. 100%)', type: 'line', yAxisIndex: 1, data: data.pareto.map((k) => k.kumulatif), smooth: false,
             symbol: 'circle', symbolSize: 6, lineStyle: { color: t.text, width: 1.5 }, itemStyle: { color: t.text },
             markLine: {
                 silent: true, symbol: 'none', lineStyle: { color: t.up, type: 'dashed' },

@@ -64,6 +64,7 @@
         <section class="lap-section">
             <h2>Pareto kategori</h2>
             <div data-chart="pareto" style="height: 190px"></div>
+            <div class="lap-muted" style="font-size: 7.5pt; margin-top: 1mm">Batang = menit per kategori · garis = persentase kumulatif (dijumlah dari kiri sampai 100%) · kategori di kiri garis 80% = prioritas.</div>
         </section>
     </div>
 

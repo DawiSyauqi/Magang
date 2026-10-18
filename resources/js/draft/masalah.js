@@ -30,11 +30,18 @@ function opsiPareto(t) {
         tooltip: {
             ...base(t).tooltip, trigger: 'axis', axisPointer: { type: 'shadow' },
             formatter: (p) => {
-                const x = item[p[0].dataIndex];
-                return `<b>${x.label}</b>${k ? '' : ' · ' + x.ket}<br>${fmtMenit(x.menit)} · ${x.kejadian} kejadian${k ? ' · ' + x.ket : ''}<br>Kumulatif <b>${kumulatif[p[0].dataIndex]}%</b>${k ? '' : '<br><span style="opacity:.7">klik untuk detail</span>'}`;
+                const i = p[0].dataIndex;
+                const x = item[i];
+                const porsi = (x.menit / total * 100).toFixed(1);
+                const n = i + 1;
+                const jumlah = !k && n <= 3 ? item.slice(0, n).map((y) => y.label).join(' + ') : `${n} ${k ? 'detail' : 'kategori'} teratas`;
+                return `<b>${x.label}</b>${k ? '' : ' · ' + x.ket}<br>${fmtMenit(x.menit)} · ${x.kejadian} kejadian${k ? ' · ' + x.ket : ''} · <b>${porsi}%</b>`
+                    + `<br><span style="opacity:.75">Garis (kumulatif):</span> ${jumlah} = <b>${kumulatif[i]}%</b>`
+                    + (k ? '' : '<br><span style="opacity:.7">klik untuk detail</span>');
             },
         },
-        grid: { left: 8, right: 8, top: 24, bottom: 8, containLabel: true },
+        legend: { top: 0, right: 0, itemWidth: 12, itemHeight: 8, textStyle: { color: t.muted, fontSize: 11 } },
+        grid: { left: 8, right: 8, top: 34, bottom: 8, containLabel: true },
         xAxis: {
             type: 'category', data: item.map((x) => x.label), ...axisStyle(t), splitLine: { show: false },
             axisLabel: { color: t.muted, fontSize: 11, interval: 0, rotate: k && item.length > 4 ? 28 : 0, formatter: (v) => (k ? pendek(v) : v) },
@@ -44,9 +51,9 @@ function opsiPareto(t) {
             { type: 'value', min: 0, max: 100, axisLabel: { formatter: '{value}%', color: t.muted, fontSize: 11 }, axisLine: { show: false }, splitLine: { show: false } },
         ],
         series: [
-            { type: 'bar', barMaxWidth: 40, data: item.map((x) => ({ value: x.menit, itemStyle: { color: x.warna, borderRadius: [5, 5, 0, 0] } })), cursor: k ? 'default' : 'pointer' },
+            { name: 'Menit', type: 'bar', barMaxWidth: 40, itemStyle: { color: t.muted }, data: item.map((x) => ({ value: x.menit, itemStyle: { color: x.warna, borderRadius: [5, 5, 0, 0] } })), cursor: k ? 'default' : 'pointer' },
             {
-                type: 'line', yAxisIndex: 1, data: kumulatif, symbol: 'circle', symbolSize: 6,
+                name: 'Kumulatif % (s.d. 100%)', type: 'line', yAxisIndex: 1, data: kumulatif, symbol: 'circle', symbolSize: 6,
                 lineStyle: { color: t.text, width: 1.5 }, itemStyle: { color: t.text },
                 markLine: { silent: true, symbol: 'none', lineStyle: { color: t.up, type: 'dashed' }, label: { formatter: '80%', color: t.up, fontSize: 10, position: 'insideEndTop' }, data: [{ yAxis: 80 }] },
             },
@@ -60,7 +67,7 @@ function gambarPareto() {
     document.getElementById('paretoJudul').textContent = k ? `Detail masalah ${k.kode} · ${k.nama}` : 'Pareto kategori masalah';
     document.getElementById('paretoSub').textContent = k
         ? `${k.detail.length} detail masalah · ${fmtMenit(k.menit)} total`
-        : 'Klik batang untuk melihat detail masalah di kategori itu · garis 80% = prioritas';
+        : 'Batang = menit per kategori · garis = persentase kumulatif (dijumlah dari kiri, selalu naik sampai 100%) · kategori di kiri garis 80% = prioritas · klik batang untuk detail';
     document.getElementById('paretoKembali').classList.toggle('d-none', !k);
     pareto.setOption(opsiPareto(tokens()), true);
 }
