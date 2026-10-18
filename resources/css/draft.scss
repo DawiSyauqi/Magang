@@ -817,3 +817,210 @@ nav .d-sm-flex > div:first-child p.small { display: none; }
     .tutup { margin-left: auto; border: 0; background: none; color: var(--text-subtle); padding: 0; }
 }
 @keyframes sc-masuk { from { transform: translateY(10px); opacity: 0; } }
+
+// -----------------------------------------------------------------------------
+// 16. Pemeriksaan Data (validasi otomatis, saran 2.7)
+// -----------------------------------------------------------------------------
+.dx-stat.pm-galat > i { background: var(--up-soft); color: var(--up); }
+.dx-stat.pm-peringatan > i { background: var(--warn-soft); color: var(--warn); }
+
+.pm-jenis {
+    display: grid; gap: .5rem; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+}
+.pm-jenis-item {
+    display: flex; align-items: center; gap: .6rem; padding: .6rem .8rem; text-decoration: none; color: var(--text);
+    border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface);
+    > i { font-size: 1rem; color: var(--text-muted); }
+    div { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+    strong { font-size: .78rem; font-weight: 600; }
+    span { font-size: 1.05rem; font-weight: 700; }
+    &.galat:not(.nol) > i, &.galat:not(.nol) span { color: var(--up); }
+    &.peringatan:not(.nol) > i, &.peringatan:not(.nol) span { color: var(--warn); }
+    &.nol { opacity: .6; }
+    &:hover { border-color: var(--accent); }
+    &.active { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); opacity: 1; }
+}
+
+.pm-badge {
+    display: inline-flex; align-items: center; gap: .3rem; font-size: .72rem; font-weight: 600;
+    padding: .15rem .55rem; border-radius: 999px;
+    &.galat { background: var(--up-soft); color: var(--up); }
+    &.peringatan { background: var(--warn-soft); color: var(--warn); }
+}
+
+// Penanda catatan bermasalah di tabel Data Downtime
+.pm-tanda { color: var(--up); margin-left: .25rem; font-size: .8rem; }
+
+// -----------------------------------------------------------------------------
+// 17. Lonceng pemberitahuan (saran 2.3 & 2.8)
+// -----------------------------------------------------------------------------
+.dx-notif-badge {
+    position: absolute; top: -5px; right: -5px; min-width: 18px; height: 18px; padding: 0 5px;
+    border-radius: 999px; background: var(--up); color: #fff; font-size: .65rem; font-weight: 700;
+    display: grid; place-items: center; line-height: 1; border: 2px solid var(--surface);
+}
+.dx-notif-panel {
+    width: min(380px, calc(100vw - 32px)); padding: 0; overflow: hidden;
+    border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .15);
+}
+.dx-notif-head, .dx-notif-foot {
+    display: flex; justify-content: space-between; align-items: center; padding: .65rem .9rem; font-size: .85rem;
+}
+.dx-notif-head { border-bottom: 1px solid var(--border); }
+.dx-notif-foot { border-top: 1px solid var(--border); font-size: .72rem; color: var(--text-subtle); justify-content: flex-start; }
+.dx-notif-list { max-height: min(70vh, 460px); overflow-y: auto; }
+.dx-notif-empty { padding: 1.5rem 1rem; text-align: center; color: var(--text-muted); font-size: .85rem; }
+.dx-notif-item {
+    display: flex; gap: .7rem; padding: .7rem 1.6rem .7rem .9rem; text-decoration: none; color: var(--text);
+    border-bottom: 1px solid var(--border); position: relative;
+    &:last-child { border-bottom: 0; }
+    &:hover { background: var(--surface-hover); color: var(--text); }
+    > i {
+        width: 30px; height: 30px; flex-shrink: 0; border-radius: 8px; display: grid; place-items: center;
+        background: var(--accent-soft); color: var(--accent-text); font-size: .9rem;
+    }
+    &.galat > i { background: var(--up-soft); color: var(--up); }
+    &.peringatan > i { background: var(--warn-soft); color: var(--warn); }
+    .isi { min-width: 0; }
+    .judul { font-size: .82rem; font-weight: 600; line-height: 1.3; }
+    .pesan { font-size: .75rem; color: var(--text-muted); margin-top: .15rem; }
+    .waktu { font-size: .68rem; color: var(--text-subtle); margin-top: .25rem; }
+    &:not(.dibaca)::after {
+        content: ""; position: absolute; top: .95rem; right: .7rem; width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+    }
+    &.dibaca .judul { font-weight: 500; }
+}
+
+// -----------------------------------------------------------------------------
+// 18. Intinya — insight otomatis di Ringkasan (saran 2.14)
+// -----------------------------------------------------------------------------
+.dx-insight {
+    flex-direction: row; gap: .9rem; padding: 1rem 1.15rem; align-items: flex-start; height: auto;
+    border-left: 4px solid var(--accent);
+}
+.dx-insight-ikon {
+    width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px; display: grid; place-items: center;
+    background: var(--accent-soft); color: var(--accent-text); font-size: 1.1rem;
+}
+.dx-insight-judul { font-weight: 700; font-size: .95rem; margin-bottom: .35rem; .dx-card-sub { font-weight: 400; } }
+.dx-insight-list {
+    margin: 0; padding-left: 1.1rem; display: grid; gap: .25rem; font-size: .86rem; color: var(--text);
+    li::marker { color: var(--accent); }
+}
+
+// -----------------------------------------------------------------------------
+// 19. Pencarian global di topbar (saran 2.13)
+// -----------------------------------------------------------------------------
+.dx-cari { position: relative; }
+.dx-cari-buka { display: none; }
+.dx-cari-kotak {
+    position: relative; width: clamp(220px, 24vw, 340px);
+    > i { position: absolute; left: .75rem; top: 50%; transform: translateY(-50%); color: var(--text-subtle); font-size: .85rem; pointer-events: none; }
+    .form-control { height: 38px; padding-left: 2.1rem; padding-right: 2rem; font-size: .85rem; }
+    kbd {
+        position: absolute; right: .55rem; top: 50%; transform: translateY(-50%); pointer-events: none;
+        font-size: .68rem; padding: .05rem .35rem; border-radius: 4px; background: var(--surface-hover); color: var(--text-muted);
+        border: 1px solid var(--border); box-shadow: none;
+    }
+    .form-control:focus ~ kbd { display: none !important; }
+}
+.dx-cari-hasil {
+    position: absolute; top: calc(100% + 6px); right: 0; width: min(420px, calc(100vw - 32px)); z-index: 1050;
+    max-height: min(70vh, 480px); overflow-y: auto; padding: .35rem 0;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); box-shadow: 0 10px 30px rgba(0, 0, 0, .15);
+    a {
+        display: flex; gap: .65rem; align-items: center; padding: .45rem .85rem; text-decoration: none; color: var(--text);
+        > i { width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent-text); font-size: .8rem; flex-shrink: 0; }
+        div { min-width: 0; }
+        .l { font-size: .84rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .s { font-size: .72rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        &:hover, &[aria-selected="true"] { background: var(--surface-hover); }
+        &[aria-selected="true"] { box-shadow: inset 3px 0 0 var(--accent); }
+    }
+}
+.dx-cari-grup { padding: .5rem .85rem .2rem; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-subtle); }
+.dx-cari-kosong { padding: 1rem; text-align: center; font-size: .84rem; color: var(--text-muted); }
+
+// Layar sempit: hanya ikon; saat dibuka, kotak menutupi lebar topbar.
+@media (max-width: 991.98px) {
+    .dx-cari { position: static; }
+    .dx-cari-buka { display: inline-grid; }
+    .dx-cari-kotak { display: none; }
+    .dx-cari.terbuka .dx-cari-kotak {
+        display: block; position: absolute; left: 1rem; right: 1rem; top: 50%; transform: translateY(-50%); width: auto; z-index: 2;
+    }
+    .dx-cari-hasil { left: 0; right: 0; width: auto; }
+}
+
+// -----------------------------------------------------------------------------
+// 20. Mode layar TV / andon (saran 2.11) — dibaca dari jauh: huruf diskalakan vw.
+// -----------------------------------------------------------------------------
+body.tv { background: var(--bg); color: var(--text); font-size: clamp(14px, 1.05vw, 22px); }
+.tv-wrap { min-height: 100vh; display: flex; flex-direction: column; gap: 1em; padding: 1.2em 1.5em; }
+.tv-head {
+    display: flex; align-items: center; gap: 1em;
+    .dx-brand-logo {
+        width: 2.6em; height: 2.6em; font-size: 1.2em; border-radius: 12px; flex-shrink: 0;
+        display: grid; place-items: center; background: var(--accent); color: #fff;
+    }
+}
+.tv-judul { font-size: 1.7em; font-weight: 800; line-height: 1.1; }
+.tv-sub { font-size: .78em; color: var(--text-muted); }
+.tv-draft { font-weight: 700; color: var(--warn); }
+.tv-jam { text-align: right; div:first-child { font-size: 2.2em; font-weight: 800; line-height: 1; } }
+.tv-box {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg, 14px); padding: 1em 1.2em; min-width: 0;
+}
+.tv-label { font-size: .85em; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; i { color: var(--accent); } }
+.tv-nilai { font-size: 2.9em; font-weight: 800; line-height: 1.1; margin: .1em 0; small { font-size: .45em; font-weight: 600; color: var(--text-muted); margin: 0 .15em; } }
+.tv-kecil { font-size: .35em; font-weight: 600; color: var(--text-muted); }
+.tv-kpi { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 1em; }
+.tv-progress { height: .5em; border-radius: 999px; background: var(--surface-hover); overflow: hidden; margin: .35em 0;
+    span { display: block; height: 100%; background: var(--accent); border-radius: inherit; } }
+.tv-main { flex: 1; display: grid; grid-template-columns: 2.1fr 1fr; gap: 1em; min-height: 0; }
+.tv-side { display: flex; flex-direction: column; gap: 1em; min-width: 0; }
+.tv-box-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1em; flex-wrap: wrap; margin-bottom: .6em; }
+.tv-legend { display: flex; flex-wrap: wrap; gap: .3em .9em; font-size: .7em; color: var(--text-muted);
+    i { display: inline-block; width: .8em; height: .8em; border-radius: 3px; margin-right: .3em; vertical-align: -.05em; } }
+
+.tv-tl { display: flex; flex-direction: column; gap: .35em; }
+.tv-tl-row { display: grid; grid-template-columns: 6.5em 1fr; align-items: center; gap: .6em; }
+.tv-tl-mesin { display: flex; justify-content: space-between; gap: .4em; font-size: .9em; span { color: var(--text-muted); font-size: .8em; } }
+.tv-tl-track { position: relative; height: 1.45em; border-radius: 5px; background: var(--surface-hover); }
+.tv-tl-skala .tv-tl-track { background: none; height: 1.1em;
+    span { position: absolute; transform: translateX(-50%); font-size: .7em; color: var(--text-subtle); }
+    span:first-child { transform: none; } }
+.tv-tl-seg { position: absolute; top: 0; bottom: 0; border-radius: 3px; }
+.tv-tl-shift { position: absolute; top: -2px; bottom: -2px; width: 1px; background: var(--border-strong, var(--border)); }
+.tv-tl-kini { right: 0; left: auto !important; transform: none !important; font-weight: 700; color: var(--text) !important; }
+.tv-tl-track::after { content: ""; position: absolute; right: -2px; top: -4px; bottom: -4px; width: 3px; border-radius: 2px; background: var(--text); }
+.tv-tl-skala .tv-tl-track::after { display: none; }
+.tv-kosong { padding: 2em; text-align: center; font-size: 1.2em; color: var(--text-muted); i { color: var(--down); } }
+
+.tv-bar { display: grid; grid-template-columns: 1fr auto; gap: .15em .6em; margin-bottom: .55em; font-size: .9em; }
+.tv-bar-l { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tv-bar-v { font-weight: 700; }
+.tv-bar-t { grid-column: 1 / -1; height: .45em; border-radius: 999px; background: var(--surface-hover); overflow: hidden; span { display: block; height: 100%; border-radius: inherit; } }
+.tv-item { display: flex; gap: .6em; align-items: flex-start; font-size: .88em; padding: .35em 0; border-top: 1px solid var(--border);
+    &:first-of-type { border-top: 0; } > i { color: var(--warn); font-size: 1.1em; } }
+.tv-cat { flex-shrink: 0; font-size: .75em; font-weight: 700; color: #fff; padding: .15em .45em; border-radius: 5px; }
+.tv-alert { border-color: var(--warn); }
+
+@media (max-width: 1100px) {
+    .tv-kpi, .tv-main { grid-template-columns: 1fr; }
+}
+
+// -----------------------------------------------------------------------------
+// 21. Pasang aplikasi (PWA, saran 2.12)
+// -----------------------------------------------------------------------------
+.dx-pasang {
+    display: flex; align-items: center; gap: .6rem; width: 100%; margin-bottom: .6rem; padding: .55rem .7rem; text-align: left;
+    border: 1px dashed var(--accent); border-radius: var(--r-md); background: var(--accent-soft); color: var(--accent-text);
+    > i { font-size: 1.1rem; }
+    span { display: flex; flex-direction: column; line-height: 1.25; }
+    strong { font-size: .8rem; }
+    small { font-size: .68rem; opacity: .85; }
+    &:hover { border-style: solid; }
+    &[hidden] { display: none; }
+}

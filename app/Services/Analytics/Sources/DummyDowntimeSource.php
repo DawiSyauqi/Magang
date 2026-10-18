@@ -196,6 +196,8 @@ class DummyDowntimeSource implements DowntimeSource
             }
         }
 
+        $rows = $this->sisipkanAnomali($rows, $tanggal, $urut);
+
         // Field tambahan untuk halaman Data Downtime. Diturunkan dari hash No_Trs
         // (bukan PRNG) supaya angka-angka yang sudah ada di Ringkasan tidak bergeser.
         // Jam lokal pabrik (WIB). Catatan baru "ada" setelah petugas menginputnya,
@@ -215,6 +217,50 @@ class DummyDowntimeSource implements DowntimeSource
         usort($rows, fn ($a, $b) => strcmp($a->Time_Start, $b->Time_Start));
 
         return $this->cache[$tanggal] = $rows;
+    }
+
+    /**
+     * Sesekali (±2 dari 5 hari) satu catatan dibuat SALAH supaya halaman
+     * Pemeriksaan Data (saran 2.7) punya contoh: terinput dua kali, jam
+     * bertumpuk, Time_Total tidak cocok, atau jam di luar shift.
+     */
+    private function sisipkanAnomali(array $rows, string $tanggal, int &$urut): array
+    {
+        if (! $rows) {
+            return $rows;
+        }
+        $h = crc32('anomali-'.$tanggal);
+        $jenis = $h % 100;
+        $asal = $rows[intdiv($h, 100) % count($rows)];
+        $salin = function (array $ubah) use ($asal, $tanggal, &$urut) {
+            $r = clone $asal;
+            $r->No_Trs = sprintf('PRB%s%04d', Carbon::parse($tanggal)->format('ym'), ++$urut);
+            foreach ($ubah as $k => $v) {
+                $r->$k = $v;
+            }
+
+            return $r;
+        };
+
+        if ($jenis < 12) {          // terinput dua kali
+            $rows[] = $salin([]);
+        } elseif ($jenis < 24) {    // jam bertumpuk dengan kejadian lain
+            $mulai = Carbon::parse($asal->Time_Start)->addMinutes(10);
+            $kat = $asal->ProblemCode === 'D07' ? 'D03' : 'D07';
+            $rows[] = $salin([
+                'Time_Start' => $mulai->format('Y-m-d H:i'),
+                'Time_End' => $mulai->copy()->addMinutes(20)->format('Y-m-d H:i'),
+                'Time_Total' => 20, 'ProblemCode' => $kat, 'ProblemName' => self::KATEGORI[$kat][0],
+                'Problem_Desc' => self::KATEGORI[$kat][4][0],
+            ]);
+        } elseif ($jenis < 32) {    // Time_Total salah ketik
+            $asal->Time_Total += 30;
+        } elseif ($jenis < 40) {    // jam tidak sesuai shift yang dipilih
+            $lain = $asal->ShiftCode === '1' ? '2' : '1';
+            $rows[] = $salin(['ShiftCode' => $lain]);
+        }
+
+        return $rows;
     }
 
     private function pilihKategori(string $favorit): string

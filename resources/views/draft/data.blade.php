@@ -55,6 +55,21 @@
         </div>
     </div>
 
+    @if ($cek['total'])
+        <div class="dx-note mb-3" style="background: var(--up-soft); color: var(--up)">
+            <i class="bi bi-clipboard-x"></i>
+            <span>
+                <strong>{{ count($cek['no_trs']) }} catatan</strong> pada filter ini terdeteksi bermasalah ({{ $cek['galat'] }} perlu diperbaiki, {{ $cek['peringatan'] }} perlu dicek) dan ditandai <i class="bi bi-exclamation-octagon-fill"></i>.
+                @if (request()->boolean('periksa'))
+                    <a href="{{ request()->fullUrlWithQuery(['periksa' => null, 'page' => null]) }}">Tampilkan semua catatan</a>
+                @else
+                    <a href="{{ request()->fullUrlWithQuery(['periksa' => 1, 'page' => null]) }}">Tampilkan yang bermasalah saja</a>
+                @endif
+                · <a href="{{ route('draft.pemeriksaan', request()->only(['periode', 'dari', 'sampai', 'shift', 'mesin', 'kategori', 'peran'])) }}">Rincian pemeriksaan</a>
+            </span>
+        </div>
+    @endif
+
     @if ($isAdmin)
         <div class="dx-note mb-3"><i class="bi bi-eye"></i><span>Mode <strong>baca saja</strong>: admin dapat melihat dan mengekspor data, tetapi tidak menambah, mengubah, atau menghapus data produksi.</span></div>
     @endif
@@ -114,6 +129,7 @@
                                     'Detail masalah' => $r->Problem_Desc, 'Item' => $r->ITEMNO.' · '.$r->ItemDesc, 'Speed mesin' => $r->Speed_Mesin.' m/mnt',
                                 ];
                                 if ($isAdmin) $detail['Operator'] = $r->NIK.' · '.$r->OperatorName;
+                                if (isset($cek['no_trs'][$r->No_Trs])) $detail['Pemeriksaan'] = implode(', ', $cek['no_trs'][$r->No_Trs]);
                                 $detail += [
                                     'Sumber' => $r->Sumber === 'ai' ? 'AI Baca Kertas' : 'Input manual',
                                     'Dibuat' => $r->CrtId.' · '.\Carbon\Carbon::parse($r->CrtDate)->translatedFormat('d M Y H:i'),
@@ -121,7 +137,7 @@
                                 ];
                             @endphp
                             <tr tabindex="0" data-detail='@json($detail)' data-ai="{{ $r->Sumber === 'ai' ? 1 : 0 }}" data-warna="{{ $warna[$r->ProblemCode] ?? '#64748b' }}">
-                                <td class="num text-muted-x">{{ $r->No_Trs }}</td>
+                                <td class="num text-muted-x text-nowrap">{{ $r->No_Trs }}@isset($cek['no_trs'][$r->No_Trs])<i class="bi bi-exclamation-octagon-fill pm-tanda" title="{{ implode(', ', $cek['no_trs'][$r->No_Trs]) }}"></i>@endisset</td>
                                 <td class="text-nowrap">
                                     <div class="fw-semibold">{{ \Carbon\Carbon::parse($r->Tgl_Trs)->translatedFormat('d M Y') }}</div>
                                     <div class="text-muted-x small num">{{ substr($r->Time_Start, 11, 5) }}–{{ substr($r->Time_End, 11, 5) }}</div>

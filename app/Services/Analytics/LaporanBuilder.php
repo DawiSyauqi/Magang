@@ -120,6 +120,38 @@ class LaporanBuilder
         ];
     }
 
+    /**
+     * Insight otomatis untuk halaman Ringkasan (saran 2.14): kalimat yang sama
+     * dengan catatan laporan, untuk periode & filter apa pun, dibanding periode
+     * sebelumnya dengan panjang yang sama.
+     *
+     * @return string[]
+     */
+    public function insight(Carbon $dari, Carbon $sampai, array $filter, string $label): array
+    {
+        $dari = $dari->copy()->startOfDay();
+        $sampai = $sampai->copy()->startOfDay();
+        $jumlahHari = $dari->diffInDays($sampai) + 1;
+        $prevSampai = $dari->copy()->subDay();
+        $prevDari = $prevSampai->copy()->subDays($jumlahHari - 1);
+
+        $rows = $this->source->rows($dari, $sampai, $filter);
+        $kpi = $this->kpi($rows, $this->source->rows($prevDari, $prevSampai, $filter), $jumlahHari, count($filter['shift'] ?? []) ?: 3);
+        $masalah = $this->analytics->analisisMasalah($dari, $sampai, $filter, 3);
+        $waktu = $this->analytics->analisisWaktu($dari, $sampai, $filter);
+
+        return $this->catatan([
+            'label' => $label,
+            'pembanding' => 'periode sebelumnya ('.$prevDari->translatedFormat('d M').($jumlahHari > 1 ? '–'.$prevSampai->translatedFormat('d M') : '').')',
+            'kpi' => $kpi,
+            'mesin' => collect($this->analytics->analisisMesin($dari, $sampai, $filter)['ranking'])->where('menit', '>', 0)->values(),
+            'kategori' => collect($masalah['kategori']),
+            'shift' => count($filter['shift'] ?? []) === 1 ? collect() : collect($waktu['shift']),
+            'berulang' => collect($masalah['berulang']),
+            'hari_terburuk' => $jumlahHari > 1 ? $waktu['ringkas']['hari_terburuk'] : null,
+        ]);
+    }
+
     // ------------------------------------------------------------------
 
     /** KPI sederhana dengan pembanding eksplisit. */

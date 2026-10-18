@@ -21,6 +21,10 @@ return [
         '3' => ['mulai' => '23:00', 'selesai' => '07:00'],
     ],
 
+    // Pengingat input (saran 2.3): shift dianggap "seharusnya sudah diinput"
+    // sekian menit setelah shift selesai.
+    'pengingat_input_menit' => (int) env('PENGINGAT_INPUT_MENIT', 60),
+
     // Jam awal sumbu timeline harian (07:00 → 07:00 hari berikutnya).
     'jam_awal_hari_produksi' => 7,
 

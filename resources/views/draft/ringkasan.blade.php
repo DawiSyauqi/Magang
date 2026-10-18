@@ -41,6 +41,21 @@
     {{-- ================= Filter global ================= --}}
     @include('draft.partials._filter', ['route' => 'draft.ringkasan', 'info' => number_format($data['jumlah_baris'], 0, ',', '.').' kejadian'])
 
+    {{-- ================= Intinya (insight otomatis, saran 2.14) ================= --}}
+    @if ($insight)
+        <div class="dx-card dx-insight mb-3">
+            <div class="dx-insight-ikon"><i class="bi bi-lightbulb"></i></div>
+            <div class="min-w-0">
+                <div class="dx-insight-judul">Intinya <span class="dx-card-sub">· dibuat otomatis dari data, berbasis aturan (tanpa AI)</span></div>
+                <ul class="dx-insight-list">
+                    @foreach ($insight as $kalimat)
+                        <li>{{ $kalimat }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+    @endif
+
     {{-- ================= KPI ================= --}}
     <div class="row g-3 mb-3">
         <div class="col-6 col-lg-4 col-xxl-2">

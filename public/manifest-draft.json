@@ -1,0 +1,24 @@
+{
+    "name": "OptiGear · Downtime Mesin (Draft)",
+    "short_name": "Downtime",
+    "description": "Pantau downtime mesin, analisis, laporan, dan foto formulir ke AI Baca Kertas.",
+    "id": "/draft/ringkasan",
+    "start_url": "/draft/ringkasan",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#fafaf9",
+    "theme_color": "#ea580c",
+    "orientation": "any",
+    "lang": "id",
+    "icons": [
+        { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+        { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+        { "src": "/icons/icon-192-maskable.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+        { "src": "/icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    ],
+    "shortcuts": [
+        { "name": "Tambah Data (foto formulir)", "short_name": "Tambah Data", "url": "/draft/tambah", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+        { "name": "Data Downtime", "short_name": "Data", "url": "/draft/data", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+        { "name": "Layar TV", "short_name": "Layar TV", "url": "/draft/tv", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+    ]
+}

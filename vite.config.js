@@ -10,7 +10,7 @@ export default defineConfig({
                 // Halaman /draft (evaluasi desain & fitur baru)
                 'resources/css/draft.scss', 'resources/js/draft/ringkasan.js',
                 'resources/js/draft/mesin.js', 'resources/js/draft/mesin-profil.js', 'resources/js/draft/masalah.js', 'resources/js/draft/waktu.js', 'resources/js/draft/produk.js', 'resources/js/draft/operator.js', 'resources/js/draft/laporan.js', 'resources/js/draft/statistik-ai.js',
-                'resources/js/draft/scan-notif.js', 'resources/js/draft/scan-tambah.js', 'resources/js/draft/scan-tinjau.js',
+                'resources/js/draft/pemberitahuan.js', 'resources/js/draft/cari.js', 'resources/js/draft/scan-notif.js', 'resources/js/draft/scan-tambah.js', 'resources/js/draft/scan-tinjau.js',
                 'resources/css/draft2.scss', 'resources/js/draft2/ringkasan.js',
                 'resources/css/draft3.scss', 'resources/js/draft3/ringkasan.js',
                 'resources/css/draft4.scss', 'resources/js/draft4/ringkasan.js',

@@ -6,14 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Services\Analytics\DowntimeAnalytics;
 use App\Services\Analytics\DowntimeListing;
 use App\Services\Analytics\LaporanBuilder;
+use App\Services\Analytics\Pemberitahuan;
 use App\Services\Analytics\Sources\DummyAdminData;
 use App\Services\Analytics\Sources\DummyDowntimeSource;
+use App\Services\Analytics\ValidasiDowntime;
 use App\Services\Audit\AuditLog;
 use App\Services\Pengaturan\PengaturanStore;
 use App\Services\Scan\ScanStatistik;
 use App\Services\Scan\ScanStore;
 use App\Support\ExcelXml;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -83,8 +86,17 @@ class DraftController extends Controller
         $store = PengaturanStore::make();
         $kodeMesin = $filter['mesin'] ?: array_keys($source->mesin());
 
+        $label = $filter['periode'] === 'kustom' || $filter['periode'] === 'hari_ini'
+            ? ($dari->eq($sampai) ? $dari->translatedFormat('d M Y') : $dari->translatedFormat('d M').' – '.$sampai->translatedFormat('d M Y'))
+            : mb_strtolower(self::PERIODE[$filter['periode']]).' ('.$dari->translatedFormat('d M').' – '.$sampai->translatedFormat('d M').')';
+        if ($sampai->isToday()) {
+            // Hari ini belum selesai: beri tahu supaya "turun xx%" tidak disalahpahami.
+            $label .= ', data s.d. pukul '.now('Asia/Jakarta')->format('H:i');
+        }
+
         return view($view, [
             'data' => $analytics->ringkasan($dari, $sampai, $filter),
+            'insight' => (new LaporanBuilder($source))->insight($dari, $sampai, $filter, $label),
             'filter' => $filter,
             'target' => [
                 'aktif' => $store->target()['aktif'],
@@ -402,6 +414,10 @@ class DraftController extends Controller
 
         $listing = new DowntimeListing($source);
         $rows = $listing->rows($dari, $sampai, $filter, $opsi, $isAdmin);
+        $cek = (new ValidasiDowntime())->ringkas((new ValidasiDowntime())->periksa($source->rows($dari, $sampai, $filter)));
+        if ($request->boolean('periksa')) {
+            $rows = $rows->filter(fn ($r) => isset($cek['no_trs'][$r->No_Trs]))->values();
+        }
 
         $perHalaman = in_array((int) $request->input('per'), [10, 25, 50, 100], true) ? (int) $request->input('per') : 25;
         $halaman = max(1, (int) $request->input('page', 1));
@@ -420,6 +436,182 @@ class DraftController extends Controller
             ],
             'filter' => $filter + $opsi + ['per' => $perHalaman],
             'opsiOperator' => $isAdmin ? $listing->operatorDari($source->rows($dari, $sampai, $filter)) : [],
+            'kategoriWarna' => config('produksi.warna_kategori'),
+            'cek' => $cek,
+        ] + $this->opsiFilter($source));
+    }
+
+    /**
+     * Mode layar TV / andon (saran 2.11): 24 jam terakhir s.d. sekarang, huruf
+     * besar, tanpa menu, memuat ulang sendiri tiap 60 detik.
+     *
+     * Berbeda dengan halaman analisis (yang memakai Tgl_Trs, aturan 6.2), layar
+     * TV bersifat real-time: posisi kejadian memakai Time_Start apa adanya dan
+     * jendelanya bergeser, jadi tidak pernah ada kejadian "di masa depan".
+     */
+    public function tv(Request $request)
+    {
+        $source = new DummyDowntimeSource();
+        $sekarang = now('Asia/Jakarta')->startOfMinute();
+        $mulai = $sekarang->copy()->subDay();
+        $menitShift = (int) config('produksi.menit_per_shift', 480);
+        $kunci = fn (Carbon $t) => $t->format('Y-m-d H:i');
+
+        $rows = $source->rows($mulai->copy()->subDay()->startOfDay(), $sekarang->copy()->addDay()->startOfDay())
+            ->filter(fn ($r) => $r->Time_Start >= $kunci($mulai) && $r->Time_Start <= $kunci($sekarang))->values();
+        $rata30 = (int) round($source->rows($sekarang->copy()->subDays(30)->startOfDay(), $sekarang->copy()->subDay()->startOfDay())->sum('Time_Total') / 30);
+
+        // Shift yang sedang berjalan + waktu mulainya (shift 3 bisa mulai kemarin 23:00).
+        $shiftNow = '1';
+        $mulaiShift = $sekarang->copy();
+        foreach (config('produksi.shift') as $s => $jam) {
+            $m = $sekarang->copy()->setTimeFromTimeString($jam['mulai']);
+            if ($m->gt($sekarang)) {
+                $m->subDay();
+            }
+            if ($m->diffInMinutes($sekarang) < $menitShift) {
+                [$shiftNow, $mulaiShift] = [(string) $s, $m];
+            }
+        }
+        $berjalan = (int) $mulaiShift->diffInMinutes($sekarang);
+        $rowsShift = $rows->filter(fn ($r) => $r->Time_Start >= $kunci($mulaiShift));
+
+        $posisi = fn (string $waktu) => 1440 - (int) Carbon::parse($waktu, 'Asia/Jakarta')->diffInMinutes($sekarang); // menit dari awal jendela
+        $timeline = $rows->map(fn ($r) => [
+            'mesin' => $r->MesinCode, 'mulai' => max(0, $posisi($r->Time_Start)),
+            'selesai' => min(1440, $posisi($r->Time_Start) + (int) $r->Time_Total), 'kategori' => $r->ProblemCode,
+            'detail' => $r->Problem_Desc, 'jam' => substr($r->Time_Start, 11, 5).'–'.substr($r->Time_End, 11, 5),
+        ])->groupBy('mesin');
+        $menitMesin = $rows->groupBy('MesinCode')->map(fn ($g) => (int) $g->sum('Time_Total'))->sortDesc();
+
+        // Penanda jam (tiap 2 jam genap) & pergantian shift di dalam jendela 24 jam.
+        $skala = [];
+        $garisShift = [];
+        for ($t = $mulai->copy()->addHour()->startOfHour(); $t->lte($sekarang); $t->addHour()) {
+            $pos = $mulai->diffInMinutes($t) / 1440 * 100;
+            if ($t->hour % 2 === 0 && $pos < 93) { // sisakan ruang untuk label "sekarang"
+                $skala[] = ['pos' => $pos, 'label' => $t->format('H')];
+            }
+            if (in_array($t->format('H:i'), array_column(config('produksi.shift'), 'mulai'), true)) {
+                $garisShift[] = ['pos' => $pos, 'label' => $t->format('H:i')];
+            }
+        }
+
+        $kategori = collect($source->kategori())->map(fn ($nama, $kode) => ['nama' => $nama, 'warna' => config("produksi.warna_kategori.$kode", '#64748b')]);
+        $peringatan = collect((new Pemberitahuan($source, PengaturanStore::make()))->daftar(false, fn ($r, $p) => route($r, $p), $sekarang))
+            ->where('jenis', '!=', 'input')->take(2)->values();
+
+        return view('draft.tv', [
+            'mulai' => $mulai,
+            'sekarang' => $sekarang,
+            'kpi' => [
+                'menit' => (int) $rows->sum('Time_Total'),
+                'kejadian' => $rows->count(),
+                'mesin' => $menitMesin->count(),
+                'mesin_total' => count($source->mesin()),
+                'rata30' => $rata30,
+            ],
+            'shift' => [
+                'kode' => $shiftNow,
+                'jam' => config("produksi.shift.$shiftNow.mulai").'–'.config("produksi.shift.$shiftNow.selesai"),
+                'persen' => round($berjalan / $menitShift * 100),
+                'sisa' => $menitShift - $berjalan,
+                'menit' => (int) $rowsShift->sum('Time_Total'),
+                'kejadian' => $rowsShift->count(),
+            ],
+            'timeline' => $timeline,
+            'menitMesin' => $menitMesin,
+            'skala' => $skala,
+            'garisShift' => $garisShift,
+            'topMesin' => $menitMesin->take(5)->map(fn ($menit, $kode) => [
+                'kode' => $kode, 'nama' => $source->mesin()[$kode] ?? $kode, 'menit' => $menit,
+                'kategori' => $rows->where('MesinCode', $kode)->groupBy('ProblemCode')->map->sum('Time_Total')->sortDesc()->keys()->first(),
+            ])->values(),
+            'terbaru' => $rows->sortByDesc('Time_Start')->take($peringatan->isEmpty() ? 6 : 3)->values(),
+            'peringatan' => $peringatan,
+            'kategori' => $kategori,
+        ]);
+    }
+
+    /**
+     * Pencarian global di topbar (saran 2.13): halaman, mesin, No_Trs, detail
+     * masalah, item, dan operator (khusus admin, K5). Catatan dicari 90 hari terakhir.
+     */
+    public function cari(Request $request): JsonResponse
+    {
+        $q = mb_strtolower(trim(mb_substr((string) $request->input('q', ''), 0, 60)));
+        if (mb_strlen($q) < 2) {
+            return response()->json(['grup' => []]);
+        }
+        $isAdmin = $request->input('peran') === 'admin';
+        $peran = $isAdmin ? ['peran' => 'admin'] : [];
+        $source = new DummyDowntimeSource();
+        $cocok = fn (string ...$teks) => str_contains(mb_strtolower(implode(' ', $teks)), $q);
+        $sampai = Carbon::today();
+        $dari = $sampai->copy()->subDays(89);
+        $keData = fn (array $p) => route('draft.data', $peran + ['periode' => 'kustom', 'dari' => $dari->toDateString(), 'sampai' => $sampai->toDateString()] + $p);
+
+        $halaman = collect([
+            ['draft.ringkasan', 'Ringkasan', 'bi-grid-1x2'], ['draft.mesin', 'Analisis Mesin', 'bi-cpu'],
+            ['draft.masalah', 'Analisis Masalah', 'bi-exclamation-triangle'], ['draft.waktu', 'Waktu & Shift', 'bi-clock-history'],
+            ['draft.produk', 'Produk / Item', 'bi-box-seam'], ['draft.data', 'Data Downtime', 'bi-table'],
+            ['draft.pemeriksaan', 'Pemeriksaan Data', 'bi-clipboard-check'], ['draft.laporan', 'Laporan', 'bi-file-earmark-bar-graph'],
+            $isAdmin ? ['draft.operator', 'Analisis Operator', 'bi-people'] : ['draft.tambah', 'Tambah Data', 'bi-camera'],
+        ])->filter(fn ($h) => $cocok($h[1]))->map(fn ($h) => ['label' => $h[1], 'sub' => 'Halaman', 'ikon' => $h[2], 'url' => route($h[0], $peran)]);
+
+        $mesin = collect($source->mesin())->filter(fn ($nama, $kode) => $cocok($kode, $nama))
+            ->map(fn ($nama, $kode) => ['label' => $kode.' · '.$nama, 'sub' => 'Profil mesin', 'ikon' => 'bi-cpu', 'url' => route('draft.mesin.profil', $peran + ['kode' => $kode])]);
+
+        $rows = $source->rows($dari, $sampai);
+        $catatan = $rows->filter(fn ($r) => str_contains(mb_strtolower($r->No_Trs), $q))->sortByDesc('Time_Start')
+            ->map(fn ($r) => ['label' => $r->No_Trs, 'sub' => Carbon::parse($r->Tgl_Trs)->translatedFormat('d M').' · '.$r->MesinCode.' · '.$r->Problem_Desc, 'ikon' => 'bi-receipt', 'url' => $keData(['q' => $r->No_Trs])]);
+
+        $hitung = fn ($g) => $g->count().' catatan · 90 hari';
+        $masalah = $rows->filter(fn ($r) => $cocok($r->Problem_Desc, $r->ProblemName))->groupBy('Problem_Desc')->sortByDesc(fn ($g) => $g->count())
+            ->map(fn ($g, $d) => ['label' => $d, 'sub' => $g->first()->ProblemCode.' '.$g->first()->ProblemName.' · '.$hitung($g), 'ikon' => 'bi-exclamation-triangle', 'url' => $keData(['q' => $d])]);
+        $item = $rows->filter(fn ($r) => $cocok($r->ITEMNO, $r->ItemDesc))->groupBy('ITEMNO')
+            ->map(fn ($g, $kode) => ['label' => $kode.' · '.$g->first()->ItemDesc, 'sub' => 'Item · '.$hitung($g), 'ikon' => 'bi-box-seam', 'url' => $keData(['q' => $kode])]);
+        $operator = $isAdmin ? $rows->filter(fn ($r) => $cocok($r->NIK, $r->OperatorName))->groupBy('NIK')
+            ->map(fn ($g, $nik) => ['label' => $g->first()->OperatorName, 'sub' => 'Operator NIK '.$nik.' · '.$hitung($g), 'ikon' => 'bi-person', 'url' => $keData(['operator' => $nik])]) : collect();
+
+        $grup = collect(['Halaman' => $halaman, 'Mesin' => $mesin, 'Catatan (No_Trs)' => $catatan, 'Masalah' => $masalah, 'Item' => $item, 'Operator' => $operator])
+            ->filter(fn ($g) => $g->isNotEmpty())
+            ->map(fn ($g, $judul) => ['judul' => $judul, 'hasil' => $g->take(5)->values()->all(), 'lebih' => max(0, $g->count() - 5)])
+            ->values()->all();
+
+        return response()->json(['grup' => $grup]);
+    }
+
+    /** Isi lonceng pemberitahuan (2.3 pengingat input, 2.7 validasi, 2.8 target & berulang). */
+    public function pemberitahuan(Request $request): JsonResponse
+    {
+        $isAdmin = $request->input('peran') === 'admin';
+        $peran = $isAdmin ? ['peran' => 'admin'] : [];
+        $items = (new Pemberitahuan(new DummyDowntimeSource(), PengaturanStore::make()))
+            ->daftar($isAdmin, fn (string $route, array $p) => route($route, $p + $peran));
+
+        return response()->json(['items' => $items, 'dihitung' => now('Asia/Jakarta')->format('H:i')]);
+    }
+
+    /**
+     * Pemeriksaan Data (saran 2.7): temuan validasi otomatis pada periode & filter
+     * global — duplikat, jam bertumpuk, melebihi shift, durasi salah, masa depan,
+     * di luar jam shift. Hanya MEMBACA; perbaikan lewat Data Downtime (petugas).
+     */
+    public function pemeriksaan(Request $request)
+    {
+        $source = new DummyDowntimeSource();
+        [$filter, $dari, $sampai] = $this->filterGlobal($request, $source);
+        $validasi = new ValidasiDowntime();
+        $rows = $source->rows($dari, $sampai, $filter);
+        $temuan = $validasi->periksa($rows);
+        $jenis = array_key_exists($request->input('jenis'), ValidasiDowntime::JENIS) ? $request->input('jenis') : '';
+
+        return view('draft.pemeriksaan', [
+            'ringkas' => $validasi->ringkas($temuan) + ['baris' => $rows->count()],
+            'temuan' => $jenis ? array_values(array_filter($temuan, fn ($t) => $t['jenis'] === $jenis)) : $temuan,
+            'jenis' => $jenis,
+            'filter' => $filter,
             'kategoriWarna' => config('produksi.warna_kategori'),
         ] + $this->opsiFilter($source));
     }

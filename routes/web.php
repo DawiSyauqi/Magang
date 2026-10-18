@@ -121,6 +121,10 @@ if (config('produksi.draft_enabled')) {
         Route::get('/admin/statistik-ai', [\App\Http\Controllers\Draft\DraftController::class, 'adminStatistikAi'])->name('admin.ai');
         Route::get('/data', [\App\Http\Controllers\Draft\DraftController::class, 'data'])->name('data');
         Route::get('/data/export', [\App\Http\Controllers\Draft\DraftController::class, 'exportData'])->name('data.export');
+        Route::get('/pemeriksaan', [\App\Http\Controllers\Draft\DraftController::class, 'pemeriksaan'])->name('pemeriksaan');
+        Route::get('/pemberitahuan', [\App\Http\Controllers\Draft\DraftController::class, 'pemberitahuan'])->name('pemberitahuan');
+        Route::get('/cari', [\App\Http\Controllers\Draft\DraftController::class, 'cari'])->name('cari');
+        Route::get('/tv', [\App\Http\Controllers\Draft\DraftController::class, 'tv'])->name('tv');
 
         // Tambah Data dengan AI Baca Kertas — Eksplorasi 6 (foto dibaca sungguhan, hasil ke file).
         Route::controller(\App\Http\Controllers\Draft\DraftScanController::class)->group(function () {

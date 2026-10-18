@@ -125,7 +125,7 @@
         </div>
 
         {{-- P6 masalah berulang --}}
-        <div class="col-12">
+        <div class="col-12" id="berulang" style="scroll-margin-top: 80px">
             <div class="dx-card">
                 <div class="dx-card-head flex-wrap">
                     <div>
