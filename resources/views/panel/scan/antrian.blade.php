@@ -37,7 +37,7 @@
             <div class="table-responsive">
                 <table class="dx-table">
                     <thead><tr>
-                        <th>Dikirim</th>@if ($isAdmin)<th>Petugas</th>@endif<th>Foto</th><th>Sumber</th><th>Status</th><th class="text-end">Kotak ragu</th><th class="text-end">Proses</th><th></th>
+                        <th>Dikirim</th>@if ($isAdmin)<th>Petugas</th>@endif<th>Foto</th><th>Sumber</th><th>Shift dibaca</th><th>Status</th><th class="text-end">Kotak ragu</th><th class="text-end">Proses</th><th></th>
                     </tr></thead>
                     <tbody>
                         @forelse ($daftar as $s)
@@ -46,6 +46,7 @@
                                 @if ($isAdmin)<td class="fw-semibold">{{ $s['petugas'] }}</td>@endif
                                 <td class="small text-truncate" style="max-width: 220px" title="{{ $s['nama_asli'] }}">{{ $s['nama_asli'] }} <span class="text-muted-x">· {{ number_format($s['ukuran_kb'] / 1024, 1, ',', '.') }} MB</span></td>
                                 <td class="small text-nowrap">{{ $sumberFoto[$s['sumber_foto']] ?? $s['sumber_foto'] }}</td>
+                                <td class="small text-nowrap">{{ empty($s['shift_paksa']) ? 'semua' : 'shift '.$s['shift_paksa'] }}</td>
                                 <td>
                                     @include('panel.scan._status', ['s' => $s])
                                     @if (! empty($s['pesan']) && in_array($s['status'], ['gagal', 'perlu_foto_ulang'], true))
@@ -73,7 +74,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="8" class="text-center text-muted-x py-4">
+                            <tr><td colspan="9" class="text-center text-muted-x py-4">
                                 Belum ada foto. @unless ($isAdmin)<a href="{{ route($ruteFoto) }}">Tambah Data</a> untuk mulai.@endunless
                             </td></tr>
                         @endforelse

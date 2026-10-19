@@ -56,9 +56,19 @@
                             <div class="sc-thumbs" id="thumbs"></div>
                         </div>
                     </div>
+                    <div class="dx-card-body pt-0">
+                        <label class="fw-semibold small mb-1" for="shiftBaca">Shift yang dibaca</label>
+                        <select class="form-select w-auto" name="shift" id="shiftBaca">
+                            @foreach (config('produksi.shift') as $s => $j)
+                                <option value="{{ $s }}" @selected(old('shift', $shiftSekarang) === (string) $s)>Shift {{ $s }} ({{ $j['mulai'] }}–{{ $j['selesai'] }}){{ (string) $s === $shiftSekarang ? ' · sekarang' : '' }}</option>
+                            @endforeach
+                            <option value="semua" @selected(old('shift') === 'semua')>Semua baris yang terisi (satu hari penuh)</option>
+                        </select>
+                        <div class="dx-kpi-note mt-1">Terpilih otomatis dari jam komputer. AI hanya membaca baris shift ini di kotak Lost time, jadi baris shift lain di lembar yang sama tidak ikut terinput.</div>
+                    </div>
                     <div class="dx-card-body pt-0 d-flex flex-wrap gap-2 align-items-center">
                         <button class="btn btn-primary" id="btnKirim" disabled><i class="bi bi-cloud-arrow-up me-1"></i> Kirim untuk dibaca AI</button>
-                        <span class="dx-kpi-note">Diproses di latar belakang (±20–60 detik per foto di CPU, lebih cepat dengan GPU). Anda bisa lanjut bekerja dan akan diberi tahu <strong>"Selesai diproses"</strong>.</span>
+                        <span class="dx-kpi-note">Diproses di latar belakang (±15–60 detik per foto; lebih cepat dengan GPU dan bila hanya satu shift). Anda bisa lanjut bekerja dan akan diberi tahu <strong>"Selesai diproses"</strong>.</span>
                     </div>
                 </form>
             </div>

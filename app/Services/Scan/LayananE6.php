@@ -145,6 +145,13 @@ class LayananE6
         $sumber = config('produksi.e6.contoh_folder');
         $hasil = json_decode((string) file_get_contents("{$sumber}/mentah/{$stem}.json"), true);
         unset($hasil['_wall']);
+        if (($status['baris'] ?? 'bertinta') === 'shift' && ! empty($status['shift_paksa']) && isset($hasil['data']['lost_time'])) {
+            $s = (string) $status['shift_paksa'];
+            $hasil['data']['lost_time'] = array_intersect_key($hasil['data']['lost_time'], [$s => true]);
+            $hasil['data']['shift_dipakai'] = $s;
+            $hasil['data']['n_kotak_ragu'] = collect($hasil['data']['lost_time'])->flatMap(fn ($e) => $e['blocks'] ?? [])
+                ->flatMap(fn ($b) => $b['calls'] ?? [])->where('ragu', true)->count();
+        }
         $hasil['meta']['device'] = 'contoh';
         $hasil['meta']['contoh_dari'] = $stem;
         $this->store->simpanHasilAi($id, $hasil);

@@ -89,6 +89,7 @@ abstract class ScanController extends Controller
         $isAdmin = $this->isAdmin($request);
 
         return $this->tampil('tambah', [
+            'shiftSekarang' => $this->shiftSekarang(),
             'layanan' => LayananE6::make()->info(),
             'antrian' => array_slice(ScanStore::make()->daftar($this->petugas($request), 5), 0, 5),
         ], $isAdmin ? 403 : 200);
@@ -101,6 +102,7 @@ abstract class ScanController extends Controller
             'foto' => ['required', 'array', 'min:1', 'max:10'],
             'foto.*' => ['required', 'image', 'max:20480'],
             'sumber' => ['required', 'in:'.implode(',', array_keys(self::SUMBER_FOTO))],
+            'shift' => ['required', 'in:1,2,3,semua'],
         ], [
             'foto.required' => 'Pilih atau ambil foto formulir dulu.',
             'foto.*.image' => 'File harus berupa foto (JPG/PNG).',
@@ -111,7 +113,7 @@ abstract class ScanController extends Controller
         $layanan = LayananE6::make();
         $ids = [];
         foreach ($request->file('foto') as $foto) {
-            $status = $store->buat($foto, $this->petugas($request), $request->input('sumber'));
+            $status = $store->buat($foto, $this->petugas($request), $request->input('sumber'), $this->opsiBaca($request->input('shift')));
             $store->ubahStatus($status['id'], ['mode' => $layanan->mode()]);
             $ids[] = $status['id'];
         }
@@ -180,10 +182,12 @@ abstract class ScanController extends Controller
         abort_if($this->isAdmin($request), 403);
         $store = $this->pastikanMilik($request, $id);
         $s = $store->status($id);
-        abort_unless(in_array($s['status'], ['gagal', 'perlu_foto_ulang'], true) && is_file($store->folder($id).'/foto.jpg'), 422, 'Scan ini tidak bisa diproses ulang.');
+        // Gagal / perlu foto ulang: proses ulang biasa. Selesai (belum disimpan): baca ulang dengan shift lain.
+        abort_unless(in_array($s['status'], ['gagal', 'perlu_foto_ulang', 'selesai'], true) && is_file($store->folder($id).'/foto.jpg'), 422, 'Scan ini tidak bisa diproses ulang.');
+        $shift = in_array($request->input('shift'), ['1', '2', '3', 'semua'], true) ? $request->input('shift') : null;
         $layanan = LayananE6::make();
         $store->ubahStatus($id, ['status' => 'menunggu', 'mode' => $layanan->mode(), 'dibuat' => now('Asia/Jakarta')->toIso8601String(),
-            'mulai' => null, 'selesai' => null, 'pesan' => null, 'diberitahu' => false]);
+            'mulai' => null, 'selesai' => null, 'pesan' => null, 'diberitahu' => false] + ($shift ? $this->opsiBaca($shift) : []));
         $layanan->pastikanBerjalan();
 
         return redirect()->route($this->rp().'scan')->with('status', 'Foto dimasukkan lagi ke antrian.');
@@ -213,7 +217,8 @@ abstract class ScanController extends Controller
             $awal = $final['header'] ?? [
                 'tanggal' => E6ResultAdapter::tanggalIso($h['tanggal']['ai'], $h['tanggal']['iso']),
                 'mesin' => $mesinAwal,
-                'shift' => $h['shift']['ai'],
+                // Shift yang dipilih saat unggah didahulukan; tulisan shift di header jadi pembanding.
+                'shift' => $status['shift_paksa'] ?? $h['shift']['ai'],
                 // Nama operator kurang andal (E6: 3/7) → hanya usulan yang cukup mirip yang dipilihkan; tetap wajib diperiksa.
                 'nik' => $usulan['operator']['yakin'] ? $usulan['operator']['nik'] : null,
                 'speed' => $h['speed']['ai'],
@@ -314,6 +319,29 @@ abstract class ScanController extends Controller
     }
 
     // ------------------------------------------------------------------
+
+    /** Shift yang sedang berjalan menurut jam komputer server (jadwal config produksi.shift). */
+    protected function shiftSekarang(): string
+    {
+        $sekarang = now('Asia/Jakarta');
+        $m = $sekarang->hour * 60 + $sekarang->minute;
+        foreach (config('produksi.shift') as $s => $j) {
+            [$a, $b] = array_map(fn ($t) => (int) substr($t, 0, 2) * 60 + (int) substr($t, 3, 2), [$j['mulai'], $j['selesai']]);
+            if ($a < $b ? ($m >= $a && $m < $b) : ($m >= $a || $m < $b)) {
+                return (string) $s;
+            }
+        }
+
+        return '1';
+    }
+
+    /** Pilihan baca untuk layanan E6: satu shift saja, atau semua baris bertinta. */
+    protected function opsiBaca(?string $shift): array
+    {
+        return in_array($shift, ['1', '2', '3'], true)
+            ? ['shift_paksa' => $shift, 'baris' => 'shift']
+            : ['shift_paksa' => null, 'baris' => 'bertinta'];
+    }
 
     /** Scan harus ada; petugas hanya boleh membuka scan miliknya (admin: semua). */
     protected function pastikanMilik(Request $request, string $id): ScanStore

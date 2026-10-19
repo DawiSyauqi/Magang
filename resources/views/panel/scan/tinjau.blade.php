@@ -75,6 +75,20 @@
             <div class="dx-note mb-3"><i class="bi bi-check-circle"></i><span>Sudah disimpan {{ \Carbon\Carbon::parse($final['disimpan_pada'])->translatedFormat('d M Y H:i') }} oleh {{ $final['disimpan_oleh'] }} · {{ $final['koreksi']['dikoreksi'] }} kotak dikoreksi dari hasil AI. @if (! empty($final['no_trs'])) Nomor: <span class="num">{{ implode(', ', $final['no_trs']) }}</span>. @endif Tampilan hanya-baca.</span></div>
         @endif
 
+        @if ($bisaUbah)
+            <form method="POST" action="{{ route($rp.'scan.ulang', $status['id']) }}" class="dx-note mb-3 flex-wrap" onsubmit="return confirm('Baca ulang foto ini? Koreksi yang belum disimpan akan hilang.')">
+                @csrf
+                @if ($peranQ)<input type="hidden" name="peran" value="admin">@endif
+                <i class="bi bi-arrow-repeat"></i>
+                <span>Baris shift yang dibaca: <strong>{{ empty($status['shift_paksa']) ? 'semua baris terisi' : 'shift '.$status['shift_paksa'] }}</strong>. Salah shift?</span>
+                <select name="shift" class="form-select form-select-sm w-auto" aria-label="Baca ulang shift">
+                    @foreach (['1', '2', '3'] as $sh)<option value="{{ $sh }}" @selected(($status['shift_paksa'] ?? null) === $sh)>Shift {{ $sh }}</option>@endforeach
+                    <option value="semua" @selected(empty($status['shift_paksa']))>Semua baris</option>
+                </select>
+                <button class="btn btn-sm btn-outline-secondary">Baca ulang</button>
+            </form>
+        @endif
+
         <form method="POST" action="{{ route($rp.'scan.simpan', $status['id']) }}" id="formTinjau"
               data-pratinjau-url="{{ route($rp.'scan.pratinjau', $status['id']) }}"
               data-warna='@json(config('produksi.warna_kategori'))' data-kategori='@json($kategori)'
@@ -142,7 +156,15 @@
                                                 <option value="{{ $sh }}" @selected(old('header.shift', $awal['shift']) === $sh)>Shift {{ $sh }} ({{ config("produksi.shift.$sh.mulai") }}–{{ config("produksi.shift.$sh.selesai") }})</option>
                                             @endforeach
                                         </select>
-                                        <div class="sc-ai">AI membaca: {{ $h['ai'] ?? '–' }}</div>
+                                        <div class="sc-ai">
+                                            AI membaca: <strong>{{ $h['ai'] ?? '–' }}</strong>
+                                            @if (! empty($status['shift_paksa']))
+                                                · baris yang dibaca: <strong>shift {{ $status['shift_paksa'] }}</strong> (dipilih saat unggah)
+                                                @if (($h['ai'] ?? null) && (string) $h['ai'] !== (string) $status['shift_paksa'])
+                                                    <br><span class="text-danger"><i class="bi bi-exclamation-triangle"></i> Tulisan shift di formulir berbeda dengan yang dipilih. Pastikan barisnya benar, atau baca ulang shift lain di bawah.</span>
+                                                @endif
+                                            @endif
+                                        </div>
                                         @break
                                     @case('operator')
                                         <select class="form-select" id="h_operator" name="header[nik]" @disabled(! $bisaUbah) required>

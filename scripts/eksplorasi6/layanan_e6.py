@@ -165,7 +165,10 @@ class Layanan:
             if self.ref is None:
                 self.ref = load_referensi(self.args.ref_dir)
             env = baca_foto(str(folder / "foto.jpg"), self.ref, self.reader_factory,
-                            shift_paksa=status.get("shift_paksa"), baris="bertinta",
+                            shift_paksa=status.get("shift_paksa"),
+                            # "shift" = hanya baris shift yang dipilih petugas saat unggah;
+                            # "bertinta" = semua baris yang ada tintanya.
+                            baris=status.get("baris") or ("shift" if status.get("shift_paksa") else "bertinta"),
                             save_dir=crops, stem="foto", trocr_model=self.args.trocr_model)
             env.setdefault("meta", {})["device"] = self.device
             tulis_json(folder / "hasil-ai.json", env)

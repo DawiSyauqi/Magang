@@ -57,7 +57,10 @@ class ScanStore
     }
 
     /** Buat entri antrian baru dari foto yang diunggah petugas. */
-    public function buat(UploadedFile $foto, string $petugas, string $sumberFoto): array
+    /**
+     * @param  array{shift_paksa?: ?string, baris?: string}  $opsi  shift yang dibaca E6 (null + 'bertinta' = semua baris)
+     */
+    public function buat(UploadedFile $foto, string $petugas, string $sumberFoto, array $opsi = []): array
     {
         $waktu = now('Asia/Jakarta');
         $id = $waktu->format('Ymd-His').'-'.Str::lower(Str::random(4));
@@ -77,6 +80,8 @@ class ScanStore
             'selesai' => null,
             'pesan' => null,
             'diberitahu' => false,
+            'shift_paksa' => $opsi['shift_paksa'] ?? null,
+            'baris' => $opsi['baris'] ?? 'bertinta',
         ];
         $this->tulisJson($folder.'/status.json', $status);
 
