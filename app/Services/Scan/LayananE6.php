@@ -153,6 +153,8 @@ class LayananE6
                 ->flatMap(fn ($b) => $b['calls'] ?? [])->where('ragu', true)->count();
         }
         $hasil['meta']['device'] = 'contoh';
+        $hasil['meta']['baris_dipakai'] = $status['baris'] ?? 'bertinta';
+        $hasil['meta']['shift_paksa'] = $status['shift_paksa'] ?? null;
         $hasil['meta']['contoh_dari'] = $stem;
         $this->store->simpanHasilAi($id, $hasil);
 

@@ -65,6 +65,15 @@ def baca_json(path):
         return None
 
 
+def versi_kode():
+    """Penanda versi kode layanan: waktu ubah terbaru file .py di folder E6.
+    Bila berubah (git pull), layanan berhenti sendiri supaya dinyalakan ulang
+    dengan kode baru (oleh Task Scheduler / Laravel) -- proses lama tidak terus
+    memakai kode di memori."""
+    folder = Path(__file__).parent
+    return max(int(p.stat().st_mtime) for p in folder.glob("*.py"))
+
+
 def pilih_device(pilihan):
     if pilihan != "auto":
         return pilihan
@@ -84,6 +93,7 @@ class Layanan:
         self.ref = None
         self.reader = None
         self.mulai = sekarang()
+        self.versi = versi_kode()
         self.diproses = 0
         self.galat_siap = None
         self.sedang = None
@@ -110,7 +120,7 @@ class Layanan:
             "pid": os.getpid(), "mulai": self.mulai, "detak": sekarang(), "detak_unix": int(time.time()),
             "device": self.device, "model": self.args.trocr_model, "model_dimuat": self.reader is not None,
             "diproses": self.diproses, "sedang": self.sedang, "galat": self.galat_siap,
-            "idle_menit": self.args.idle_menit,
+            "idle_menit": self.args.idle_menit, "versi_kode": self.versi,
         })
 
     def layanan_lain_hidup(self):
@@ -161,16 +171,20 @@ class Layanan:
         t0 = time.time()
         crops = folder / "crops"
         crops.mkdir(exist_ok=True)
+        # "shift" = hanya baris shift yang dipilih petugas saat unggah; "bertinta" = semua baris bertinta.
+        baris = status.get("baris") or ("shift" if status.get("shift_paksa") else "bertinta")
         try:
             if self.ref is None:
                 self.ref = load_referensi(self.args.ref_dir)
             env = baca_foto(str(folder / "foto.jpg"), self.ref, self.reader_factory,
-                            shift_paksa=status.get("shift_paksa"),
-                            # "shift" = hanya baris shift yang dipilih petugas saat unggah;
-                            # "bertinta" = semua baris yang ada tintanya.
-                            baris=status.get("baris") or ("shift" if status.get("shift_paksa") else "bertinta"),
+                            shift_paksa=status.get("shift_paksa"), baris=baris,
                             save_dir=crops, stem="foto", trocr_model=self.args.trocr_model)
-            env.setdefault("meta", {})["device"] = self.device
+            meta = env.setdefault("meta", {})
+            meta["device"] = self.device
+            # Dicatat supaya Laravel bisa memastikan mode baca yang benar-benar dipakai.
+            meta["baris_dipakai"] = baris
+            meta["shift_paksa"] = status.get("shift_paksa")
+            meta["versi_kode"] = self.versi
             tulis_json(folder / "hasil-ai.json", env)
             if env["status"] == "needs_retake":
                 status.update({"status": "perlu_foto_ulang", "pesan": env.get("reason")})
@@ -204,9 +218,14 @@ class Layanan:
         print(f"[layanan] mulai (root={self.root}, device={self.device}, idle={self.args.idle_menit} mnt)")
         terakhir_kerja = time.time()
         while True:
+            if versi_kode() != self.versi:
+                print("[layanan] kode layanan diperbarui -- berhenti supaya dinyalakan ulang dengan kode baru.")
+                break
             antrian = self.cari_menunggu()
             if antrian:
                 for folder in antrian:
+                    if versi_kode() != self.versi:
+                        break  # sisa antrian diproses layanan baru
                     self.proses(folder)
                 terakhir_kerja = time.time()
                 continue

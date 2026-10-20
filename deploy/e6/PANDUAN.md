@@ -152,9 +152,9 @@ Uji dari browser:
 |---|---|
 | Lihat status layanan | `storage\app\scan-history\layanan.json` (detak, device, jumlah diproses) |
 | Lihat log | `storage\logs\layanan-e6.log` |
-| Menyalakan ulang layanan | Task Scheduler → "AI Baca Kertas E6" → End, lalu Run. Atau akhiri `python.exe` di Task Manager, nanti dinyalakan lagi dalam ≤5 menit |
+| Menyalakan ulang layanan | `powershell -ExecutionPolicy Bypass -File deploy\e6estart-layanan-e6.ps1` (Run as administrator). Jangan hanya "End" di Task Scheduler, karena proses `python.exe` lama bisa tetap hidup |
 | Bersihkan foto lama | Otomatis lewat `php artisan scan:bersihkan` (terjadwal 02:00). Syaratnya, scheduler Laravel (`php artisan schedule:run` tiap menit) harus aktif di Task Scheduler. Foto disimpan 90 hari dan data 365 hari, bisa diubah lewat `E6_RETENSI_*` |
-| Memperbarui kode E6 | Ganti file di `scripts\eksplorasi6\`, lalu nyalakan ulang layanan. venv tidak perlu dipasang ulang |
+| Memperbarui kode E6 | Cukup `git pull`. Sejak 20-10-2026 layanan berhenti sendiri bila file kodenya berubah, lalu dinyalakan ulang dengan kode baru (Task Scheduler ≤5 menit, atau Laravel saat ada foto masuk). venv tidak perlu dipasang ulang |
 | Memindah folder proyek | Jalankan ulang `pasang-e6.ps1 -Ulang` (venv menyimpan path absolut), lalu `daftar-tugas-e6.ps1` |
 
 ## 6. Masalah umum

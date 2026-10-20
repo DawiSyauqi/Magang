@@ -56,6 +56,10 @@ php artisan view:cache
 
 Jangan jalankan `php artisan route:cache`, karena beberapa rute memakai closure.
 
+Layanan AI Baca Kertas (E6) menyalakan ulang dirinya sendiri bila kodenya berubah
+setelah `git pull`. Bila ragu, jalankan (sebagai Administrator):
+`powershell -ExecutionPolicy Bypass -File deploy\e6estart-layanan-e6.ps1`.
+
 ## 5. Jalankan pengecekan otomatis
 
 ```powershell

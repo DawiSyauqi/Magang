@@ -238,6 +238,9 @@ abstract class ScanController extends Controller
             'kategori' => $this->kategori(),
             'sumberFoto' => self::SUMBER_FOTO,
             'temuan' => (array) session('validasi_temuan', []),
+            // Diminta 1 shift tetapi hasil AI tidak mencatat mode "shift" → layanan E6 masih kode lama.
+            'layananLama' => $tinjauan && ($status['baris'] ?? null) === 'shift'
+                && (($hasil['meta']['baris_dipakai'] ?? null) !== 'shift'),
         ]);
     }
 

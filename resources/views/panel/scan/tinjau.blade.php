@@ -60,6 +60,12 @@
     @elseif (! $tinjauan)
         <div class="alert alert-danger">Hasil AI untuk scan ini tidak ditemukan.</div>
     @else
+        @if ($layananLama)
+            <div class="alert alert-warning py-2 small">
+                <i class="bi bi-exclamation-triangle me-1"></i><strong>Foto ini diproses layanan AI versi lama</strong>, jadi semua baris shift ikut terbaca walaupun Anda memilih shift {{ $status['shift_paksa'] }}.
+                Minta admin menyalakan ulang layanan "AI Baca Kertas E6", lalu klik <strong>Baca ulang</strong> di bawah.
+            </div>
+        @endif
         @if ($errors->any())
             <div class="alert alert-danger py-2">
                 @if ($temuan)
