@@ -160,6 +160,12 @@ class ScanStore
         return $hasil;
     }
 
+    /** Hapus satu scan beserta foto, crop, dan hasil bacaannya. */
+    public function hapus(string $id): bool
+    {
+        return File::deleteDirectory($this->folder($id));
+    }
+
     /** Path file di dalam folder scan (foto, kanvas, crop) — nama dibatasi pola aman. */
     public function berkas(string $id, string $nama): ?string
     {

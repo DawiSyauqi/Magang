@@ -123,6 +123,7 @@ if (config('produksi.draft_enabled')) {
             Route::post('/scan/{id}/pratinjau', 'pratinjau')->name('scan.pratinjau');
             Route::post('/scan/{id}/simpan', 'simpan')->name('scan.simpan');
             Route::post('/scan/{id}/ulang', 'ulang')->name('scan.ulang');
+            Route::post('/scan/{id}/hapus', 'hapus')->name('scan.hapus');
             Route::post('/scan/{id}/diberitahu', 'diberitahu')->name('scan.diberitahu');
             Route::get('/scan/{id}/berkas/{nama}', 'berkas')->name('scan.berkas');
         });
@@ -185,6 +186,7 @@ Route::middleware(['auth', 'menu.access', 'production', 'panel:app'])->group(fun
         Route::post('/scan/{id}/pratinjau', 'pratinjau')->name('scan.pratinjau');
         Route::post('/scan/{id}/simpan', 'simpan')->name('scan.simpan');
         Route::post('/scan/{id}/ulang', 'ulang')->name('scan.ulang');
+        Route::post('/scan/{id}/hapus', 'hapus')->name('scan.hapus');
     });
 });
 

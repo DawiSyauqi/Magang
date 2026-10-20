@@ -22,6 +22,7 @@ class AuditLog
         'data.ubah' => 'Ubah data downtime',
         'data.hapus' => 'Hapus data downtime',
         'scan.simpan' => 'Simpan hasil AI Baca Kertas',
+        'scan.hapus' => 'Hapus scan dari antrian',
         'password.reset' => 'Reset password pengguna',
         'alias.konfirmasi' => 'Konfirmasi alias mesin',
         'pengaturan.target' => 'Ubah target downtime',

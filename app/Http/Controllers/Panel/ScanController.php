@@ -193,6 +193,32 @@ abstract class ScanController extends Controller
         return redirect()->route($this->rp().'scan')->with('status', 'Foto dimasukkan lagi ke antrian.');
     }
 
+    /**
+     * Hapus scan dari antrian (salah foto, foto ganda, gagal). Yang sedang dibaca
+     * layanan tidak boleh dihapus; yang sudah disimpan juga tidak, karena menjadi
+     * bahan Statistik AI dan data downtime-nya sudah ada di MFDOWNTIME.
+     */
+    public function hapus(Request $request, string $id)
+    {
+        abort_if($this->isAdmin($request), 403);
+        $store = $this->pastikanMilik($request, $id);
+        $s = $store->status($id);
+        if (in_array($s['status'], ['diproses', 'disimpan'], true)) {
+            return redirect()->route($this->rp().'scan')->withErrors(['hapus' => $s['status'] === 'diproses'
+                ? 'Foto sedang dibaca AI, tunggu sampai selesai lalu hapus.'
+                : 'Scan yang sudah disimpan tidak bisa dihapus dari riwayat.']);
+        }
+        // Cek ulang tepat sebelum hapus: layanan bisa saja baru mengambil foto ini.
+        if (($store->status($id)['status'] ?? null) === 'diproses' || ! $store->hapus($id)) {
+            return redirect()->route($this->rp().'scan')->withErrors(['hapus' => 'Foto sedang dipakai layanan AI, coba hapus lagi sebentar lagi.']);
+        }
+        AuditLog::make()->catat('scan.hapus', $this->petugas($request), $id, null, [
+            'status' => $s['status'], 'nama_asli' => $s['nama_asli'] ?? null,
+        ], $request->ip());
+
+        return redirect()->route($this->rp().'scan')->with('status', 'Scan '.($s['nama_asli'] ?? $id).' dihapus dari antrian.');
+    }
+
     public function tinjau(Request $request, string $id)
     {
         $store = $this->pastikanMilik($request, $id);

@@ -6,7 +6,7 @@
 
 @php
     $ikon = [
-        'data.tambah' => ['bi-plus-circle', 'ok'], 'scan.simpan' => ['bi-robot', 'ok'], 'data.ubah' => ['bi-pencil-square', 'warn'],
+        'data.tambah' => ['bi-plus-circle', 'ok'], 'scan.simpan' => ['bi-robot', 'ok'], 'scan.hapus' => ['bi-trash3', 'warn'],'data.ubah' => ['bi-pencil-square', 'warn'],
         'data.hapus' => ['bi-trash3', 'bad'], 'password.reset' => ['bi-key', 'warn'], 'alias.konfirmasi' => ['bi-tags', 'info'],
         'pengaturan.target' => ['bi-sliders', 'info'], 'login' => ['bi-box-arrow-in-right', 'muted'],
     ];

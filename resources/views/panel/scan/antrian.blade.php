@@ -11,6 +11,9 @@
 @endsection
 
 @section('content')
+    @error('hapus')
+        <div class="alert alert-warning py-2">{{ $message }}</div>
+    @enderror
     @if (session('gagal_layanan'))
         <div class="alert alert-danger py-2">{{ session('gagal_layanan') }}</div>
     @endif
@@ -74,6 +77,12 @@
                                     @elseif ($s['status'] === 'gagal' && ! $isAdmin && empty($s['foto_dihapus']))
                                         <form method="POST" action="{{ route($rp.'scan.ulang', $s['id']) }}" class="d-inline">@csrf
                                             <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-repeat"></i> Proses ulang</button>
+                                        </form>
+                                    @endif
+                                    @if (! $isAdmin && ! in_array($s['status'], ['diproses', 'disimpan'], true))
+                                        <form method="POST" action="{{ route($rp.'scan.hapus', $s['id']) }}" class="d-inline"
+                                              onsubmit="return confirm('Hapus foto {{ e(addslashes($s['nama_asli'])) }} dari antrian? Foto dan hasil bacaan AI ikut terhapus.')">@csrf
+                                            <button class="btn btn-outline-danger btn-sm" title="Hapus dari antrian"><i class="bi bi-trash3"></i></button>
                                         </form>
                                     @endif
                                 </td>
