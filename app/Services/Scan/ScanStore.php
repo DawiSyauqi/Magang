@@ -58,7 +58,9 @@ class ScanStore
 
     /** Buat entri antrian baru dari foto yang diunggah petugas. */
     /**
-     * @param  array{shift_paksa?: ?string, baris?: string}  $opsi  shift yang dibaca E6 (null + 'bertinta' = semua baris)
+     * @param  array{shift_paksa?: ?string, shift_cadangan?: ?string, baris?: string}  $opsi
+     *   baris 'shift' = hanya satu baris shift: dipaksa > tulisan di kertas > cadangan (pilihan saat unggah);
+     *   baris 'bertinta' = semua baris yang terisi
      */
     public function buat(UploadedFile $foto, string $petugas, string $sumberFoto, array $opsi = []): array
     {
@@ -81,6 +83,7 @@ class ScanStore
             'pesan' => null,
             'diberitahu' => false,
             'shift_paksa' => $opsi['shift_paksa'] ?? null,
+            'shift_cadangan' => $opsi['shift_cadangan'] ?? null,
             'baris' => $opsi['baris'] ?? 'bertinta',
         ];
         $this->tulisJson($folder.'/status.json', $status);

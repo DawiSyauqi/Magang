@@ -178,6 +178,7 @@ class Layanan:
                 self.ref = load_referensi(self.args.ref_dir)
             env = baca_foto(str(folder / "foto.jpg"), self.ref, self.reader_factory,
                             shift_paksa=status.get("shift_paksa"), baris=baris,
+                            shift_cadangan=status.get("shift_cadangan"),
                             save_dir=crops, stem="foto", trocr_model=self.args.trocr_model)
             meta = env.setdefault("meta", {})
             meta["device"] = self.device
@@ -190,6 +191,8 @@ class Layanan:
                 status.update({"status": "perlu_foto_ulang", "pesan": env.get("reason")})
             else:
                 status.update({"status": "selesai", "pesan": None,
+                               "shift_dipakai": env["data"].get("shift_dipakai"),
+                               "shift_sumber": env["data"].get("shift_sumber"),
                                "n_kotak_ragu": env["data"]["n_kotak_ragu"],
                                "perlu_tinjau_grid": env["status"] == "needs_manual_review"})
             self.galat_siap = None

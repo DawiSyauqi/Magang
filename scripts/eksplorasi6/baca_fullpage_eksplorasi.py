@@ -168,7 +168,7 @@ def read_fields(kanvas, layout, fr, save_dir=None, stem="foto"):
 
 
 def baca_foto(image_path, ref, reader_factory, shift_paksa=None, baris="bertinta",
-              save_dir=None, stem="foto", trocr_model=DEFAULT_MODEL):
+              save_dir=None, stem="foto", trocr_model=DEFAULT_MODEL, shift_cadangan=None):
     """Baca 1 foto -> envelope dict (status success / needs_manual_review /
     needs_retake). reader_factory() dipanggil SETELAH geometri lolos, jadi
     foto yg harus diulang tidak memicu pemuatan model; layanan_e6.py memberi
@@ -193,7 +193,10 @@ def baca_foto(image_path, ref, reader_factory, shift_paksa=None, baris="bertinta
     t_field = time.time() - t0
 
     shift_header = fields["shift"].get("nilai")
-    shift = shift_paksa or shift_header
+    # Urutan penentu shift: dipaksa petugas (Baca ulang) > tulisan shift di kertas >
+    # pilihan saat unggah (cadangan bila tulisan tidak terbaca).
+    shift = shift_paksa or shift_header or shift_cadangan
+    shift_sumber = "paksa" if shift_paksa else ("kertas" if shift_header else ("cadangan" if shift_cadangan else None))
     if baris == "shift":
         target = [shift] if shift else []
     else:
@@ -221,7 +224,7 @@ def baca_foto(image_path, ref, reader_factory, shift_paksa=None, baris="bertinta
     return {
         "status": status,
         "data": {
-            "header": fields, "shift_header": shift_header, "shift_dipakai": shift,
+            "header": fields, "shift_header": shift_header, "shift_dipakai": shift, "shift_sumber": shift_sumber,
             "lost_time": lost, "n_kotak_ragu": n_ragu,
         },
         "meta": {

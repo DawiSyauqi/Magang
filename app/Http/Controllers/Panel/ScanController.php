@@ -113,7 +113,7 @@ abstract class ScanController extends Controller
         $layanan = LayananE6::make();
         $ids = [];
         foreach ($request->file('foto') as $foto) {
-            $status = $store->buat($foto, $this->petugas($request), $request->input('sumber'), $this->opsiBaca($request->input('shift')));
+            $status = $store->buat($foto, $this->petugas($request), $request->input('sumber'), $this->opsiBaca($request->input('shift'), false));
             $store->ubahStatus($status['id'], ['mode' => $layanan->mode()]);
             $ids[] = $status['id'];
         }
@@ -187,7 +187,7 @@ abstract class ScanController extends Controller
         $shift = in_array($request->input('shift'), ['1', '2', '3', 'semua'], true) ? $request->input('shift') : null;
         $layanan = LayananE6::make();
         $store->ubahStatus($id, ['status' => 'menunggu', 'mode' => $layanan->mode(), 'dibuat' => now('Asia/Jakarta')->toIso8601String(),
-            'mulai' => null, 'selesai' => null, 'pesan' => null, 'diberitahu' => false] + ($shift ? $this->opsiBaca($shift) : []));
+            'mulai' => null, 'selesai' => null, 'pesan' => null, 'diberitahu' => false, 'shift_dipakai' => null, 'shift_sumber' => null] + ($shift ? $this->opsiBaca($shift, true) : []));
         $layanan->pastikanBerjalan();
 
         return redirect()->route($this->rp().'scan')->with('status', 'Foto dimasukkan lagi ke antrian.');
@@ -217,8 +217,8 @@ abstract class ScanController extends Controller
             $awal = $final['header'] ?? [
                 'tanggal' => E6ResultAdapter::tanggalIso($h['tanggal']['ai'], $h['tanggal']['iso']),
                 'mesin' => $mesinAwal,
-                // Shift yang dipilih saat unggah didahulukan; tulisan shift di header jadi pembanding.
-                'shift' => $status['shift_paksa'] ?? $h['shift']['ai'],
+                // Shift yang benar-benar dibaca AI (dipaksa > tulisan di kertas > pilihan saat unggah).
+                'shift' => $hasil['data']['shift_dipakai'] ?? $status['shift_paksa'] ?? $h['shift']['ai'],
                 // Nama operator kurang andal (E6: 3/7) → hanya usulan yang cukup mirip yang dipilihkan; tetap wajib diperiksa.
                 'nik' => $usulan['operator']['yakin'] ? $usulan['operator']['nik'] : null,
                 'speed' => $h['speed']['ai'],
@@ -338,12 +338,21 @@ abstract class ScanController extends Controller
         return '1';
     }
 
-    /** Pilihan baca untuk layanan E6: satu shift saja, atau semua baris bertinta. */
-    protected function opsiBaca(?string $shift): array
+    /**
+     * Pilihan baca untuk layanan E6. Saat unggah, shift yang dipilih hanya CADANGAN:
+     * AI membaca baris sesuai tulisan shift di kertas, dan memakai pilihan ini bila
+     * tulisan itu tidak terbaca. Saat "Baca ulang", shift yang dipilih DIPAKSA
+     * (untuk memperbaiki tulisan shift yang salah dibaca AI).
+     */
+    protected function opsiBaca(?string $shift, bool $paksa): array
     {
-        return in_array($shift, ['1', '2', '3'], true)
+        if (! in_array($shift, ['1', '2', '3'], true)) {
+            return ['shift_paksa' => null, 'baris' => 'bertinta'];
+        }
+
+        return $paksa
             ? ['shift_paksa' => $shift, 'baris' => 'shift']
-            : ['shift_paksa' => null, 'baris' => 'bertinta'];
+            : ['shift_paksa' => null, 'shift_cadangan' => $shift, 'baris' => 'shift'];
     }
 
     /** Scan harus ada; petugas hanya boleh membuka scan miliknya (admin: semua). */

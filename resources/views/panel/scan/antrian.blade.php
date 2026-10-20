@@ -46,7 +46,12 @@
                                 @if ($isAdmin)<td class="fw-semibold">{{ $s['petugas'] }}</td>@endif
                                 <td class="small text-truncate" style="max-width: 220px" title="{{ $s['nama_asli'] }}">{{ $s['nama_asli'] }} <span class="text-muted-x">· {{ number_format($s['ukuran_kb'] / 1024, 1, ',', '.') }} MB</span></td>
                                 <td class="small text-nowrap">{{ $sumberFoto[$s['sumber_foto']] ?? $s['sumber_foto'] }}</td>
-                                <td class="small text-nowrap">{{ empty($s['shift_paksa']) ? 'semua' : 'shift '.$s['shift_paksa'] }}</td>
+                                <td class="small text-nowrap">
+                                    @if (($s['baris'] ?? 'bertinta') !== 'shift') semua baris
+                                    @elseif (! empty($s['shift_dipakai'])) shift {{ $s['shift_dipakai'] }} <span class="text-muted-x">· {{ ['paksa' => 'dipilih', 'kertas' => 'dari kertas', 'cadangan' => 'pilihan unggah'][$s['shift_sumber'] ?? ''] ?? '' }}</span>
+                                    @else dari kertas <span class="text-muted-x">(cadangan {{ $s['shift_cadangan'] ?? $s['shift_paksa'] ?? '–' }})</span>
+                                    @endif
+                                </td>
                                 <td>
                                     @include('panel.scan._status', ['s' => $s])
                                     @if (! empty($s['pesan']) && in_array($s['status'], ['gagal', 'perlu_foto_ulang'], true))

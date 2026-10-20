@@ -62,8 +62,8 @@
     @else
         @if ($layananLama)
             <div class="alert alert-warning py-2 small">
-                <i class="bi bi-exclamation-triangle me-1"></i><strong>Foto ini diproses layanan AI versi lama</strong>, jadi semua baris shift ikut terbaca walaupun Anda memilih shift {{ $status['shift_paksa'] }}.
-                Minta admin menyalakan ulang layanan "AI Baca Kertas E6", lalu klik <strong>Baca ulang</strong> di bawah.
+                <i class="bi bi-exclamation-triangle me-1"></i><strong>Foto ini diproses layanan AI versi lama</strong>, jadi semua baris shift ikut terbaca, bukan hanya baris shift sesuai tulisan di kertas.
+                Minta admin menyalakan ulang layanan "AI Baca Kertas E6" (deploy\e6\restart-layanan-e6.ps1), lalu klik <strong>Baca ulang</strong> di bawah.
             </div>
         @endif
         @if ($errors->any())
@@ -86,10 +86,10 @@
                 @csrf
                 @if ($peranQ)<input type="hidden" name="peran" value="admin">@endif
                 <i class="bi bi-arrow-repeat"></i>
-                <span>Baris shift yang dibaca: <strong>{{ empty($status['shift_paksa']) ? 'semua baris terisi' : 'shift '.$status['shift_paksa'] }}</strong>. Salah shift?</span>
+                <span>Baris shift yang dibaca: <strong>{{ ($status['baris'] ?? 'bertinta') !== 'shift' ? 'semua baris terisi' : 'shift '.($status['shift_dipakai'] ?? $status['shift_paksa'] ?? '–') }}</strong>. AI salah membaca shift?</span>
                 <select name="shift" class="form-select form-select-sm w-auto" aria-label="Baca ulang shift">
-                    @foreach (['1', '2', '3'] as $sh)<option value="{{ $sh }}" @selected(($status['shift_paksa'] ?? null) === $sh)>Shift {{ $sh }}</option>@endforeach
-                    <option value="semua" @selected(empty($status['shift_paksa']))>Semua baris</option>
+                    @foreach (['1', '2', '3'] as $sh)<option value="{{ $sh }}" @selected(($status['shift_dipakai'] ?? $status['shift_paksa'] ?? null) === $sh)>Paksa shift {{ $sh }}</option>@endforeach
+                    <option value="semua" @selected(($status['baris'] ?? 'bertinta') !== 'shift')>Semua baris</option>
                 </select>
                 <button class="btn btn-sm btn-outline-secondary">Baca ulang</button>
             </form>
@@ -164,10 +164,20 @@
                                         </select>
                                         <div class="sc-ai">
                                             AI membaca: <strong>{{ $h['ai'] ?? '–' }}</strong>
-                                            @if (! empty($status['shift_paksa']))
-                                                · baris yang dibaca: <strong>shift {{ $status['shift_paksa'] }}</strong> (dipilih saat unggah)
-                                                @if (($h['ai'] ?? null) && (string) $h['ai'] !== (string) $status['shift_paksa'])
-                                                    <br><span class="text-danger"><i class="bi bi-exclamation-triangle"></i> Tulisan shift di formulir berbeda dengan yang dipilih. Pastikan barisnya benar, atau baca ulang shift lain di bawah.</span>
+                                            @php
+                                                $sumberShift = $status['shift_sumber'] ?? null;
+                                                $dipakai = $status['shift_dipakai'] ?? null;
+                                                $cadangan = $status['shift_cadangan'] ?? null;
+                                            @endphp
+                                            @if ($sumberShift === 'kertas')
+                                                · <span class="sc-usulan ok"><i class="bi bi-check2"></i> baris shift {{ $dipakai }} dibaca sesuai tulisan di kertas</span>
+                                                @if ($cadangan && $cadangan !== $dipakai)<br><span class="text-muted-x">Pilihan saat unggah (shift {{ $cadangan }}) tidak dipakai karena tulisan shift di kertas terbaca.</span>@endif
+                                            @elseif ($sumberShift === 'cadangan')
+                                                <br><span class="text-danger"><i class="bi bi-exclamation-triangle"></i> Tulisan shift di kertas tidak terbaca → memakai pilihan saat unggah (shift {{ $dipakai }}). Pastikan benar, atau baca ulang dengan shift lain di atas.</span>
+                                            @elseif ($sumberShift === 'paksa')
+                                                · baris shift {{ $dipakai }} (dipilih saat baca ulang)
+                                                @if (($h['ai'] ?? null) && (string) $h['ai'] !== (string) $dipakai)
+                                                    <br><span class="text-danger"><i class="bi bi-exclamation-triangle"></i> Tulisan shift di kertas terbaca "{{ $h['ai'] }}", berbeda dengan shift yang dipaksa. Pastikan barisnya benar.</span>
                                                 @endif
                                             @endif
                                         </div>

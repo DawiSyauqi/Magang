@@ -57,14 +57,14 @@
                         </div>
                     </div>
                     <div class="dx-card-body pt-0">
-                        <label class="fw-semibold small mb-1" for="shiftBaca">Shift yang dibaca</label>
+                        <label class="fw-semibold small mb-1" for="shiftBaca">Shift laporan</label>
                         <select class="form-select w-auto" name="shift" id="shiftBaca">
                             @foreach (config('produksi.shift') as $s => $j)
                                 <option value="{{ $s }}" @selected(old('shift', $shiftSekarang) === (string) $s)>Shift {{ $s }} ({{ $j['mulai'] }}–{{ $j['selesai'] }}){{ (string) $s === $shiftSekarang ? ' · sekarang' : '' }}</option>
                             @endforeach
                             <option value="semua" @selected(old('shift') === 'semua')>Semua baris yang terisi (satu hari penuh)</option>
                         </select>
-                        <div class="dx-kpi-note mt-1">Terpilih otomatis dari jam komputer. AI hanya membaca baris shift ini di kotak Lost time, jadi baris shift lain di lembar yang sama tidak ikut terinput.</div>
+                        <div class="dx-kpi-note mt-1">Terpilih otomatis dari jam komputer. <strong>Yang dipakai tetap tulisan shift di kertas</strong>: AI hanya membaca baris shift sesuai tulisan itu (baris shift lain di lembar yang sama tidak ikut). Pilihan ini dipakai bila tulisan shift tidak terbaca.</div>
                     </div>
                     <div class="dx-card-body pt-0 d-flex flex-wrap gap-2 align-items-center">
                         <button class="btn btn-primary" id="btnKirim" disabled><i class="bi bi-cloud-arrow-up me-1"></i> Kirim untuk dibaca AI</button>

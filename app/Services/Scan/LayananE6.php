@@ -145,10 +145,15 @@ class LayananE6
         $sumber = config('produksi.e6.contoh_folder');
         $hasil = json_decode((string) file_get_contents("{$sumber}/mentah/{$stem}.json"), true);
         unset($hasil['_wall']);
-        if (($status['baris'] ?? 'bertinta') === 'shift' && ! empty($status['shift_paksa']) && isset($hasil['data']['lost_time'])) {
-            $s = (string) $status['shift_paksa'];
+        // Tiru layanan: satu baris shift = dipaksa > tulisan di kertas > pilihan saat unggah.
+        $shiftSumber = null;
+        if (($status['baris'] ?? 'bertinta') === 'shift' && isset($hasil['data']['lost_time'])) {
+            $kertas = $hasil['data']['shift_header'] ?? null;
+            $s = (string) ($status['shift_paksa'] ?: ($kertas ?: ($status['shift_cadangan'] ?? '')));
+            $shiftSumber = ! empty($status['shift_paksa']) ? 'paksa' : ($kertas ? 'kertas' : 'cadangan');
             $hasil['data']['lost_time'] = array_intersect_key($hasil['data']['lost_time'], [$s => true]);
             $hasil['data']['shift_dipakai'] = $s;
+            $hasil['data']['shift_sumber'] = $shiftSumber;
             $hasil['data']['n_kotak_ragu'] = collect($hasil['data']['lost_time'])->flatMap(fn ($e) => $e['blocks'] ?? [])
                 ->flatMap(fn ($b) => $b['calls'] ?? [])->where('ragu', true)->count();
         }
@@ -170,6 +175,8 @@ class LayananE6
             'n_kotak_ragu' => $hasil['data']['n_kotak_ragu'] ?? 0,
             'perlu_tinjau_grid' => $hasil['status'] === 'needs_manual_review',
             'detik_proses' => $hasil['meta']['total_seconds'] ?? null,
+            'shift_dipakai' => $hasil['data']['shift_dipakai'] ?? null,
+            'shift_sumber' => $hasil['data']['shift_sumber'] ?? $shiftSumber,
         ]);
     }
 
