@@ -263,6 +263,10 @@
                                                     @else
                                                         <div class="img kosong" title="Tidak ada tinta"></div>
                                                     @endif
+                                                    @if ($bisaUbah)
+                                                        <button type="button" class="sc-kosongkan" data-kosongkan title="Kosongkan kotak ini (bukan downtime)" aria-label="Kosongkan kotak"><i class="bi bi-x-lg"></i></button>
+                                                        <button type="button" class="sc-kembalikan" data-kembalikan title="Kembalikan bacaan AI ({{ $kotak['kode'] }})" aria-label="Kembalikan bacaan AI"><i class="bi bi-arrow-counterclockwise"></i></button>
+                                                    @endif
                                                     <input type="text" name="grid[{{ $shift }}][{{ $b }}][{{ $k }}]" value="{{ $nilai }}" maxlength="3" autocomplete="off" spellcheck="false"
                                                            aria-label="Shift {{ $shift }} {{ $blok['jam'] }} kotak {{ $k + 1 }}" @readonly(! $bisaUbah)
                                                            @if ($kotak['yakin'] !== null) title="Keyakinan AI {{ round($kotak['yakin'] * 100) }}%" @endif>

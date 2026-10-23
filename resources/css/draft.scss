@@ -754,7 +754,19 @@ nav .d-sm-flex > div:first-child p.small { display: none; }
 }
 .sc-kotak-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
 .sc-kotak {
-    display: flex; flex-direction: column; gap: 3px; min-width: 0;
+    display: flex; flex-direction: column; gap: 3px; min-width: 0; position: relative;
+    // Tombol cepat di pojok gambar: × = kosongkan kotak, ↺ = kembalikan bacaan AI.
+    .sc-kosongkan, .sc-kembalikan {
+        position: absolute; top: 2px; right: 2px; z-index: 1; display: none;
+        width: 20px; height: 20px; padding: 0; border-radius: 50%; border: 0;
+        align-items: center; justify-content: center; font-size: .62rem; line-height: 1;
+        color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .35); cursor: pointer;
+        &:hover, &:focus-visible { transform: scale(1.12); }
+    }
+    .sc-kosongkan { background: var(--up); }
+    .sc-kembalikan { background: var(--text-muted); }
+    &.berisi .sc-kosongkan { display: flex; }
+    &.dikosongkan .sc-kembalikan { display: flex; }
     .img {
         aspect-ratio: 1; border-radius: 5px; background: #fff; border: 1px solid var(--border); overflow: hidden; cursor: zoom-in;
         img { width: 100%; height: 100%; object-fit: cover; display: block; }

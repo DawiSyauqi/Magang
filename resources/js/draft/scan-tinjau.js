@@ -4,6 +4,8 @@
 //   atau ketik untuk mengonfirmasi, lalu lompat ke kotak ragu berikutnya;
 // - setiap perubahan menghitung ulang "Kejadian yang akan disimpan" di server
 //   (GridTimeMerger yang sama dengan alur scan lama);
+// - tombol × di pojok gambar = kosongkan kotak (kotak kosong yang ikut terbaca),
+//   tombol ↺ = kembalikan bacaan AI;
 // - klik gambar = perbesar.
 // =============================================================================
 const zoom = document.getElementById('zoom');
@@ -54,6 +56,8 @@ if (form) {
         const v = input.value.trim().toLowerCase();
         el.classList.toggle('diubah', v !== (el.dataset.ai || ''));
         el.classList.toggle('salah', !sah(v));
+        el.classList.toggle('berisi', v !== '');
+        el.classList.toggle('dikosongkan', v === '' && (el.dataset.ai || '') !== '');
         el.querySelectorAll('[data-kandidat]').forEach((b) => b.classList.toggle('pilih', b.dataset.kandidat === v));
     }
 
@@ -96,6 +100,15 @@ if (form) {
                 kotak[kotak.indexOf(el) + 1]?.querySelector('input').focus();
             }
         });
+        const setel = (nilai) => {
+            input.value = nilai;
+            el.classList.add('dicek');
+            perbarui(el);
+            hitungRagu();
+            jadwalPratinjau();
+        };
+        el.querySelector('[data-kosongkan]')?.addEventListener('click', () => setel(''));
+        el.querySelector('[data-kembalikan]')?.addEventListener('click', () => setel(el.dataset.ai || ''));
         el.querySelectorAll('[data-kandidat]').forEach((b) => b.addEventListener('click', () => {
             input.value = b.dataset.kandidat;
             el.classList.add('dicek');
