@@ -1,0 +1,437 @@
+TY  - JOUR
+AU  - Adepoju, A. H.
+AU  - Eweje, A.
+AU  - Collins, A.
+AU  - Gabriel, B. A.
+TI  - Framework for migrating legacy systems to next-generation data architectures while ensuring seamless integration and scalability
+PY  - 2024
+T2  - International Journal of Multidisciplinary Research and Growth Evaluation
+VL  - 5
+IS  - 6
+SP  - 1462
+EP  - 1474
+DO  - 10.54660/.IJMRGE.2024.5.6.1462-1474
+ER  - 
+
+TY  - ELEC
+AU  - Bergmann, Sebastian
+TI  - PHPUnit manual
+PY  - 2025
+UR  - https://docs.phpunit.de/
+ER  - 
+
+TY  - BOOK
+AU  - Bernstein, Philip A.
+AU  - Hadzilacos, Vassos
+AU  - Goodman, Nathan
+TI  - Concurrency control and recovery in database systems
+PY  - 1987
+PB  - Addison-Wesley
+ER  - 
+
+TY  - ELEC
+AU  - Bootstrap Team
+TI  - Bootstrap documentation (v5.3)
+PY  - 2024
+UR  - https://getbootstrap.com/docs/5.3/
+ER  - 
+
+TY  - JOUR
+AU  - Bradley, Derek
+AU  - Roth, Gerhard
+TI  - Adaptive thresholding using the integral image
+PY  - 2007
+T2  - Journal of Graphics Tools
+VL  - 12
+IS  - 2
+SP  - 13
+EP  - 21
+DO  - 10.1080/2151237X.2007.10129236
+ER  - 
+
+TY  - JOUR
+AU  - Codd, Edgar F.
+TI  - A relational model of data for large shared data banks
+PY  - 1970
+T2  - Communications of the ACM
+VL  - 13
+IS  - 6
+SP  - 377
+EP  - 387
+DO  - 10.1145/362384.362685
+ER  - 
+
+TY  - CONF
+AU  - Dosovitskiy, Alexey
+AU  - Beyer, Lucas
+AU  - Kolesnikov, Alexander
+AU  - Weissenborn, Dirk
+AU  - Zhai, Xiaohua
+AU  - Unterthiner, Thomas
+AU  - Dehghani, Mostafa
+AU  - Minderer, Matthias
+AU  - Heigold, Georg
+AU  - Gelly, Sylvain
+AU  - Uszkoreit, Jakob
+AU  - Houlsby, Neil
+TI  - An image is worth 16x16 words: Transformers for image recognition at scale
+PY  - 2021
+T2  - International Conference on Learning Representations (ICLR 2021)
+UR  - https://arxiv.org/abs/2010.11929
+ER  - 
+
+TY  - JOUR
+AU  - Egbe, Gregory Omozuhiomwen
+AU  - Arinze, Stella N.
+AU  - Ebenuwa, Solomon H.
+AU  - Obi, Emenike Raymond
+AU  - Nwajana, Augustine O.
+TI  - Maintenance resources optimization using Pareto analysis: Instrumentation air compressor in Oredo, Nigeria
+PY  - 2024
+T2  - International Journal of Manufacturing, Materials, and Mechanical Engineering
+VL  - 13
+IS  - 1
+SP  - 1
+EP  - 14
+DO  - 10.4018/IJMMME.353392
+ER  - 
+
+TY  - JOUR
+AU  - Fischler, Martin A.
+AU  - Bolles, Robert C.
+TI  - Random sample consensus: A paradigm for model fitting with applications to image analysis and automated cartography
+PY  - 1981
+T2  - Communications of the ACM
+VL  - 24
+IS  - 6
+SP  - 381
+EP  - 395
+DO  - 10.1145/358669.358692
+ER  - 
+
+TY  - JOUR
+AU  - Haerder, Theo
+AU  - Reuter, Andreas
+TI  - Principles of transaction-oriented database recovery
+PY  - 1983
+T2  - ACM Computing Surveys
+VL  - 15
+IS  - 4
+SP  - 287
+EP  - 317
+DO  - 10.1145/289.291
+ER  - 
+
+TY  - ELEC
+AU  - Laravel LLC
+TI  - Laravel 12.x documentation
+PY  - 2025
+UR  - https://laravel.com/docs/12.x
+ER  - 
+
+TY  - JOUR
+AU  - Larman, Craig
+AU  - Basili, Victor R.
+TI  - Iterative and incremental development: A brief history
+PY  - 2003
+T2  - Computer
+VL  - 36
+IS  - 6
+SP  - 47
+EP  - 56
+DO  - 10.1109/MC.2003.1204375
+ER  - 
+
+TY  - BOOK
+AU  - Laudon, Kenneth C.
+AU  - Laudon, Jane P.
+TI  - Management information systems: Managing the digital firm
+PY  - 2022
+PB  - Pearson
+ET  - 17th
+ER  - 
+
+TY  - JOUR
+AU  - Li, Deqing
+AU  - Mei, Honghui
+AU  - Shen, Yi
+AU  - Su, Shuang
+AU  - Zhang, Wenli
+AU  - Wang, Junting
+AU  - Zu, Ming
+AU  - Chen, Wei
+TI  - ECharts: A declarative framework for rapid construction of web-based visualization
+PY  - 2018
+T2  - Visual Informatics
+VL  - 2
+IS  - 2
+SP  - 136
+EP  - 146
+DO  - 10.1016/j.visinf.2018.04.011
+ER  - 
+
+TY  - JOUR
+AU  - Li, Minghao
+AU  - Lv, Tengchao
+AU  - Chen, Jingye
+AU  - Cui, Lei
+AU  - Lu, Yijuan
+AU  - Florencio, Dinei
+AU  - Zhang, Cha
+AU  - Li, Zhoujun
+AU  - Wei, Furu
+TI  - TrOCR: Transformer-based optical character recognition with pre-trained models
+PY  - 2023
+T2  - Proceedings of the AAAI Conference on Artificial Intelligence
+VL  - 37
+IS  - 11
+SP  - 13094
+EP  - 13102
+DO  - 10.1609/aaai.v37i11.26538
+ER  - 
+
+TY  - JOUR
+AU  - Lowe, David G.
+TI  - Distinctive image features from scale-invariant keypoints
+PY  - 2004
+T2  - International Journal of Computer Vision
+VL  - 60
+IS  - 2
+SP  - 91
+EP  - 110
+DO  - 10.1023/B:VISI.0000029664.99615.94
+ER  - 
+
+TY  - ELEC
+AU  - Microsoft
+TI  - microsoft/trocr-small-handwritten [Model card]
+PY  - 2021
+PB  - Hugging Face
+UR  - https://huggingface.co/microsoft/trocr-small-handwritten
+ER  - 
+
+TY  - ELEC
+AU  - Microsoft Corporation
+TI  - SQL Server technical documentation
+PY  - 2024
+PB  - Microsoft Learn
+UR  - https://learn.microsoft.com/en-us/sql/sql-server/
+ER  - 
+
+TY  - ELEC
+AU  - Microsoft Corporation
+TI  - Support statement for Visual Basic 6.0 on Windows
+PY  - 2024
+PB  - Microsoft Learn
+UR  - https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-basic-6/visual-basic-6-support-policy
+ER  - 
+
+TY  - ELEC
+AU  - Microsoft Corporation
+TI  - char and varchar (Transact-SQL)
+PY  - 2026
+PB  - Microsoft Learn
+UR  - https://learn.microsoft.com/en-us/sql/t-sql/data-types/char-and-varchar-transact-sql
+ER  - 
+
+TY  - ELEC
+AU  - Microsoft Corporation
+TI  - String comparison or assignment (Transact-SQL)
+PY  - 2026
+PB  - Microsoft Learn
+UR  - https://learn.microsoft.com/en-us/sql/t-sql/language-elements/string-comparison-assignment
+ER  - 
+
+TY  - ELEC
+AU  - Microsoft Corporation
+TI  - Table hints (Transact-SQL)
+PY  - 2026
+PB  - Microsoft Learn
+UR  - https://learn.microsoft.com/en-us/sql/t-sql/queries/hints-transact-sql-table
+ER  - 
+
+TY  - ELEC
+AU  - Mozilla
+TI  - Secure contexts
+PY  - 2026
+PB  - MDN Web Docs
+UR  - https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts
+ER  - 
+
+TY  - JOUR
+AU  - Mushica, F.
+AU  - Memeti, A.
+TI  - A comprehensive analysis of architectural patterns in ASP.NET Core web application development
+PY  - 2024
+T2  - Journal of Natural Sciences and Mathematics of UT
+VL  - 9
+IS  - 17–18
+SP  - 207
+EP  - 218
+DO  - 10.62792/ut.jnsm.v9.i17-18.p2816
+ER  - 
+
+TY  - ELEC
+AU  - Object Management Group
+TI  - OMG Unified Modeling Language (OMG UML), version 2.5.1 (formal/17-12-05)
+PY  - 2017
+UR  - https://www.omg.org/spec/UML/2.5.1
+ER  - 
+
+TY  - ELEC
+AU  - OpenCV Team
+TI  - OpenCV: Open source computer vision library documentation (v4.x)
+PY  - 2024
+UR  - https://docs.opencv.org/4.x/
+ER  - 
+
+TY  - CONF
+AU  - Paszke, Adam
+AU  - Gross, Sam
+AU  - Massa, Francisco
+AU  - Lerer, Adam
+AU  - Bradbury, James
+AU  - Chanan, Gregory
+AU  - Killeen, Trevor
+AU  - Lin, Zeming
+AU  - Gimelshein, Natalia
+AU  - Antiga, Luca
+AU  - Desmaison, Alban
+AU  - Köpf, Andreas
+AU  - Yang, Edward
+AU  - DeVito, Zachary
+AU  - Raison, Martin
+AU  - Tejani, Alykhan
+AU  - Chilamkurthy, Sasank
+AU  - Steiner, Benoit
+AU  - Fang, Lu
+AU  - Bai, Junjie
+AU  - Chintala, Soumith
+TI  - PyTorch: An imperative style, high-performance deep learning library
+PY  - 2019
+T2  - Advances in Neural Information Processing Systems
+VL  - 32
+SP  - 8024
+EP  - 8035
+ER  - 
+
+TY  - ELEC
+AU  - PHP Documentation Group
+TI  - similar_text: Calculate the similarity between two strings
+PY  - 2024
+PB  - PHP Manual
+UR  - https://www.php.net/manual/en/function.similar-text.php
+ER  - 
+
+TY  - JOUR
+AU  - Raju, Sagarika
+AU  - Kamble, Harsha Arun
+AU  - Srinivasaiah, Rashmi
+AU  - Swamy, Devappa Renuka
+TI  - Anatomization of the overall equipment effectiveness (OEE) for various machines in a tool and die shop
+PY  - 2022
+T2  - Journal of Intelligent Manufacturing and Special Equipment
+VL  - 3
+IS  - 1
+SP  - 97
+EP  - 105
+DO  - 10.1108/JIMSE-01-2022-0004
+ER  - 
+
+TY  - JOUR
+AU  - Runeson, Per
+TI  - A survey of unit testing practices
+PY  - 2006
+T2  - IEEE Software
+VL  - 23
+IS  - 4
+SP  - 22
+EP  - 29
+DO  - 10.1109/MS.2006.91
+ER  - 
+
+TY  - JOUR
+AU  - Sezgin, Mehmet
+AU  - Sankur, Bülent
+TI  - Survey over image thresholding techniques and quantitative performance evaluation
+PY  - 2004
+T2  - Journal of Electronic Imaging
+VL  - 13
+IS  - 1
+SP  - 146
+EP  - 165
+DO  - 10.1117/1.1631316
+ER  - 
+
+TY  - CONF
+AU  - Spadini, Davide
+AU  - Aniche, Maurício
+AU  - Bruntink, Magiel
+AU  - Bacchelli, Alberto
+TI  - To mock or not to mock? An empirical study on mocking practices
+PY  - 2017
+T2  - Proceedings of the 14th International Conference on Mining Software Repositories (MSR 2017)
+SP  - 402
+EP  - 412
+DO  - 10.1109/MSR.2017.61
+ER  - 
+
+TY  - JOUR
+AU  - van der Loo, Mark P. J.
+TI  - The stringdist package for approximate string matching
+PY  - 2014
+T2  - The R Journal
+VL  - 6
+IS  - 1
+SP  - 111
+EP  - 122
+DO  - 10.32614/RJ-2014-011
+ER  - 
+
+TY  - CONF
+AU  - Vaswani, Ashish
+AU  - Shazeer, Noam
+AU  - Parmar, Niki
+AU  - Uszkoreit, Jakob
+AU  - Jones, Llion
+AU  - Gomez, Aidan N.
+AU  - Kaiser, Łukasz
+AU  - Polosukhin, Illia
+TI  - Attention is all you need
+PY  - 2017
+T2  - Advances in Neural Information Processing Systems
+VL  - 30
+SP  - 5998
+EP  - 6008
+ER  - 
+
+TY  - CONF
+AU  - Wolf, Thomas
+AU  - Debut, Lysandre
+AU  - Sanh, Victor
+AU  - Chaumond, Julien
+AU  - Delangue, Clement
+AU  - Moi, Anthony
+AU  - Cistac, Pierric
+AU  - Rault, Tim
+AU  - Louf, Remi
+AU  - Funtowicz, Morgan
+AU  - Davison, Joe
+AU  - Shleifer, Sam
+AU  - von Platen, Patrick
+AU  - Ma, Clara
+AU  - Jernite, Yacine
+AU  - Plu, Julien
+AU  - Xu, Canwen
+AU  - Le Scao, Teven
+AU  - Gugger, Sylvain
+AU  - Drame, Mariama
+AU  - Lhoest, Quentin
+AU  - Rush, Alexander M.
+TI  - Transformers: State-of-the-art natural language processing
+PY  - 2020
+T2  - Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing: System Demonstrations
+SP  - 38
+EP  - 45
+DO  - 10.18653/v1/2020.emnlp-demos.6
+ER  - 
